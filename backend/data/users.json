@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Jane Doe",
+    "email": "jane@doe.com",
+    "loggedIn": false,
+    "collection": [],
+    "favorites": [],
+    "wishlist": []
+  }
+]

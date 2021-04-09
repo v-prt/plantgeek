@@ -5,8 +5,9 @@
 const express = require("express");
 const morgan = require("morgan"); // logs request on the terminal (example: Get /users 100ms 200)
 
-// TODO:
-// const {} = require("./handlers");
+// HANDLERS
+const { getUsers } = require("./handlers/userHandlers");
+const { getPlants } = require("./handlers/plantHandlers");
 
 const PORT = 4000;
 
@@ -24,8 +25,17 @@ express()
   })
   .use(morgan("tiny"))
   .use(express.json())
-  //   .use(express.urlencoded({ extended: false })) // what is this?
 
-  // TODO: ADD ENDPOINTS HERE
+  // ENDPOINTS
+  .get("/users", getUsers)
+  .get("/plants", getPlants)
+
+  // CATCH-ALL ENDPOINT
+  .get("*", (req, res) => {
+    res.status(404).json({
+      status: 404,
+      message: "Oops, nothing here!",
+    });
+  })
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
