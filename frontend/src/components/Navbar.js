@@ -1,61 +1,61 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { FaLeaf } from "react-icons/fa";
+import plantgeekLogo from "../assets/logo.png";
 import { BiSearch, BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
 import { RiPlantLine } from "react-icons/ri";
 import { BsPerson } from "react-icons/bs";
 import { TiHeartOutline } from "react-icons/ti";
 import { MdStarBorder } from "react-icons/md";
 import styled from "styled-components";
-import { COLORS } from "../../GlobalStyles";
+import { COLORS } from "../GlobalStyles";
 
-export const DesktopNav = () => {
+export const Navbar = () => {
   return (
     <Wrapper>
-      <Link to="/">
-        <Title>plantgeek</Title>
-        <Logo>
-          <FaLeaf />
-        </Logo>
-      </Link>
+      <Div>
+        <Link to="/">
+          <Title>plantgeek</Title>
+          <Logo src={plantgeekLogo} alt="" />
+        </Link>
+      </Div>
       <Link to="/plants">
-        browse
+        <Label>browse</Label>
         <Icon>
           <BiSearch />
         </Icon>
       </Link>
       <Link to="/login">
-        login
+        <Label>login</Label>
         <Icon>
           <BiLogInCircle />
         </Icon>
       </Link>
       <Link to="/logout">
-        logout
+        <Label>logout</Label>
         <Icon>
           <BiLogOutCircle />
         </Icon>
       </Link>
       <Link to="/user/profile">
-        profile
+        <Label>profile</Label>
         <Icon>
           <BsPerson />
         </Icon>
       </Link>
       <Link to="/user/collection">
-        collection
+        <Label>collection</Label>
         <Icon>
           <RiPlantLine />
         </Icon>
       </Link>
       <Link to="/user/favorites">
-        favorites
+        <Label>favorites</Label>
         <Icon>
           <TiHeartOutline />
         </Icon>
       </Link>
       <Link to="/user/wishlist">
-        wishlist
+        <Label>wishlist</Label>
         <Icon>
           <MdStarBorder />
         </Icon>
@@ -67,19 +67,35 @@ export const DesktopNav = () => {
 const Wrapper = styled.nav`
   background: ${COLORS.darkest};
   height: 100vh;
-  width: 200px;
   position: fixed;
   right: 0;
   display: flex;
   flex-direction: column;
-  text-align: right;
+  align-items: center;
   padding: 20px;
+  @media (min-width: 1000px) {
+    width: 200px;
+    align-items: flex-end;
+  }
+`;
+
+const Div = styled.div`
+  display: flex;
+  margin: 20px 0;
+`;
+
+const Logo = styled.img`
+  filter: invert(1);
+  width: 40px;
+  margin: 10px 5px;
+  @media (min-width: 1000px) {
+    margin-right: 6px;
+  }
 `;
 
 const Link = styled(NavLink)`
   color: #fff;
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   &.active {
     color: ${COLORS.light};
@@ -87,19 +103,25 @@ const Link = styled(NavLink)`
 `;
 
 const Title = styled.span`
+  display: none;
   font-family: "Comfortaa", sans-serif;
   color: #fff;
   font-size: 1.5rem;
-  margin-top: 10px;
+  margin-right: 15px;
+  @media (min-width: 1000px) {
+    display: block;
+  }
 `;
 
-const Logo = styled.span`
-  font-size: 2rem;
-  margin: 10px 0 0 15px;
-  color: #009900;
+const Label = styled.span`
+  display: none;
+  margin-right: 15px;
+  @media (min-width: 1000px) {
+    display: block;
+  }
 `;
 
 const Icon = styled.span`
   font-size: 2rem;
-  margin: 10px 0 0 15px;
+  margin: 10px 10px 0 10px;
 `;

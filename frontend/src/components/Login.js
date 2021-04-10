@@ -17,13 +17,9 @@ export const Login = () => {
 const Wrapper = styled.main`
   background: url(${background}) center center / cover;
   height: 100vh;
-  width: calc(100vw - 240px);
   display: flex;
   justify-content: center;
   align-items: center;
-  @media (max-width: 999px) {
-    width: calc(100vw - 72px);
-  }
 `;
 
 const Form = styled.form`
