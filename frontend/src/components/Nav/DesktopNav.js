@@ -87,14 +87,15 @@ const Link = styled(NavLink)`
 `;
 
 const Title = styled.span`
+  font-family: "Comfortaa", sans-serif;
   color: #fff;
   font-size: 1.5rem;
+  margin-top: 10px;
 `;
 
 const Logo = styled.span`
   font-size: 2rem;
-  margin-left: 15px;
-  padding-top: 10px;
+  margin: 10px 0 0 15px;
   color: #009900;
 `;
 
