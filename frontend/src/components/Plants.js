@@ -12,7 +12,7 @@ export const Plants = () => {
         <Actions>
           <Search type="text" placeholder="search plants" />
           <Filter>
-            <h2>filter by genus</h2>
+            <h2>filter plants</h2>
             {/* TODO: return list of types from array? */}
             <ul>
               <li>monstera</li>
@@ -24,9 +24,46 @@ export const Plants = () => {
           </Filter>
         </Actions>
         <Results>
+          {/* TODO: replace with actual plant data */}
           <Card>
             <Image src={pothosGolden} alt="" />
-            <p>Pothos Golden</p>
+            <Name>Pothos Golden</Name>
+          </Card>
+          <Card>
+            <Image src={pothosGolden} alt="" />
+            <Name>Pothos Golden</Name>
+          </Card>
+          <Card>
+            <Image src={pothosGolden} alt="" />
+            <Name>Pothos Golden</Name>
+          </Card>
+          <Card>
+            <Image src={pothosGolden} alt="" />
+            <Name>Pothos Golden</Name>
+          </Card>
+          <Card>
+            <Image src={pothosGolden} alt="" />
+            <Name>Pothos Golden</Name>
+          </Card>
+          <Card>
+            <Image src={pothosGolden} alt="" />
+            <Name>Pothos Golden</Name>
+          </Card>
+          <Card>
+            <Image src={pothosGolden} alt="" />
+            <Name>Pothos Golden</Name>
+          </Card>
+          <Card>
+            <Image src={pothosGolden} alt="" />
+            <Name>Pothos Golden</Name>
+          </Card>
+          <Card>
+            <Image src={pothosGolden} alt="" />
+            <Name>Pothos Golden</Name>
+          </Card>
+          <Card>
+            <Image src={pothosGolden} alt="" />
+            <Name>Pothos Golden</Name>
           </Card>
         </Results>
       </Main>
@@ -41,24 +78,32 @@ const Wrapper = styled.div`
 
 const Banner = styled.div`
   background: url(${background}) center center / cover;
-  width: 100%;
   height: 120px;
+  width: 100%;
 `;
 
 const Main = styled.main`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
+  @media (max-width: 1000px) {
+    flex-direction: column;
+  }
 `;
 
 const Actions = styled.div`
-  width: 250px;
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media (max-width: 1000px) {
+    width: 100%;
+  }
 `;
 
 const Search = styled.input`
-  border-radius: 20px;
+  width: calc(100% - 50px);
+  margin: 20px;
   border: 2px solid ${COLORS.light};
+  border-radius: 20px;
   &:focus {
     outline: none;
     border: 2px solid ${COLORS.medium};
@@ -66,24 +111,35 @@ const Search = styled.input`
 `;
 
 const Filter = styled.div`
-  padding: 0 20px;
+  width: calc(100% - 50px);
+  padding-bottom: 20px;
 `;
 
 const Results = styled.div`
-  background: #fff;
-  min-height: calc(100vh - 120px);
-  flex-grow: 1;
-  h2 {
-    text-align: right;
+  width: 75%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 10px 0;
+  @media (max-width: 1000px) {
+    width: 100%;
   }
 `;
 
 const Card = styled.div`
+  background: #fff;
+  height: 250px;
+  width: 250px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-around;
+  margin: 10px;
+  border-radius: 20px;
 `;
 
 const Image = styled.img`
-  height: 300px;
+  height: 200px;
 `;
+
+const Name = styled.p``;

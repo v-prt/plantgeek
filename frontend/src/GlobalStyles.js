@@ -32,7 +32,6 @@ export default createGlobalStyle`
         }
     }
     input {
-        margin: 10px;
         padding: 10px;
         font-size: 1.1rem;
     }

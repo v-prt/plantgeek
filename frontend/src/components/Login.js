@@ -31,4 +31,7 @@ const Form = styled.form`
   flex-direction: column;
   justify-content: center;
   padding: 20px;
+  input {
+    margin: 10px;
+  }
 `;
