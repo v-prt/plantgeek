@@ -72,6 +72,7 @@ const Wrapper = styled.nav`
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* border-left: 2px solid ${COLORS.light}; */
   padding: 20px;
   @media (min-width: 1000px) {
     width: 200px;
