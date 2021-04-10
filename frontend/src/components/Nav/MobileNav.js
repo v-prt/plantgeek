@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { GiMonsteraLeaf } from "react-icons/gi";
-import { BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
+import { NavLink } from "react-router-dom";
+import { FaLeaf } from "react-icons/fa";
+import { BiSearch, BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
 import { RiPlantLine } from "react-icons/ri";
 import { BsPerson } from "react-icons/bs";
 import { TiHeartOutline } from "react-icons/ti";
@@ -12,34 +12,38 @@ import { COLORS } from "../../GlobalStyles";
 export const MobileNav = () => {
   return (
     <Wrapper>
-      <NavLink to="/">
-        <GiMonsteraLeaf />
-      </NavLink>
-      <NavLink to="/login">
+      <Link to="/">
+        <Logo>
+          <FaLeaf />
+        </Logo>
+      </Link>
+      <Link to="/plants">
+        <BiSearch />
+      </Link>
+      <Link to="/login">
         <BiLogInCircle />
-      </NavLink>
-      <NavLink to="/">
+      </Link>
+      <Link to="/logout">
         <BiLogOutCircle />
-      </NavLink>
-      <NavLink to="/currentuser/profile">
+      </Link>
+      <Link to="/user/profile">
         <BsPerson />
-      </NavLink>
-      <NavLink to="/currentuser/collection">
+      </Link>
+      <Link to="/user/collection">
         <RiPlantLine />
-      </NavLink>
-      <NavLink to="/currentuser/favorites">
+      </Link>
+      <Link to="/user/favorites">
         <TiHeartOutline />
-      </NavLink>
-      <NavLink to="/currentuser/wishlist">
+      </Link>
+      <Link to="/user/wishlist">
         <MdStarBorder />
-      </NavLink>
+      </Link>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.nav`
   background: ${COLORS.darkest};
-  color: white;
   height: 100vh;
   position: fixed;
   right: 0;
@@ -49,8 +53,16 @@ const Wrapper = styled.nav`
   padding: 20px;
 `;
 
-const NavLink = styled(Link)`
-  color: white;
+const Logo = styled.span`
+  color: #009900;
+  font-size: 2rem;
+`;
+
+const Link = styled(NavLink)`
+  color: #fff;
   font-size: 2rem;
   padding-top: 10px;
+  &.active {
+    color: ${COLORS.light};
+  }
 `;

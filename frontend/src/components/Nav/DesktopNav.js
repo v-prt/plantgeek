@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { GiMonsteraLeaf } from "react-icons/gi";
-import { BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
+import { NavLink } from "react-router-dom";
+import { FaLeaf } from "react-icons/fa";
+import { BiSearch, BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
 import { RiPlantLine } from "react-icons/ri";
 import { BsPerson } from "react-icons/bs";
 import { TiHeartOutline } from "react-icons/ti";
@@ -12,55 +12,60 @@ import { COLORS } from "../../GlobalStyles";
 export const DesktopNav = () => {
   return (
     <Wrapper>
-      <NavLink to="/">
+      <Link to="/">
         <Title>plantgeek</Title>
+        <Logo>
+          <FaLeaf />
+        </Logo>
+      </Link>
+      <Link to="/plants">
+        browse
         <Icon>
-          <GiMonsteraLeaf />
+          <BiSearch />
         </Icon>
-      </NavLink>
-      <NavLink to="/login">
+      </Link>
+      <Link to="/login">
         login
         <Icon>
           <BiLogInCircle />
         </Icon>
-      </NavLink>
-      <NavLink to="/">
+      </Link>
+      <Link to="/logout">
         logout
         <Icon>
           <BiLogOutCircle />
         </Icon>
-      </NavLink>
-      <NavLink to="/currentuser/profile">
+      </Link>
+      <Link to="/user/profile">
         profile
         <Icon>
           <BsPerson />
         </Icon>
-      </NavLink>
-      <NavLink to="/currentuser/collection">
+      </Link>
+      <Link to="/user/collection">
         collection
         <Icon>
           <RiPlantLine />
         </Icon>
-      </NavLink>
-      <NavLink to="/currentuser/favorites">
+      </Link>
+      <Link to="/user/favorites">
         favorites
         <Icon>
           <TiHeartOutline />
         </Icon>
-      </NavLink>
-      <NavLink to="/currentuser/wishlist">
+      </Link>
+      <Link to="/user/wishlist">
         wishlist
         <Icon>
           <MdStarBorder />
         </Icon>
-      </NavLink>
+      </Link>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.nav`
   background: ${COLORS.darkest};
-  color: white;
   height: 100vh;
   width: 200px;
   position: fixed;
@@ -71,19 +76,29 @@ const Wrapper = styled.nav`
   padding: 20px;
 `;
 
-const NavLink = styled(Link)`
-  color: white;
+const Link = styled(NavLink)`
+  color: #fff;
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  &.active {
+    color: ${COLORS.light};
+  }
 `;
 
 const Title = styled.span`
+  color: #fff;
   font-size: 1.5rem;
+`;
+
+const Logo = styled.span`
+  font-size: 2rem;
+  margin-left: 15px;
+  padding-top: 10px;
+  color: #009900;
 `;
 
 const Icon = styled.span`
   font-size: 2rem;
-  margin-left: 15px;
-  padding-top: 10px;
+  margin: 10px 0 0 15px;
 `;
