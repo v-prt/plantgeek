@@ -1,10 +1,16 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { plantsArray } from "../reducers/plantReducer";
+
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 import background from "../assets/monstera-bg.jpg";
 import pothosGolden from "../assets/pothos-golden.jpeg";
 
 export const Plants = () => {
+  const plants = useSelector(plantsArray);
+  console.log(plants);
+
   return (
     <Wrapper>
       <Banner />
