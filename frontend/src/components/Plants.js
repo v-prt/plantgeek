@@ -22,7 +22,7 @@ export const Plants = () => {
   };
   plants.sort(compare);
 
-  // GETS ALL TYPES OF PLANTS IN DATABASE AND SORTS ALPHABETICALLY
+  // GETS ALL TYPES OF PLANTS AND SORTS ALPHABETICALLY
   const [types, setTypes] = useState([]);
   useEffect(() => {
     let tempArr = [];
@@ -36,11 +36,13 @@ export const Plants = () => {
   }, [plants]);
   types.sort();
 
-  // FILTERS PLANTS BASED ON TYPE SELECTED
-  const [filter, setFilter] = useState("");
+  // FILTERS PLANTS BASED ON SELECTED TYPE
+  const [filteredPlants, setFilteredPlants] = useState("");
+  const [selectedType, setSelectedType] = useState("");
   // initially sets filter to all plants in database
   useEffect(() => {
-    setFilter(plants);
+    setFilteredPlants(plants);
+    setSelectedType("all");
   }, [plants]);
   const handleFilter = (type) => {
     let tempArr = [];
@@ -49,7 +51,12 @@ export const Plants = () => {
         tempArr.push(plant);
       }
     });
-    setFilter(tempArr);
+    setFilteredPlants(tempArr);
+    setSelectedType(type);
+  };
+  const removeFilter = () => {
+    setFilteredPlants(plants);
+    setSelectedType("all");
   };
 
   return (
@@ -61,17 +68,31 @@ export const Plants = () => {
           <Filter>
             <h2>filter plants</h2>
             <ul>
-              <Type onClick={() => setFilter(plants)}>all</Type>
+              <Type
+                key="all"
+                onClick={() => removeFilter()}
+                active={selectedType === "all"}
+              >
+                all
+              </Type>
               {types &&
                 types.map((type) => {
-                  return <Type onClick={() => handleFilter(type)}>{type}</Type>;
+                  return (
+                    <Type
+                      key={type}
+                      onClick={() => handleFilter(type)}
+                      active={type === selectedType}
+                    >
+                      {type}
+                    </Type>
+                  );
                 })}
             </ul>
           </Filter>
         </Actions>
         <Results>
-          {filter &&
-            filter.map((plant) => {
+          {filteredPlants &&
+            filteredPlants.map((plant) => {
               return (
                 <Card key={plant._id}>
                   <Image src={plant.image} />
@@ -130,9 +151,13 @@ const Filter = styled.div`
 `;
 
 const Type = styled.li`
+  font-style: ${(props) => (props.active ? "italic" : "normal")};
+  border-bottom: ${(props) =>
+    props.active ? "1px solid #000" : "1px solid transparent"};
   &:hover {
     cursor: pointer;
     font-style: italic;
+    border-bottom: 1px solid #000;
   }
 `;
 
