@@ -8,6 +8,20 @@ import background from "../assets/monstera-bg.jpg";
 export const Plants = () => {
   const plants = useSelector(plantsArray);
 
+  // SORTS ALL PLANTS ALPHABETICALLY BY NAME
+  const compare = (a, b) => {
+    const plantA = a.name.toLowerCase();
+    const plantB = b.name.toLowerCase();
+    let comparison = 0;
+    if (plantA > plantB) {
+      comparison = 1;
+    } else if (plantA < plantB) {
+      comparison = -1;
+    }
+    return comparison;
+  };
+  plants.sort(compare);
+
   // GETS ALL TYPES OF PLANTS IN DATABASE AND SORTS ALPHABETICALLY
   const [types, setTypes] = useState([]);
   useEffect(() => {
@@ -37,8 +51,6 @@ export const Plants = () => {
     });
     setFilter(tempArr);
   };
-
-  // TODO: sort all plants alphabetically
 
   return (
     <Wrapper>
