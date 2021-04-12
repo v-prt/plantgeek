@@ -1,15 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { plantsArray } from "../reducers/plantReducer";
-
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 import background from "../assets/monstera-bg.jpg";
-import pothosGolden from "../assets/pothos-golden.jpeg";
 
 export const Plants = () => {
   const plants = useSelector(plantsArray);
-  console.log(plants);
+  const [types, setTypes] = useState([]);
+
+  useEffect(() => {
+    let tempArr = [];
+    plants.forEach((plant) => {
+      if (!tempArr.includes(plant.type)) {
+        tempArr.push(plant.type);
+      }
+    });
+    setTypes(tempArr);
+  }, [plants]);
+  types.sort();
+
+  // TODO: rerender list of plants based on filter (plants, setPlants useEffect?)
+  const handleFilter = (type) => {
+    console.log(type);
+  };
 
   return (
     <Wrapper>
@@ -19,58 +33,24 @@ export const Plants = () => {
           <Search type="text" placeholder="search plants" />
           <Filter>
             <h2>filter plants</h2>
-            {/* TODO: return list of types from array? */}
             <ul>
-              <li>monstera</li>
-              <li>philodendron</li>
-              <li>pothos</li>
-              <li>syngonium</li>
-              <li>dracaena</li>
+              {types &&
+                types.map((type) => {
+                  return <li onClick={() => handleFilter(type)}>{type}</li>;
+                })}
             </ul>
           </Filter>
         </Actions>
         <Results>
-          {/* TODO: replace with actual plant data */}
-          <Card>
-            <Image src={pothosGolden} alt="" />
-            <Name>Pothos Golden</Name>
-          </Card>
-          <Card>
-            <Image src={pothosGolden} alt="" />
-            <Name>Pothos Golden</Name>
-          </Card>
-          <Card>
-            <Image src={pothosGolden} alt="" />
-            <Name>Pothos Golden</Name>
-          </Card>
-          <Card>
-            <Image src={pothosGolden} alt="" />
-            <Name>Pothos Golden</Name>
-          </Card>
-          <Card>
-            <Image src={pothosGolden} alt="" />
-            <Name>Pothos Golden</Name>
-          </Card>
-          <Card>
-            <Image src={pothosGolden} alt="" />
-            <Name>Pothos Golden</Name>
-          </Card>
-          <Card>
-            <Image src={pothosGolden} alt="" />
-            <Name>Pothos Golden</Name>
-          </Card>
-          <Card>
-            <Image src={pothosGolden} alt="" />
-            <Name>Pothos Golden</Name>
-          </Card>
-          <Card>
-            <Image src={pothosGolden} alt="" />
-            <Name>Pothos Golden</Name>
-          </Card>
-          <Card>
-            <Image src={pothosGolden} alt="" />
-            <Name>Pothos Golden</Name>
-          </Card>
+          {plants &&
+            plants.map((plant) => {
+              return (
+                <Card key={plant._id}>
+                  <Image src={plant.image} />
+                  <Name>{plant.name}</Name>
+                </Card>
+              );
+            })}
         </Results>
       </Main>
     </Wrapper>
@@ -135,7 +115,7 @@ const Results = styled.div`
 const Card = styled.div`
   background: #fff;
   height: 250px;
-  width: 250px;
+  width: 225px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -148,4 +128,8 @@ const Image = styled.img`
   height: 200px;
 `;
 
-const Name = styled.p``;
+const Name = styled.p`
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+`;

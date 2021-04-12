@@ -15,7 +15,6 @@ const getPlants = async (req, res) => {
   await client.connect();
   const db = client.db("plantgeekdb");
   const plants = await db.collection("plants").find().toArray();
-
   if (plants) {
     res.status(200).json({ status: 200, data: plants });
   } else {
