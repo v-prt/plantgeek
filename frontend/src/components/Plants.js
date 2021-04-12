@@ -7,11 +7,13 @@ import background from "../assets/monstera-bg.jpg";
 
 export const Plants = () => {
   const plants = useSelector(plantsArray);
-  const [types, setTypes] = useState([]);
 
+  // GETS ALL TYPES OF PLANTS IN DATABASE AND SORTS ALPHABETICALLY
+  const [types, setTypes] = useState([]);
   useEffect(() => {
     let tempArr = [];
     plants.forEach((plant) => {
+      // skip type if already added to array
       if (!tempArr.includes(plant.type)) {
         tempArr.push(plant.type);
       }
@@ -20,10 +22,23 @@ export const Plants = () => {
   }, [plants]);
   types.sort();
 
-  // TODO: rerender list of plants based on filter (plants, setPlants useEffect?)
+  // FILTERS PLANTS BASED ON TYPE SELECTED
+  const [filter, setFilter] = useState("");
+  // initially sets filter to all plants in database
+  useEffect(() => {
+    setFilter(plants);
+  }, [plants]);
   const handleFilter = (type) => {
-    console.log(type);
+    let tempArr = [];
+    plants.forEach((plant) => {
+      if (plant.type === type) {
+        tempArr.push(plant);
+      }
+    });
+    setFilter(tempArr);
   };
+
+  // TODO: sort all plants alphabetically
 
   return (
     <Wrapper>
@@ -34,16 +49,17 @@ export const Plants = () => {
           <Filter>
             <h2>filter plants</h2>
             <ul>
+              <Type onClick={() => setFilter(plants)}>all</Type>
               {types &&
                 types.map((type) => {
-                  return <li onClick={() => handleFilter(type)}>{type}</li>;
+                  return <Type onClick={() => handleFilter(type)}>{type}</Type>;
                 })}
             </ul>
           </Filter>
         </Actions>
         <Results>
-          {plants &&
-            plants.map((plant) => {
+          {filter &&
+            filter.map((plant) => {
               return (
                 <Card key={plant._id}>
                   <Image src={plant.image} />
@@ -99,6 +115,13 @@ const Search = styled.input`
 const Filter = styled.div`
   width: calc(100% - 50px);
   padding-bottom: 20px;
+`;
+
+const Type = styled.li`
+  &:hover {
+    cursor: pointer;
+    font-style: italic;
+  }
 `;
 
 const Results = styled.div`
