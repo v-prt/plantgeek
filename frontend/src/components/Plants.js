@@ -67,7 +67,7 @@ export const Plants = () => {
           <Search type="text" placeholder="search plants" />
           <Filter>
             <h2>filter plants</h2>
-            <ul>
+            <Types>
               <Type
                 key="all"
                 onClick={() => removeFilter()}
@@ -87,7 +87,7 @@ export const Plants = () => {
                     </Type>
                   );
                 })}
-            </ul>
+            </Types>
           </Filter>
         </Actions>
         <Results>
@@ -150,14 +150,28 @@ const Filter = styled.div`
   padding-bottom: 20px;
 `;
 
+const Types = styled.ul`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  @media (max-width: 1000px) {
+    flex-direction: row;
+  }
+`;
+
 const Type = styled.li`
+  flex: 1 0 33.33%;
   font-style: ${(props) => (props.active ? "italic" : "normal")};
   border-bottom: ${(props) =>
     props.active ? "1px solid #000" : "1px solid transparent"};
   &:hover {
     cursor: pointer;
     font-style: italic;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px dotted #000;
+  }
+  @media (max-width: 1000px) {
+    margin-right: 50px;
   }
 `;
 
