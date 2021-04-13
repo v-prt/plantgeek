@@ -26,6 +26,7 @@ export default createGlobalStyle`
     }
     a {
         text-decoration: none;
+        color: ${COLORS.darkest};
         transition: 0.2s ease-in-out;
         &:hover {
             color: ${COLORS.light};

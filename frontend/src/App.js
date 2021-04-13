@@ -10,6 +10,7 @@ import { Navbar } from "./components/Navbar";
 import { Home } from "./components/Home";
 import { Plants } from "./components/Plants";
 import { Login } from "./components/Login";
+import { PlantInfo } from "./components/PlantInfo";
 import { Profile } from "./components/Profile";
 
 export const App = () => {
@@ -36,14 +37,17 @@ export const App = () => {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route path="/plants">
+          <Route exact path="/plants">
             <Plants />
           </Route>
-          <Route path="/login">
+          <Route exact path="/login">
             <Login />
           </Route>
           <Route path="/user/profile">
             <Profile />
+          </Route>
+          <Route path="/plants/:id">
+            <PlantInfo />
           </Route>
         </Switch>
       </Main>

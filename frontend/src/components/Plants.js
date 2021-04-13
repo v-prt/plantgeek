@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { plantsArray } from "../reducers/plantReducer";
 import styled from "styled-components";
@@ -94,7 +95,7 @@ export const Plants = () => {
           {filteredPlants &&
             filteredPlants.map((plant) => {
               return (
-                <Card key={plant._id}>
+                <Card to={`/plants/${plant._id}`} key={plant._id}>
                   <Image src={plant.image} />
                   <Name>{plant.name}</Name>
                 </Card>
@@ -186,7 +187,7 @@ const Results = styled.div`
   }
 `;
 
-const Card = styled.div`
+const Card = styled(Link)`
   background: #fff;
   height: 250px;
   width: 225px;
@@ -196,6 +197,10 @@ const Card = styled.div`
   justify-content: space-around;
   margin: 10px;
   border-radius: 20px;
+  &:hover {
+    color: ${COLORS.darkest};
+    box-shadow: 0 0 10px ${COLORS.light};
+  }
 `;
 
 const Image = styled.img`

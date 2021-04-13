@@ -24,5 +24,4 @@ export default function plantReducer(state = initialState, action) {
   }
 }
 
-// TODO: improve
 export const plantsArray = (state) => Object.values(state.plants.plants);

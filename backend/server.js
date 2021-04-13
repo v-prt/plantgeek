@@ -7,7 +7,7 @@ const morgan = require("morgan"); // logs request on the terminal (example: Get 
 
 // HANDLERS
 const { getUsers } = require("./handlers/userHandlers");
-const { getPlants } = require("./handlers/plantHandlers");
+const { getPlants, getPlant } = require("./handlers/plantHandlers");
 
 const PORT = 4000;
 
@@ -29,6 +29,7 @@ express()
   // ENDPOINTS
   .get("/users", getUsers)
   .get("/plants", getPlants)
+  .get("/plants/:_id", getPlant)
 
   // CATCH-ALL ENDPOINT
   .get("*", (req, res) => {
