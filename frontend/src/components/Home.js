@@ -11,7 +11,7 @@ export const Home = () => {
   );
 };
 
-const Wrapper = styled.main``;
+const Wrapper = styled.div``;
 
 const Background = styled.img`
   width: 150px;
