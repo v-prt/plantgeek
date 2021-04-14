@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
 
@@ -10,12 +11,16 @@ import { RiPlantLine } from "react-icons/ri";
 import background from "../assets/monstera-bg.jpg";
 
 export const SignUp = () => {
+  const history = useHistory();
   const users = useSelector(usersArray);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [validName, setValidName] = useState(undefined);
+  const [validEmail, setValidEmail] = useState(undefined);
+  const [validPassword, setValidPassword] = useState(undefined);
+  const [existingEmail, setExistingEmail] = useState(undefined);
 
   const handleName = (ev) => {
     setName(ev.target.value);
@@ -25,52 +30,29 @@ export const SignUp = () => {
     setEmail(ev.target.value);
   };
 
-  const handleUsername = (ev) => {
-    setUsername(ev.target.value);
-  };
-
   const handlePassword = (ev) => {
     setPassword(ev.target.value);
   };
 
-  // FIXME:
-  const [validName, setValidName] = useState(true);
-  const [validEmail, setValidEmail] = useState(true);
-  const [validUsername, setValidUsername] = useState(true);
-  const [validPassword, setValidPassword] = useState(true);
-
+  // FIXME: need to click submit twice
   const handleSignUp = (ev) => {
     ev.preventDefault();
 
-    // FIXME: signup successful when submit empty form
-    setValidName(name.length > 3);
+    setValidName(name.length > 2);
     setValidEmail(email.includes("@"));
-    setValidUsername(username.length > 3);
     setValidPassword(password.length > 5);
+    setExistingEmail(
+      users.find((user) => {
+        return user.email === email;
+      })
+    );
 
-    const existingUser = users.find((user) => {
-      return user.email === email || user.username === username;
-    });
-
-    if (existingUser) {
-      console.log(
-        "An account has already been registered with this email or username"
-      );
-    } else if (!validName) {
-      console.log("Please enter your name");
-    } else if (!validEmail) {
-      console.log("Please use a valid email");
-    } else if (!validUsername) {
-      console.log("Username must be at least 4 characters in length");
-    } else if (!validPassword) {
-      console.log("Password must be at least 6 characters in length");
-    } else {
+    if (validName && validEmail && validPassword && !existingEmail) {
       fetch("/users", {
         method: "POST",
         body: JSON.stringify({
-          email: email,
           name: name,
-          username: username,
+          email: email,
           password: password,
         }),
         headers: {
@@ -87,9 +69,9 @@ export const SignUp = () => {
         .then((data) => {
           if (data) {
             console.log("Signup successful!");
-            // TODO:
-            // clear/reset form
-            // welcome/send to profile?
+            // TODO: replace alert with confirmation page
+            alert("Your account has been created! Please login");
+            history.push("/login");
           }
         });
     }
@@ -123,16 +105,16 @@ export const SignUp = () => {
           </ul>
         </Info>
         <Form>
-          <Label htmlFor="name">full name</Label>
+          <Label htmlFor="name">name</Label>
           <Input
             required
             type="text"
             name="signup"
             id="name"
             onChange={handleName}
-            error={!validName}
+            error={validName === false}
           />
-          <Error error={!validName}>please enter your name</Error>
+          <Error error={validName === false}>please enter your name</Error>
           <Label htmlFor="email">email</Label>
           <Input
             required
@@ -142,21 +124,12 @@ export const SignUp = () => {
             minLength="5"
             maxLength="30"
             onChange={handleEmail}
-            error={!validEmail}
+            error={validEmail === false}
           />
-          <Error error={!validEmail}>please enter a valid email address</Error>
-          <Label htmlFor="username">username</Label>
-          <Input
-            required
-            type="text"
-            name="signup"
-            id="username"
-            minLength="4"
-            maxLength="10"
-            onChange={handleUsername}
-            error={!validUsername}
-          />
-          <Error error={!validUsername}>username too short</Error>
+          <Error error={validEmail === false}>
+            please enter a valid email address
+          </Error>
+          <Error error={existingEmail}>this email is already in use</Error>
           <Label htmlFor="password">password</Label>
           <Input
             required
@@ -166,9 +139,9 @@ export const SignUp = () => {
             minLength="6"
             maxLength="12"
             onChange={handlePassword}
-            error={!validPassword}
+            error={validPassword === false}
           />
-          <Error error={!validPassword}>password too short</Error>
+          <Error error={validPassword === false}>password too short</Error>
           <Button type="submit" onClick={handleSignUp}>
             CREATE ACCOUNT
           </Button>
@@ -234,10 +207,11 @@ const Label = styled.label`
   background: ${COLORS.lightest};
   width: fit-content;
   position: relative;
-  top: 25px;
+  top: 15px;
   left: 30px;
-  padding: 10px;
+  padding: 0 10px;
   font-size: 0.9rem;
+  border-radius: 10px;
 `;
 
 const Input = styled.input`
