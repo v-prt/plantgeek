@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
 
@@ -12,13 +12,49 @@ import background from "../assets/monstera-bg.jpg";
 export const SignUp = () => {
   const users = useSelector(usersArray);
 
-  const handleSignUp = () => {
-    // required info: email, name, username, password
-    // check if email or username already exists in db
-    // if yes, push to login
-    // else, sign up successful
-    // set logged in = true
-    // push to profile
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [newUser, setNewUser] = useState({});
+
+  const handleName = (ev) => {
+    setName(ev.target.value);
+  };
+
+  const handleEmail = (ev) => {
+    setEmail(ev.target.value);
+  };
+
+  const handleUsername = (ev) => {
+    setUsername(ev.target.value);
+  };
+
+  const handlePassword = (ev) => {
+    setPassword(ev.target.value);
+  };
+
+  const handleSignUp = (ev) => {
+    ev.preventDefault();
+    users.find((user) => {
+      if (user.email === email || user.username === username) {
+        // console.log("account already exists with this email or username");
+        // prompt to enter different info or go to login
+      } else {
+        // console.log("new account created! ", name, email, username, password);
+        setNewUser({
+          email: email,
+          name: name,
+          username: username,
+          password: password,
+        });
+        // add new user to db
+        // set logged in = true
+        // push to profile/welcome
+        // console.log(newUser);
+      }
+      return setName(""); // email, username, password?
+    });
   };
 
   return (
@@ -49,11 +85,41 @@ export const SignUp = () => {
           </ul>
         </Info>
         <Form>
-          <Input type="text" placeholder="full name" required />
-          <Input type="text" placeholder="email" required />
-          <Input type="text" placeholder="username" required />
-          <Input type="password" placeholder="password" required />
-          <Button type="submit">CREATE ACCOUNT</Button>
+          <Label htmlFor="name">full name</Label>
+          <Input
+            required
+            type="text"
+            name="signup"
+            id="name"
+            onChange={handleName}
+          />
+          <Label htmlFor="email">email</Label>
+          <Input
+            required
+            type="text"
+            name="signup"
+            id="email"
+            onChange={handleEmail}
+          />
+          <Label htmlFor="username">username</Label>
+          <Input
+            required
+            type="text"
+            name="signup"
+            id="username"
+            onChange={handleUsername}
+          />
+          <Label htmlFor="password">password</Label>
+          <Input
+            required
+            type="password"
+            name="signup"
+            id="password"
+            onChange={handlePassword}
+          />
+          <Button type="submit" onClick={handleSignUp}>
+            CREATE ACCOUNT
+          </Button>
         </Form>
       </Card>
     </Wrapper>
@@ -106,13 +172,27 @@ const Form = styled.form`
   width: 300px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   padding: 30px;
 `;
 
-const Input = styled.input`
-  margin: 10px;
-  text-align: center;
+const Label = styled.label`
+  font-size: 0.8rem;
+  position: relative;
+  top: 25px;
+  left: 20px;
+  width: fit-content;
 `;
 
-const Button = styled.button``;
+const Input = styled.input`
+  margin: 0 10px;
+  text-align: right;
+  border: 2px solid transparent;
+  &:focus {
+    outline: none;
+    border: 2px solid ${COLORS.medium};
+  }
+`;
+
+const Button = styled.button`
+  margin: 23px 10px;
+`;
