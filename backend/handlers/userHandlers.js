@@ -1,5 +1,5 @@
 const { MongoClient, ObjectId } = require("mongodb");
-// const assert = require("assert");
+const assert = require("assert");
 require("dotenv").config();
 const { MONGO_URI } = process.env;
 
@@ -8,7 +8,23 @@ const options = {
   useUnifiedTopology: true,
 };
 
-// GETS ALL USERS IN DATABASE
+// (CREATE) ADD A NEW USER TO DATABASE
+const createUser = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options);
+  try {
+    await client.connect();
+    const db = client.db("plantgeekdb");
+    const user = await db.collection("users").insertOne(req.body);
+    assert.strictEqual(1, user.insertedCount);
+    res.status(201).json({ status: 201, data: req.body });
+  } catch (err) {
+    res.status(500).json({ status: 500, data: req.body, message: err.message });
+    console.log(err.stack);
+  }
+  client.close();
+};
+
+// (READ) GETS ALL USERS IN DATABASE
 const getUsers = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options);
   await client.connect();
@@ -22,4 +38,8 @@ const getUsers = async (req, res) => {
   client.close();
 };
 
-module.exports = { getUsers };
+// TODO: (UPDATE)
+
+// TODO: (DELETE)
+
+module.exports = { createUser, getUsers };

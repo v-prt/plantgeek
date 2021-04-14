@@ -16,7 +16,6 @@ export const SignUp = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [newUser, setNewUser] = useState({});
 
   const handleName = (ev) => {
     setName(ev.target.value);
@@ -36,25 +35,46 @@ export const SignUp = () => {
 
   const handleSignUp = (ev) => {
     ev.preventDefault();
-    users.find((user) => {
-      if (user.email === email || user.username === username) {
-        // console.log("account already exists with this email or username");
-        // prompt to enter different info or go to login
-      } else {
-        // console.log("new account created! ", name, email, username, password);
-        setNewUser({
+    // TODO:
+    // validate email (must be new, must include @)
+    // validate username (must be new, must be between 4-10 chars)
+    // validate password (must be between 6-12 chars)
+    // show errors on page to user
+    const existingUser = users.find((user) => {
+      return user.email === email || user.username === username;
+    });
+    if (existingUser) {
+      console.log("This account already exists!");
+      // show prompt to user
+      // send to login page?
+    } else {
+      fetch("/users", {
+        method: "POST",
+        body: JSON.stringify({
           email: email,
           name: name,
           username: username,
           password: password,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          if (res.status === 500) {
+            console.error("Signup error!");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          if (data) {
+            console.log("Signup successful!");
+            // clear/reset form
+            // send new user to their profile?
+          }
         });
-        // add new user to db
-        // set logged in = true
-        // push to profile/welcome
-        // console.log(newUser);
-      }
-      return setName(""); // email, username, password?
-    });
+    }
   };
 
   return (
