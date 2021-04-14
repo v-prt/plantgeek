@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
 
@@ -10,15 +11,70 @@ import { RiPlantLine } from "react-icons/ri";
 import background from "../assets/monstera-bg.jpg";
 
 export const SignUp = () => {
+  const history = useHistory();
   const users = useSelector(usersArray);
 
-  const handleSignUp = () => {
-    // required info: email, name, username, password
-    // check if email or username already exists in db
-    // if yes, push to login
-    // else, sign up successful
-    // set logged in = true
-    // push to profile
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [validName, setValidName] = useState(undefined);
+  const [validEmail, setValidEmail] = useState(undefined);
+  const [validPassword, setValidPassword] = useState(undefined);
+  const [existingEmail, setExistingEmail] = useState(undefined);
+
+  const handleName = (ev) => {
+    setName(ev.target.value);
+  };
+
+  const handleEmail = (ev) => {
+    setEmail(ev.target.value);
+  };
+
+  const handlePassword = (ev) => {
+    setPassword(ev.target.value);
+  };
+
+  // FIXME: need to click submit twice
+  const handleSignUp = (ev) => {
+    ev.preventDefault();
+
+    setValidName(name.length > 2);
+    setValidEmail(email.includes("@"));
+    setValidPassword(password.length > 5);
+    setExistingEmail(
+      users.find((user) => {
+        return user.email === email;
+      })
+    );
+
+    if (validName && validEmail && validPassword && !existingEmail) {
+      fetch("/users", {
+        method: "POST",
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          password: password,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          if (res.status === 500) {
+            console.error("Signup error!");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          if (data) {
+            console.log("Signup successful!");
+            // TODO: replace alert with confirmation page
+            alert("Your account has been created! Please login");
+            history.push("/login");
+          }
+        });
+    }
   };
 
   return (
@@ -49,11 +105,46 @@ export const SignUp = () => {
           </ul>
         </Info>
         <Form>
-          <Input type="text" placeholder="full name" required />
-          <Input type="text" placeholder="email" required />
-          <Input type="text" placeholder="username" required />
-          <Input type="password" placeholder="password" required />
-          <Button type="submit">CREATE ACCOUNT</Button>
+          <Label htmlFor="name">name</Label>
+          <Input
+            required
+            type="text"
+            name="signup"
+            id="name"
+            onChange={handleName}
+            error={validName === false}
+          />
+          <Error error={validName === false}>please enter your name</Error>
+          <Label htmlFor="email">email</Label>
+          <Input
+            required
+            type="text"
+            name="signup"
+            id="email"
+            minLength="5"
+            maxLength="30"
+            onChange={handleEmail}
+            error={validEmail === false}
+          />
+          <Error error={validEmail === false}>
+            please enter a valid email address
+          </Error>
+          <Error error={existingEmail}>this email is already in use</Error>
+          <Label htmlFor="password">password</Label>
+          <Input
+            required
+            type="password"
+            name="signup"
+            id="password"
+            minLength="6"
+            maxLength="12"
+            onChange={handlePassword}
+            error={validPassword === false}
+          />
+          <Error error={validPassword === false}>password too short</Error>
+          <Button type="submit" onClick={handleSignUp}>
+            CREATE ACCOUNT
+          </Button>
         </Form>
       </Card>
     </Wrapper>
@@ -72,10 +163,13 @@ const Card = styled.div`
   background: rgba(255, 255, 255, 0.5);
   display: flex;
   flex-direction: column;
+  width: 500px;
+  /* min-width: 400px;
+  max-width: 700px; */
 `;
 
 const Info = styled.section`
-  background: ${COLORS.lightest};
+  background: ${COLORS.light};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -91,7 +185,7 @@ const Info = styled.section`
 `;
 
 const Icon = styled.div`
-  background: ${COLORS.light};
+  background: ${COLORS.lightest};
   height: 30px;
   width: 30px;
   display: flex;
@@ -103,16 +197,43 @@ const Icon = styled.div`
 `;
 
 const Form = styled.form`
-  width: 300px;
+  background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 30px;
+  padding: 0 30px;
+`;
+
+const Label = styled.label`
+  background: ${COLORS.lightest};
+  width: fit-content;
+  position: relative;
+  top: 15px;
+  left: 30px;
+  padding: 0 10px;
+  font-size: 0.9rem;
+  border-radius: 10px;
 `;
 
 const Input = styled.input`
-  margin: 10px;
-  text-align: center;
+  background: ${COLORS.lightest};
+  border: ${(props) =>
+    props.error ? "2px solid #ff0000" : `2px solid ${COLORS.light}`};
+  border-radius: 15px;
+  text-align: right;
+  &:focus {
+    outline: none;
+    border: 2px solid ${COLORS.medium};
+  }
 `;
 
-const Button = styled.button``;
+const Error = styled.p`
+  display: ${(props) => (props.error ? "block" : "none")};
+  color: #ff0000;
+  text-align: right;
+  margin-right: 20px;
+`;
+
+const Button = styled.button`
+  margin: 30px 0;
+  border-radius: 15px;
+`;

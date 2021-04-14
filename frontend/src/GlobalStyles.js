@@ -48,5 +48,9 @@ export default createGlobalStyle`
             cursor: pointer;
             background: ${COLORS.medium};
         }
+        &:focus {
+            outline: none;
+            background: ${COLORS.medium};
+        }
     }
 `;
