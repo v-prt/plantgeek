@@ -33,20 +33,37 @@ export const SignUp = () => {
     setPassword(ev.target.value);
   };
 
+  // FIXME:
+  const [validName, setValidName] = useState(true);
+  const [validEmail, setValidEmail] = useState(true);
+  const [validUsername, setValidUsername] = useState(true);
+  const [validPassword, setValidPassword] = useState(true);
+
   const handleSignUp = (ev) => {
     ev.preventDefault();
-    // TODO:
-    // validate email (must be new, must include @)
-    // validate username (must be new, must be between 4-10 chars)
-    // validate password (must be between 6-12 chars)
-    // show errors on page to user
+
+    // FIXME: signup successful when submit empty form
+    setValidName(name.length > 3);
+    setValidEmail(email.includes("@"));
+    setValidUsername(username.length > 3);
+    setValidPassword(password.length > 5);
+
     const existingUser = users.find((user) => {
       return user.email === email || user.username === username;
     });
+
     if (existingUser) {
-      console.log("This account already exists!");
-      // show prompt to user
-      // send to login page?
+      console.log(
+        "An account has already been registered with this email or username"
+      );
+    } else if (!validName) {
+      console.log("Please enter your name");
+    } else if (!validEmail) {
+      console.log("Please use a valid email");
+    } else if (!validUsername) {
+      console.log("Username must be at least 4 characters in length");
+    } else if (!validPassword) {
+      console.log("Password must be at least 6 characters in length");
     } else {
       fetch("/users", {
         method: "POST",
@@ -70,8 +87,9 @@ export const SignUp = () => {
         .then((data) => {
           if (data) {
             console.log("Signup successful!");
+            // TODO:
             // clear/reset form
-            // send new user to their profile?
+            // welcome/send to profile?
           }
         });
     }
@@ -112,31 +130,45 @@ export const SignUp = () => {
             name="signup"
             id="name"
             onChange={handleName}
+            error={!validName}
           />
+          <Error error={!validName}>please enter your name</Error>
           <Label htmlFor="email">email</Label>
           <Input
             required
             type="text"
             name="signup"
             id="email"
+            minLength="5"
+            maxLength="30"
             onChange={handleEmail}
+            error={!validEmail}
           />
+          <Error error={!validEmail}>please enter a valid email address</Error>
           <Label htmlFor="username">username</Label>
           <Input
             required
             type="text"
             name="signup"
             id="username"
+            minLength="4"
+            maxLength="10"
             onChange={handleUsername}
+            error={!validUsername}
           />
+          <Error error={!validUsername}>username too short</Error>
           <Label htmlFor="password">password</Label>
           <Input
             required
             type="password"
             name="signup"
             id="password"
+            minLength="6"
+            maxLength="12"
             onChange={handlePassword}
+            error={!validPassword}
           />
+          <Error error={!validPassword}>password too short</Error>
           <Button type="submit" onClick={handleSignUp}>
             CREATE ACCOUNT
           </Button>
@@ -158,10 +190,13 @@ const Card = styled.div`
   background: rgba(255, 255, 255, 0.5);
   display: flex;
   flex-direction: column;
+  width: 500px;
+  /* min-width: 400px;
+  max-width: 700px; */
 `;
 
 const Info = styled.section`
-  background: ${COLORS.lightest};
+  background: ${COLORS.light};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -177,7 +212,7 @@ const Info = styled.section`
 `;
 
 const Icon = styled.div`
-  background: ${COLORS.light};
+  background: ${COLORS.lightest};
   height: 30px;
   width: 30px;
   display: flex;
@@ -189,30 +224,42 @@ const Icon = styled.div`
 `;
 
 const Form = styled.form`
-  width: 300px;
+  background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: 0 30px;
 `;
 
 const Label = styled.label`
-  font-size: 0.8rem;
+  background: ${COLORS.lightest};
+  width: fit-content;
   position: relative;
   top: 25px;
-  left: 20px;
-  width: fit-content;
+  left: 30px;
+  padding: 10px;
+  font-size: 0.9rem;
 `;
 
 const Input = styled.input`
-  margin: 0 10px;
+  background: ${COLORS.lightest};
+  border: ${(props) =>
+    props.error ? "2px solid #ff0000" : `2px solid ${COLORS.light}`};
+  border-radius: 15px;
   text-align: right;
-  border: 2px solid transparent;
   &:focus {
     outline: none;
     border: 2px solid ${COLORS.medium};
   }
 `;
 
+const Error = styled.p`
+  display: ${(props) => (props.error ? "block" : "none")};
+  color: #ff0000;
+  text-align: right;
+  margin-right: 20px;
+`;
+
 const Button = styled.button`
-  margin: 23px 10px;
+  margin: 30px 0;
+  border-radius: 15px;
 `;
