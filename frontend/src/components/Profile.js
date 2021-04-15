@@ -9,11 +9,11 @@ import placeholder from "../assets/avatar-placeholder.png";
 export const Profile = () => {
   const users = useSelector(usersArray);
   const [user, setUser] = useState([]);
-  const { id } = useParams();
+  const { username } = useParams();
 
   useEffect(() => {
-    setUser(users.find((user) => user._id === id));
-  }, [users, user, id]);
+    setUser(users.find((user) => user.username === username));
+  }, [users, user, username]);
 
   return (
     <Wrapper>
@@ -21,8 +21,7 @@ export const Profile = () => {
       {user && (
         <>
           <Avatar src={user.avatar ? user.avatar : placeholder} alt="" />
-          <Name>{user.name}</Name>
-          {/* <Username>{user.username}</Username> */}
+          <Name>{user.username}</Name>
           {user.collection && <Collection />}
           {user.favorites && <Favorites />}
           {user.wishlist && <Wishlist />}

@@ -35,6 +35,7 @@ export const SignUp = () => {
     }
   }, [username, password]);
 
+  // TODO: hash password for security
   const handleSignUp = (ev) => {
     ev.preventDefault();
     const existingUser = users.find((user) => {
@@ -61,11 +62,12 @@ export const SignUp = () => {
         .then((data) => {
           if (data) {
             console.log("Signup successful!");
-            // TODO: show confirmation
+            // TODO: show confirmation to user
           }
         });
     } else {
       console.log("This username is taken");
+      // TODO: show error to user
     }
   };
 

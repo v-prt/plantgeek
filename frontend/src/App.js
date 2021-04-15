@@ -64,8 +64,7 @@ export const App = () => {
           <Route exact path="/signup">
             <SignUp />
           </Route>
-          {/* TODO: use username instead of id */}
-          <Route path="/:id/profile">
+          <Route path="/profile/:username">
             <Profile />
           </Route>
           <Route path="/plants/:id">

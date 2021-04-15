@@ -13,33 +13,39 @@ export const Login = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const users = useSelector(usersArray);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleEmail = (ev) => {
-    setEmail(ev.target.value);
+  const handleUsername = (ev) => {
+    setUsername(ev.target.value);
   };
 
   const handlePassword = (ev) => {
     setPassword(ev.target.value);
   };
 
+  // FIXME: need to refetch user data after signup
   // FIXME: only works for first user
   const handleLogin = (ev) => {
     ev.preventDefault();
-    users.find((user) => {
-      if (user.email === email && user.password === password) {
-        // dispatch(login(user));
-        console.log(user, "Signed in!");
-        // TODO: username instead of id
-        history.push(`/${user._id}/profile`);
-      } else {
-        console.log("Incorrect login information");
-        // TODO: handle wrong email and show error to user
-        // TODO: handle wrong password and show error to user
-      }
-      return user;
-    });
+    if (users.length > 0) {
+      users.find((user) => {
+        if (user.username === username && user.password === password) {
+          console.log(user, "Signed in!");
+          // TODO: add user data to local storage and save as current user
+          // dispatch(login(user)); ??
+          history.push(`/profile/${user.username}`);
+        } else {
+          console.log("Incorrect login information");
+          // TODO: handle wrong username and show error to user
+          // TODO: handle wrong password and show error to user
+        }
+        return user;
+      });
+    } else {
+      console.log("No users registered!");
+      // TODO: show error to user?
+    }
   };
 
   return (
@@ -47,7 +53,7 @@ export const Login = () => {
       <Card>
         <SignUpLink to="/signup">Don't have an account? Sign up</SignUpLink>
         <Form>
-          <Input type="text" placeholder="email" onChange={handleEmail} />
+          <Input type="text" placeholder="username" onChange={handleUsername} />
           <Input
             type="password"
             placeholder="password"
