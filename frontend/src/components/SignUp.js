@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
 import { usersArray } from "../reducers/userReducer";

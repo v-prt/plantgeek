@@ -1,40 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
+// import { login } from "../actions.js";
 
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 import background from "../assets/monstera-bg.jpg";
 
 export const Login = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const users = useSelector(usersArray);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // const handleLogin = () => {
-  //   ev.preventDefault();
-  //   users.find((user) => {
-  //     if (user.username === username) {
-  //       if (user.password === password) {
-  //         // set logged in = true
-  //         // set local storage
-  //         // push to profile
-  //       } else {
-  //         // warning - wrong password
-  //       }
-  //     } else {
-  //       // username not in db - push to sign up
-  //     }
-  //   });
-  // };
+  const handleEmail = (ev) => {
+    setEmail(ev.target.value);
+  };
+
+  const handlePassword = (ev) => {
+    setPassword(ev.target.value);
+  };
+
+  // FIXME: only works for first user
+  const handleLogin = (ev) => {
+    ev.preventDefault();
+    users.find((user) => {
+      if (user.email === email && user.password === password) {
+        // dispatch(login(user));
+        console.log(user, "Signed in!");
+        // TODO: username instead of id
+        history.push(`/${user._id}/profile`);
+      } else {
+        console.log("Incorrect login information");
+        // TODO: handle wrong email and show error to user
+        // TODO: handle wrong password and show error to user
+      }
+      return user;
+    });
+  };
 
   return (
     <Wrapper>
       <Card>
         <SignUpLink to="/signup">Don't have an account? Sign up</SignUpLink>
         <Form>
-          <Input type="text" placeholder="username" />
-          <Input type="password" placeholder="password" />
-          <Button type="submit">LOG IN</Button>
+          <Input type="text" placeholder="email" onChange={handleEmail} />
+          <Input
+            type="password"
+            placeholder="password"
+            onChange={handlePassword}
+          />
+          <Button type="submit" onClick={handleLogin}>
+            LOG IN
+          </Button>
         </Form>
       </Card>
     </Wrapper>
