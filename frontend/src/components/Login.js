@@ -3,7 +3,6 @@ import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
-// import { login } from "../actions.js";
 
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
@@ -61,17 +60,26 @@ export const Login = () => {
     <Wrapper>
       <Card>
         <SignUpLink to="/signup">Don't have an account? Sign up</SignUpLink>
-        <Form>
+        <Welcome>
+          <h1>welcome back!</h1>
+        </Welcome>
+        <Form autoComplete="off">
+          <Label htmlFor="username">username</Label>
           <Input
+            required
             type="text"
-            placeholder="username"
+            name="login"
+            id="username"
             onChange={handleUsername}
             error={incorrectUsername}
           />
           <Error error={incorrectUsername}>this username doesn't exist</Error>
+          <Label htmlFor="password">password</Label>
           <Input
+            required
             type="password"
-            placeholder="password"
+            name="login"
+            id="password"
             onChange={handlePassword}
             error={incorrectPassword}
           />
@@ -98,36 +106,61 @@ const Wrapper = styled.div`
 `;
 
 const Card = styled.div`
-  background: rgba(255, 255, 255, 0.5);
   display: flex;
   flex-direction: column;
+  width: 500px;
 `;
 
 const SignUpLink = styled(Link)`
-  background: ${COLORS.light};
+  background: ${COLORS.medium};
+  color: #fff;
   padding: 5px;
   display: flex;
   justify-content: center;
   font-weight: bold;
   &:hover {
-    background: ${COLORS.medium};
-    color: white;
+    background: #1a1a1a;
+    color: #fff;
+  }
+`;
+
+const Welcome = styled.div`
+  background: ${COLORS.light};
+  padding: 20px;
+  h1 {
+    margin: 10px;
+    text-align: center;
   }
 `;
 
 const Form = styled.form`
-  width: 300px;
+  background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 30px;
+  padding: 0 30px;
+`;
+
+const Label = styled.label`
+  background: ${COLORS.lightest};
+  width: fit-content;
+  position: relative;
+  top: 15px;
+  left: 30px;
+  padding: 0 10px;
+  font-size: 0.9rem;
+  border-radius: 10px;
 `;
 
 const Input = styled.input`
-  text-align: center;
-  margin: 10px;
+  background: ${COLORS.lightest};
   border: ${(props) =>
     props.error ? "2px solid #ff0000" : `2px solid ${COLORS.light}`};
+  border-radius: 15px;
+  text-align: right;
+  &:focus {
+    outline: none;
+    border: 2px solid ${COLORS.medium};
+  }
 `;
 
 const Error = styled.p`
@@ -136,4 +169,7 @@ const Error = styled.p`
   text-align: center;
 `;
 
-const Button = styled.button``;
+const Button = styled.button`
+  margin: 30px 0;
+  border-radius: 15px;
+`;

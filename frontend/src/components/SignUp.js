@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
 import { requestUsers, receiveUsers } from "../actions.js";
@@ -91,6 +92,7 @@ export const SignUp = () => {
   return (
     <Wrapper>
       <Card>
+        <LoginLink to="/login">Have an account? Log in</LoginLink>
         <Info>
           <h1>welcome to plantgeek!</h1>
           <p>You may create an account in order to...</p>
@@ -121,7 +123,7 @@ export const SignUp = () => {
             required
             type="text"
             name="signup"
-            id="name"
+            id="username"
             maxLength="15"
             onChange={handleUsername}
           />
@@ -151,10 +153,22 @@ const Wrapper = styled.div`
 `;
 
 const Card = styled.div`
-  background: rgba(255, 255, 255, 0.5);
   display: flex;
   flex-direction: column;
   width: 500px;
+`;
+
+const LoginLink = styled(Link)`
+  background: ${COLORS.medium};
+  color: #fff;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  &:hover {
+    background: #1a1a1a;
+    color: #fff;
+  }
 `;
 
 const Info = styled.section`
