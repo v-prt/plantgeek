@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
@@ -11,20 +10,18 @@ import { TiHeartOutline } from "react-icons/ti";
 import { MdStarBorder } from "react-icons/md";
 import { RiPlantLine } from "react-icons/ri";
 import background from "../assets/monstera-bg.jpg";
+import { GoEye, GoEyeClosed } from "react-icons/go";
 
 export const SignUp = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const users = useSelector(usersArray);
 
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [newUser, setNewUser] = useState(false);
-
   const handleUsername = (ev) => {
     setUsername(ev.target.value);
   };
 
+  const [password, setPassword] = useState("");
   const handlePassword = (ev) => {
     setPassword(ev.target.value);
   };
@@ -40,6 +37,7 @@ export const SignUp = () => {
   }, [username, password]);
 
   // UPDATES STORE AFTER NEW USER ADDED TO DB
+  const [newUser, setNewUser] = useState(false);
   useEffect(() => {
     dispatch(requestUsers());
     fetch("/users")
@@ -52,11 +50,15 @@ export const SignUp = () => {
       });
   }, [newUser]);
 
-  // TODO: hash password for security
+  const [usernameTaken, setUsernameTaken] = useState(undefined);
   const handleSignUp = (ev) => {
     ev.preventDefault();
+
+    // resets value between login attempts
+    setUsernameTaken(undefined);
+
     const existingUser = users.find((user) => {
-      return user.username === username;
+      return user.username.toLowerCase() === username.toLowerCase();
     });
     if (!existingUser) {
       fetch("/users", {
@@ -80,13 +82,15 @@ export const SignUp = () => {
           if (data) {
             console.log("Signup successful!");
             setNewUser(true);
-            // TODO: show confirmation to user
+            // TODO: hash password for security
           }
         });
-    } else {
-      console.log("This username is taken");
-      // TODO: show error to user
-    }
+    } else setUsernameTaken(true);
+  };
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const togglePassword = () => {
+    setPasswordVisible(!passwordVisible);
   };
 
   return (
@@ -95,50 +99,80 @@ export const SignUp = () => {
         <LoginLink to="/login">Have an account? Log in</LoginLink>
         <Info>
           <h1>welcome to plantgeek!</h1>
-          <p>You may create an account in order to...</p>
-          <ul>
-            <li>
-              <Icon>
-                <RiPlantLine />
-              </Icon>
-              show off your collection
-            </li>
-            <li>
-              <Icon>
-                <TiHeartOutline />
-              </Icon>
-              save your favorite plants
-            </li>
-            <li>
-              <Icon>
-                <MdStarBorder />
-              </Icon>
-              create a wishlist
-            </li>
-          </ul>
+          {!newUser && (
+            <>
+              <p>You may create an account in order to...</p>
+              <ul>
+                <li>
+                  <Icon>
+                    <RiPlantLine />
+                  </Icon>
+                  show off your collection
+                </li>
+                <li>
+                  <Icon>
+                    <TiHeartOutline />
+                  </Icon>
+                  save your favorite plants
+                </li>
+                <li>
+                  <Icon>
+                    <MdStarBorder />
+                  </Icon>
+                  create a wishlist
+                </li>
+              </ul>
+            </>
+          )}
         </Info>
-        <Form autoComplete="off">
-          <Label htmlFor="username">username</Label>
-          <Input
-            required
-            type="text"
-            name="signup"
-            id="username"
-            maxLength="15"
-            onChange={handleUsername}
-          />
-          <Label htmlFor="password">password</Label>
-          <Input
-            required
-            type="password"
-            name="signup"
-            id="password"
-            onChange={handlePassword}
-          />
-          <Button type="submit" onClick={handleSignUp} disabled={!completeForm}>
-            CREATE ACCOUNT
-          </Button>
-        </Form>
+        {newUser ? (
+          <Confirmation>
+            <p>Thank you for creating an account!</p>
+            <p>Please save your credentials in a safe place.</p>
+            <Credentials>
+              <p>
+                <b>username:</b>
+                <Username>{username}</Username>
+              </p>
+              <Password>
+                <b>password:</b>
+                <PasswordToggle onClick={togglePassword}>
+                  {passwordVisible ? <GoEyeClosed /> : <GoEye />}
+                </PasswordToggle>
+                <Secret show={passwordVisible}>{password}</Secret>
+              </Password>
+            </Credentials>
+          </Confirmation>
+        ) : (
+          <Form autoComplete="off">
+            <Label htmlFor="username">username</Label>
+            <Input
+              required
+              type="text"
+              name="signup"
+              id="username"
+              maxLength="15"
+              onChange={handleUsername}
+              error={usernameTaken}
+            />
+            <Error error={usernameTaken}>sorry, this username is taken</Error>
+            <Label htmlFor="password">password</Label>
+            <Input
+              required
+              type="password"
+              name="signup"
+              id="password"
+              onChange={handlePassword}
+            />
+            <SignUpBtn
+              type="submit"
+              onClick={handleSignUp}
+              disabled={!completeForm}
+            >
+              CREATE ACCOUNT
+            </SignUpBtn>
+          </Form>
+        )}
       </Card>
     </Wrapper>
   );
@@ -199,6 +233,44 @@ const Icon = styled.div`
   font-size: 1.3rem;
 `;
 
+const Confirmation = styled.div`
+  background: ${COLORS.lightest};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+`;
+
+const Credentials = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+`;
+
+const Username = styled.span`
+  padding: 0 10px;
+`;
+
+const Password = styled.div`
+  display: flex;
+`;
+
+const Secret = styled.span`
+  visibility: ${(props) => (props.show ? "visible" : "hidden")};
+`;
+
+const PasswordToggle = styled.button`
+  color: #1a1a1a;
+  margin: 0 10px;
+  &:hover {
+    color: ${COLORS.light};
+  }
+  &:focus {
+    color: ${COLORS.light};
+  }
+`;
+
 const Form = styled.form`
   background: ${COLORS.lightest};
   display: flex;
@@ -219,7 +291,8 @@ const Label = styled.label`
 
 const Input = styled.input`
   background: ${COLORS.lightest};
-  border: 2px solid ${COLORS.light};
+  border: ${(props) =>
+    props.error ? "2px solid #ff0000" : `2px solid ${COLORS.light}`};
   border-radius: 15px;
   text-align: right;
   &:focus {
@@ -228,7 +301,25 @@ const Input = styled.input`
   }
 `;
 
-const Button = styled.button`
+const Error = styled.p`
+  display: ${(props) => (props.error ? "block" : "none")};
+  color: #ff0000;
+  text-align: center;
+`;
+
+const SignUpBtn = styled.button`
+  background: ${COLORS.darkest};
+  color: ${COLORS.lightest};
   margin: 30px 0;
   border-radius: 15px;
+  padding: 10px;
+  &:hover {
+    background: ${COLORS.medium};
+  }
+  &:focus {
+    background: ${COLORS.medium};
+  }
+  &:disabled:hover {
+    background: ${COLORS.darkest};
+  }
 `;

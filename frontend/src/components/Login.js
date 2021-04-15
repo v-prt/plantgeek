@@ -84,13 +84,13 @@ export const Login = () => {
             error={incorrectPassword}
           />
           <Error error={incorrectPassword}>incorrect password</Error>
-          <Button
+          <LoginBtn
             type="submit"
             onClick={handleLogin}
             disabled={!username || !password}
           >
             LOG IN
-          </Button>
+          </LoginBtn>
         </Form>
       </Card>
     </Wrapper>
@@ -169,7 +169,19 @@ const Error = styled.p`
   text-align: center;
 `;
 
-const Button = styled.button`
+const LoginBtn = styled.button`
+  background: ${COLORS.darkest};
+  color: ${COLORS.lightest};
   margin: 30px 0;
   border-radius: 15px;
+  padding: 10px;
+  &:hover {
+    background: ${COLORS.medium};
+  }
+  &:focus {
+    background: ${COLORS.medium};
+  }
+  &:disabled:hover {
+    background: ${COLORS.darkest};
+  }
 `;

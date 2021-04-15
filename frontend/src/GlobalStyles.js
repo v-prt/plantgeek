@@ -37,27 +37,19 @@ export default createGlobalStyle`
         font-size: 1.1rem;
     }
     button {
-        background: ${COLORS.darkest};
-        color: ${COLORS.lightest};
-        margin: 10px;
+        background: none;
         border: none;
-        padding: 10px;
         font-size: 1.1rem;
         transition: 0.2s ease-in-out;
         &:hover {
             cursor: pointer;
-            background: ${COLORS.medium};
         }
         &:focus {
             outline: none;
-            background: ${COLORS.medium};
         }
         &:disabled {
             opacity: 50%;
             cursor: not-allowed;
-        }
-        &:disabled:hover {
-            background: ${COLORS.darkest};
         }
     }
 `;
