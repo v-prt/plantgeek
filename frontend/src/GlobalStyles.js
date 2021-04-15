@@ -52,5 +52,12 @@ export default createGlobalStyle`
             outline: none;
             background: ${COLORS.medium};
         }
+        &:disabled {
+            opacity: 50%;
+            cursor: not-allowed;
+        }
+        &:disabled:hover {
+            background: ${COLORS.darkest};
+        }
     }
 `;

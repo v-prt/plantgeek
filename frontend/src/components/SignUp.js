@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
@@ -14,45 +14,37 @@ export const SignUp = () => {
   const history = useHistory();
   const users = useSelector(usersArray);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [validName, setValidName] = useState(undefined);
-  const [validEmail, setValidEmail] = useState(undefined);
-  const [validPassword, setValidPassword] = useState(undefined);
-  const [existingEmail, setExistingEmail] = useState(undefined);
 
-  const handleName = (ev) => {
-    setName(ev.target.value);
-  };
-
-  const handleEmail = (ev) => {
-    setEmail(ev.target.value);
+  const handleUsername = (ev) => {
+    setUsername(ev.target.value);
   };
 
   const handlePassword = (ev) => {
     setPassword(ev.target.value);
   };
 
-  // FIXME: need to click submit twice
+  // DISABLES BUTTON UNTIL FORM HAS BEEN COMPLETED
+  const [completeForm, setCompleteForm] = useState(false);
+  useEffect(() => {
+    if (username.length > 3 && password.length > 5) {
+      setCompleteForm(true);
+    } else {
+      setCompleteForm(false);
+    }
+  }, [username, password]);
+
   const handleSignUp = (ev) => {
     ev.preventDefault();
-
-    setValidName(name.length > 2);
-    setValidEmail(email.includes("@"));
-    setValidPassword(password.length > 5);
-    setExistingEmail(
-      users.find((user) => {
-        return user.email === email;
-      })
-    );
-
-    if (validName && validEmail && validPassword && !existingEmail) {
+    const existingUser = users.find((user) => {
+      return user.username === username;
+    });
+    if (!existingUser) {
       fetch("/users", {
         method: "POST",
         body: JSON.stringify({
-          name: name,
-          email: email,
+          username: username,
           password: password,
         }),
         headers: {
@@ -69,11 +61,11 @@ export const SignUp = () => {
         .then((data) => {
           if (data) {
             console.log("Signup successful!");
-            // TODO: replace alert with confirmation page
-            alert("Your account has been created! Please login");
-            history.push("/login");
+            // TODO: show confirmation
           }
         });
+    } else {
+      console.log("This username is taken");
     }
   };
 
@@ -104,45 +96,25 @@ export const SignUp = () => {
             </li>
           </ul>
         </Info>
-        <Form>
-          <Label htmlFor="name">name</Label>
+        <Form autoComplete="off">
+          <Label htmlFor="username">username</Label>
           <Input
             required
             type="text"
             name="signup"
             id="name"
-            onChange={handleName}
-            error={validName === false}
+            maxLength="15"
+            onChange={handleUsername}
           />
-          <Error error={validName === false}>please enter your name</Error>
-          <Label htmlFor="email">email</Label>
-          <Input
-            required
-            type="text"
-            name="signup"
-            id="email"
-            minLength="5"
-            maxLength="30"
-            onChange={handleEmail}
-            error={validEmail === false}
-          />
-          <Error error={validEmail === false}>
-            please enter a valid email address
-          </Error>
-          <Error error={existingEmail}>this email is already in use</Error>
           <Label htmlFor="password">password</Label>
           <Input
             required
             type="password"
             name="signup"
             id="password"
-            minLength="6"
-            maxLength="12"
             onChange={handlePassword}
-            error={validPassword === false}
           />
-          <Error error={validPassword === false}>password too short</Error>
-          <Button type="submit" onClick={handleSignUp}>
+          <Button type="submit" onClick={handleSignUp} disabled={!completeForm}>
             CREATE ACCOUNT
           </Button>
         </Form>
@@ -164,8 +136,6 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   width: 500px;
-  /* min-width: 400px;
-  max-width: 700px; */
 `;
 
 const Info = styled.section`
@@ -216,21 +186,13 @@ const Label = styled.label`
 
 const Input = styled.input`
   background: ${COLORS.lightest};
-  border: ${(props) =>
-    props.error ? "2px solid #ff0000" : `2px solid ${COLORS.light}`};
+  border: 2px solid ${COLORS.light};
   border-radius: 15px;
   text-align: right;
   &:focus {
     outline: none;
     border: 2px solid ${COLORS.medium};
   }
-`;
-
-const Error = styled.p`
-  display: ${(props) => (props.error ? "block" : "none")};
-  color: #ff0000;
-  text-align: right;
-  margin-right: 20px;
 `;
 
 const Button = styled.button`
