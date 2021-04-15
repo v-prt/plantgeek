@@ -15,6 +15,8 @@ export const Login = () => {
   const users = useSelector(usersArray);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [incorrectUsername, setIncorrectUsername] = useState(undefined);
+  const [incorrectPassword, setIncorrectPassword] = useState(undefined);
 
   const handleUsername = (ev) => {
     setUsername(ev.target.value);
@@ -24,27 +26,34 @@ export const Login = () => {
     setPassword(ev.target.value);
   };
 
-  // FIXME: need to refetch user data after signup
-  // FIXME: only works for first user
   const handleLogin = (ev) => {
     ev.preventDefault();
+    // resets values between login attempts
+    setIncorrectUsername(undefined);
+    setIncorrectPassword(undefined);
     if (users.length > 0) {
-      users.find((user) => {
-        if (user.username === username && user.password === password) {
-          console.log(user, "Signed in!");
-          // TODO: add user data to local storage and save as current user
-          // dispatch(login(user)); ??
+      const user = users.find((user) => user.username === username);
+      if (user) {
+        if (user.password === password) {
+          console.log("Signed in!");
           history.push(`/profile/${user.username}`);
+          // TODO: add user data to local storage and save as current user
+          // store name and generated id
+          // store id temporarily in server with set timeout or interval, check if expired (eg: give it current date time and compare with 2 hrs later)
+          // check when they login or refresh the page
+          // compare to id object in server with date (time it has + timelimit) - current time
+          // if it is =< 0 then its expired and redirect to login
         } else {
-          console.log("Incorrect login information");
-          // TODO: handle wrong username and show error to user
-          // TODO: handle wrong password and show error to user
+          console.log("Incorrect password!");
+          setIncorrectPassword(true);
         }
-        return user;
-      });
+      } else {
+        console.log("This username hasn't been registered!");
+        setIncorrectUsername(true);
+      }
     } else {
       console.log("No users registered!");
-      // TODO: show error to user?
+      setIncorrectUsername(true);
     }
   };
 
@@ -53,13 +62,25 @@ export const Login = () => {
       <Card>
         <SignUpLink to="/signup">Don't have an account? Sign up</SignUpLink>
         <Form>
-          <Input type="text" placeholder="username" onChange={handleUsername} />
+          <Input
+            type="text"
+            placeholder="username"
+            onChange={handleUsername}
+            error={incorrectUsername}
+          />
+          <Error error={incorrectUsername}>this username doesn't exist</Error>
           <Input
             type="password"
             placeholder="password"
             onChange={handlePassword}
+            error={incorrectPassword}
           />
-          <Button type="submit" onClick={handleLogin}>
+          <Error error={incorrectPassword}>incorrect password</Error>
+          <Button
+            type="submit"
+            onClick={handleLogin}
+            disabled={!username || !password}
+          >
             LOG IN
           </Button>
         </Form>
@@ -105,6 +126,14 @@ const Form = styled.form`
 const Input = styled.input`
   text-align: center;
   margin: 10px;
+  border: ${(props) =>
+    props.error ? "2px solid #ff0000" : `2px solid ${COLORS.light}`};
+`;
+
+const Error = styled.p`
+  display: ${(props) => (props.error ? "block" : "none")};
+  color: #ff0000;
+  text-align: center;
 `;
 
 const Button = styled.button``;

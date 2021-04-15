@@ -10,6 +10,9 @@ import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 
 export const Navbar = () => {
+  // TODO: get currentUserData somehow (local storage?)
+  // const currentUser = useSelector(currentUserData);
+
   return (
     <Wrapper>
       <Div>
@@ -36,12 +39,18 @@ export const Navbar = () => {
           <BiLogOutCircle />
         </Icon>
       </Link>
-      <Link to="/user/profile">
+      <Link to={`/profile/currentuser`}>
         <Label>profile</Label>
         <Icon>
           <BsPerson />
         </Icon>
       </Link>
+      {/* <Link to={`/profile/${currentUser.username}`}>
+        <Label>profile</Label>
+        <Icon>
+          <BsPerson />
+        </Icon>
+      </Link> */}
       <Link to="/user/collection">
         <Label>collection</Label>
         <Icon>

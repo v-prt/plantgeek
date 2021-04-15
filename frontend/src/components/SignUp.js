@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
+import { requestUsers, receiveUsers } from "../actions.js";
 
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
@@ -11,11 +12,13 @@ import { RiPlantLine } from "react-icons/ri";
 import background from "../assets/monstera-bg.jpg";
 
 export const SignUp = () => {
+  const dispatch = useDispatch();
   const history = useHistory();
   const users = useSelector(usersArray);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [newUser, setNewUser] = useState(false);
 
   const handleUsername = (ev) => {
     setUsername(ev.target.value);
@@ -34,6 +37,19 @@ export const SignUp = () => {
       setCompleteForm(false);
     }
   }, [username, password]);
+
+  // UPDATES STORE AFTER NEW USER ADDED TO DB
+  useEffect(() => {
+    dispatch(requestUsers());
+    fetch("/users")
+      .then((res) => res.json())
+      .then((json) => {
+        dispatch(receiveUsers(json.data));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [newUser]);
 
   // TODO: hash password for security
   const handleSignUp = (ev) => {
@@ -62,6 +78,7 @@ export const SignUp = () => {
         .then((data) => {
           if (data) {
             console.log("Signup successful!");
+            setNewUser(true);
             // TODO: show confirmation to user
           }
         });
