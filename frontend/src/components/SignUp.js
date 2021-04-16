@@ -88,7 +88,6 @@ export const SignUp = () => {
           if (data) {
             console.log("Signup successful!");
             setNewUser(true);
-            // TODO: hash password for security
           }
         });
     } else setUsernameTaken(true);

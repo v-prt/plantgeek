@@ -6,7 +6,11 @@ const express = require("express");
 const morgan = require("morgan"); // logs request on the terminal (example: Get /users 100ms 200)
 
 // HANDLERS
-const { createUser, getUsers } = require("./handlers/userHandlers");
+const {
+  createUser,
+  authenticateUser,
+  getUsers,
+} = require("./handlers/userHandlers");
 const { getPlants, getPlant } = require("./handlers/plantHandlers");
 
 const PORT = 4000;
@@ -28,6 +32,7 @@ express()
 
   // ENDPOINTS
   .post("/users", createUser)
+  .post("/login", authenticateUser)
   .get("/users", getUsers)
   .get("/plants", getPlants)
   .get("/plants/:_id", getPlant)
