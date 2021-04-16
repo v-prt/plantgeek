@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
 
 import styled from "styled-components";
@@ -9,13 +9,18 @@ import { COLORS } from "../GlobalStyles";
 import background from "../assets/monstera-bg.jpg";
 
 export const Login = () => {
-  const dispatch = useDispatch();
   const history = useHistory();
   const users = useSelector(usersArray);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [incorrectUsername, setIncorrectUsername] = useState(undefined);
   const [incorrectPassword, setIncorrectPassword] = useState(undefined);
+
+  // FOCUSES ON FIRST INPUT ON LOAD
+  const input = useRef(null);
+  useEffect(() => {
+    input.current.focus();
+  }, [input]);
 
   const handleUsername = (ev) => {
     setUsername(ev.target.value);
@@ -72,6 +77,7 @@ export const Login = () => {
             id="username"
             onChange={handleUsername}
             error={incorrectUsername}
+            ref={input}
           />
           <Error error={incorrectUsername}>this username doesn't exist</Error>
           <Label htmlFor="password">password</Label>

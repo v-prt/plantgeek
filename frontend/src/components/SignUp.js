@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
@@ -15,6 +15,12 @@ import { GoEye, GoEyeClosed } from "react-icons/go";
 export const SignUp = () => {
   const dispatch = useDispatch();
   const users = useSelector(usersArray);
+
+  // FOCUSES ON FIRST INPUT ON LOAD
+  const input = useRef(null);
+  useEffect(() => {
+    input.current.focus();
+  }, [input]);
 
   const [username, setUsername] = useState("");
   const handleUsername = (ev) => {
@@ -48,7 +54,7 @@ export const SignUp = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [newUser]);
+  }, [dispatch, newUser]);
 
   const [usernameTaken, setUsernameTaken] = useState(undefined);
   const handleSignUp = (ev) => {
@@ -127,21 +133,23 @@ export const SignUp = () => {
         </Info>
         {newUser ? (
           <Confirmation>
-            <p>Thank you for creating an account!</p>
-            <p>Please save your credentials in a safe place.</p>
-            <Credentials>
-              <p>
-                <b>username:</b>
-                <Username>{username}</Username>
-              </p>
-              <Password>
-                <b>password:</b>
-                <PasswordToggle onClick={togglePassword}>
+            <Message>
+              <p>Thank you for creating an account!</p>
+              <p>Please save your credentials in a safe place.</p>
+            </Message>
+            <Box>
+              <Tag>username</Tag>
+              <Username>{username}</Username>
+            </Box>
+            <Box>
+              <Tag>password</Tag>
+              <Div>
+                <Password show={passwordVisible}>{password}</Password>
+                <Toggle onClick={togglePassword}>
                   {passwordVisible ? <GoEyeClosed /> : <GoEye />}
-                </PasswordToggle>
-                <Secret show={passwordVisible}>{password}</Secret>
-              </Password>
-            </Credentials>
+                </Toggle>
+              </Div>
+            </Box>
           </Confirmation>
         ) : (
           <Form autoComplete="off">
@@ -154,6 +162,7 @@ export const SignUp = () => {
               maxLength="15"
               onChange={handleUsername}
               error={usernameTaken}
+              ref={input}
             />
             <Error error={usernameTaken}>sorry, this username is taken</Error>
             <Label htmlFor="password">password</Label>
@@ -241,31 +250,50 @@ const Confirmation = styled.div`
   padding: 30px;
 `;
 
-const Credentials = styled.div`
+const Message = styled.div`
+  text-align: center;
+  margin-bottom: 30px;
+`;
+
+const Box = styled.div`
+  background: #f2f2f2;
+  width: 80%;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin: 20px;
+  overflow: hidden;
+  margin: 10px;
+  border: 1px solid ${COLORS.light};
+  border-radius: 10px;
 `;
 
-const Username = styled.span`
-  padding: 0 10px;
+const Tag = styled.p`
+  background: ${COLORS.light};
+  width: 90px;
+  text-align: center;
+  margin-right: 10px;
+  padding: 5px 10px;
+  font-weight: bold;
 `;
 
-const Password = styled.div`
+const Username = styled.p``;
+
+const Div = styled.div`
   display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
 `;
 
-const Secret = styled.span`
+// FIXME: need to account for long passwords pushing toggle button out of sight
+const Password = styled.p`
   visibility: ${(props) => (props.show ? "visible" : "hidden")};
 `;
 
-const PasswordToggle = styled.button`
-  color: #1a1a1a;
-  margin: 0 10px;
-  &:hover {
-    color: ${COLORS.light};
-  }
+const Toggle = styled.button`
+  color: #808080;
+  position: relative;
+  top: 2px;
+  margin-right: 10px;
+  font-size: 1.1rem;
   &:focus {
     color: ${COLORS.light};
   }

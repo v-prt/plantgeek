@@ -56,7 +56,7 @@ const Name = styled.h1`
   top: -60px;
 `;
 
-const Username = styled.p``;
+// const Username = styled.p``;
 
 const Collection = styled.ul``;
 
