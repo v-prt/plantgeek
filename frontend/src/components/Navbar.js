@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useHistory } from "react-router";
 import { NavLink } from "react-router-dom";
 import { LoginContext } from "../context/LoginContext";
 
@@ -12,7 +13,14 @@ import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 
 export const Navbar = () => {
-  const { loggedIn } = useContext(LoginContext);
+  const history = useHistory();
+  const { loggedIn, setLoggedIn } = useContext(LoginContext);
+
+  const handleLogout = (ev) => {
+    ev.preventDefault();
+    setLoggedIn(false);
+    history.push("/login");
+  };
 
   return (
     <Wrapper>
@@ -54,12 +62,12 @@ export const Navbar = () => {
               <MdStarBorder />
             </Icon>
           </Link>
-          <Link to="/logout">
+          <LogoutBtn onClick={handleLogout}>
             <Label>logout</Label>
             <Icon>
               <BiLogOutCircle />
             </Icon>
-          </Link>
+          </LogoutBtn>
         </>
       ) : (
         <>
@@ -110,6 +118,18 @@ const Link = styled(NavLink)`
   align-items: center;
   &.active {
     color: ${COLORS.light};
+  }
+`;
+
+const LogoutBtn = styled.button`
+  color: #fff;
+  display: flex;
+  align-items: center;
+  &.active {
+    color: ${COLORS.light};
+  }
+  &:focus {
+    // TODO: need focus
   }
 `;
 
