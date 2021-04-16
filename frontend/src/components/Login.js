@@ -40,23 +40,40 @@ export const Login = () => {
     setIncorrectUsername(undefined);
     setIncorrectPassword(undefined);
     if (users.length > 0) {
-      const user = users.find((user) => user.username === username);
-      if (user) {
-        if (user.password === password) {
-          console.log("Signed in!");
-          history.push(`/${user.username}/profile`);
-          setLoggedIn({
-            username: username,
-            timestamp: new Date().getTime(),
-          });
-        } else {
-          console.log("Incorrect password!");
-          setIncorrectPassword(true);
-        }
-      } else {
-        console.log("This username hasn't been registered!");
-        setIncorrectUsername(true);
-      }
+      fetch("/login", {
+        method: "POST",
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        // FIXME: Uncaught (in promise) SyntaxError: Unexpected token W in JSON at position 0
+        .then((res) => {
+          if (res.status === 403) {
+            console.log("Incorrect password!");
+            setIncorrectPassword(true);
+          } else if (res.status === 401) {
+            console.log("Incorrect username!");
+            setIncorrectUsername(true);
+          } else if (res.status === 500) {
+            console.log("Internal server error!");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          if (data) {
+            console.log("Login successful!");
+            history.push(`/${username}/profile`);
+            setLoggedIn({
+              username: username,
+              timestamp: new Date().getTime(),
+            });
+          }
+        });
     } else {
       console.log("No users registered!");
       setIncorrectUsername(true);
