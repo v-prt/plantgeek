@@ -9,23 +9,18 @@ export const LoginProvider = ({ children }) => {
     if (loggedIn) {
       let timeElapsed = new Date().getTime() - loggedIn.timestamp;
       let seconds = timeElapsed / 1000;
-      if (seconds > 120) {
+      // makes login expire after 24 hours
+      if (seconds >= 86400) {
         setLoggedIn(false);
       }
     }
   });
-
-  const logOut = (ev) => {
-    ev.preventDefault();
-    setLoggedIn(false);
-  };
 
   return (
     <LoginContext.Provider
       value={{
         loggedIn,
         setLoggedIn,
-        logOut,
       }}
     >
       {children}
