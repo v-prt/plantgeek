@@ -64,7 +64,7 @@ export const App = () => {
           <Route exact path="/signup">
             <SignUp />
           </Route>
-          <Route path="/profile/:username">
+          <Route path="/:username/profile">
             <Profile />
           </Route>
           <Route path="/plants/:id">

@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { usersArray } from "../reducers/userReducer";
+import { LoginContext } from "../context/LoginContext";
 
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
@@ -15,12 +16,15 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [incorrectUsername, setIncorrectUsername] = useState(undefined);
   const [incorrectPassword, setIncorrectPassword] = useState(undefined);
+  const { loggedIn, setLoggedIn } = useContext(LoginContext);
 
   // FOCUSES ON FIRST INPUT ON LOAD
   const input = useRef(null);
   useEffect(() => {
-    input.current.focus();
-  }, [input]);
+    if (!loggedIn) {
+      input.current.focus();
+    }
+  }, [loggedIn, input]);
 
   const handleUsername = (ev) => {
     setUsername(ev.target.value);
@@ -40,13 +44,11 @@ export const Login = () => {
       if (user) {
         if (user.password === password) {
           console.log("Signed in!");
-          history.push(`/profile/${user.username}`);
-          // TODO: add user data to local storage and save as current user
-          // store name and generated id
-          // store id temporarily in server with set timeout or interval, check if expired (eg: give it current date time and compare with 2 hrs later)
-          // check when they login or refresh the page
-          // compare to id object in server with date (time it has + timelimit) - current time
-          // if it is =< 0 then its expired and redirect to login
+          history.push(`/${user.username}/profile`);
+          setLoggedIn({
+            username: username,
+            timestamp: new Date().getTime(),
+          });
         } else {
           console.log("Incorrect password!");
           setIncorrectPassword(true);
@@ -64,40 +66,48 @@ export const Login = () => {
   return (
     <Wrapper>
       <Card>
-        <SignUpLink to="/signup">Don't have an account? Sign up</SignUpLink>
-        <Welcome>
-          <h1>welcome back!</h1>
-        </Welcome>
-        <Form autoComplete="off">
-          <Label htmlFor="username">username</Label>
-          <Input
-            required
-            type="text"
-            name="login"
-            id="username"
-            onChange={handleUsername}
-            error={incorrectUsername}
-            ref={input}
-          />
-          <Error error={incorrectUsername}>this username doesn't exist</Error>
-          <Label htmlFor="password">password</Label>
-          <Input
-            required
-            type="password"
-            name="login"
-            id="password"
-            onChange={handlePassword}
-            error={incorrectPassword}
-          />
-          <Error error={incorrectPassword}>incorrect password</Error>
-          <LoginBtn
-            type="submit"
-            onClick={handleLogin}
-            disabled={!username || !password}
-          >
-            LOG IN
-          </LoginBtn>
-        </Form>
+        {loggedIn ? (
+          <Alert>You're already logged in, {loggedIn.username}!</Alert>
+        ) : (
+          <>
+            <SignUpLink to="/signup">Don't have an account? Sign up</SignUpLink>
+            <Welcome>
+              <h1>welcome back!</h1>
+            </Welcome>
+            <Form autoComplete="off">
+              <Label htmlFor="username">username</Label>
+              <Input
+                required
+                type="text"
+                name="login"
+                id="username"
+                onChange={handleUsername}
+                error={incorrectUsername}
+                ref={input}
+              />
+              <Error error={incorrectUsername}>
+                this username doesn't exist
+              </Error>
+              <Label htmlFor="password">password</Label>
+              <Input
+                required
+                type="password"
+                name="login"
+                id="password"
+                onChange={handlePassword}
+                error={incorrectPassword}
+              />
+              <Error error={incorrectPassword}>incorrect password</Error>
+              <LoginBtn
+                type="submit"
+                onClick={handleLogin}
+                disabled={!username || !password}
+              >
+                LOG IN
+              </LoginBtn>
+            </Form>
+          </>
+        )}
       </Card>
     </Wrapper>
   );
@@ -112,9 +122,16 @@ const Wrapper = styled.div`
 `;
 
 const Card = styled.div`
+  background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
   width: 500px;
+`;
+
+const Alert = styled.div`
+  text-align: center;
+  font-size: 1.5rem;
+  padding: 50px;
 `;
 
 const SignUpLink = styled(Link)`

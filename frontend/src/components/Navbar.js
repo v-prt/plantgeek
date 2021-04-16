@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { LoginContext } from "../context/LoginContext";
+
 import plantgeekLogo from "../assets/logo.png";
 import { BiSearch, BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
 import { RiPlantLine } from "react-icons/ri";
@@ -10,8 +12,7 @@ import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 
 export const Navbar = () => {
-  // TODO: get currentUserData somehow (local storage?)
-  // const currentUser = useSelector(currentUserData);
+  const { loggedIn } = useContext(LoginContext);
 
   return (
     <Wrapper>
@@ -27,48 +28,49 @@ export const Navbar = () => {
           <BiSearch />
         </Icon>
       </Link>
-      <Link to="/login">
-        <Label>login</Label>
-        <Icon>
-          <BiLogInCircle />
-        </Icon>
-      </Link>
-      <Link to="/logout">
-        <Label>logout</Label>
-        <Icon>
-          <BiLogOutCircle />
-        </Icon>
-      </Link>
-      <Link to={`/profile/currentuser`}>
-        <Label>profile</Label>
-        <Icon>
-          <BsPerson />
-        </Icon>
-      </Link>
-      {/* <Link to={`/profile/${currentUser.username}`}>
-        <Label>profile</Label>
-        <Icon>
-          <BsPerson />
-        </Icon>
-      </Link> */}
-      <Link to="/user/collection">
-        <Label>collection</Label>
-        <Icon>
-          <RiPlantLine />
-        </Icon>
-      </Link>
-      <Link to="/user/favorites">
-        <Label>favorites</Label>
-        <Icon>
-          <TiHeartOutline />
-        </Icon>
-      </Link>
-      <Link to="/user/wishlist">
-        <Label>wishlist</Label>
-        <Icon>
-          <MdStarBorder />
-        </Icon>
-      </Link>
+      {loggedIn ? (
+        <>
+          <Link to={`/${loggedIn.username}/profile`}>
+            <Label>profile</Label>
+            <Icon>
+              <BsPerson />
+            </Icon>
+          </Link>
+          <Link to={`/${loggedIn.username}/collection`}>
+            <Label>collection</Label>
+            <Icon>
+              <RiPlantLine />
+            </Icon>
+          </Link>
+          <Link to={`/${loggedIn.username}/favorites`}>
+            <Label>favorites</Label>
+            <Icon>
+              <TiHeartOutline />
+            </Icon>
+          </Link>
+          <Link to={`/${loggedIn.username}/wishlist`}>
+            <Label>wishlist</Label>
+            <Icon>
+              <MdStarBorder />
+            </Icon>
+          </Link>
+          <Link to="/logout">
+            <Label>logout</Label>
+            <Icon>
+              <BiLogOutCircle />
+            </Icon>
+          </Link>
+        </>
+      ) : (
+        <>
+          <Link to="/login">
+            <Label>login</Label>
+            <Icon>
+              <BiLogInCircle />
+            </Icon>
+          </Link>
+        </>
+      )}
     </Wrapper>
   );
 };
@@ -81,7 +83,6 @@ const Wrapper = styled.nav`
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* border-left: 2px solid ${COLORS.light}; */
   padding: 20px;
   @media (min-width: 1000px) {
     width: 200px;
