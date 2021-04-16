@@ -31,7 +31,7 @@ const createUser = async (req, res) => {
   client.close();
 };
 
-// (READ) GET A SPECIFIED USER FROM DATABASE
+// (READ) AUTHENTICATE USER
 const authenticateUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options);
   try {
@@ -44,14 +44,11 @@ const authenticateUser = async (req, res) => {
       const cmp = await bcrypt.compare(req.body.password, user.password);
       if (cmp) {
         res.status(200).json({ status: 200, data: user });
-        // FIXME: Uncaught (in promise) SyntaxError: Unexpected token W in JSON at position 0
       } else {
-        res.status(403).send("Wrong password");
-        // res.status(403).json({ status: 403, message: "Incorrect password" });
+        res.status(403).json({ status: 403, message: "Incorrect password" });
       }
     } else {
-      res.status(401).send("Wrong username");
-      // res.status(401).json({ status: 401, message: "Incorrect username" });
+      res.status(401).json({ status: 401, message: "Incorrect username" });
     }
   } catch (err) {
     console.log(err);

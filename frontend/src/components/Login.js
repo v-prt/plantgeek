@@ -50,30 +50,24 @@ export const Login = () => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-      })
-        // FIXME: Uncaught (in promise) SyntaxError: Unexpected token W in JSON at position 0
-        .then((res) => {
-          if (res.status === 403) {
-            console.log("Incorrect password!");
-            setIncorrectPassword(true);
-          } else if (res.status === 401) {
-            console.log("Incorrect username!");
-            setIncorrectUsername(true);
-          } else if (res.status === 500) {
-            console.log("Internal server error!");
-          }
-          return res.json();
-        })
-        .then((data) => {
-          if (data) {
-            console.log("Login successful!");
-            history.push(`/${username}/profile`);
-            setLoggedIn({
-              username: username,
-              timestamp: new Date().getTime(),
-            });
-          }
-        });
+      }).then((res) => {
+        if (res.status === 200) {
+          history.push(`/${username}/profile`);
+          setLoggedIn({
+            username: username,
+            timestamp: new Date().getTime(),
+          });
+        } else if (res.status === 403) {
+          console.log("Incorrect password!");
+          setIncorrectPassword(true);
+        } else if (res.status === 401) {
+          console.log("Incorrect username!");
+          setIncorrectUsername(true);
+        } else if (res.status === 500) {
+          console.log("Internal server error!");
+        }
+        return res.json();
+      });
     } else {
       console.log("No users registered!");
       setIncorrectUsername(true);
