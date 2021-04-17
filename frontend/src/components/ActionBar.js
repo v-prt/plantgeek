@@ -14,9 +14,9 @@ export const ActionBar = ({ id }) => {
   const plants = useSelector(plantsArray);
   const plant = plants.find((plant) => plant._id === id);
 
+  // FIXME: condense handleCollection/Favorites/Wishlist into 1 function
   const handleCollection = () => {
-    // TODO: add plant to user's collection
-    fetch(`/${loggedIn.username}/collection`, {
+    fetch(`/${loggedIn.username}`, {
       method: "PUT",
       body: JSON.stringify({
         // FIXME: need to push new data instead of replace
@@ -36,8 +36,7 @@ export const ActionBar = ({ id }) => {
   };
 
   const handleFavorites = () => {
-    // TODO: add plant to user's favorites
-    fetch(`/${loggedIn.username}/favorites`, {
+    fetch(`/${loggedIn.username}`, {
       method: "PUT",
       body: JSON.stringify({
         // FIXME: need to push new data instead of replace
@@ -57,8 +56,7 @@ export const ActionBar = ({ id }) => {
   };
 
   const handleWishlist = () => {
-    // TODO: add plant to user's wishlist
-    fetch(`/${loggedIn.username}/wishlist`, {
+    fetch(`/${loggedIn.username}`, {
       method: "PUT",
       body: JSON.stringify({
         // FIXME: need to push new data instead of replace
