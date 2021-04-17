@@ -20,14 +20,14 @@ export const Profile = () => {
     <Wrapper>
       <Banner />
       {user && (
-        <>
+        <Div>
           <Avatar src={user.avatar ? user.avatar : placeholder} alt="" />
           <Name>{user.username}</Name>
           <Joined>Joined: {moment(user.joined).format("ll")}</Joined>
           {user.collection && <Collection />}
           {user.favorites && <Favorites />}
           {user.wishlist && <Wishlist />}
-        </>
+        </Div>
       )}
     </Wrapper>
   );
@@ -45,22 +45,23 @@ const Banner = styled.div`
   width: 100%;
 `;
 
+const Div = styled.div`
+  position: absolute;
+  top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const Avatar = styled.img`
   height: 200px;
   width: 200px;
   border-radius: 50%;
-  position: relative;
-  top: -70px;
 `;
 
-const Name = styled.h1`
-  position: relative;
-  top: -60px;
-`;
+const Name = styled.h1``;
 
 const Joined = styled.p``;
-
-// const Username = styled.p``;
 
 const Collection = styled.ul``;
 

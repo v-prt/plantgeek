@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { plantsArray } from "../reducers/plantReducer";
+import { LoginContext } from "../context/LoginContext";
+
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 import background from "../assets/monstera-bg.jpg";
+import { ActionBar } from "./ActionBar";
 
 export const Plants = () => {
   const plants = useSelector(plantsArray);
+  const { loggedIn } = useContext(LoginContext);
 
   // SORTS ALL PLANTS ALPHABETICALLY BY NAME
   const compare = (a, b) => {
@@ -95,9 +99,12 @@ export const Plants = () => {
           {filteredPlants &&
             filteredPlants.map((plant) => {
               return (
-                <Card to={`/plants/${plant._id}`} key={plant._id}>
-                  <Image src={plant.image} />
+                <Card key={plant._id}>
+                  <Link to={`/plants/${plant._id}`}>
+                    <Image src={plant.image} />
+                  </Link>
                   <Name>{plant.name}</Name>
+                  {loggedIn && <ActionBar />}
                 </Card>
               );
             })}
@@ -187,9 +194,9 @@ const Results = styled.div`
   }
 `;
 
-const Card = styled(Link)`
+const Card = styled.div`
   background: #fff;
-  height: 250px;
+  height: 300px;
   width: 225px;
   display: flex;
   flex-direction: column;

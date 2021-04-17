@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { plantsArray } from "../reducers/plantReducer";
+import { LoginContext } from "../context/LoginContext";
+
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
+import { ActionBar } from "./ActionBar";
 
 export const PlantInfo = () => {
   const plants = useSelector(plantsArray);
   const [plant, setPlant] = useState([]);
   const { id } = useParams();
+  const { loggedIn } = useContext(LoginContext);
 
   useEffect(() => {
     setPlant(plants.find((plant) => plant._id === id));
@@ -20,6 +24,11 @@ export const PlantInfo = () => {
         <>
           <Image src={plant.image} alt="" />
           <Name>{plant.name}</Name>
+          {loggedIn && (
+            <Sizer>
+              <ActionBar />
+            </Sizer>
+          )}
           <Info>LIGHT: {plant.light}</Info>
           <Bar>
             {plant.light === "low to bright indirect" && (
@@ -52,6 +61,7 @@ export const PlantInfo = () => {
             {plant.humidity === "above average" && <Indicator level={"2-3"} />}
           </Bar>
           <Info>
+            {/* TODO: make this look better (use icons?) */}
             PET FRIENDLY: {plant.toxic ? <span>no</span> : <span>yes</span>}
           </Info>
         </>
@@ -60,6 +70,7 @@ export const PlantInfo = () => {
   );
 };
 
+// TODO: make this page look better in desktop mode
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -68,13 +79,23 @@ const Wrapper = styled.div`
 
 const Image = styled.img`
   background: white;
-  height: 400px;
-  width: 400px;
+  height: 350px;
+  width: 350px;
   margin: 30px 50px;
   border-radius: 50%;
 `;
 
 const Name = styled.h1``;
+
+const Sizer = styled.div`
+  // TODO: improve contrast of actionbar on this page
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  border-bottom: 1px dotted grey;
+  padding: 0 50px 20px 50px;
+`;
 
 const Info = styled.p``;
 
