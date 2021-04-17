@@ -14,12 +14,11 @@ export const ActionBar = ({ id }) => {
   const plants = useSelector(plantsArray);
   const plant = plants.find((plant) => plant._id === id);
 
-  // FIXME: condense handleCollection/Favorites/Wishlist into 1 function
-  const handleCollection = () => {
+  // FIXME: condense addToCollection/Favorites/Wishlist into 1 function
+  const addToCollection = () => {
     fetch(`/${loggedIn.username}`, {
       method: "PUT",
       body: JSON.stringify({
-        // FIXME: need to push new data instead of replace
         collection: plant.name,
       }),
       headers: {
@@ -35,11 +34,10 @@ export const ActionBar = ({ id }) => {
     });
   };
 
-  const handleFavorites = () => {
+  const addToFavorites = () => {
     fetch(`/${loggedIn.username}`, {
       method: "PUT",
       body: JSON.stringify({
-        // FIXME: need to push new data instead of replace
         favorites: plant.name,
       }),
       headers: {
@@ -55,11 +53,10 @@ export const ActionBar = ({ id }) => {
     });
   };
 
-  const handleWishlist = () => {
+  const addToWishlist = () => {
     fetch(`/${loggedIn.username}`, {
       method: "PUT",
       body: JSON.stringify({
-        // FIXME: need to push new data instead of replace
         wishlist: plant.name,
       }),
       headers: {
@@ -77,13 +74,13 @@ export const ActionBar = ({ id }) => {
 
   return (
     <Wrapper>
-      <Action onClick={handleCollection}>
+      <Action onClick={addToCollection}>
         <RiPlantLine />
       </Action>
-      <Action onClick={handleFavorites}>
+      <Action onClick={addToFavorites}>
         <TiHeartOutline />
       </Action>
-      <Action onClick={handleWishlist}>
+      <Action onClick={addToWishlist}>
         <MdStarBorder />
       </Action>
     </Wrapper>

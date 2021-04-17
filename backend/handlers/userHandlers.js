@@ -82,20 +82,20 @@ const updateUser = async (req, res) => {
     let update = undefined;
     if (req.body.collection) {
       update = {
-        $set: {
-          collection: [req.body.collection],
+        $push: {
+          collection: req.body.collection,
         },
       };
     } else if (req.body.favorites) {
       update = {
-        $set: {
-          favorites: [req.body.favorites],
+        $push: {
+          favorites: req.body.favorites,
         },
       };
     } else if (req.body.wishlist) {
       update = {
-        $set: {
-          wishlist: [req.body.wishlist],
+        $push: {
+          wishlist: req.body.wishlist,
         },
       };
     }
