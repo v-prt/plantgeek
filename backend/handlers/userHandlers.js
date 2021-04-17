@@ -10,7 +10,7 @@ const options = {
   useUnifiedTopology: true,
 };
 
-// (CREATE) ADD A NEW USER TO DATABASE
+// (CREATE/POST) ADD A NEW USER TO DATABASE
 const createUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options);
   try {
@@ -31,7 +31,7 @@ const createUser = async (req, res) => {
   client.close();
 };
 
-// (READ) AUTHENTICATE USER
+// (READ/POST) AUTHENTICATE USER
 const authenticateUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options);
   try {
@@ -56,7 +56,7 @@ const authenticateUser = async (req, res) => {
   }
 };
 
-// (READ) GETS ALL USERS IN DATABASE
+// (READ/GET) GETS ALL USERS IN DATABASE
 const getUsers = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options);
   await client.connect();
@@ -70,8 +70,95 @@ const getUsers = async (req, res) => {
   client.close();
 };
 
-// TODO: (UPDATE)
+// (UPDATE/PUT) UPDATE A USER'S DATA
+const updateUserCollection = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options);
+  const username = req.params.username;
+  try {
+    await client.connect();
+    const db = client.db("plantgeekdb");
+    const users = db.collection("users");
+    const filter = { username: username };
+    const updateDoc = {
+      $set: {
+        collection: [req.body.collection],
+      },
+    };
+    const result = await users.updateOne(filter, updateDoc);
+    res.status(200).json({
+      status: 200,
+      message: `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
+    });
+    console.log(
+      `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+    );
+  } catch (err) {
+    res.status(404).json({ status: 404, message: err.message });
+  }
+  client.close();
+};
+
+const updateUserFavorites = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options);
+  const username = req.params.username;
+  try {
+    await client.connect();
+    const db = client.db("plantgeekdb");
+    const users = db.collection("users");
+    const filter = { username: username };
+    const updateDoc = {
+      $set: {
+        favorites: [req.body.favorites],
+      },
+    };
+    const result = await users.updateOne(filter, updateDoc);
+    res.status(200).json({
+      status: 200,
+      message: `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
+    });
+    console.log(
+      `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+    );
+  } catch (err) {
+    res.status(404).json({ status: 404, message: err.message });
+  }
+  client.close();
+};
+
+const updateUserWishlist = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options);
+  const username = req.params.username;
+  try {
+    await client.connect();
+    const db = client.db("plantgeekdb");
+    const users = db.collection("users");
+    const filter = { username: username };
+    const updateDoc = {
+      $set: {
+        wishlist: [req.body.wishlist],
+      },
+    };
+    const result = await users.updateOne(filter, updateDoc);
+    res.status(200).json({
+      status: 200,
+      message: `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
+    });
+    console.log(
+      `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+    );
+  } catch (err) {
+    res.status(404).json({ status: 404, message: err.message });
+  }
+  client.close();
+};
 
 // TODO: (DELETE)
 
-module.exports = { createUser, authenticateUser, getUsers };
+module.exports = {
+  createUser,
+  authenticateUser,
+  getUsers,
+  updateUserCollection,
+  updateUserFavorites,
+  updateUserWishlist,
+};

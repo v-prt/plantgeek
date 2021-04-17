@@ -104,7 +104,7 @@ export const Plants = () => {
                     <Image src={plant.image} />
                   </Link>
                   <Name>{plant.name}</Name>
-                  {loggedIn && <ActionBar />}
+                  {loggedIn && <ActionBar id={plant._id} />}
                 </Card>
               );
             })}

@@ -1,19 +1,80 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useSelector } from "react-redux";
+import { LoginContext } from "../context/LoginContext";
+import { plantsArray } from "../reducers/plantReducer";
+
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 import { RiPlantLine } from "react-icons/ri";
 import { TiHeartOutline } from "react-icons/ti";
 import { MdStarBorder } from "react-icons/md";
 
-export const ActionBar = () => {
+export const ActionBar = ({ id }) => {
+  const { loggedIn } = useContext(LoginContext);
+  const plants = useSelector(plantsArray);
+  const plant = plants.find((plant) => plant._id === id);
+
   const handleCollection = () => {
     // TODO: add plant to user's collection
+    fetch(`/${loggedIn.username}/collection`, {
+      method: "PUT",
+      body: JSON.stringify({
+        // FIXME: need to push new data instead of replace
+        collection: plant.name,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }).then((res) => {
+      if (res.status === 200) {
+        console.log(`Added ${plant.name} to user's collection!`);
+      } else if (res.status === 404) {
+        console.log("Something went wrong");
+      }
+    });
   };
+
   const handleFavorites = () => {
     // TODO: add plant to user's favorites
+    fetch(`/${loggedIn.username}/favorites`, {
+      method: "PUT",
+      body: JSON.stringify({
+        // FIXME: need to push new data instead of replace
+        favorites: plant.name,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }).then((res) => {
+      if (res.status === 200) {
+        console.log(`Added ${plant.name} to user's favorites!`);
+      } else if (res.status === 404) {
+        console.log("Something went wrong");
+      }
+    });
   };
+
   const handleWishlist = () => {
     // TODO: add plant to user's wishlist
+    fetch(`/${loggedIn.username}/wishlist`, {
+      method: "PUT",
+      body: JSON.stringify({
+        // FIXME: need to push new data instead of replace
+        wishlist: plant.name,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }).then((res) => {
+      if (res.status === 200) {
+        console.log(`Added ${plant.name} to user's wishlist!`);
+      } else if (res.status === 404) {
+        console.log("Something went wrong");
+      }
+    });
   };
 
   return (
