@@ -10,7 +10,7 @@ export const PlantList = ({ username, list, title }) => {
 
   return (
     <Wrapper>
-      <Heading>
+      <Heading to={`/${loggedIn.username}/${title}`}>
         <h1>
           {loggedIn && username === loggedIn.username ? (
             <>your {title}</>
@@ -27,8 +27,7 @@ export const PlantList = ({ username, list, title }) => {
           list.map((plant) => {
             return (
               <Plant key={plant._id} to={`/plants/${plant._id}`}>
-                <Image src={plant.image} />
-                <Name>{plant.name}</Name>
+                <img src={plant.image} alt={plant.name} />
               </Plant>
             );
           })}
@@ -44,12 +43,22 @@ const Wrapper = styled.div`
   margin: 30px 0;
 `;
 
-const Heading = styled.div`
+const Heading = styled(Link)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  border-bottom: 1px dotted ${COLORS.medium};
+  margin-bottom: 10px;
+  border-radius: 20px;
+  h1 {
+    margin: 0 10px 0 20px;
+  }
+  span {
+    margin: 0 20px 0 10px;
+  }
+  &:hover {
+    background: ${COLORS.light};
+    color: ${COLORS.dark};
+  }
 `;
 
 const Plants = styled.div`
@@ -57,6 +66,8 @@ const Plants = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  border-top: 1px dotted #008000;
+  padding-top: 10px;
 `;
 
 const Plant = styled(Link)`
@@ -67,16 +78,11 @@ const Plant = styled(Link)`
   text-align: center;
   margin: 10px;
   border-radius: 20px;
+  img {
+    height: 150px;
+  }
   &:hover {
     color: ${COLORS.darkest};
     box-shadow: 0 0 10px ${COLORS.light};
   }
-`;
-
-const Image = styled.img`
-  height: 150px;
-`;
-
-const Name = styled.p`
-  margin: 10px;
 `;
