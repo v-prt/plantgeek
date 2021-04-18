@@ -7,9 +7,7 @@ import background from "../assets/monstera-bg.jpg";
 import placeholder from "../assets/avatar-placeholder.png";
 import moment from "moment";
 
-import { Collection } from "./Collection";
-import { Favorites } from "./Favorites";
-import { Wishlist } from "./Wishlist";
+import { PlantList } from "./PlantList";
 
 export const Profile = () => {
   const users = useSelector(usersArray);
@@ -28,9 +26,29 @@ export const Profile = () => {
           <Avatar src={user.avatar ? user.avatar : placeholder} alt="" />
           <Name>{user.username}</Name>
           <Joined>Joined: {moment(user.joined).format("ll")}</Joined>
-          {user.collection && <Collection username={username} />}
-          {user.favorites && <Favorites username={username} />}
-          {user.wishlist && <Wishlist username={username} />}
+          <Lists>
+            {user.collection && (
+              <PlantList
+                username={username}
+                list={user.collection}
+                title="collection"
+              />
+            )}
+            {user.favorites && (
+              <PlantList
+                username={username}
+                list={user.favorites}
+                title="favorites"
+              />
+            )}
+            {user.wishlist && (
+              <PlantList
+                username={username}
+                list={user.wishlist}
+                title="wishlist"
+              />
+            )}
+          </Lists>
         </Div>
       )}
     </Wrapper>
@@ -66,3 +84,8 @@ const Avatar = styled.img`
 const Name = styled.h1``;
 
 const Joined = styled.p``;
+
+const Lists = styled.section`
+  display: flex;
+  flex-direction: column;
+`;
