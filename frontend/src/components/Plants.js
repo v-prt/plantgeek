@@ -196,8 +196,8 @@ const Results = styled.div`
 
 const Card = styled.div`
   background: #fff;
-  height: 300px;
-  width: 225px;
+  height: 310px;
+  width: 250px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -217,5 +217,4 @@ const Image = styled.img`
 const Name = styled.p`
   font-size: 1.1rem;
   font-weight: bold;
-  margin-bottom: 10px;
 `;
