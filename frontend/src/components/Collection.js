@@ -5,13 +5,13 @@ import { usersArray } from "../reducers/userReducer";
 export const Collection = ({ username }) => {
   const users = useSelector(usersArray);
   const user = users.find((user) => user.username === username);
-  const userCollection = user.collection;
+  console.log(user.collection);
 
-  // FIXME: check render method
+  // TODO: render plant info
   return (
     <ul>
-      {userCollection &&
-        userCollection.map((plant) => {
+      {user.collection &&
+        user.collection.map((plant) => {
           return <li key={plant._id}>{plant.name}</li>;
         })}
     </ul>

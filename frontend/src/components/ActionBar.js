@@ -18,19 +18,21 @@ export const ActionBar = ({ id }) => {
   const user = users.find((user) => user.username === loggedIn.username);
   const plants = useSelector(plantsArray);
   const plant = plants.find((plant) => plant._id === id);
-  const [clicked, setClicked] = useState(false);
+  const [clicked1, setClicked1] = useState(false);
+  const [clicked2, setClicked2] = useState(false);
+  const [clicked3, setClicked3] = useState(false);
 
   // FIXME: condense addToCollection/Favorites/Wishlist into 1 function
   const addToCollection = () => {
-    // temporarily disables button to prevent spam
-    setClicked(true);
+    // temporarily disables button to prevent spam (must be temporary in case of error)
+    setClicked1(true);
     setTimeout(() => {
-      setClicked(false);
+      setClicked1(false);
     }, 3000);
     fetch(`/${loggedIn.username}`, {
       method: "PUT",
       body: JSON.stringify({
-        collection: plant.name,
+        collection: plant,
       }),
       headers: {
         Accept: "application/json",
@@ -56,14 +58,14 @@ export const ActionBar = ({ id }) => {
 
   const addToFavorites = () => {
     // temporarily disables button to prevent spam
-    setClicked(true);
+    setClicked2(true);
     setTimeout(() => {
-      setClicked(false);
+      setClicked2(false);
     }, 3000);
     fetch(`/${loggedIn.username}`, {
       method: "PUT",
       body: JSON.stringify({
-        favorites: plant.name,
+        favorites: plant,
       }),
       headers: {
         Accept: "application/json",
@@ -89,14 +91,14 @@ export const ActionBar = ({ id }) => {
 
   const addToWishlist = () => {
     // temporarily disables button to prevent spam
-    setClicked(true);
+    setClicked3(true);
     setTimeout(() => {
-      setClicked(false);
+      setClicked3(false);
     }, 3000);
     fetch(`/${loggedIn.username}`, {
       method: "PUT",
       body: JSON.stringify({
-        wishlist: plant.name,
+        wishlist: plant,
       }),
       headers: {
         Accept: "application/json",
@@ -127,28 +129,42 @@ export const ActionBar = ({ id }) => {
           <Action
             onClick={addToCollection}
             disabled={
-              (user.collection && user.collection.includes(plant.name)) ||
-              clicked
+              (user.collection &&
+                user.collection.find((el) => el.name === plant.name)) ||
+              clicked1
             }
-            added={user.collection && user.collection.includes(plant.name)}
+            added={
+              user.collection &&
+              user.collection.find((el) => el.name === plant.name)
+            }
           >
             <RiPlantLine />
           </Action>
           <Action
             onClick={addToFavorites}
             disabled={
-              (user.favorites && user.favorites.includes(plant.name)) || clicked
+              (user.favorites &&
+                user.favorites.find((el) => el.name === plant.name)) ||
+              clicked2
             }
-            added={user.favorites && user.favorites.includes(plant.name)}
+            added={
+              user.favorites &&
+              user.favorites.find((el) => el.name === plant.name)
+            }
           >
             <TiHeartOutline />
           </Action>
           <Action
             onClick={addToWishlist}
             disabled={
-              (user.wishlist && user.wishlist.includes(plant.name)) || clicked
+              (user.wishlist &&
+                user.wishlist.find((el) => el.name === plant.name)) ||
+              clicked3
             }
-            added={user.wishlist && user.wishlist.includes(plant.name)}
+            added={
+              user.wishlist &&
+              user.wishlist.find((el) => el.name === plant.name)
+            }
           >
             <MdStarBorder />
           </Action>
@@ -169,9 +185,9 @@ const Wrapper = styled.div`
   padding: 5px;
 `;
 
-// TODO: improve styles of disabled/added buttons
 const Action = styled.button`
-  /* background: ${(props) => (props.added ? `${COLORS.light}` : "")}; */
+  background: ${(props) => (props.added ? `${COLORS.light}` : "")};
+  opacity: ${(props) => (props.added ? "100%" : "30%")};
   border-radius: 50%;
   height: 30px;
   width: 30px;
@@ -182,11 +198,15 @@ const Action = styled.button`
   font-size: 1.3rem;
   &:hover {
     background: ${COLORS.light};
+    opacity: 100%;
   }
   &:focus {
     background: ${COLORS.light};
+    opacity: 100%;
   }
-  &:disabled:hover {
-    background: transparent;
+  &:disabled {
+    background: ${COLORS.light};
+    color: #000;
+    opacity: 100%;
   }
 `;

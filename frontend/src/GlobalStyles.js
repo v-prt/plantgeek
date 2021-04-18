@@ -49,7 +49,7 @@ export default createGlobalStyle`
         }
         &:disabled {
             opacity: 50%;
-            cursor: not-allowed;
+            cursor: auto;
         }
     }
 `;
