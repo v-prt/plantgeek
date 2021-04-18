@@ -39,27 +39,23 @@ export const PlantList = ({ username, list, title }) => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 50px;
+  width: 90%;
+  margin: 30px 0;
 `;
 
 const Heading = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px dotted ${COLORS.medium};
   margin-bottom: 20px;
-  h1 {
-    margin: 0 20px;
-  }
-  span {
-    margin: 0 20px;
-  }
+  border-bottom: 1px dotted ${COLORS.medium};
 `;
 
 const List = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   /* overflow: hidden;
   overflow-x: scroll; */
 `;

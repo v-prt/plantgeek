@@ -124,7 +124,7 @@ export const ActionBar = ({ id }) => {
 
   return (
     <Wrapper>
-      {user && (
+      {user && plant && (
         <>
           <Action
             onClick={addToCollection}

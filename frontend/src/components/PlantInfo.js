@@ -26,7 +26,7 @@ export const PlantInfo = () => {
           <Name>{plant.name}</Name>
           {loggedIn && (
             <Sizer>
-              <ActionBar />
+              <ActionBar id={plant._id} />
             </Sizer>
           )}
           <Info>LIGHT: {plant.light}</Info>

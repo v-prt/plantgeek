@@ -88,4 +88,5 @@ const Joined = styled.p``;
 const Lists = styled.section`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
