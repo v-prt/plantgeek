@@ -70,8 +70,8 @@ const getUsers = async (req, res) => {
   client.close();
 };
 
-// (UPDATE/PUT) UPDATE A USER'S DATA
-const updateUser = async (req, res) => {
+// (UPDATE/PUT) ADD A PLANT TO USER'S DATA
+const addPlantToUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options);
   const username = req.params.username;
   try {
@@ -102,10 +102,10 @@ const updateUser = async (req, res) => {
     const result = await users.updateOne(filter, update);
     res.status(200).json({
       status: 200,
-      message: `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
+      message: `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`,
     });
     console.log(
-      `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+      `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`
     );
   } catch (err) {
     res.status(404).json({ status: 404, message: err.message });
@@ -113,11 +113,55 @@ const updateUser = async (req, res) => {
   client.close();
 };
 
-// TODO: (DELETE)
+// (UPDATE/PUT) REMOVE A PLANT FROM USER'S DATA
+const removePlantFromUser = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options);
+  const username = req.params.username;
+  try {
+    await client.connect();
+    const db = client.db("plantgeekdb");
+    const users = db.collection("users");
+    const filter = { username: username };
+    let update = undefined;
+    if (req.body.collection) {
+      update = {
+        $pull: {
+          collection: req.body.collection,
+        },
+      };
+    } else if (req.body.favorites) {
+      update = {
+        $pull: {
+          favorites: req.body.favorites,
+        },
+      };
+    } else if (req.body.wishlist) {
+      update = {
+        $pull: {
+          wishlist: req.body.wishlist,
+        },
+      };
+    }
+    const result = await users.updateOne(filter, update);
+    res.status(200).json({
+      status: 200,
+      message: `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`,
+    });
+    console.log(
+      `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`
+    );
+  } catch (err) {
+    res.status(404).json({ status: 404, message: err.message });
+  }
+  client.close();
+};
+
+// TODO: (DELETE) REMOVE A USER FROM DB
 
 module.exports = {
   createUser,
   authenticateUser,
   getUsers,
-  updateUser,
+  addPlantToUser,
+  removePlantFromUser,
 };

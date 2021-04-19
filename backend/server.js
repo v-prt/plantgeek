@@ -10,7 +10,8 @@ const {
   createUser,
   authenticateUser,
   getUsers,
-  updateUser,
+  addPlantToUser,
+  removePlantFromUser,
 } = require("./handlers/userHandlers");
 const { getPlants, getPlant } = require("./handlers/plantHandlers");
 
@@ -35,7 +36,8 @@ express()
   .post("/users", createUser)
   .post("/login", authenticateUser)
   .get("/users", getUsers)
-  .put("/:username", updateUser)
+  .put("/:username/addplant", addPlantToUser)
+  .put("/:username/removeplant", removePlantFromUser)
   .get("/plants", getPlants)
   .get("/plants/:_id", getPlant)
 
