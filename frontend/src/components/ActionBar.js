@@ -33,7 +33,6 @@ export const ActionBar = ({ id }) => {
   }, [users, plants, id, loggedIn.username]);
 
   // FIXME: condense addToCollection/Favorites/Wishlist into 1 function
-  // FIXME: filter resets to all plants after action (/browse)
   // const addToList = (list) => {
   const addToCollection = () => {
     // temporarily disables button to prevent spam (must be temporary in case of error)

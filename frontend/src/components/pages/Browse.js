@@ -42,12 +42,13 @@ export const Browse = () => {
   types.sort();
 
   // FILTERS PLANTS BASED ON SELECTED TYPE
-  const [filteredPlants, setFilteredPlants] = useState("");
+  // FIXME: plants is empty if loading on this page (need to make sure filter isnt reset after using action bar)
+  const [filteredPlants, setFilteredPlants] = useState(plants);
   const [selectedType, setSelectedType] = useState("all");
-  // initially sets filter to all plants in database
-  useEffect(() => {
-    setFilteredPlants(plants);
-  }, [plants]);
+  // initially sets filter to all plants in db
+  // useEffect(() => {
+  //     setFilteredPlants(plants);
+  //   }, [plants]);
   const handleFilter = (type) => {
     let tempArr = [];
     plants.forEach((plant) => {

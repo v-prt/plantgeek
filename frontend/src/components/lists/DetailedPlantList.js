@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { usersArray } from "../../reducers/userReducer";
 import { LoginContext } from "../../context/LoginContext";
 
@@ -9,12 +8,14 @@ import styled from "styled-components";
 import background from "../../assets/monstera-bg.jpg";
 import { COLORS } from "../../GlobalStyles";
 import { ImDroplet } from "react-icons/im";
-import { RiTempColdFill, RiMistFill } from "react-icons/ri";
+import { RiTempColdFill, RiCloudWindyLine } from "react-icons/ri";
 import { FaSun, FaPaw, FaSkullCrossbones } from "react-icons/fa";
+
+import { ActionBar } from "../ActionBar";
 
 export const DetailedPlantList = ({ title }) => {
   const users = useSelector(usersArray);
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState(undefined);
   const [list, setList] = useState(undefined);
   const { username } = useParams();
   const { loggedIn } = useContext(LoginContext);
@@ -29,6 +30,7 @@ export const DetailedPlantList = ({ title }) => {
     }
   }, [title, user]);
 
+  // TODO: add information about icons and plant needs
   return (
     <Wrapper>
       <Banner />
@@ -43,12 +45,12 @@ export const DetailedPlantList = ({ title }) => {
               </>
             )}
           </Heading>
-          {user.collection ? (
+          {user[title] && user[title].length > 0 ? (
             <Plants>
               {list &&
                 list.map((plant) => {
                   return (
-                    <Plant key={plant._id} to={`/plant-profile/${plant._id}`}>
+                    <Plant key={plant._id}>
                       <Div>
                         {plant.toxic ? (
                           <Toxicity toxic={true}>
@@ -59,7 +61,9 @@ export const DetailedPlantList = ({ title }) => {
                             <FaPaw />
                           </Toxicity>
                         )}
-                        <img src={plant.image} alt={plant.name} />
+                        <InfoLink to={`/plant-profile/${plant._id}`}>
+                          <img src={plant.image} alt={plant.name} />
+                        </InfoLink>
                         <Name>{plant.name}</Name>
                       </Div>
                       <Needs>
@@ -110,7 +114,7 @@ export const DetailedPlantList = ({ title }) => {
                           </Bar>
                         </Row>
                         <Row>
-                          <RiMistFill />
+                          <RiCloudWindyLine />
                           <Bar>
                             {plant.humidity === "average" && (
                               <Indicator level={"1-2"} />
@@ -121,12 +125,14 @@ export const DetailedPlantList = ({ title }) => {
                           </Bar>
                         </Row>
                       </Needs>
+                      <ActionBar id={plant._id} />
                     </Plant>
                   );
                 })}
             </Plants>
           ) : (
-            <p>Your collection is empty!</p>
+            // TODO: (stretch) style empty list (suggest plants)
+            <p>Your {title} is empty!</p>
           )}
         </>
       )}
@@ -157,7 +163,7 @@ const Plants = styled.div`
   padding-top: 10px;
 `;
 
-const Plant = styled(Link)`
+const Plant = styled.div`
   background: #fff;
   width: 250px;
   overflow: hidden;
@@ -180,6 +186,11 @@ const Div = styled.div`
   padding-top: 10px;
   display: flex;
   flex-direction: column;
+`;
+
+const InfoLink = styled(Link)`
+  display: flex;
+  justify-content: center;
 `;
 
 const Name = styled.p`

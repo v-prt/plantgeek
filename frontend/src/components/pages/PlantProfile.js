@@ -6,6 +6,8 @@ import { LoginContext } from "../../context/LoginContext";
 
 import styled from "styled-components";
 import { COLORS } from "../../GlobalStyles";
+import { FaPaw, FaSkullCrossbones } from "react-icons/fa";
+
 import { ActionBar } from "../ActionBar";
 
 export const PlantProfile = () => {
@@ -18,18 +20,28 @@ export const PlantProfile = () => {
     setPlant(plants.find((plant) => plant._id === id));
   }, [plants, plant, id]);
 
+  // TODO: improve style of toxicity flag
   return (
     <Wrapper>
       {plant && (
         <>
           <Image src={plant.image} alt="" />
           <Name>{plant.name}</Name>
+          {plant.toxic ? (
+            <Toxicity toxic={true}>
+              <FaSkullCrossbones /> not pet friendly
+            </Toxicity>
+          ) : (
+            <Toxicity toxic={false}>
+              <FaPaw /> pet friendly
+            </Toxicity>
+          )}
           {loggedIn && (
             <Sizer>
               <ActionBar id={plant._id} />
             </Sizer>
           )}
-          <Info>LIGHT: {plant.light}</Info>
+          <Info>{plant.light} light</Info>
           <Bar>
             {plant.light === "low to bright indirect" && (
               <Indicator level={"1-3"} />
@@ -40,7 +52,7 @@ export const PlantProfile = () => {
             )}
             {plant.light === "bright indirect" && <Indicator level={"3"} />}
           </Bar>
-          <Info>WATER: {plant.water}</Info>
+          <Info>{plant.water} water</Info>
           <Bar>
             {plant.water === "low" && <Indicator level={"1"} />}
             {plant.water === "low to medium" && <Indicator level={"1-2"} />}
@@ -48,22 +60,18 @@ export const PlantProfile = () => {
             {plant.water === "medium to high" && <Indicator level={"2-3"} />}
             {plant.water === "high" && <Indicator level={"3"} />}
           </Bar>
-          <Info>TEMPERATURE: {plant.temperature}</Info>
+          <Info>{plant.temperature} temperature</Info>
           <Bar>
             {plant.temperature === "average" && <Indicator level={"1-2"} />}
             {plant.temperature === "above average" && (
               <Indicator level={"2-3"} />
             )}
           </Bar>
-          <Info>HUMIDITY: {plant.humidity}</Info>
+          <Info>{plant.humidity} humidity</Info>
           <Bar>
             {plant.humidity === "average" && <Indicator level={"1-2"} />}
             {plant.humidity === "above average" && <Indicator level={"2-3"} />}
           </Bar>
-          <Info>
-            {/* TODO: make this look better (use icons?) */}
-            PET FRIENDLY: {plant.toxic ? <span>no</span> : <span>yes</span>}
-          </Info>
         </>
       )}
     </Wrapper>
@@ -87,13 +95,24 @@ const Image = styled.img`
 
 const Name = styled.h1``;
 
+const Toxicity = styled.div`
+  color: ${(props) => (props.toxic ? `${COLORS.medium}` : "#fff}")};
+  background: ${COLORS.light};
+  border-radius: 10px;
+  width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 20px;
+`;
+
 const Sizer = styled.div`
   // TODO: improve contrast of actionbar on this page
   width: 300px;
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
-  border-bottom: 1px dotted grey;
+  /* border-bottom: 1px dotted grey; */
   padding: 0 50px 20px 50px;
 `;
 
