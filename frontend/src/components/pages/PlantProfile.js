@@ -16,6 +16,11 @@ export const PlantProfile = () => {
   const { id } = useParams();
   const { loggedIn } = useContext(LoginContext);
 
+  // makes window scroll to top between renders
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     setPlant(plants.find((plant) => plant._id === id));
   }, [plants, plant, id]);
@@ -83,6 +88,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
 `;
 
 const Image = styled.img`

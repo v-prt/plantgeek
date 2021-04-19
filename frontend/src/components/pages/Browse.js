@@ -1,17 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { plantsArray } from "../../reducers/plantReducer";
-import { LoginContext } from "../../context/LoginContext";
 
 import styled from "styled-components";
 import { COLORS } from "../../GlobalStyles";
 import background from "../../assets/monstera-bg.jpg";
-import { ActionBar } from "../ActionBar";
+import { PlantCard } from "../PlantCard";
 
 export const Browse = () => {
   const plants = useSelector(plantsArray);
-  const { loggedIn } = useContext(LoginContext);
+
+  // makes window scroll to top between renders
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // SORTS ALL PLANTS ALPHABETICALLY BY NAME
   const compare = (a, b) => {
@@ -98,15 +100,7 @@ export const Browse = () => {
         <Results>
           {filteredPlants &&
             filteredPlants.map((plant) => {
-              return (
-                <Card key={plant._id}>
-                  <Link to={`/plant-profile/${plant._id}`}>
-                    <Image src={plant.image} />
-                  </Link>
-                  <Name>{plant.name}</Name>
-                  {loggedIn && <ActionBar id={plant._id} />}
-                </Card>
-              );
+              return <PlantCard plant={plant} />;
             })}
         </Results>
       </Main>
@@ -195,29 +189,4 @@ const Results = styled.div`
   @media (max-width: 1000px) {
     width: 100%;
   }
-`;
-
-const Card = styled.div`
-  background: #fff;
-  height: 310px;
-  width: 250px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  margin: 10px;
-  border-radius: 20px;
-  &:hover {
-    color: ${COLORS.darkest};
-    box-shadow: 0 0 10px ${COLORS.light};
-  }
-`;
-
-const Image = styled.img`
-  height: 200px;
-`;
-
-const Name = styled.p`
-  font-size: 1.1rem;
-  font-weight: bold;
 `;

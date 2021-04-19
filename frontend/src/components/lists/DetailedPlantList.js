@@ -12,6 +12,7 @@ import { RiTempColdFill, RiCloudWindyLine } from "react-icons/ri";
 import { FaSun, FaPaw, FaSkullCrossbones } from "react-icons/fa";
 
 import { ActionBar } from "../ActionBar";
+import { FeaturedPlants } from "../FeaturedPlants";
 
 export const DetailedPlantList = ({ title }) => {
   const users = useSelector(usersArray);
@@ -131,8 +132,22 @@ export const DetailedPlantList = ({ title }) => {
                 })}
             </Plants>
           ) : (
-            // TODO: (stretch) style empty list (suggest plants)
-            <p>Your {title} is empty!</p>
+            <>
+              {title === "collection" && (
+                <p>
+                  Your collection is empty! Do you have any of these plants?
+                </p>
+              )}
+              {title === "favorites" && (
+                <p>
+                  You have no favorite plants! Do you love any of these plants?
+                </p>
+              )}
+              {title === "wishlist" && (
+                <p>Your wishlist is empty! Do you want any of these plants?</p>
+              )}
+              <FeaturedPlants />
+            </>
           )}
         </>
       )}
@@ -144,6 +159,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
 `;
 
 const Banner = styled.div`

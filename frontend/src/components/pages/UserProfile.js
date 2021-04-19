@@ -14,6 +14,11 @@ export const UserProfile = () => {
   const [user, setUser] = useState([]);
   const { username } = useParams();
 
+  // makes window scroll to top between renders
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     setUser(users.find((user) => user.username === username));
   }, [users, user, username]);
@@ -59,6 +64,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
 `;
 
 const Banner = styled.div`
@@ -69,8 +75,8 @@ const Banner = styled.div`
 
 const Div = styled.div`
   width: 100%;
-  position: absolute;
-  top: 50px;
+  position: relative;
+  top: -70px;
   display: flex;
   flex-direction: column;
   align-items: center;

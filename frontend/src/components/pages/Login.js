@@ -18,6 +18,11 @@ export const Login = () => {
   const [incorrectPassword, setIncorrectPassword] = useState(undefined);
   const { loggedIn, setLoggedIn } = useContext(LoginContext);
 
+  // makes window scroll to top between renders
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // FOCUSES ON FIRST INPUT ON LOAD
   const input = useRef(null);
   useEffect(() => {

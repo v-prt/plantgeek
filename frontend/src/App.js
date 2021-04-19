@@ -16,12 +16,18 @@ import { SignUp } from "./components/pages/SignUp";
 import { PlantProfile } from "./components/pages/PlantProfile";
 import { UserProfile } from "./components/pages/UserProfile";
 import { DetailedPlantList } from "./components/lists/DetailedPlantList";
+import { Footer } from "./components/Footer";
 
 import styled from "styled-components";
 import GlobalStyles from "./GlobalStyles";
 
 export const App = () => {
   const dispatch = useDispatch();
+
+  // makes window scroll to top between renders
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     dispatch(requestPlants());
@@ -81,6 +87,7 @@ export const App = () => {
             <PlantProfile />
           </Route>
         </Switch>
+        <Footer />
       </Main>
     </BrowserRouter>
   );
