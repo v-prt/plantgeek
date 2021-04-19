@@ -27,21 +27,21 @@ export const UserProfile = () => {
           <Name>{user.username}</Name>
           <Joined>Joined: {moment(user.joined).format("ll")}</Joined>
           <Lists>
-            {user.collection && (
+            {user.collection && user.collection.length > 0 && (
               <SimplePlantList
                 username={username}
                 list={user.collection}
                 title="collection"
               />
             )}
-            {user.favorites && (
+            {user.favorites && user.favorites.length > 0 && (
               <SimplePlantList
                 username={username}
                 list={user.favorites}
                 title="favorites"
               />
             )}
-            {user.wishlist && (
+            {user.wishlist && user.wishlist.length > 0 && (
               <SimplePlantList
                 username={username}
                 list={user.wishlist}

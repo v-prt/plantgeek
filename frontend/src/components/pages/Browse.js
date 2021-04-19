@@ -43,11 +43,10 @@ export const Browse = () => {
 
   // FILTERS PLANTS BASED ON SELECTED TYPE
   const [filteredPlants, setFilteredPlants] = useState("");
-  const [selectedType, setSelectedType] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
   // initially sets filter to all plants in database
   useEffect(() => {
     setFilteredPlants(plants);
-    setSelectedType("all");
   }, [plants]);
   const handleFilter = (type) => {
     let tempArr = [];

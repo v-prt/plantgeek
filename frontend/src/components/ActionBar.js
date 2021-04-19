@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { LoginContext } from "../context/LoginContext";
 import { plantsArray } from "../reducers/plantReducer";
@@ -15,12 +15,22 @@ export const ActionBar = ({ id }) => {
   const dispatch = useDispatch();
   const { loggedIn } = useContext(LoginContext);
   const users = useSelector(usersArray);
-  const user = users.find((user) => user.username === loggedIn.username);
+  const [user, setUser] = useState(undefined);
   const plants = useSelector(plantsArray);
-  const plant = plants.find((plant) => plant._id === id);
+  const [plant, setPlant] = useState(undefined);
   const [clicked1, setClicked1] = useState(false);
   const [clicked2, setClicked2] = useState(false);
   const [clicked3, setClicked3] = useState(false);
+
+  useEffect(() => {
+    setUser(users.find((user) => user.username === loggedIn.username));
+    setPlant(plants.find((plant) => plant._id === id));
+    // CLEANUP - PREVENTS MEMORY LEAK
+    return () => {
+      setUser(undefined);
+      setPlant(undefined);
+    };
+  }, [users, plants, id, loggedIn.username]);
 
   // FIXME: condense addToCollection/Favorites/Wishlist into 1 function
   // FIXME: filter resets to all plants after action (/browse)
