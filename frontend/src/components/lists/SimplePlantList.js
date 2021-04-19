@@ -1,16 +1,24 @@
-import React, { useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useSelector } from "react-redux";
+import { usersArray } from "../../reducers/userReducer";
 import { Link } from "react-router-dom";
-import { LoginContext } from "../context/LoginContext";
+import { LoginContext } from "../../context/LoginContext";
 
 import styled from "styled-components";
-import { COLORS } from "../GlobalStyles";
+import { COLORS } from "../../GlobalStyles";
 
-export const PlantList = ({ username, list, title }) => {
+export const SimplePlantList = ({ username, list, title }) => {
+  const users = useSelector(usersArray);
+  const [user, setUser] = useState([]);
   const { loggedIn } = useContext(LoginContext);
+
+  useEffect(() => {
+    setUser(users.find((user) => user.username === username));
+  }, [users, user, username]);
 
   return (
     <Wrapper>
-      <Heading to={`/${loggedIn.username}/${title}`}>
+      <Heading to={`/user-${title}/${user.username}/`}>
         <h1>
           {loggedIn && username === loggedIn.username ? (
             <>your {title}</>
@@ -26,7 +34,7 @@ export const PlantList = ({ username, list, title }) => {
         {list &&
           list.map((plant) => {
             return (
-              <Plant key={plant._id} to={`/plants/${plant._id}`}>
+              <Plant key={plant._id} to={`/plant-profile/${plant._id}`}>
                 <img src={plant.image} alt={plant.name} />
               </Plant>
             );

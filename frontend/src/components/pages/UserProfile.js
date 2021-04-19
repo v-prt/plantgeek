@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { usersArray } from "../reducers/userReducer";
+import { usersArray } from "../../reducers/userReducer";
 import styled from "styled-components";
-import background from "../assets/monstera-bg.jpg";
-import placeholder from "../assets/avatar-placeholder.png";
+import background from "../../assets/monstera-bg.jpg";
+import placeholder from "../../assets/avatar-placeholder.png";
 import moment from "moment";
 
-import { PlantList } from "./PlantList";
+import { SimplePlantList } from "../lists/SimplePlantList";
 
-export const Profile = () => {
+export const UserProfile = () => {
   const users = useSelector(usersArray);
   const [user, setUser] = useState([]);
   const { username } = useParams();
@@ -28,21 +28,21 @@ export const Profile = () => {
           <Joined>Joined: {moment(user.joined).format("ll")}</Joined>
           <Lists>
             {user.collection && (
-              <PlantList
+              <SimplePlantList
                 username={username}
                 list={user.collection}
                 title="collection"
               />
             )}
             {user.favorites && (
-              <PlantList
+              <SimplePlantList
                 username={username}
                 list={user.favorites}
                 title="favorites"
               />
             )}
             {user.wishlist && (
-              <PlantList
+              <SimplePlantList
                 username={username}
                 list={user.wishlist}
                 title="wishlist"
@@ -68,6 +68,7 @@ const Banner = styled.div`
 `;
 
 const Div = styled.div`
+  width: 100%;
   position: absolute;
   top: 50px;
   display: flex;
@@ -86,6 +87,7 @@ const Name = styled.h1``;
 const Joined = styled.p``;
 
 const Lists = styled.section`
+  width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;

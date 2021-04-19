@@ -30,7 +30,7 @@ export const Navbar = () => {
           <Logo src={plantgeekLogo} alt="" />
         </Link>
       </Div>
-      <Link to="/plants">
+      <Link to="/browse">
         <Label>browse</Label>
         <Icon>
           <BiSearch />
@@ -38,25 +38,25 @@ export const Navbar = () => {
       </Link>
       {loggedIn ? (
         <>
-          <Link to={`/${loggedIn.username}/profile`}>
+          <Link to={`/user-profile/${loggedIn.username}`}>
             <Label>profile</Label>
             <Icon>
               <BsPerson />
             </Icon>
           </Link>
-          <Link to={`/${loggedIn.username}/collection`}>
+          <Link to={`/user-collection/${loggedIn.username}`}>
             <Label>collection</Label>
             <Icon>
               <RiPlantLine />
             </Icon>
           </Link>
-          <Link to={`/${loggedIn.username}/favorites`}>
+          <Link to={`/user-favorites/${loggedIn.username}`}>
             <Label>favorites</Label>
             <Icon>
               <TiHeartOutline />
             </Icon>
           </Link>
-          <Link to={`/${loggedIn.username}/wishlist`}>
+          <Link to={`/user-wishlist/${loggedIn.username}`}>
             <Label>wishlist</Label>
             <Icon>
               <MdStarBorder />

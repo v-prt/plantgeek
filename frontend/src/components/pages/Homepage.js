@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import stem from "../assets/stem.png";
+import stem from "../../assets/stem.png";
 
-export const Home = () => {
+export const Homepage = () => {
   return (
     <Wrapper>
       <Background src={stem} alt="" />

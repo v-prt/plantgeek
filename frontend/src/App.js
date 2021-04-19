@@ -9,12 +9,13 @@ import {
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
-import { Home } from "./components/Home";
-import { Plants } from "./components/Plants";
-import { Login } from "./components/Login";
-import { SignUp } from "./components/SignUp";
-import { PlantInfo } from "./components/PlantInfo";
-import { Profile } from "./components/Profile";
+import { Homepage } from "./components/pages/Homepage";
+import { Browse } from "./components/pages/Browse";
+import { Login } from "./components/pages/Login";
+import { SignUp } from "./components/pages/SignUp";
+import { PlantProfile } from "./components/pages/PlantProfile";
+import { UserProfile } from "./components/pages/UserProfile";
+import { DetailedPlantList } from "./components/lists/DetailedPlantList";
 
 import styled from "styled-components";
 import GlobalStyles from "./GlobalStyles";
@@ -53,10 +54,10 @@ export const App = () => {
       <Main>
         <Switch>
           <Route exact path="/">
-            <Home />
+            <Homepage />
           </Route>
-          <Route exact path="/plants">
-            <Plants />
+          <Route exact path="/browse">
+            <Browse />
           </Route>
           <Route exact path="/login">
             <Login />
@@ -64,11 +65,20 @@ export const App = () => {
           <Route exact path="/signup">
             <SignUp />
           </Route>
-          <Route path="/:username/profile">
-            <Profile />
+          <Route path="/user-profile/:username">
+            <UserProfile />
           </Route>
-          <Route path="/plants/:id">
-            <PlantInfo />
+          <Route path="/user-collection/:username">
+            <DetailedPlantList title="collection" />
+          </Route>
+          <Route path="/user-favorites/:username">
+            <DetailedPlantList title="favorites" />
+          </Route>
+          <Route path="/user-wishlist/:username">
+            <DetailedPlantList title="wishlist" />
+          </Route>
+          <Route path="/plant-profile/:id">
+            <PlantProfile />
           </Route>
         </Switch>
       </Main>

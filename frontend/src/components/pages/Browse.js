@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { plantsArray } from "../reducers/plantReducer";
-import { LoginContext } from "../context/LoginContext";
+import { plantsArray } from "../../reducers/plantReducer";
+import { LoginContext } from "../../context/LoginContext";
 
 import styled from "styled-components";
-import { COLORS } from "../GlobalStyles";
-import background from "../assets/monstera-bg.jpg";
-import { ActionBar } from "./ActionBar";
+import { COLORS } from "../../GlobalStyles";
+import background from "../../assets/monstera-bg.jpg";
+import { ActionBar } from "../ActionBar";
 
-export const Plants = () => {
+export const Browse = () => {
   const plants = useSelector(plantsArray);
   const { loggedIn } = useContext(LoginContext);
 
@@ -100,7 +100,7 @@ export const Plants = () => {
             filteredPlants.map((plant) => {
               return (
                 <Card key={plant._id}>
-                  <Link to={`/plants/${plant._id}`}>
+                  <Link to={`/plant-profile/${plant._id}`}>
                     <Image src={plant.image} />
                   </Link>
                   <Name>{plant.name}</Name>
@@ -156,6 +156,9 @@ const Search = styled.input`
 const Filter = styled.div`
   width: calc(100% - 50px);
   padding-bottom: 20px;
+  h2 {
+    margin-left: 5px;
+  }
 `;
 
 const Types = styled.ul`
@@ -169,17 +172,17 @@ const Types = styled.ul`
 `;
 
 const Type = styled.li`
-  flex: 1 0 33.33%;
+  // TODO: (stretch) improve look of columns in mobile mode
+  /* flex: 1 0 33.33%; */
+  background: ${(props) => (props.active ? `${COLORS.light}` : "transparent")};
+  border-radius: 20px;
+  margin: 2px;
+  padding: 0 10px;
   font-style: ${(props) => (props.active ? "italic" : "normal")};
-  border-bottom: ${(props) =>
-    props.active ? "1px solid #000" : "1px solid transparent"};
   &:hover {
+    background: ${COLORS.light};
     cursor: pointer;
     font-style: italic;
-    border-bottom: 1px dotted #000;
-  }
-  @media (max-width: 1000px) {
-    margin-right: 50px;
   }
 `;
 

@@ -23,6 +23,7 @@ export const ActionBar = ({ id }) => {
   const [clicked3, setClicked3] = useState(false);
 
   // FIXME: condense addToCollection/Favorites/Wishlist into 1 function
+  // FIXME: filter resets to all plants after action
   const addToCollection = () => {
     // temporarily disables button to prevent spam (must be temporary in case of error)
     setClicked1(true);
