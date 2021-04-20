@@ -1,18 +1,33 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { LoginContext } from "../context/LoginContext";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { usersArray } from "../reducers/userReducer.js";
+import { requestUsers, receiveUsers } from "../actions.js";
+
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 import placeholder from "../assets/avatar-placeholder.png";
 
 export const Friends = () => {
+  const dispatch = useDispatch();
   const { loggedIn } = useContext(LoginContext);
   const users = useSelector(usersArray);
-  const user = useParams();
-  const [suggestedFriends, setSuggestedFriends] = useState(undefined);
+  const [user, setUser] = useState();
+  const { username } = useParams();
 
+  useEffect(() => {
+    setUser(users.find((user) => user.username === username));
+  }, [users, user, username]);
+
+  const [currentUser, setCurrentUser] = useState(undefined);
+  useEffect(() => {
+    if (loggedIn) {
+      setCurrentUser(users.find((user) => user.username === loggedIn.username));
+    }
+  }, [users, loggedIn]);
+
+  const [suggestedFriends, setSuggestedFriends] = useState(undefined);
   useEffect(() => {
     const getRandomUser = () => {
       const randomIndex = Math.floor(Math.random() * users.length);
@@ -35,54 +50,181 @@ export const Friends = () => {
     setSuggestedFriends(tempArray);
   }, [users]);
 
+  const handleFriend = () => {
+    if (
+      currentUser.friends &&
+      currentUser.friends.find((friend) => friend.username === user.username)
+    ) {
+      // REMOVES FRIEND
+      fetch(`/${loggedIn.username}/remove`, {
+        method: "PUT",
+        body: JSON.stringify({
+          friends: user,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+      }).then((res) => {
+        if (res.status === 200) {
+          console.log(
+            `${user.username} and ${loggedIn.username} are not friends anymore!`
+          );
+          dispatch(requestUsers());
+          fetch("/users")
+            .then((res) => res.json())
+            .then((json) => {
+              dispatch(receiveUsers(json.data));
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else if (res.status === 404) {
+          console.log("Something went wrong");
+        }
+      });
+      fetch(`/${user.username}/remove`, {
+        method: "PUT",
+        body: JSON.stringify({
+          friends: currentUser,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+      }).then((res) => {
+        if (res.status === 200) {
+          console.log(
+            `${user.username} and ${loggedIn.username} are not friends anymore!`
+          );
+          dispatch(requestUsers());
+          fetch("/users")
+            .then((res) => res.json())
+            .then((json) => {
+              dispatch(receiveUsers(json.data));
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else if (res.status === 404) {
+          console.log("Something went wrong");
+        }
+      });
+    } else {
+      // ADDS FRIEND
+      fetch(`/${loggedIn.username}/add`, {
+        method: "PUT",
+        body: JSON.stringify({
+          friends: user,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+      }).then((res) => {
+        if (res.status === 200) {
+          console.log(
+            `${user.username} and ${loggedIn.username} are now friends!`
+          );
+          dispatch(requestUsers());
+          fetch("/users")
+            .then((res) => res.json())
+            .then((json) => {
+              dispatch(receiveUsers(json.data));
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else if (res.status === 404) {
+          console.log("Something went wrong");
+        }
+      });
+      fetch(`/${user.username}/add`, {
+        method: "PUT",
+        body: JSON.stringify({
+          friends: currentUser,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+      }).then((res) => {
+        if (res.status === 200) {
+          console.log(
+            `${user.username} and ${loggedIn.username} are now friends!`
+          );
+          dispatch(requestUsers());
+          fetch("/users")
+            .then((res) => res.json())
+            .then((json) => {
+              dispatch(receiveUsers(json.data));
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else if (res.status === 404) {
+          console.log("Something went wrong");
+        }
+      });
+    }
+  };
+
   return (
     <Wrapper>
       <Card>
         <Heading>friends</Heading>
-        {user.friends ? (
+        {user && (
           <>
-            {user.friends.map((user) => {
-              return (
-                <User>
-                  {user.image ? (
-                    <Avatar src={user.image} />
-                  ) : (
-                    <Avatar src={placeholder} />
-                  )}
-                  {user.username}
-                </User>
-              );
-            })}
-          </>
-        ) : (
-          <>
-            {loggedIn && loggedIn.username === user.username ? (
+            {user.friends ? (
               <>
-                <p>you have no friends yet</p>
-                {suggestedFriends && (
-                  <>
-                    <h3>users you may know</h3>
-                    {suggestedFriends.map((user) => {
-                      return (
-                        <User key={user._id}>
-                          <Link to={`/user-profile/${user.username}`}>
-                            {user.image ? (
-                              <Avatar src={user.image} />
-                            ) : (
-                              <Avatar src={placeholder} />
-                            )}
-                          </Link>
-                          {user.username}
-                        </User>
-                      );
-                    })}
-                  </>
-                )}
+                {user.friends.map((user) => {
+                  return (
+                    <User key={user._id}>
+                      <Link to={`/user-profile/${user.username}`}>
+                        {user.image ? (
+                          <Avatar src={user.image} />
+                        ) : (
+                          <Avatar src={placeholder} />
+                        )}
+                      </Link>
+                      {user.username}
+                    </User>
+                  );
+                })}
               </>
             ) : (
               <>
-                <p>{user.username} has no friends yet</p>
-                <FriendBtn>+ Add Friend</FriendBtn>
+                {loggedIn && loggedIn.username === user.username ? (
+                  <>
+                    <p>you have no friends yet</p>
+                    {suggestedFriends && (
+                      <>
+                        <h3>people you may know</h3>
+                        {suggestedFriends.map((user) => {
+                          return (
+                            <User key={user._id}>
+                              <Link to={`/user-profile/${user.username}`}>
+                                {user.image ? (
+                                  <Avatar src={user.image} />
+                                ) : (
+                                  <Avatar src={placeholder} />
+                                )}
+                              </Link>
+                              {user.username}
+                            </User>
+                          );
+                        })}
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <p>{user.username} has no friends yet</p>
+                    <FriendBtn onClick={handleFriend} disabled={!loggedIn}>
+                      + Add Friend
+                    </FriendBtn>
+                  </>
+                )}
               </>
             )}
           </>
@@ -142,5 +284,9 @@ const FriendBtn = styled.button`
   font-size: 0.9rem;
   &:hover {
     background: ${COLORS.medium};
+  }
+  &:disabled {
+    cursor: not-allowed;
+    background: ${COLORS.darkest};
   }
 `;

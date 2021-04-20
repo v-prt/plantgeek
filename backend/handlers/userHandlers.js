@@ -70,8 +70,8 @@ const getUsers = async (req, res) => {
   client.close();
 };
 
-// (UPDATE/PUT) ADD A PLANT TO USER'S DATA
-const addPlantToUser = async (req, res) => {
+// (UPDATE/PUT) ADD A PLANT OR FRIEND TO USER'S PROFILE
+const addToUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options);
   const username = req.params.username;
   try {
@@ -96,6 +96,12 @@ const addPlantToUser = async (req, res) => {
       update = {
         $push: {
           wishlist: req.body.wishlist,
+        },
+      };
+    } else if (req.body.friends) {
+      update = {
+        $push: {
+          friends: req.body.friends,
         },
       };
     }
@@ -113,8 +119,8 @@ const addPlantToUser = async (req, res) => {
   client.close();
 };
 
-// (UPDATE/PUT) REMOVE A PLANT FROM USER'S DATA
-const removePlantFromUser = async (req, res) => {
+// (UPDATE/PUT) REMOVE A PLANT OR FRIEND FROM USER'S PROFILE
+const removeFromUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options);
   const username = req.params.username;
   try {
@@ -139,6 +145,12 @@ const removePlantFromUser = async (req, res) => {
       update = {
         $pull: {
           wishlist: req.body.wishlist,
+        },
+      };
+    } else if (req.body.friends) {
+      update = {
+        $pull: {
+          friends: req.body.friends,
         },
       };
     }
@@ -162,6 +174,6 @@ module.exports = {
   createUser,
   authenticateUser,
   getUsers,
-  addPlantToUser,
-  removePlantFromUser,
+  addToUser,
+  removeFromUser,
 };

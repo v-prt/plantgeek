@@ -33,23 +33,20 @@ export const ActionBar = ({ id }) => {
   }, [users, plants, id, loggedIn.username]);
 
   // FIXME: condense addToCollection/Favorites/Wishlist into 1 function
-  // const addToList = (list) => {
-  const addToCollection = () => {
+  const handleCollection = () => {
     // temporarily disables button to prevent spam (must be temporary in case of error)
     setClicked1(true);
     setTimeout(() => {
       setClicked1(false);
     }, 3000);
-    // if (user[list].find((el) => el.name === plant.name)) {
     if (
       user.collection &&
       user.collection.find((el) => el.name === plant.name)
     ) {
       // REMOVES PLANT
-      fetch(`/${loggedIn.username}/removeplant`, {
+      fetch(`/${loggedIn.username}/remove`, {
         method: "PUT",
         body: JSON.stringify({
-          // [list]: plant,
           collection: plant,
         }),
         headers: {
@@ -58,7 +55,6 @@ export const ActionBar = ({ id }) => {
         },
       }).then((res) => {
         if (res.status === 200) {
-          // console.log(`Removed ${plant.name} from user's ${list}!`);
           console.log(`Removed ${plant.name} from user's collection!`);
           dispatch(requestUsers());
           fetch("/users")
@@ -75,7 +71,7 @@ export const ActionBar = ({ id }) => {
       });
     } else {
       // ADDS PLANT
-      fetch(`/${loggedIn.username}/addplant`, {
+      fetch(`/${loggedIn.username}/add`, {
         method: "PUT",
         body: JSON.stringify({
           // [list]: plant,
@@ -105,7 +101,7 @@ export const ActionBar = ({ id }) => {
     }
   };
 
-  const addToFavorites = () => {
+  const handleFavorites = () => {
     // temporarily disables button to prevent spam (must be temporary in case of error)
     setClicked2(true);
     setTimeout(() => {
@@ -113,7 +109,7 @@ export const ActionBar = ({ id }) => {
     }, 3000);
     if (user.favorites && user.favorites.find((el) => el.name === plant.name)) {
       // REMOVES PLANT
-      fetch(`/${loggedIn.username}/removeplant`, {
+      fetch(`/${loggedIn.username}/remove`, {
         method: "PUT",
         body: JSON.stringify({
           favorites: plant,
@@ -140,7 +136,7 @@ export const ActionBar = ({ id }) => {
       });
     } else {
       // ADDS PLANT
-      fetch(`/${loggedIn.username}/addplant`, {
+      fetch(`/${loggedIn.username}/add`, {
         method: "PUT",
         body: JSON.stringify({
           favorites: plant,
@@ -168,7 +164,7 @@ export const ActionBar = ({ id }) => {
     }
   };
 
-  const addToWishlist = () => {
+  const handleWishlist = () => {
     // temporarily disables button to prevent spam (must be temporary in case of error)
     setClicked3(true);
     setTimeout(() => {
@@ -176,7 +172,7 @@ export const ActionBar = ({ id }) => {
     }, 3000);
     if (user.wishlist && user.wishlist.find((el) => el.name === plant.name)) {
       // REMOVES PLANT
-      fetch(`/${loggedIn.username}/removeplant`, {
+      fetch(`/${loggedIn.username}/remove`, {
         method: "PUT",
         body: JSON.stringify({
           wishlist: plant,
@@ -203,7 +199,7 @@ export const ActionBar = ({ id }) => {
       });
     } else {
       // ADDS PLANT
-      fetch(`/${loggedIn.username}/addplant`, {
+      fetch(`/${loggedIn.username}/add`, {
         method: "PUT",
         body: JSON.stringify({
           wishlist: plant,
@@ -239,7 +235,7 @@ export const ActionBar = ({ id }) => {
         <>
           <Action
             // onClick={addToList(collection)}
-            onClick={addToCollection}
+            onClick={handleCollection}
             disabled={clicked1}
             added={
               user.collection &&
@@ -249,7 +245,7 @@ export const ActionBar = ({ id }) => {
             <RiPlantLine />
           </Action>
           <Action
-            onClick={addToFavorites}
+            onClick={handleFavorites}
             disabled={clicked2}
             added={
               user.favorites &&
@@ -259,7 +255,7 @@ export const ActionBar = ({ id }) => {
             <TiHeartOutline />
           </Action>
           <Action
-            onClick={addToWishlist}
+            onClick={handleWishlist}
             disabled={clicked3}
             added={
               user.wishlist &&
