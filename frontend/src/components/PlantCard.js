@@ -37,6 +37,7 @@ const Card = styled.div`
 
 const Image = styled.img`
   height: 200px;
+  border-radius: 20px;
 `;
 
 const Name = styled.p`

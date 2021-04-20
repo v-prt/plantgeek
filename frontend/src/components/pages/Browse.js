@@ -44,13 +44,13 @@ export const Browse = () => {
   types.sort();
 
   // FILTERS PLANTS BASED ON SELECTED TYPE
-  // FIXME: plants is empty if loading on this page (need to make sure filter isnt reset after using action bar)
+  // FIXME: make filter not reset after using action bar
   const [filteredPlants, setFilteredPlants] = useState(plants);
   const [selectedType, setSelectedType] = useState("all");
   // initially sets filter to all plants in db
-  // useEffect(() => {
-  //     setFilteredPlants(plants);
-  //   }, [plants]);
+  useEffect(() => {
+    setFilteredPlants(plants);
+  }, [plants]);
   const handleFilter = (type) => {
     let tempArr = [];
     plants.forEach((plant) => {
@@ -111,6 +111,7 @@ export const Browse = () => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 `;
 
 const Banner = styled.div`

@@ -3,11 +3,12 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { usersArray } from "../../reducers/userReducer";
 import styled from "styled-components";
+import { COLORS } from "../../GlobalStyles";
 import background from "../../assets/monstera-bg.jpg";
 import placeholder from "../../assets/avatar-placeholder.png";
 import moment from "moment";
-
 import { SimplePlantList } from "../lists/SimplePlantList";
+import { Friends } from "../Friends";
 
 export const UserProfile = () => {
   const users = useSelector(usersArray);
@@ -54,6 +55,7 @@ export const UserProfile = () => {
               />
             )}
           </Lists>
+          <Friends />
         </Div>
       )}
     </Wrapper>
@@ -61,6 +63,7 @@ export const UserProfile = () => {
 };
 
 const Wrapper = styled.div`
+  /* background: ${COLORS.dark}; */
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -280,6 +280,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
+  align-self: center;
   margin: 5px;
   border-radius: 20px;
   padding: 5px;
