@@ -11,15 +11,18 @@ import placeholder from "../assets/avatar-placeholder.png";
 
 export const Friends = () => {
   const dispatch = useDispatch();
+  const { username } = useParams();
   const { loggedIn } = useContext(LoginContext);
   const users = useSelector(usersArray);
-  const [user, setUser] = useState();
-  const { username } = useParams();
+  const [clicked, setClicked] = useState(false);
 
+  // SETS THE USER TO ACCESS THEIR FRIENDS
+  const [user, setUser] = useState();
   useEffect(() => {
     setUser(users.find((user) => user.username === username));
   }, [users, user, username]);
 
+  // SETS THE CURRENT USER IF THEY'RE LOGGED IN
   const [currentUser, setCurrentUser] = useState(undefined);
   useEffect(() => {
     if (loggedIn) {
@@ -27,6 +30,7 @@ export const Friends = () => {
     }
   }, [users, loggedIn]);
 
+  // SETS SUGGESTED FRIENDS
   const [suggestedFriends, setSuggestedFriends] = useState(undefined);
   useEffect(() => {
     const getRandomUser = () => {
@@ -50,179 +54,231 @@ export const Friends = () => {
     setSuggestedFriends(tempArray);
   }, [users]);
 
-  const handleFriend = () => {
-    if (
-      currentUser.friends &&
-      currentUser.friends.find((friend) => friend.username === user.username)
-    ) {
-      // REMOVES FRIEND
-      fetch(`/${loggedIn.username}/remove`, {
-        method: "PUT",
-        body: JSON.stringify({
-          friends: user,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-type": "application/json",
-        },
-      }).then((res) => {
-        if (res.status === 200) {
-          console.log(
-            `${user.username} and ${loggedIn.username} are not friends anymore!`
-          );
-          dispatch(requestUsers());
-          fetch("/users")
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data));
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else if (res.status === 404) {
-          console.log("Something went wrong");
-        }
-      });
-      fetch(`/${user.username}/remove`, {
-        method: "PUT",
-        body: JSON.stringify({
-          friends: currentUser,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-type": "application/json",
-        },
-      }).then((res) => {
-        if (res.status === 200) {
-          console.log(
-            `${user.username} and ${loggedIn.username} are not friends anymore!`
-          );
-          dispatch(requestUsers());
-          fetch("/users")
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data));
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else if (res.status === 404) {
-          console.log("Something went wrong");
-        }
-      });
+  // CHECKS IF USERS ARE ALREADY FRIENDS
+  const [alreadyFriends, setAlreadyFriends] = useState(undefined);
+  useEffect(() => {
+    if (currentUser && currentUser.friends && currentUser.friends.length > 0) {
+      if (currentUser.friends.find((friend) => friend === user.username)) {
+        setAlreadyFriends(true);
+      }
     } else {
-      // ADDS FRIEND
-      fetch(`/${loggedIn.username}/add`, {
-        method: "PUT",
-        body: JSON.stringify({
-          friends: user,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-type": "application/json",
-        },
-      }).then((res) => {
-        if (res.status === 200) {
-          console.log(
-            `${user.username} and ${loggedIn.username} are now friends!`
-          );
-          dispatch(requestUsers());
-          fetch("/users")
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data));
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else if (res.status === 404) {
-          console.log("Something went wrong");
-        }
-      });
-      fetch(`/${user.username}/add`, {
-        method: "PUT",
-        body: JSON.stringify({
-          friends: currentUser,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-type": "application/json",
-        },
-      }).then((res) => {
-        if (res.status === 200) {
-          console.log(
-            `${user.username} and ${loggedIn.username} are now friends!`
-          );
-          dispatch(requestUsers());
-          fetch("/users")
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data));
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else if (res.status === 404) {
-          console.log("Something went wrong");
-        }
-      });
+      setAlreadyFriends(false);
     }
+  }, [currentUser, user]);
+
+  // SETS USER'S FRIENDS TO ACCESS THEIR FRIENDS' DATA
+  // FIXME: make component re-render after removing friend
+  const [friends, setFriends] = useState(undefined);
+  useEffect(() => {
+    if (user && user.friends && user.friends.length > 0) {
+      let tempArr = [];
+      user.friends.forEach((friend) => {
+        tempArr.push(users.find((user) => user.username === friend));
+      });
+      setFriends(tempArr);
+    }
+  }, [user, users]);
+
+  const addFriend = () => {
+    // prevents spamming
+    setClicked(true);
+    setTimeout(() => {
+      setClicked(false);
+    }, 3000);
+    // ADDS USER TO CURRENT USER'S FRIENDS
+    fetch(`/${currentUser.username}/add`, {
+      method: "PUT",
+      body: JSON.stringify({
+        friends: user.username,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }).then((res) => {
+      if (res.status === 200) {
+        console.log(
+          `${user.username} and ${currentUser.username} are now friends!`
+        );
+        dispatch(requestUsers());
+        fetch("/users")
+          .then((res) => res.json())
+          .then((json) => {
+            dispatch(receiveUsers(json.data));
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else if (res.status === 404) {
+        console.log("Something went wrong");
+      }
+    });
+    // ADDS CURRENT USER TO USER'S FRIENDS
+    fetch(`/${user.username}/add`, {
+      method: "PUT",
+      body: JSON.stringify({
+        friends: currentUser.username,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }).then((res) => {
+      if (res.status === 200) {
+        console.log(
+          `${user.username} and ${currentUser.username} are now friends!`
+        );
+        dispatch(requestUsers());
+        fetch("/users")
+          .then((res) => res.json())
+          .then((json) => {
+            dispatch(receiveUsers(json.data));
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else if (res.status === 404) {
+        console.log("Something went wrong");
+      }
+    });
+  };
+
+  const removeFriend = () => {
+    // prevents spamming
+    setClicked(true);
+    setTimeout(() => {
+      setClicked(false);
+    }, 3000);
+    // REMOVES USER FROM CURRENT USER'S FRIENDS
+    fetch(`/${currentUser.username}/remove`, {
+      method: "PUT",
+      body: JSON.stringify({
+        friends: user.username,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }).then((res) => {
+      if (res.status === 200) {
+        console.log(
+          `${user.username} and ${currentUser.username} are not friends anymore!`
+        );
+        dispatch(requestUsers());
+        fetch("/users")
+          .then((res) => res.json())
+          .then((json) => {
+            dispatch(receiveUsers(json.data));
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else if (res.status === 404) {
+        console.log("Something went wrong");
+      }
+    });
+    // REMOVES CURRENT USER FROM USER'S FRIENDS
+    fetch(`/${user.username}/remove`, {
+      method: "PUT",
+      body: JSON.stringify({
+        friends: currentUser.username,
+      }),
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }).then((res) => {
+      if (res.status === 200) {
+        console.log(
+          `${user.username} and ${currentUser.username} are not friends anymore!`
+        );
+        dispatch(requestUsers());
+        fetch("/users")
+          .then((res) => res.json())
+          .then((json) => {
+            dispatch(receiveUsers(json.data));
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else if (res.status === 404) {
+        console.log("Something went wrong");
+      }
+    });
   };
 
   return (
     <Wrapper>
       <Card>
-        <Heading>friends</Heading>
+        <Heading>
+          {currentUser && currentUser.username === user.username && <>your </>}
+          friends
+        </Heading>
         {user && (
           <>
-            {user.friends ? (
+            {friends ? (
               <>
-                {user.friends.map((user) => {
+                {friends.map((friend) => {
                   return (
-                    <User key={user._id}>
-                      <Link to={`/user-profile/${user.username}`}>
-                        {user.image ? (
-                          <Avatar src={user.image} />
+                    <User key={friend._id}>
+                      <Link to={`/user-profile/${friend.username}`}>
+                        {friend.image ? (
+                          <Avatar src={friend.image} />
                         ) : (
                           <Avatar src={placeholder} />
                         )}
                       </Link>
-                      {user.username}
+                      {friend.username}
                     </User>
                   );
                 })}
+                {currentUser && currentUser.username !== user.username && (
+                  <>
+                    {alreadyFriends ? (
+                      <FriendBtn onClick={removeFriend} disabled={clicked}>
+                        Remove Friend
+                      </FriendBtn>
+                    ) : (
+                      <FriendBtn onClick={addFriend}>Add Friend</FriendBtn>
+                    )}
+                  </>
+                )}
               </>
             ) : (
               <>
-                {loggedIn && loggedIn.username === user.username ? (
+                {currentUser && currentUser.username === user.username ? (
                   <>
                     <p>you have no friends yet</p>
-                    {suggestedFriends && (
-                      <>
-                        <h3>people you may know</h3>
-                        {suggestedFriends.map((user) => {
-                          return (
-                            <User key={user._id}>
-                              <Link to={`/user-profile/${user.username}`}>
-                                {user.image ? (
-                                  <Avatar src={user.image} />
-                                ) : (
-                                  <Avatar src={placeholder} />
-                                )}
-                              </Link>
-                              {user.username}
-                            </User>
-                          );
-                        })}
-                      </>
-                    )}
+                    {currentUser &&
+                      currentUser.username === user.username &&
+                      suggestedFriends && (
+                        <>
+                          <h3>people you may know</h3>
+                          {suggestedFriends.map((user) => {
+                            return (
+                              <User key={user._id}>
+                                <Link to={`/user-profile/${user.username}`}>
+                                  {user.image ? (
+                                    <Avatar src={user.image} />
+                                  ) : (
+                                    <Avatar src={placeholder} />
+                                  )}
+                                </Link>
+                                {user.username}
+                              </User>
+                            );
+                          })}
+                        </>
+                      )}
                   </>
                 ) : (
                   <>
                     <p>{user.username} has no friends yet</p>
-                    <FriendBtn onClick={handleFriend} disabled={!loggedIn}>
-                      + Add Friend
-                    </FriendBtn>
+                    {loggedIn && (
+                      <FriendBtn onClick={addFriend} disabled={clicked}>
+                        Add Friend
+                      </FriendBtn>
+                    )}
                   </>
                 )}
               </>
@@ -249,6 +305,7 @@ const Card = styled.div`
   overflow: hidden;
   p {
     text-align: center;
+    padding: 10px;
   }
   h3 {
     text-align: center;
@@ -284,9 +341,5 @@ const FriendBtn = styled.button`
   font-size: 0.9rem;
   &:hover {
     background: ${COLORS.medium};
-  }
-  &:disabled {
-    cursor: not-allowed;
-    background: ${COLORS.darkest};
   }
 `;
