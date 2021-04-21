@@ -84,6 +84,17 @@ export const Browse = () => {
                   >
                     all
                   </Type>
+                  <Type
+                    key="pet friendly"
+                    onClick={() =>
+                      setFilteredPlants(
+                        plants.filter((plant) => plant.toxic === false)
+                      )
+                    }
+                  >
+                    pet friendly
+                  </Type>
+                  <h3>by genus</h3>
                   {types.map((type) => {
                     return (
                       <Type
@@ -100,7 +111,7 @@ export const Browse = () => {
             </Actions>
             <Results>
               {filteredPlants.map((plant) => {
-                return <PlantCard plant={plant} />;
+                return <PlantCard key={plant._id} plant={plant} />;
               })}
             </Results>
           </Main>
@@ -155,6 +166,9 @@ const Filter = styled.div`
   padding-bottom: 20px;
   h2 {
     margin-left: 5px;
+  }
+  h3 {
+    margin: 5px 0 0 5px;
   }
 `;
 

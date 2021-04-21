@@ -32,30 +32,40 @@ export const ActionBar = ({ id }) => {
     };
   }, [users, plants, id, loggedIn.username]);
 
-  // FIXME: condense addToCollection/Favorites/Wishlist into 1 function
-  const handleCollection = () => {
-    // temporarily disables button to prevent spam (must be temporary in case of error)
-    setClicked1(true);
-    setTimeout(() => {
-      setClicked1(false);
-    }, 3000);
-    if (
-      user.collection &&
-      user.collection.find((el) => el.name === plant.name)
-    ) {
+  const handleList = (list) => {
+    let data;
+    if (list === user.collection) {
+      // prevents spam
+      setClicked1(true);
+      setTimeout(() => {
+        setClicked1(false);
+      }, 3000);
+      data = { collection: plant };
+    } else if (list === user.favorites) {
+      setClicked2(true);
+      setTimeout(() => {
+        setClicked2(false);
+      }, 3000);
+      data = { favorites: plant };
+    } else if (list === user.wishlist) {
+      setClicked3(true);
+      setTimeout(() => {
+        setClicked3(false);
+      }, 3000);
+      data = { wishlist: plant };
+    }
+    if (list && list.find((el) => el.name === plant.name)) {
       // REMOVES PLANT
       fetch(`/${loggedIn.username}/remove`, {
         method: "PUT",
-        body: JSON.stringify({
-          collection: plant,
-        }),
+        body: JSON.stringify(data),
         headers: {
           Accept: "application/json",
           "Content-type": "application/json",
         },
       }).then((res) => {
         if (res.status === 200) {
-          console.log(`Removed ${plant.name} from user's collection!`);
+          console.log(`Removed ${plant.name} from user's list!`);
           dispatch(requestUsers());
           fetch("/users")
             .then((res) => res.json())
@@ -73,18 +83,14 @@ export const ActionBar = ({ id }) => {
       // ADDS PLANT
       fetch(`/${loggedIn.username}/add`, {
         method: "PUT",
-        body: JSON.stringify({
-          // [list]: plant,
-          collection: plant,
-        }),
+        body: JSON.stringify(data),
         headers: {
           Accept: "application/json",
           "Content-type": "application/json",
         },
       }).then((res) => {
         if (res.status === 200) {
-          // console.log(`Added ${plant.name} to user's ${list}!`);
-          console.log(`Added ${plant.name} to user's collection!`);
+          console.log(`Added ${plant.name} to user's list!`);
           dispatch(requestUsers());
           fetch("/users")
             .then((res) => res.json())
@@ -100,134 +106,6 @@ export const ActionBar = ({ id }) => {
       });
     }
   };
-
-  const handleFavorites = () => {
-    // temporarily disables button to prevent spam (must be temporary in case of error)
-    setClicked2(true);
-    setTimeout(() => {
-      setClicked2(false);
-    }, 3000);
-    if (user.favorites && user.favorites.find((el) => el.name === plant.name)) {
-      // REMOVES PLANT
-      fetch(`/${loggedIn.username}/remove`, {
-        method: "PUT",
-        body: JSON.stringify({
-          favorites: plant,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-type": "application/json",
-        },
-      }).then((res) => {
-        if (res.status === 200) {
-          console.log(`Removed ${plant.name} from user's favorites!`);
-          dispatch(requestUsers());
-          fetch("/users")
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data));
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else if (res.status === 404) {
-          console.log("Something went wrong");
-        }
-      });
-    } else {
-      // ADDS PLANT
-      fetch(`/${loggedIn.username}/add`, {
-        method: "PUT",
-        body: JSON.stringify({
-          favorites: plant,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-type": "application/json",
-        },
-      }).then((res) => {
-        if (res.status === 200) {
-          console.log(`Added ${plant.name} to user's favorites!`);
-          dispatch(requestUsers());
-          fetch("/users")
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data));
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else if (res.status === 404) {
-          console.log("Something went wrong");
-        }
-      });
-    }
-  };
-
-  const handleWishlist = () => {
-    // temporarily disables button to prevent spam (must be temporary in case of error)
-    setClicked3(true);
-    setTimeout(() => {
-      setClicked3(false);
-    }, 3000);
-    if (user.wishlist && user.wishlist.find((el) => el.name === plant.name)) {
-      // REMOVES PLANT
-      fetch(`/${loggedIn.username}/remove`, {
-        method: "PUT",
-        body: JSON.stringify({
-          wishlist: plant,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-type": "application/json",
-        },
-      }).then((res) => {
-        if (res.status === 200) {
-          console.log(`Removed ${plant.name} from user's wishlist!`);
-          dispatch(requestUsers());
-          fetch("/users")
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data));
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else if (res.status === 404) {
-          console.log("Something went wrong");
-        }
-      });
-    } else {
-      // ADDS PLANT
-      fetch(`/${loggedIn.username}/add`, {
-        method: "PUT",
-        body: JSON.stringify({
-          wishlist: plant,
-        }),
-        headers: {
-          Accept: "application/json",
-          "Content-type": "application/json",
-        },
-      }).then((res) => {
-        if (res.status === 200) {
-          console.log(`Added ${plant.name} to user's wishlist!`);
-          dispatch(requestUsers());
-          fetch("/users")
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data));
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        } else if (res.status === 404) {
-          console.log("Something went wrong");
-        }
-      });
-    }
-  };
-
-  // let collection;
 
   return (
     <>
@@ -235,7 +113,7 @@ export const ActionBar = ({ id }) => {
         <Wrapper>
           <>
             <Action
-              onClick={handleCollection}
+              onClick={() => handleList(user.collection)}
               disabled={clicked1}
               added={
                 user.collection &&
@@ -245,7 +123,7 @@ export const ActionBar = ({ id }) => {
               <RiPlantLine />
             </Action>
             <Action
-              onClick={handleFavorites}
+              onClick={() => handleList(user.favorites)}
               disabled={clicked2}
               added={
                 user.favorites &&
@@ -255,7 +133,7 @@ export const ActionBar = ({ id }) => {
               <TiHeartOutline />
             </Action>
             <Action
-              onClick={handleWishlist}
+              onClick={() => handleList(user.wishlist)}
               disabled={clicked3}
               added={
                 user.wishlist &&
