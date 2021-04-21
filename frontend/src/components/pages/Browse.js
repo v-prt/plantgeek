@@ -77,35 +77,39 @@ export const Browse = () => {
               <Filter>
                 <h2>filter plants</h2>
                 <Types>
-                  <Type
-                    key="all"
-                    onClick={() => removeFilter()}
-                    active={selectedType === "all"}
-                  >
-                    all
-                  </Type>
-                  <Type
-                    key="pet friendly"
-                    onClick={() =>
-                      setFilteredPlants(
-                        plants.filter((plant) => plant.toxic === false)
-                      )
-                    }
-                  >
-                    pet friendly
-                  </Type>
+                  <div>
+                    <Type
+                      key="all"
+                      onClick={() => removeFilter()}
+                      active={selectedType === "all"}
+                    >
+                      all
+                    </Type>
+                    <Type
+                      key="pet friendly"
+                      onClick={() =>
+                        setFilteredPlants(
+                          plants.filter((plant) => plant.toxic === false)
+                        )
+                      }
+                    >
+                      pet friendly
+                    </Type>
+                  </div>
                   <h3>by genus</h3>
-                  {types.map((type) => {
-                    return (
-                      <Type
-                        key={type}
-                        onClick={() => handleFilter(type)}
-                        active={type === selectedType}
-                      >
-                        {type}
-                      </Type>
-                    );
-                  })}
+                  <div>
+                    {types.map((type) => {
+                      return (
+                        <Type
+                          key={type}
+                          onClick={() => handleFilter(type)}
+                          active={type === selectedType}
+                        >
+                          {type}
+                        </Type>
+                      );
+                    })}
+                  </div>
                 </Types>
               </Filter>
             </Actions>
@@ -175,17 +179,19 @@ const Filter = styled.div`
 const Types = styled.ul`
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
   flex-direction: column;
-  @media (max-width: 1000px) {
-    flex-direction: row;
+  div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    @media (max-width: 1000px) {
+      flex-direction: row;
+    }
   }
 `;
 
 const Type = styled.li`
-  // TODO: (stretch) improve look of columns in mobile mode
-  /* flex: 1 0 33.33%; */
-  background: ${(props) => (props.active ? `${COLORS.light}` : "transparent")};
+  background: ${(props) => (props.active ? `${COLORS.light}` : "#f2f2f2")};
   border-radius: 20px;
   margin: 2px;
   padding: 0 10px;

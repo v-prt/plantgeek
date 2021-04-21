@@ -88,7 +88,7 @@ export const Login = () => {
           <>
             <SignUpLink to="/signup">Don't have an account? Sign up</SignUpLink>
             <Welcome>
-              <h1>welcome back!</h1>
+              <h1>welcome</h1>
             </Welcome>
             <Form autoComplete="off">
               <Label htmlFor="username">username</Label>

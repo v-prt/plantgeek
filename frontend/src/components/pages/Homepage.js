@@ -33,21 +33,21 @@ export const Homepage = () => {
       <Heading>
         {loggedIn ? (
           <Row>
-            <h1>welcome back, {user.username}</h1>{" "}
+            <h1>welcome back, {user.username}</h1>
             <img src={user.avatar ? user.avatar : placeholder} alt="" />
           </Row>
         ) : (
-          <h1>welcome!</h1>
+          <h1>welcome to plantgeek</h1>
         )}
       </Heading>
-      <SiteInfo>
+      <InfoCard>
         <Link to="/browse">
           <h2>
             browse houseplants <RiArrowRightSFill />
           </h2>
         </Link>
         <li>view your plant's profile to learn how to care for it</li>
-        <li>check if your plant is pet friendly</li>
+        <li>find out if your plant is pet friendly</li>
         {loggedIn ? (
           <>
             <Link to={`/user-profile/${loggedIn.username}`}>
@@ -79,8 +79,32 @@ export const Homepage = () => {
             <li>share plant care tips with other users</li>
           </>
         )}
-      </SiteInfo>
+      </InfoCard>
       <FeaturedPlants />
+      <InfoCard>
+        <h2>general tips</h2>
+        <h3>tropical</h3>
+        <p>
+          Most tropical plants need medium to bright indirect light, medium
+          water, and above average humidity. Keep them in a north-facing window
+          or out of direct sunlight near south facing windows. Use a humidifier
+          or group plants together to raise the ambient humidity and prevent
+          crispy leaf tips. Avoid sudden temperature changes such as from drafty
+          windows or doors, or heating/cooling vents. Plastic pots with drainage
+          holes are recommended to help keep the soil moist, but not soggy.
+          Water when top inch or two of soil is dry.
+        </p>
+        <h3>dessert</h3>
+        <p>
+          Dessert plants such as cacti and other succulents generally need
+          direct sunlight or bright indirect light or else they tend to stretch
+          and become leggy. Avoid watering them too often as they are prone to
+          rotting. Wait until their soil is completely dry, then water
+          generously. Make sure to use fast-draining soil and provide holes to
+          allow the water to drain. Terracotta or clay pots are recommended to
+          aid in preventing root rot from water-logged soil.
+        </p>
+      </InfoCard>
     </Wrapper>
   );
 };
@@ -116,7 +140,7 @@ const Row = styled.div`
   align-items: center;
 `;
 
-const SiteInfo = styled.section`
+const InfoCard = styled.section`
   background: #fff;
   width: 80%;
   margin: 15px 30px;
@@ -125,6 +149,9 @@ const SiteInfo = styled.section`
   h2 {
     display: flex;
     align-items: center;
+    margin-top: 20px;
+  }
+  h3 {
     margin-top: 20px;
   }
   li {
