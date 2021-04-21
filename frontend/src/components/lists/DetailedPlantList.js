@@ -168,14 +168,19 @@ const Banner = styled.div`
   width: 100%;
 `;
 
-const Heading = styled.h1``;
+const Heading = styled.h1`
+  background: ${COLORS.medium};
+  color: #fff;
+  width: 100%;
+  text-align: center;
+  border-bottom: 3px solid ${COLORS.light};
+`;
 
 const Plants = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  border-top: 1px dotted #008000;
   padding-top: 10px;
 `;
 
@@ -187,6 +192,7 @@ const Plant = styled.div`
   flex-direction: column;
   margin: 10px;
   border-radius: 20px;
+  padding: 10px;
   img {
     height: 150px;
     width: 150px;
@@ -199,7 +205,6 @@ const Plant = styled.div`
 `;
 
 const Div = styled.div`
-  padding-top: 10px;
   display: flex;
   flex-direction: column;
 `;
@@ -213,12 +218,12 @@ const Name = styled.p`
   font-size: 1.1rem;
   font-weight: bold;
   align-self: center;
+  margin: 5px 0;
 `;
 
 const Toxicity = styled.div`
   color: ${(props) => (props.toxic ? `${COLORS.medium}` : "#68b234}")};
   position: absolute;
-  margin-left: 10px;
   background: ${COLORS.lightest};
   border-radius: 50%;
   height: 30px;

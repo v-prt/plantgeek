@@ -32,18 +32,23 @@ export const FeaturedPlants = () => {
 
   return (
     <Wrapper>
-      <Heading>featured houseplants</Heading>
-      <Plants>
-        {featuredPlants &&
-          featuredPlants.map((plant) => {
-            return <PlantCard plant={plant} />;
-          })}
-      </Plants>
-      <Link to="/browse">
-        <BrowseLink>
-          browse more houseplants <RiArrowRightSFill />
-        </BrowseLink>
-      </Link>
+      {featuredPlants ? (
+        <>
+          <Heading>featured houseplants</Heading>
+          <Plants>
+            {featuredPlants.map((plant) => {
+              return <PlantCard key={plant._id} plant={plant} />;
+            })}
+          </Plants>
+          <Link to="/browse">
+            <BrowseLink>
+              browse more houseplants <RiArrowRightSFill />
+            </BrowseLink>
+          </Link>
+        </>
+      ) : (
+        <>Loading...</>
+      )}
     </Wrapper>
   );
 };
@@ -72,5 +77,5 @@ const Plants = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   margin: 0 50px;
-  max-width: 1000px;
+  max-width: 900px;
 `;

@@ -67,44 +67,46 @@ export const Browse = () => {
   };
 
   return (
-    <Wrapper>
-      <Banner />
-      <Main>
-        <Actions>
-          <Search type="text" placeholder="search plants" />
-          <Filter>
-            <h2>filter plants</h2>
-            <Types>
-              <Type
-                key="all"
-                onClick={() => removeFilter()}
-                active={selectedType === "all"}
-              >
-                all
-              </Type>
-              {types &&
-                types.map((type) => {
-                  return (
-                    <Type
-                      key={type}
-                      onClick={() => handleFilter(type)}
-                      active={type === selectedType}
-                    >
-                      {type}
-                    </Type>
-                  );
-                })}
-            </Types>
-          </Filter>
-        </Actions>
-        <Results>
-          {filteredPlants &&
-            filteredPlants.map((plant) => {
-              return <PlantCard plant={plant} />;
-            })}
-        </Results>
-      </Main>
-    </Wrapper>
+    <>
+      {plants && types && filteredPlants && (
+        <Wrapper>
+          <Banner />
+          <Main>
+            <Actions>
+              <Search type="text" placeholder="search plants" />
+              <Filter>
+                <h2>filter plants</h2>
+                <Types>
+                  <Type
+                    key="all"
+                    onClick={() => removeFilter()}
+                    active={selectedType === "all"}
+                  >
+                    all
+                  </Type>
+                  {types.map((type) => {
+                    return (
+                      <Type
+                        key={type}
+                        onClick={() => handleFilter(type)}
+                        active={type === selectedType}
+                      >
+                        {type}
+                      </Type>
+                    );
+                  })}
+                </Types>
+              </Filter>
+            </Actions>
+            <Results>
+              {filteredPlants.map((plant) => {
+                return <PlantCard plant={plant} />;
+              })}
+            </Results>
+          </Main>
+        </Wrapper>
+      )}
+    </>
   );
 };
 

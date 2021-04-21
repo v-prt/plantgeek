@@ -9,7 +9,6 @@ import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 import placeholder from "../assets/avatar-placeholder.png";
 
-// FIXME: user always has PoisonIvy (currentUser's friend) as friend until you refresh
 export const Friends = () => {
   const dispatch = useDispatch();
   const { username } = useParams();
@@ -31,31 +30,6 @@ export const Friends = () => {
     }
   }, [users, loggedIn]);
 
-  // SETS SUGGESTED FRIENDS
-  // FIXME: don't include current user's existing friends
-  const [suggestedFriends, setSuggestedFriends] = useState(undefined);
-  useEffect(() => {
-    const getRandomUser = () => {
-      const randomIndex = Math.floor(Math.random() * users.length);
-      const randomUser = users[randomIndex];
-      return randomUser;
-    };
-    // only run function when users length > 0
-    let tempArray = users.length > 0 ? [] : undefined;
-    if (users.length < 7) {
-      tempArray = users;
-    } else {
-      if (tempArray)
-        while (tempArray.length < 6) {
-          let randomUser = getRandomUser(users);
-          if (!tempArray.find((user) => user.username === randomUser.name)) {
-            tempArray.push(randomUser);
-          }
-        }
-    }
-    setSuggestedFriends(tempArray);
-  }, [users]);
-
   // CHECKS IF USERS ARE ALREADY FRIENDS
   const [alreadyFriends, setAlreadyFriends] = useState(undefined);
   useEffect(() => {
@@ -69,7 +43,6 @@ export const Friends = () => {
   }, [currentUser, user]);
 
   // SETS USER'S FRIENDS TO ACCESS THEIR FRIENDS' DATA
-  // FIXME: make component re-render after removing friend
   const [friends, setFriends] = useState(undefined);
   useEffect(() => {
     if (user && user.friends && user.friends.length > 0) {
@@ -78,8 +51,42 @@ export const Friends = () => {
         tempArr.push(users.find((user) => user.username === friend));
       });
       setFriends(tempArr);
+    } else {
+      setFriends(undefined);
     }
   }, [user, users]);
+
+  // SETS SUGGESTED FRIENDS
+  const [suggestedFriends, setSuggestedFriends] = useState(undefined);
+  useEffect(() => {
+    const getRandomUser = () => {
+      const randomIndex = Math.floor(Math.random() * users.length);
+      const randomUser = users[randomIndex];
+      return randomUser;
+    };
+    // only run function when users length > 0
+    let tempArray = users.length > 0 ? [] : undefined;
+    if (users.length < 7) {
+      // FIXME: don't include current user's existing friends
+      // if (friends) {
+      //   tempArray = users.filter((user) => friends.includes(user.username));
+      // } else {
+      tempArray = users;
+      // }
+    } else {
+      if (tempArray)
+        while (tempArray.length < 6) {
+          let randomUser = getRandomUser(users);
+          if (
+            !tempArray.find((user) => user.username === randomUser.name) &&
+            !friends.find((friend) => friend.username === randomUser.name)
+          ) {
+            tempArray.push(randomUser);
+          }
+        }
+    }
+    setSuggestedFriends(tempArray);
+  }, [users, friends]);
 
   const addFriend = () => {
     // prevents spamming
@@ -251,7 +258,7 @@ export const Friends = () => {
                 {currentUser &&
                   currentUser.username === user.username &&
                   suggestedFriends && (
-                    <>
+                    <GreyCard>
                       <h3>people you may know</h3>
                       {suggestedFriends.map((user) => {
                         return (
@@ -267,7 +274,7 @@ export const Friends = () => {
                           </User>
                         );
                       })}
-                    </>
+                    </GreyCard>
                   )}
               </>
             ) : (
@@ -323,28 +330,30 @@ const Wrapper = styled.section`
 `;
 
 const Card = styled.div`
-  background: #f2f2f2;
+  background: #fff;
   width: 270px;
   display: flex;
   flex-direction: column;
   margin: 20px;
   border-radius: 20px;
   overflow: hidden;
-  p {
-    text-align: center;
-    padding: 10px;
-  }
   h3 {
     text-align: center;
-    margin-top: 20px;
+    margin: 10px 0;
   }
+  p {
+    text-align: center;
+  }
+`;
+
+const GreyCard = styled.div`
+  background: #f2f2f2;
 `;
 
 const Heading = styled.h2`
   background: ${COLORS.light};
   text-align: center;
   margin-bottom: 10px;
-  padding: 5px;
 `;
 
 const User = styled.div`

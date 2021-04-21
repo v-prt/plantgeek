@@ -50,7 +50,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 90%;
-  margin: 30px 0;
+  margin: 20px;
   border-radius: 20px;
   overflow: hidden;
 `;
@@ -59,7 +59,6 @@ const Heading = styled(Link)`
   background: ${COLORS.light};
   text-align: center;
   &:hover {
-    background: ${COLORS.medium};
     color: #fff;
   }
 `;
@@ -69,8 +68,7 @@ const Plants = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  border-top: 1px dotted #008000;
-  padding-top: 10px;
+  padding: 10px 0;
 `;
 
 const Plant = styled.div`

@@ -1,46 +1,79 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
-import { LoginContext } from "../context/LoginContext";
 import { ActionBar } from "./ActionBar";
+import { FaPaw, FaSkullCrossbones } from "react-icons/fa";
 
 export const PlantCard = ({ plant }) => {
-  const { loggedIn } = useContext(LoginContext);
-
   return (
-    <Card key={plant._id} loggedIn={loggedIn}>
-      <Link to={`/plant-profile/${plant._id}`}>
-        <Image src={plant.image} />
-      </Link>
-      <Name>{plant.name}</Name>
-      {loggedIn && <ActionBar id={plant._id} />}
-    </Card>
+    <Plant key={plant._id}>
+      <Div>
+        {plant.toxic ? (
+          <Toxicity toxic={true}>
+            <FaSkullCrossbones />
+          </Toxicity>
+        ) : (
+          <Toxicity toxic={false}>
+            <FaPaw />
+          </Toxicity>
+        )}
+        <InfoLink to={`/plant-profile/${plant._id}`}>
+          <img src={plant.image} alt={plant.name} />
+        </InfoLink>
+        <Name>{plant.name}</Name>
+      </Div>
+      <ActionBar id={plant._id} />
+    </Plant>
   );
 };
 
-const Card = styled.div`
+const Plant = styled.div`
   background: #fff;
-  height: ${(props) => (props.loggedIn ? "310px" : "250px")};
-  width: 250px;
+  height: fit-content;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
   margin: 10px;
   border-radius: 20px;
+  padding: 10px;
+  img {
+    height: 200px;
+    width: 200px;
+    align-self: center;
+    border-radius: 20px;
+  }
   &:hover {
     color: ${COLORS.darkest};
     box-shadow: 0 0 10px ${COLORS.light};
   }
 `;
 
-const Image = styled.img`
-  height: 200px;
-  border-radius: 20px;
+const Div = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const InfoLink = styled(Link)`
+  display: flex;
+  justify-content: center;
 `;
 
 const Name = styled.p`
   font-size: 1.1rem;
   font-weight: bold;
+  align-self: center;
+  margin: 5px 0;
+`;
+
+const Toxicity = styled.div`
+  color: ${(props) => (props.toxic ? `${COLORS.medium}` : "#68b234}")};
+  position: absolute;
+  background: ${COLORS.lightest};
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

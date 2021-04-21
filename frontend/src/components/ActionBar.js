@@ -230,43 +230,44 @@ export const ActionBar = ({ id }) => {
   // let collection;
 
   return (
-    <Wrapper>
+    <>
       {user && plant && (
-        <>
-          <Action
-            // onClick={addToList(collection)}
-            onClick={handleCollection}
-            disabled={clicked1}
-            added={
-              user.collection &&
-              user.collection.find((el) => el.name === plant.name)
-            }
-          >
-            <RiPlantLine />
-          </Action>
-          <Action
-            onClick={handleFavorites}
-            disabled={clicked2}
-            added={
-              user.favorites &&
-              user.favorites.find((el) => el.name === plant.name)
-            }
-          >
-            <TiHeartOutline />
-          </Action>
-          <Action
-            onClick={handleWishlist}
-            disabled={clicked3}
-            added={
-              user.wishlist &&
-              user.wishlist.find((el) => el.name === plant.name)
-            }
-          >
-            <MdStarBorder />
-          </Action>
-        </>
+        <Wrapper>
+          <>
+            <Action
+              onClick={handleCollection}
+              disabled={clicked1}
+              added={
+                user.collection &&
+                user.collection.find((el) => el.name === plant.name)
+              }
+            >
+              <RiPlantLine />
+            </Action>
+            <Action
+              onClick={handleFavorites}
+              disabled={clicked2}
+              added={
+                user.favorites &&
+                user.favorites.find((el) => el.name === plant.name)
+              }
+            >
+              <TiHeartOutline />
+            </Action>
+            <Action
+              onClick={handleWishlist}
+              disabled={clicked3}
+              added={
+                user.wishlist &&
+                user.wishlist.find((el) => el.name === plant.name)
+              }
+            >
+              <MdStarBorder />
+            </Action>
+          </>
+        </Wrapper>
       )}
-    </Wrapper>
+    </>
   );
 };
 
@@ -277,7 +278,7 @@ const Wrapper = styled.div`
   justify-content: space-around;
   align-items: center;
   align-self: center;
-  margin: 5px;
+  margin: 5px 0;
   border-radius: 20px;
   padding: 5px;
 `;

@@ -1,15 +1,19 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { LoginContext } from "../../context/LoginContext";
+import { useSelector } from "react-redux";
+import { usersArray } from "../../reducers/userReducer";
 
 import styled from "styled-components";
 import { COLORS } from "../../GlobalStyles";
 import { RiArrowRightSFill } from "react-icons/ri";
-import stem from "../../assets/stem.png";
+import placeholder from "../../assets/avatar-placeholder.png";
 
 import { FeaturedPlants } from "../FeaturedPlants";
 
 export const Homepage = () => {
+  const users = useSelector(usersArray);
+  const [user, setUser] = useState([]);
   const { loggedIn } = useContext(LoginContext);
 
   // makes window scroll to top between renders
@@ -17,16 +21,24 @@ export const Homepage = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    if (loggedIn) {
+      setUser(users.find((user) => user.username === loggedIn.username));
+    }
+  }, [loggedIn, users]);
+
   // TODO: improve site info, fix lists, add more content to heading (profile info/image? stats? random tip?)
   return (
     <Wrapper>
       <Heading>
         {loggedIn ? (
-          <h1>welcome back, {loggedIn.username}</h1>
+          <Row>
+            <h1>welcome back, {user.username}</h1>{" "}
+            <img src={user.avatar ? user.avatar : placeholder} alt="" />
+          </Row>
         ) : (
           <h1>welcome!</h1>
         )}
-        <Background src={stem} alt="" />
       </Heading>
       <SiteInfo>
         <Link to="/browse">
@@ -34,9 +46,7 @@ export const Homepage = () => {
             browse houseplants <RiArrowRightSFill />
           </h2>
         </Link>
-        <li>
-          find your plant and view its profile to learn how to care for it
-        </li>
+        <li>view your plant's profile to learn how to care for it</li>
         <li>check if your plant is pet friendly</li>
         {loggedIn ? (
           <>
@@ -45,7 +55,11 @@ export const Homepage = () => {
                 view your profile <RiArrowRightSFill />
               </h2>
             </Link>
-            <li>manage your collection, favorites, and wishlist</li>
+            <li>
+              view your own collection and quickly refer to your plants' needs
+            </li>
+            <li>keep a list of your favorite plants</li>
+            <li>add plants you would like to own to your wishlist</li>
             <li>see your friends</li>
           </>
         ) : (
@@ -75,24 +89,31 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
 `;
 
 const Heading = styled.section`
   background: ${COLORS.light};
   width: 80%;
+  display: flex;
+  justify-content: flex-end;
   margin: 15px 30px;
   border-radius: 20px;
-  padding: 30px 30px 0 30px;
+  padding: 30px;
   h1 {
     font-size: 1.8rem;
-    text-align: right;
+  }
+  img {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    margin-left: 20px;
   }
 `;
 
-const Background = styled.img`
-  position: relative;
-  bottom: -8px;
-  height: 200px;
+const Row = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const SiteInfo = styled.section`
