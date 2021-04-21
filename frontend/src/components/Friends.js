@@ -9,6 +9,7 @@ import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 import placeholder from "../assets/avatar-placeholder.png";
 
+// FIXME: user always has PoisonIvy (currentUser's friend) as friend until you refresh
 export const Friends = () => {
   const dispatch = useDispatch();
   const { username } = useParams();
@@ -31,6 +32,7 @@ export const Friends = () => {
   }, [users, loggedIn]);
 
   // SETS SUGGESTED FRIENDS
+  // FIXME: don't include current user's existing friends
   const [suggestedFriends, setSuggestedFriends] = useState(undefined);
   useEffect(() => {
     const getRandomUser = () => {
@@ -211,8 +213,11 @@ export const Friends = () => {
     <Wrapper>
       <Card>
         <Heading>
-          {currentUser && currentUser.username === user.username && <>your </>}
-          friends
+          {currentUser && currentUser.username === user.username ? (
+            <>your friends</>
+          ) : (
+            <>their friends</>
+          )}
         </Heading>
         {user && (
           <>
@@ -243,6 +248,27 @@ export const Friends = () => {
                     )}
                   </>
                 )}
+                {currentUser &&
+                  currentUser.username === user.username &&
+                  suggestedFriends && (
+                    <>
+                      <h3>people you may know</h3>
+                      {suggestedFriends.map((user) => {
+                        return (
+                          <User key={user._id}>
+                            <Link to={`/user-profile/${user.username}`}>
+                              {user.image ? (
+                                <Avatar src={user.image} />
+                              ) : (
+                                <Avatar src={placeholder} />
+                              )}
+                            </Link>
+                            {user.username}
+                          </User>
+                        );
+                      })}
+                    </>
+                  )}
               </>
             ) : (
               <>
@@ -293,6 +319,7 @@ export const Friends = () => {
 const Wrapper = styled.section`
   display: flex;
   flex-wrap: wrap;
+  color: ${COLORS.darkest};
 `;
 
 const Card = styled.div`
@@ -341,5 +368,9 @@ const FriendBtn = styled.button`
   font-size: 0.9rem;
   &:hover {
     background: ${COLORS.medium};
+  }
+  &:disabled {
+    cursor: not-allowed;
+    background: ${COLORS.darkest};
   }
 `;

@@ -63,7 +63,8 @@ export const UserProfile = () => {
 };
 
 const Wrapper = styled.div`
-  /* background: ${COLORS.dark}; */
+  background: ${COLORS.dark};
+  color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;

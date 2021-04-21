@@ -20,16 +20,13 @@ export const SimplePlantList = ({ username, list, title }) => {
   return (
     <Wrapper>
       <Heading to={`/user-${title}/${user.username}/`}>
-        <h1>
-          {loggedIn && username === loggedIn.username ? (
+        {loggedIn && username === loggedIn.username ? (
+          <h2>
             <>your {title}</>
-          ) : (
-            <>
-              {username}'s {title}
-            </>
-          )}
-        </h1>
-        <span>{list.length} plants</span>
+          </h2>
+        ) : (
+          <h2>their {title}</h2>
+        )}
       </Heading>
       <Plants>
         {list &&
@@ -49,27 +46,21 @@ export const SimplePlantList = ({ username, list, title }) => {
 };
 
 const Wrapper = styled.div`
+  background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
   width: 90%;
   margin: 30px 0;
+  border-radius: 20px;
+  overflow: hidden;
 `;
 
 const Heading = styled(Link)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  border-radius: 20px;
-  h1 {
-    margin: 0 10px 0 20px;
-  }
-  span {
-    margin: 0 20px 0 10px;
-  }
+  background: ${COLORS.light};
+  text-align: center;
   &:hover {
-    background: ${COLORS.light};
-    color: ${COLORS.dark};
+    background: ${COLORS.medium};
+    color: #fff;
   }
 `;
 
