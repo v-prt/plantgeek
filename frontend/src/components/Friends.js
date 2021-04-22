@@ -12,7 +12,7 @@ import placeholder from "../assets/avatar-placeholder.png";
 export const Friends = () => {
   const dispatch = useDispatch();
   const { username } = useParams();
-  const { loggedIn } = useContext(LoginContext);
+  const { currentUser } = useContext(LoginContext);
   const users = useSelector(usersArray);
   const [clicked, setClicked] = useState(false);
 
@@ -22,26 +22,17 @@ export const Friends = () => {
     setUser(users.find((user) => user.username === username));
   }, [users, user, username]);
 
-  // SETS THE CURRENT USER IF THEY'RE LOGGED IN
-  const [currentUser, setCurrentUser] = useState(undefined);
-  useEffect(() => {
-    if (loggedIn) {
-      setCurrentUser(users.find((user) => user.username === loggedIn.username));
-    }
-  }, [users, loggedIn]);
-
   // CHECKS IF USERS ARE ALREADY FRIENDS
-  // FIXME: doesn't update properly between profiles
   const [alreadyFriends, setAlreadyFriends] = useState(undefined);
   useEffect(() => {
     if (currentUser && currentUser.friends && currentUser.friends.length > 0) {
-      if (currentUser.friends.find((friend) => friend === user.username)) {
+      if (currentUser.friends.find((friend) => friend === username)) {
         setAlreadyFriends(true);
       }
     } else {
       setAlreadyFriends(false);
     }
-  }, [currentUser, user]);
+  }, [currentUser, username]);
 
   // SETS USER'S FRIENDS TO ACCESS THEIR FRIENDS' DATA
   const [friends, setFriends] = useState(undefined);
@@ -60,34 +51,27 @@ export const Friends = () => {
   // SETS SUGGESTED FRIENDS
   const [suggestedFriends, setSuggestedFriends] = useState(undefined);
   useEffect(() => {
-    const getRandomUser = () => {
-      const randomIndex = Math.floor(Math.random() * users.length);
-      const randomUser = users[randomIndex];
-      return randomUser;
-    };
-    // only run function when users length > 0
-    let tempArray = users.length > 0 ? [] : undefined;
-    if (users.length < 7) {
-      // FIXME: don't include current user's existing friends
-      // if (friends) {
-      //   tempArray = users.filter((user) => friends.includes(user.username));
-      // } else {
-      tempArray = users;
-      // }
-    } else {
-      if (tempArray)
-        while (tempArray.length < 6) {
+    if (users.length > 3) {
+      const getRandomUser = () => {
+        const randomIndex = Math.floor(Math.random() * users.length);
+        const randomUser = users[randomIndex];
+        return randomUser;
+      };
+      // only run function when users length > 0
+      let tempArray = users.length > 0 ? [] : undefined;
+      if (tempArray) {
+        while (tempArray.length < 3) {
           let randomUser = getRandomUser(users);
           if (
-            !tempArray.find((user) => user.username === randomUser.name) &&
-            !friends.find((friend) => friend.username === randomUser.name)
+            !tempArray.find((user) => user.username === randomUser.username)
           ) {
             tempArray.push(randomUser);
           }
         }
-    }
-    setSuggestedFriends(tempArray);
-  }, [users, friends]);
+      }
+      setSuggestedFriends(tempArray);
+    } else setSuggestedFriends(undefined);
+  }, [users]);
 
   const addFriend = () => {
     // prevents spamming
@@ -221,7 +205,7 @@ export const Friends = () => {
     <Wrapper>
       <Card>
         <Heading>
-          {currentUser && currentUser.username === user.username ? (
+          {currentUser && currentUser.username === username ? (
             <>your friends</>
           ) : (
             <>their friends</>
@@ -256,59 +240,55 @@ export const Friends = () => {
                     )}
                   </>
                 )}
-                {currentUser &&
-                  currentUser.username === user.username &&
-                  suggestedFriends && (
-                    <GreyCard>
-                      <h3>people you may know</h3>
-                      {suggestedFriends.map((user) => {
-                        return (
-                          <User key={user._id}>
-                            <Link to={`/user-profile/${user.username}`}>
-                              {user.image ? (
-                                <Avatar src={user.image} />
-                              ) : (
-                                <Avatar src={placeholder} />
-                              )}
-                            </Link>
-                            {user.username}
-                          </User>
-                        );
-                      })}
-                    </GreyCard>
-                  )}
+                {suggestedFriends && (
+                  <GreyCard>
+                    <h3>people you may know</h3>
+                    {suggestedFriends.map((user) => {
+                      return (
+                        <User key={user._id}>
+                          <Link to={`/user-profile/${user.username}`}>
+                            {user.image ? (
+                              <Avatar src={user.image} />
+                            ) : (
+                              <Avatar src={placeholder} />
+                            )}
+                          </Link>
+                          {user.username}
+                        </User>
+                      );
+                    })}
+                  </GreyCard>
+                )}
               </>
             ) : (
               <>
                 {currentUser && currentUser.username === user.username ? (
                   <>
                     <p>you have no friends yet</p>
-                    {currentUser &&
-                      currentUser.username === user.username &&
-                      suggestedFriends && (
-                        <>
-                          <h3>people you may know</h3>
-                          {suggestedFriends.map((user) => {
-                            return (
-                              <User key={user._id}>
-                                <Link to={`/user-profile/${user.username}`}>
-                                  {user.image ? (
-                                    <Avatar src={user.image} />
-                                  ) : (
-                                    <Avatar src={placeholder} />
-                                  )}
-                                </Link>
-                                {user.username}
-                              </User>
-                            );
-                          })}
-                        </>
-                      )}
+                    {suggestedFriends && (
+                      <>
+                        <h3>people you may know</h3>
+                        {suggestedFriends.map((user) => {
+                          return (
+                            <User key={user._id}>
+                              <Link to={`/user-profile/${user.username}`}>
+                                {user.image ? (
+                                  <Avatar src={user.image} />
+                                ) : (
+                                  <Avatar src={placeholder} />
+                                )}
+                              </Link>
+                              {user.username}
+                            </User>
+                          );
+                        })}
+                      </>
+                    )}
                   </>
                 ) : (
                   <>
                     <p>{user.username} has no friends yet</p>
-                    {loggedIn && (
+                    {currentUser && (
                       <FriendBtn onClick={addFriend} disabled={clicked}>
                         Add Friend
                       </FriendBtn>
@@ -344,6 +324,7 @@ const Card = styled.div`
   }
   p {
     text-align: center;
+    margin-bottom: 10px;
   }
 `;
 

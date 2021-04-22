@@ -16,7 +16,7 @@ export const PlantProfile = () => {
   const plants = useSelector(plantsArray);
   const [plant, setPlant] = useState([]);
   const { id } = useParams();
-  const { loggedIn } = useContext(LoginContext);
+  const { currentUser } = useContext(LoginContext);
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -81,7 +81,7 @@ export const PlantProfile = () => {
                   <FaPaw /> <p>pet friendly</p>
                 </Toxicity>
               )}
-              {loggedIn && (
+              {currentUser && (
                 <Sizer>
                   <ActionBar id={plant._id} />
                 </Sizer>

@@ -15,12 +15,13 @@ import { COLORS } from "../GlobalStyles";
 
 export const Navbar = () => {
   const history = useHistory();
-  const { loggedIn, setLoggedIn } = useContext(LoginContext);
+  const { currentUser, setCurrentUser, setLoggedIn } = useContext(LoginContext);
 
   const handleLogout = (ev) => {
     ev.preventDefault();
+    setCurrentUser(undefined);
     setLoggedIn(false);
-    history.push("/login");
+    history.push("/");
   };
 
   return (
@@ -37,27 +38,27 @@ export const Navbar = () => {
           <BiSearch />
         </Icon>
       </Link>
-      {loggedIn ? (
+      {currentUser ? (
         <>
-          <Link to={`/user-profile/${loggedIn.username}`}>
+          <Link to={`/user-profile/${currentUser.username}`}>
             <Label>profile</Label>
             <Icon>
               <BsPerson />
             </Icon>
           </Link>
-          <Link to={`/user-collection/${loggedIn.username}`}>
+          <Link to={`/user-collection/${currentUser.username}`}>
             <Label>collection</Label>
             <Icon>
               <RiPlantLine />
             </Icon>
           </Link>
-          <Link to={`/user-favorites/${loggedIn.username}`}>
+          <Link to={`/user-favorites/${currentUser.username}`}>
             <Label>favorites</Label>
             <Icon>
               <TiHeartOutline />
             </Icon>
           </Link>
-          <Link to={`/user-wishlist/${loggedIn.username}`}>
+          <Link to={`/user-wishlist/${currentUser.username}`}>
             <Label>wishlist</Label>
             <Icon>
               <MdStarBorder />

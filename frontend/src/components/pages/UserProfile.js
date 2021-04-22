@@ -18,7 +18,7 @@ export const UserProfile = () => {
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [username]);
 
   useEffect(() => {
     setUser(users.find((user) => user.username === username));

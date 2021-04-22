@@ -11,8 +11,8 @@ import { COLORS } from "../../GlobalStyles";
 export const SimplePlantList = ({ username, list, title }) => {
   const plants = useSelector(plantsArray);
   const users = useSelector(usersArray);
-  const [user, setUser] = useState([]);
-  const { loggedIn } = useContext(LoginContext);
+  const [user, setUser] = useState(undefined);
+  const { currentUser } = useContext(LoginContext);
 
   useEffect(() => {
     setUser(users.find((user) => user.username === username));
@@ -21,7 +21,7 @@ export const SimplePlantList = ({ username, list, title }) => {
   // SETS USER'S PLANTS TO ACCESS THEIR PLANTS' DATA
   const [userPlants, setUserPlants] = useState(undefined);
   useEffect(() => {
-    if (plants && list && list.length > 0) {
+    if (user && plants && list && list.length > 0) {
       let tempArr = [];
       list.forEach((id) => {
         tempArr.push(plants.find((plant) => plant._id === id));
@@ -30,31 +30,40 @@ export const SimplePlantList = ({ username, list, title }) => {
     } else {
       setUserPlants(undefined);
     }
-  }, [list, plants]);
+    return () => {
+      setUserPlants(undefined);
+      setUser(undefined);
+    };
+  }, [setUser, list, plants, username, user, title]);
 
   return (
     <Wrapper>
-      <Heading to={`/user-${title}/${user.username}/`}>
-        {loggedIn && username === loggedIn.username ? (
-          <h2>
-            <>your {title}</>
-          </h2>
-        ) : (
-          <h2>their {title}</h2>
-        )}
-      </Heading>
-      <Plants>
-        {userPlants &&
-          userPlants.map((plant) => {
-            return (
-              <Plant key={plant._id}>
-                <Link to={`/plant-profile/${plant._id}`}>
-                  <img src={plant.image} alt={plant.name} />
-                </Link>
-              </Plant>
-            );
-          })}
-      </Plants>
+      {user && (
+        <>
+          <Heading to={`/user-${title}/${user.username}/`}>
+            {currentUser && username === currentUser.username ? (
+              <h2>
+                <>your {title}</>
+              </h2>
+            ) : (
+              <h2>their {title}</h2>
+            )}
+          </Heading>
+          <Plants>
+            {/* FIXME: TypeError: Cannot read property '_id' of undefined - when refreshing user's profile */}
+            {userPlants &&
+              userPlants.map((plant) => {
+                return (
+                  <Plant key={plant._id}>
+                    <Link to={`/plant-profile/${plant._id}`}>
+                      <img src={plant.image} alt={plant.name} />
+                    </Link>
+                  </Plant>
+                );
+              })}
+          </Plants>
+        </>
+      )}
     </Wrapper>
   );
 };

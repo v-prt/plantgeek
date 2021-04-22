@@ -21,6 +21,10 @@ const createUser = async (req, res) => {
       username: req.body.username,
       password: hashedPwd,
       joined: new Date(),
+      friends: [],
+      collection: [],
+      favorites: [],
+      wishlist: [],
     });
     assert.strictEqual(1, user.insertedCount);
     res.status(201).json({ status: 201, data: user });
