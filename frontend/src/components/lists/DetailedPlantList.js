@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { usersArray } from "../../reducers/userReducer";
+import { plantsArray } from "../../reducers/plantReducer.js";
 import { LoginContext } from "../../context/LoginContext";
 
 import styled from "styled-components";
@@ -15,11 +16,17 @@ import { ActionBar } from "../ActionBar";
 import { FeaturedPlants } from "../FeaturedPlants";
 
 export const DetailedPlantList = ({ title }) => {
+  const plants = useSelector(plantsArray);
   const users = useSelector(usersArray);
   const [user, setUser] = useState(undefined);
   const [list, setList] = useState(undefined);
   const { username } = useParams();
   const { loggedIn } = useContext(LoginContext);
+
+  // makes window scroll to top between renders
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     setUser(users.find((user) => user.username === username));
@@ -30,6 +37,20 @@ export const DetailedPlantList = ({ title }) => {
       setList(user[title]);
     }
   }, [title, user]);
+
+  // SETS USER'S PLANTS TO ACCESS THEIR PLANTS' DATA
+  const [userPlants, setUserPlants] = useState(undefined);
+  useEffect(() => {
+    if (plants && list && list.length > 0) {
+      let tempArr = [];
+      list.forEach((id) => {
+        tempArr.push(plants.find((plant) => plant._id === id));
+      });
+      setUserPlants(tempArr);
+    } else {
+      setUserPlants(undefined);
+    }
+  }, [list, plants]);
 
   return (
     <Wrapper>
@@ -47,8 +68,8 @@ export const DetailedPlantList = ({ title }) => {
           </Heading>
           {user[title] && user[title].length > 0 ? (
             <Plants>
-              {list &&
-                list.map((plant) => {
+              {userPlants &&
+                userPlants.map((plant) => {
                   return (
                     <Plant key={plant._id}>
                       <Div>

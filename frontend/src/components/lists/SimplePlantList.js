@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useSelector } from "react-redux";
 import { usersArray } from "../../reducers/userReducer";
+import { plantsArray } from "../../reducers/plantReducer.js";
 import { Link } from "react-router-dom";
 import { LoginContext } from "../../context/LoginContext";
 
@@ -8,6 +9,7 @@ import styled from "styled-components";
 import { COLORS } from "../../GlobalStyles";
 
 export const SimplePlantList = ({ username, list, title }) => {
+  const plants = useSelector(plantsArray);
   const users = useSelector(usersArray);
   const [user, setUser] = useState([]);
   const { loggedIn } = useContext(LoginContext);
@@ -15,6 +17,20 @@ export const SimplePlantList = ({ username, list, title }) => {
   useEffect(() => {
     setUser(users.find((user) => user.username === username));
   }, [users, user, username]);
+
+  // SETS USER'S PLANTS TO ACCESS THEIR PLANTS' DATA
+  const [userPlants, setUserPlants] = useState(undefined);
+  useEffect(() => {
+    if (plants && list && list.length > 0) {
+      let tempArr = [];
+      list.forEach((id) => {
+        tempArr.push(plants.find((plant) => plant._id === id));
+      });
+      setUserPlants(tempArr);
+    } else {
+      setUserPlants(undefined);
+    }
+  }, [list, plants]);
 
   return (
     <Wrapper>
@@ -28,8 +44,8 @@ export const SimplePlantList = ({ username, list, title }) => {
         )}
       </Heading>
       <Plants>
-        {list &&
-          list.map((plant) => {
+        {userPlants &&
+          userPlants.map((plant) => {
             return (
               <Plant key={plant._id}>
                 <Link to={`/plant-profile/${plant._id}`}>

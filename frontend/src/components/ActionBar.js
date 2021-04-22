@@ -32,7 +32,6 @@ export const ActionBar = ({ id }) => {
     };
   }, [users, plants, id, loggedIn.username]);
 
-  // FIXME: add plant id to user's lists, then access plant data by id (otherwise user's plant data would always be whatever it was at the time it was added)
   const handleList = (list) => {
     let data;
     if (list === user.collection) {
@@ -41,21 +40,21 @@ export const ActionBar = ({ id }) => {
       setTimeout(() => {
         setClicked1(false);
       }, 3000);
-      data = { collection: plant };
+      data = { collection: plant._id };
     } else if (list === user.favorites) {
       setClicked2(true);
       setTimeout(() => {
         setClicked2(false);
       }, 3000);
-      data = { favorites: plant };
+      data = { favorites: plant._id };
     } else if (list === user.wishlist) {
       setClicked3(true);
       setTimeout(() => {
         setClicked3(false);
       }, 3000);
-      data = { wishlist: plant };
+      data = { wishlist: plant._id };
     }
-    if (list && list.find((el) => el.name === plant.name)) {
+    if (list && list.find((el) => el === plant._id)) {
       // REMOVES PLANT
       fetch(`/${loggedIn.username}/remove`, {
         method: "PUT",
@@ -118,7 +117,7 @@ export const ActionBar = ({ id }) => {
               disabled={clicked1}
               added={
                 user.collection &&
-                user.collection.find((el) => el.name === plant.name)
+                user.collection.find((el) => el === plant._id)
               }
             >
               <RiPlantLine />
@@ -127,8 +126,7 @@ export const ActionBar = ({ id }) => {
               onClick={() => handleList(user.favorites)}
               disabled={clicked2}
               added={
-                user.favorites &&
-                user.favorites.find((el) => el.name === plant.name)
+                user.favorites && user.favorites.find((el) => el === plant._id)
               }
             >
               <TiHeartOutline />
@@ -137,8 +135,7 @@ export const ActionBar = ({ id }) => {
               onClick={() => handleList(user.wishlist)}
               disabled={clicked3}
               added={
-                user.wishlist &&
-                user.wishlist.find((el) => el.name === plant.name)
+                user.wishlist && user.wishlist.find((el) => el === plant._id)
               }
             >
               <MdStarBorder />

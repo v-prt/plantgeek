@@ -78,7 +78,6 @@ export const Settings = () => {
           .catch((err) => {
             console.log(err);
           });
-        history.push(`/user-profile/${user.username}`);
       } else if (res.status === 404) {
         console.log("Something went wrong");
       }
@@ -108,6 +107,7 @@ export const Settings = () => {
   const deleteAccount = () => {
     console.log(user);
     // TODO: ask to confirm, delete account if yes
+    // history push to homepage
   };
 
   return (
