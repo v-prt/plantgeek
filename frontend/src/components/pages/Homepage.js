@@ -1,8 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { LoginContext } from "../../context/LoginContext";
-import { useSelector } from "react-redux";
-import { usersArray } from "../../reducers/userReducer";
 
 import styled from "styled-components";
 import { COLORS } from "../../GlobalStyles";
@@ -12,29 +10,24 @@ import placeholder from "../../assets/avatar-placeholder.png";
 import { FeaturedPlants } from "../FeaturedPlants";
 
 export const Homepage = () => {
-  const users = useSelector(usersArray);
-  const [user, setUser] = useState([]);
-  const { loggedIn } = useContext(LoginContext);
+  const { currentUser } = useContext(LoginContext);
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    if (loggedIn) {
-      setUser(users.find((user) => user.username === loggedIn.username));
-    }
-  }, [loggedIn, users]);
-
   // TODO: improve site info, fix lists, add more content to heading (profile info/image? stats? random tip?)
   return (
     <Wrapper>
       <Heading>
-        {loggedIn && user ? (
+        {currentUser ? (
           <Row>
-            <h1>welcome back, {user.username}</h1>
-            <img src={user.image ? user.image[0] : placeholder} alt="" />
+            <h1>welcome back, {currentUser.username}</h1>
+            <img
+              src={currentUser.image ? currentUser.image[0] : placeholder}
+              alt=""
+            />
           </Row>
         ) : (
           <h1>welcome to plantgeek</h1>
@@ -48,9 +41,9 @@ export const Homepage = () => {
         </Link>
         <li>view your plant's profile to learn how to care for it</li>
         <li>find out if your plant is pet friendly</li>
-        {loggedIn ? (
+        {currentUser ? (
           <>
-            <Link to={`/user-profile/${loggedIn.username}`}>
+            <Link to={`/user-profile/${currentUser.username}`}>
               <h2>
                 view your profile <RiArrowRightSFill />
               </h2>

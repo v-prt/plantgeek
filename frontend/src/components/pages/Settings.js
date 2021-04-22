@@ -1,31 +1,24 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
-import { usersArray } from "../../reducers/userReducer";
+import { useDispatch } from "react-redux";
 import { requestUsers, receiveUsers } from "../../actions.js";
 import { LoginContext } from "../../context/LoginContext";
 
 import styled from "styled-components";
 import { COLORS } from "../../GlobalStyles";
 import background from "../../assets/monstera-bg.jpg";
+import placeholder from "../../assets/avatar-placeholder.png";
 
 export const Settings = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const { loggedIn } = useContext(LoginContext);
-  const users = useSelector(usersArray);
-  const [user, setUser] = useState(undefined);
-
-  useEffect(() => {
-    setUser(users.find((user) => user.username === loggedIn.username));
-  }, [loggedIn, users]);
+  // const history = useHistory();
+  const { currentUser } = useContext(LoginContext);
 
   const [existingImage, setExistingImage] = useState(undefined);
   useEffect(() => {
-    if (user && user.image) {
-      setExistingImage(user.image[0]);
+    if (currentUser && currentUser.image) {
+      setExistingImage(currentUser.image[0]);
     }
-  }, [user]);
+  }, [currentUser]);
 
   const [url, setUrl] = useState("");
   const handleUrl = (ev) => {
@@ -36,7 +29,7 @@ export const Settings = () => {
     ev.preventDefault();
     // REMOVES EXISTING IMAGE
     if (existingImage) {
-      fetch(`/${user.username}/remove`, {
+      fetch(`/${currentUser.username}/remove`, {
         method: "PUT",
         body: JSON.stringify({ image: existingImage }),
         headers: {
@@ -60,7 +53,7 @@ export const Settings = () => {
       });
     }
     // ADDS NEW IMAGE
-    fetch(`/${user.username}/add`, {
+    fetch(`/${currentUser.username}/add`, {
       method: "PUT",
       body: JSON.stringify({ image: url }),
       headers: {
@@ -105,7 +98,7 @@ export const Settings = () => {
   };
 
   const deleteAccount = () => {
-    console.log(user);
+    console.log(currentUser);
     // TODO: ask to confirm, delete account if yes
     // history push to homepage
   };
@@ -115,12 +108,20 @@ export const Settings = () => {
       <Banner />
       <Heading>account settings</Heading>
       <UserDetails>
-        {user && user.image && <img src={user.image[0]} alt="" />}
-        {user && <p>{user.username}</p>}
+        {currentUser && (
+          <>
+            {currentUser.image ? (
+              <img src={currentUser.image[0]} alt="" />
+            ) : (
+              <img src={placeholder} alt="" />
+            )}
+            <p>{currentUser.username}</p>
+          </>
+        )}
       </UserDetails>
       <Options>
         <Option key="upload-image">
-          {user && user.image ? (
+          {currentUser && currentUser.image ? (
             <p>Change your profile image</p>
           ) : (
             <p>Upload a profile image</p>
@@ -133,7 +134,7 @@ export const Settings = () => {
           </form>
         </Option>
         <Option key="change-username">
-          {user && user.username && <p>Change your username</p>}
+          {currentUser && currentUser.username && <p>Change your username</p>}
           <form>
             <Input
               type="text"
@@ -146,7 +147,7 @@ export const Settings = () => {
           </form>
         </Option>
         <Option key="change-password">
-          {user && user.password && <p>Change your password</p>}
+          {currentUser && currentUser.password && <p>Change your password</p>}
           <form>
             <Input
               type="text"

@@ -9,8 +9,10 @@ import styled from "styled-components";
 import background from "../../assets/monstera-bg.jpg";
 import { COLORS } from "../../GlobalStyles";
 import { ImDroplet } from "react-icons/im";
-import { RiTempColdFill, RiCloudWindyLine } from "react-icons/ri";
+import { RiTempColdFill, RiCloudWindyLine, RiPlantLine } from "react-icons/ri";
 import { FaSun, FaPaw, FaSkullCrossbones } from "react-icons/fa";
+import { TiHeartOutline } from "react-icons/ti";
+import { MdStarBorder } from "react-icons/md";
 
 import { ActionBar } from "../ActionBar";
 import { FeaturedPlants } from "../FeaturedPlants";
@@ -21,7 +23,7 @@ export const DetailedPlantList = ({ title }) => {
   const [user, setUser] = useState(undefined);
   const [list, setList] = useState(undefined);
   const { username } = useParams();
-  const { loggedIn } = useContext(LoginContext);
+  const { currentUser } = useContext(LoginContext);
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -58,7 +60,7 @@ export const DetailedPlantList = ({ title }) => {
       {user && (
         <>
           <Heading>
-            {loggedIn && user.username === loggedIn.username ? (
+            {currentUser && user.username === currentUser.username ? (
               <>your {title}</>
             ) : (
               <>
@@ -68,7 +70,8 @@ export const DetailedPlantList = ({ title }) => {
           </Heading>
           {user[title] && user[title].length > 0 ? (
             <Plants>
-              {userPlants &&
+              {user &&
+                userPlants &&
                 userPlants.map((plant) => {
                   return (
                     <Plant key={plant._id}>
@@ -154,17 +157,44 @@ export const DetailedPlantList = ({ title }) => {
           ) : (
             <Alert>
               {title === "collection" && (
-                <p>
-                  Your collection is empty! Do you have any of these plants?
-                </p>
+                <>
+                  <p>
+                    Your collection is empty! Do you have any of these plants?
+                  </p>
+                  <Info>
+                    <Icon>
+                      <RiPlantLine />
+                    </Icon>
+                    Click this symbol to add it to your collection
+                  </Info>
+                </>
               )}
               {title === "favorites" && (
-                <p>
-                  You have no favorite plants! Do you love any of these plants?
-                </p>
+                <>
+                  <p>
+                    You have no favorite plants! Do you love any of these
+                    plants?
+                  </p>
+                  <Info>
+                    <Icon>
+                      <TiHeartOutline />
+                    </Icon>
+                    Click this symbol to add it to your favorites
+                  </Info>
+                </>
               )}
               {title === "wishlist" && (
-                <p>Your wishlist is empty! Do you want any of these plants?</p>
+                <>
+                  <p>
+                    Your wishlist is empty! Do you want any of these plants?
+                  </p>
+                  <Info>
+                    <Icon>
+                      <MdStarBorder />
+                    </Icon>
+                    Click this symbol to add it to your wishlist
+                  </Info>
+                </>
               )}
               <FeaturedPlants />
             </Alert>
@@ -180,6 +210,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  width: 100%;
 `;
 
 const Banner = styled.div`
@@ -286,8 +317,28 @@ const Indicator = styled.div`
 `;
 
 const Alert = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   p {
     text-align: center;
     margin: 20px;
   }
+`;
+
+const Info = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const Icon = styled.div`
+  background: ${COLORS.light};
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  margin: 0 10px;
+  border-radius: 50%;
+  padding: 5px;
 `;

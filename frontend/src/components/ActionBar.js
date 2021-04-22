@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { LoginContext } from "../context/LoginContext";
 import { plantsArray } from "../reducers/plantReducer";
-import { usersArray } from "../reducers/userReducer";
 import { requestUsers, receiveUsers } from "../actions.js";
 
 import styled from "styled-components";
@@ -13,9 +12,7 @@ import { MdStarBorder } from "react-icons/md";
 
 export const ActionBar = ({ id }) => {
   const dispatch = useDispatch();
-  const { loggedIn } = useContext(LoginContext);
-  const users = useSelector(usersArray);
-  const [user, setUser] = useState(undefined);
+  const { currentUser } = useContext(LoginContext);
   const plants = useSelector(plantsArray);
   const [plant, setPlant] = useState(undefined);
   const [clicked1, setClicked1] = useState(false);
@@ -23,31 +20,29 @@ export const ActionBar = ({ id }) => {
   const [clicked3, setClicked3] = useState(false);
 
   useEffect(() => {
-    setUser(users.find((user) => user.username === loggedIn.username));
     setPlant(plants.find((plant) => plant._id === id));
     // CLEANUP - PREVENTS MEMORY LEAK
     return () => {
-      setUser(undefined);
       setPlant(undefined);
     };
-  }, [users, plants, id, loggedIn.username]);
+  }, [plants, id]);
 
   const handleList = (list) => {
     let data;
-    if (list === user.collection) {
+    if (list === currentUser.collection) {
       // prevents spam
       setClicked1(true);
       setTimeout(() => {
         setClicked1(false);
       }, 3000);
       data = { collection: plant._id };
-    } else if (list === user.favorites) {
+    } else if (list === currentUser.favorites) {
       setClicked2(true);
       setTimeout(() => {
         setClicked2(false);
       }, 3000);
       data = { favorites: plant._id };
-    } else if (list === user.wishlist) {
+    } else if (list === currentUser.wishlist) {
       setClicked3(true);
       setTimeout(() => {
         setClicked3(false);
@@ -56,7 +51,7 @@ export const ActionBar = ({ id }) => {
     }
     if (list && list.find((el) => el === plant._id)) {
       // REMOVES PLANT
-      fetch(`/${loggedIn.username}/remove`, {
+      fetch(`/${currentUser.username}/remove`, {
         method: "PUT",
         body: JSON.stringify(data),
         headers: {
@@ -81,7 +76,7 @@ export const ActionBar = ({ id }) => {
       });
     } else {
       // ADDS PLANT
-      fetch(`/${loggedIn.username}/add`, {
+      fetch(`/${currentUser.username}/add`, {
         method: "PUT",
         body: JSON.stringify(data),
         headers: {
@@ -109,33 +104,35 @@ export const ActionBar = ({ id }) => {
 
   return (
     <>
-      {user && plant && (
+      {currentUser && plant && (
         <Wrapper>
           <>
             <Action
-              onClick={() => handleList(user.collection)}
+              onClick={() => handleList(currentUser.collection)}
               disabled={clicked1}
               added={
-                user.collection &&
-                user.collection.find((el) => el === plant._id)
+                currentUser.collection &&
+                currentUser.collection.find((el) => el === plant._id)
               }
             >
               <RiPlantLine />
             </Action>
             <Action
-              onClick={() => handleList(user.favorites)}
+              onClick={() => handleList(currentUser.favorites)}
               disabled={clicked2}
               added={
-                user.favorites && user.favorites.find((el) => el === plant._id)
+                currentUser.favorites &&
+                currentUser.favorites.find((el) => el === plant._id)
               }
             >
               <TiHeartOutline />
             </Action>
             <Action
-              onClick={() => handleList(user.wishlist)}
+              onClick={() => handleList(currentUser.wishlist)}
               disabled={clicked3}
               added={
-                user.wishlist && user.wishlist.find((el) => el === plant._id)
+                currentUser.wishlist &&
+                currentUser.wishlist.find((el) => el === plant._id)
               }
             >
               <MdStarBorder />

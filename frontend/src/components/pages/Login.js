@@ -16,7 +16,7 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const [incorrectUsername, setIncorrectUsername] = useState(undefined);
   const [incorrectPassword, setIncorrectPassword] = useState(undefined);
-  const { loggedIn, setLoggedIn } = useContext(LoginContext);
+  const { currentUser, setLoggedIn } = useContext(LoginContext);
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -26,10 +26,10 @@ export const Login = () => {
   // FOCUSES ON FIRST INPUT ON LOAD
   const input = useRef(null);
   useEffect(() => {
-    if (!loggedIn) {
+    if (!currentUser) {
       input.current.focus();
     }
-  }, [loggedIn, input]);
+  }, [currentUser, input]);
 
   const handleUsername = (ev) => {
     setUsername(ev.target.value);
@@ -82,8 +82,8 @@ export const Login = () => {
   return (
     <Wrapper>
       <Card>
-        {loggedIn ? (
-          <Alert>You're already logged in, {loggedIn.username}!</Alert>
+        {currentUser ? (
+          <Alert>You're already logged in, {currentUser.username}!</Alert>
         ) : (
           <>
             <SignUpLink to="/signup">Don't have an account? Sign up</SignUpLink>
