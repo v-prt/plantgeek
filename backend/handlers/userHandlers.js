@@ -70,7 +70,7 @@ const getUsers = async (req, res) => {
   client.close();
 };
 
-// (UPDATE/PUT) ADD A PLANT OR FRIEND TO USER'S PROFILE
+// (UPDATE/PUT) ADD A PLANT, FRIEND, OR IMAGE TO USER'S PROFILE
 const addToUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options);
   const username = req.params.username;
@@ -104,6 +104,12 @@ const addToUser = async (req, res) => {
           friends: req.body.friends,
         },
       };
+    } else if (req.body.image) {
+      update = {
+        $push: {
+          image: req.body.image,
+        },
+      };
     }
     const result = await users.updateOne(filter, update);
     res.status(200).json({
@@ -119,7 +125,7 @@ const addToUser = async (req, res) => {
   client.close();
 };
 
-// (UPDATE/PUT) REMOVE A PLANT OR FRIEND FROM USER'S PROFILE
+// (UPDATE/PUT) REMOVE A PLANT, FRIEND, OR IMAGE FROM USER'S PROFILE
 const removeFromUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options);
   const username = req.params.username;
@@ -151,6 +157,12 @@ const removeFromUser = async (req, res) => {
       update = {
         $pull: {
           friends: req.body.friends,
+        },
+      };
+    } else if (req.body.image) {
+      update = {
+        $pull: {
+          image: req.body.image,
         },
       };
     }

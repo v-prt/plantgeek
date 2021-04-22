@@ -31,6 +31,7 @@ export const Friends = () => {
   }, [users, loggedIn]);
 
   // CHECKS IF USERS ARE ALREADY FRIENDS
+  // FIXME: doesn't update properly between profiles
   const [alreadyFriends, setAlreadyFriends] = useState(undefined);
   useEffect(() => {
     if (currentUser && currentUser.friends && currentUser.friends.length > 0) {
@@ -363,6 +364,7 @@ const User = styled.div`
 `;
 
 const Avatar = styled.img`
+  height: 40px;
   width: 40px;
   margin: 5px 10px;
   border-radius: 50%;

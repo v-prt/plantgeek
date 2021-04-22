@@ -9,6 +9,7 @@ import { RiPlantLine } from "react-icons/ri";
 import { BsPerson } from "react-icons/bs";
 import { TiHeartOutline } from "react-icons/ti";
 import { MdStarBorder } from "react-icons/md";
+import { GoGear } from "react-icons/go";
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 
@@ -60,6 +61,12 @@ export const Navbar = () => {
             <Label>wishlist</Label>
             <Icon>
               <MdStarBorder />
+            </Icon>
+          </Link>
+          <Link to="/settings">
+            <Label>settings</Label>
+            <Icon>
+              <GoGear />
             </Icon>
           </Link>
           <LogoutBtn onClick={handleLogout}>

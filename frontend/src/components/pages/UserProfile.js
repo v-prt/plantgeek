@@ -29,7 +29,7 @@ export const UserProfile = () => {
       <Banner />
       {user && (
         <Div>
-          <Avatar src={user.avatar ? user.avatar : placeholder} alt="" />
+          <Avatar src={user.image ? user.image[0] : placeholder} alt="" />
           <Name>{user.username}</Name>
           <Joined>Joined: {moment(user.joined).format("ll")}</Joined>
           <Lists>
@@ -64,7 +64,7 @@ export const UserProfile = () => {
 
 const Wrapper = styled.div`
   background: ${COLORS.dark};
-  color: #fff;
+  color: #f2f2f2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -90,6 +90,8 @@ const Avatar = styled.img`
   height: 200px;
   width: 200px;
   border-radius: 50%;
+  border: 5px solid ${COLORS.light};
+  padding: 5px;
 `;
 
 const Name = styled.h1``;
@@ -97,7 +99,7 @@ const Name = styled.h1``;
 const Joined = styled.p``;
 
 const Lists = styled.section`
-  width: 80%;
+  width: 85%;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -6,7 +6,6 @@ import { LoginContext } from "../../context/LoginContext";
 
 import styled from "styled-components";
 import { COLORS } from "../../GlobalStyles";
-import { ActionBar } from "../ActionBar";
 
 export const SimplePlantList = ({ username, list, title }) => {
   const users = useSelector(usersArray);
@@ -36,7 +35,6 @@ export const SimplePlantList = ({ username, list, title }) => {
                 <Link to={`/plant-profile/${plant._id}`}>
                   <img src={plant.image} alt={plant.name} />
                 </Link>
-                <ActionBar id={plant._id} />
               </Plant>
             );
           })}
@@ -49,7 +47,6 @@ const Wrapper = styled.div`
   background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
-  width: 90%;
   margin: 20px;
   border-radius: 20px;
   overflow: hidden;
@@ -68,7 +65,7 @@ const Plants = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  padding: 10px 0;
+  padding: 10px;
 `;
 
 const Plant = styled.div`

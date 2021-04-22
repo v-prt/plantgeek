@@ -32,6 +32,7 @@ export const ActionBar = ({ id }) => {
     };
   }, [users, plants, id, loggedIn.username]);
 
+  // FIXME: add plant id to user's lists, then access plant data by id (otherwise user's plant data would always be whatever it was at the time it was added)
   const handleList = (list) => {
     let data;
     if (list === user.collection) {

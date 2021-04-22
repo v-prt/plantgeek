@@ -13,6 +13,7 @@ import { Homepage } from "./components/pages/Homepage";
 import { Browse } from "./components/pages/Browse";
 import { Login } from "./components/pages/Login";
 import { SignUp } from "./components/pages/SignUp";
+import { Settings } from "./components/pages/Settings";
 import { PlantProfile } from "./components/pages/PlantProfile";
 import { UserProfile } from "./components/pages/UserProfile";
 import { DetailedPlantList } from "./components/lists/DetailedPlantList";
@@ -70,6 +71,9 @@ export const App = () => {
           </Route>
           <Route exact path="/signup">
             <SignUp />
+          </Route>
+          <Route exact path="/settings">
+            <Settings />
           </Route>
           <Route path="/user-profile/:username">
             <UserProfile />
