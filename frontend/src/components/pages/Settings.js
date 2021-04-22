@@ -85,29 +85,92 @@ export const Settings = () => {
     });
   };
 
+  const [username, setUsername] = useState("");
+  const handleUsername = (ev) => {
+    setUsername(ev.target.value);
+  };
+
+  const changeUsername = () => {
+    // check if username is taken
+    // if not, update username
+    // else, show error
+  };
+
+  const [password, setPassword] = useState("");
+  const handlePassword = (ev) => {
+    setPassword(ev.target.value);
+  };
+
+  const changePassword = () => {
+    // update password
+  };
+
+  const deleteAccount = () => {
+    console.log(user);
+    // TODO: ask to confirm, delete account if yes
+  };
+
   return (
     <Wrapper>
       <Banner />
-      <Heading>profile settings</Heading>
-      <ImageUpload>
-        {user && user.image ? (
-          <h2>change your profile image</h2>
-        ) : (
-          <h2>upload a profile image</h2>
-        )}
-        <form>
-          <Input type="text" placeholder="image url" onChange={handleUrl} />
-          <Button type="submit" onClick={handleUpload}>
-            upload
+      <Heading>account settings</Heading>
+      <UserDetails>
+        {user && user.image && <img src={user.image[0]} alt="" />}
+        {user && <p>{user.username}</p>}
+      </UserDetails>
+      <Options>
+        <Option key="upload-image">
+          {user && user.image ? (
+            <p>Change your profile image</p>
+          ) : (
+            <p>Upload a profile image</p>
+          )}
+          <form>
+            <Input type="text" placeholder="image url" onChange={handleUrl} />
+            <Button type="submit" onClick={handleUpload}>
+              Upload
+            </Button>
+          </form>
+        </Option>
+        <Option key="change-username">
+          {user && user.username && <p>Change your username</p>}
+          <form>
+            <Input
+              type="text"
+              placeholder="new username"
+              onChange={handleUsername}
+            />
+            <Button type="submit" onClick={changeUsername} disabled={true}>
+              Change
+            </Button>
+          </form>
+        </Option>
+        <Option key="change-password">
+          {user && user.password && <p>Change your password</p>}
+          <form>
+            <Input
+              type="text"
+              placeholder="new password"
+              onChange={handlePassword}
+            />
+            <Button type="submit" onClick={changePassword} disabled={true}>
+              Change
+            </Button>
+          </form>
+        </Option>
+        <Option last={true}>
+          <p>Permanently delete your account</p>
+          <Button onClick={deleteAccount} disabled={true}>
+            Delete
           </Button>
-        </form>
-      </ImageUpload>
+        </Option>
+      </Options>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
-  background: #f2f2f2;
+  background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -123,11 +186,39 @@ const Banner = styled.div`
   width: 100%;
 `;
 
-const ImageUpload = styled.div`
-  margin: 20px;
+const UserDetails = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
+  img {
+    height: 150px;
+    border-radius: 50%;
+    margin: 20px;
+  }
+  p {
+    font-size: 2rem;
+  }
+`;
+
+const Options = styled.ul`
+  background: #f2f2f2;
+  width: 80%;
+  margin: 20px;
+  border-radius: 20px;
+  @media (max-width: 800px) {
+    width: 100%;
+    border-radius: 0px;
+  }
+`;
+
+const Option = styled.li`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: ${(props) => (props.last ? "none" : "1px dotted #ccc")};
+  padding: 10px;
+  @media (max-width: 800px) {
+    flex-direction: column;
+  }
 `;
 
 const Heading = styled.h1`
@@ -139,7 +230,8 @@ const Heading = styled.h1`
 `;
 
 const Input = styled.input`
-  padding: 5px;
+  height: 40px;
+  padding: 0 10px;
   margin: 5px;
   border: none;
   border-radius: 10px;
@@ -149,14 +241,21 @@ const Button = styled.button`
   background: ${COLORS.light};
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 40px;
   margin: 5px;
   border-radius: 10px;
-  padding: 5px;
   h2 {
     margin-right: 10px;
   }
   &:hover {
     background: ${COLORS.medium};
     color: #fff;
+  }
+  &:disabled {
+    cursor: not-allowed;
+    background: #ccc;
+    color: #000;
   }
 `;
