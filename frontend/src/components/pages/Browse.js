@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { COLORS } from "../../GlobalStyles";
 import background from "../../assets/monstera-bg.jpg";
 import { PlantCard } from "../PlantCard";
+import { BiSearch } from "react-icons/bi";
 
 export const Browse = () => {
   const plants = useSelector(plantsArray);
@@ -52,17 +53,38 @@ export const Browse = () => {
     setFilteredPlants(plants);
   }, [plants]);
   const handleFilter = (type) => {
-    let tempArr = [];
-    plants.forEach((plant) => {
-      if (plant.type === type) {
-        tempArr.push(plant);
-      }
-    });
-    setFilteredPlants(tempArr);
-    setSelectedType(type);
+    if (type === "pet friendly") {
+      setFilteredPlants(plants.filter((plant) => plant.toxic === false));
+      setSelectedType("pet friendly");
+    } else {
+      let tempArr = [];
+      plants.forEach((plant) => {
+        if (plant.type === type) {
+          tempArr.push(plant);
+        }
+      });
+      setFilteredPlants(tempArr);
+      setSelectedType(type);
+    }
   };
   const removeFilter = () => {
     setFilteredPlants(plants);
+    setSelectedType("all");
+  };
+
+  // SETS THE SEARCH VALUE
+  const [query, setQuery] = useState("");
+  const handleQuery = (ev) => {
+    setQuery(ev.target.value);
+  };
+
+  const handleSearch = (ev) => {
+    ev.preventDefault();
+    setFilteredPlants(
+      plants.filter(
+        (plant) => plant.name.includes(query) || plant.type.includes(query)
+      )
+    );
     setSelectedType("all");
   };
 
@@ -73,7 +95,16 @@ export const Browse = () => {
           <Banner />
           <Main>
             <Actions>
-              <Search type="text" placeholder="search plants" />
+              <Search>
+                <input
+                  type="text"
+                  placeholder="search houseplants"
+                  onChange={handleQuery}
+                />
+                <button type="submit" onClick={handleSearch}>
+                  <BiSearch />
+                </button>
+              </Search>
               <Filter>
                 <h2>filter plants</h2>
                 <Types>
@@ -87,11 +118,8 @@ export const Browse = () => {
                     </Type>
                     <Type
                       key="pet friendly"
-                      onClick={() =>
-                        setFilteredPlants(
-                          plants.filter((plant) => plant.toxic === false)
-                        )
-                      }
+                      onClick={() => handleFilter("pet friendly")}
+                      active={selectedType === "pet friendly"}
                     >
                       pet friendly
                     </Type>
@@ -145,29 +173,41 @@ const Main = styled.main`
 `;
 
 const Actions = styled.div`
-  width: 25%;
+  width: 250px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px;
   @media (max-width: 1000px) {
-    width: 100%;
+    width: calc(100% - 50px);
   }
 `;
 
-const Search = styled.input`
-  width: calc(100% - 50px);
-  margin: 20px;
+const Search = styled.form`
+  background: #fff;
+  width: 100%;
+  height: 50px;
   border: 2px solid ${COLORS.light};
   border-radius: 20px;
-  &:focus {
-    outline: none;
-    border: 2px solid ${COLORS.medium};
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  input {
+    border: none;
+    &:focus {
+      outline: none;
+    }
+  }
+  button {
+    margin-right: 10px;
+    padding-top: 5px;
+    font-size: 1.7rem;
   }
 `;
 
 const Filter = styled.div`
-  width: calc(100% - 50px);
-  padding-bottom: 20px;
+  width: 100%;
+  margin-top: 20px;
   h2 {
     margin-left: 5px;
   }
@@ -177,7 +217,6 @@ const Filter = styled.div`
 `;
 
 const Types = styled.ul`
-  width: 100%;
   display: flex;
   flex-direction: column;
   div {
