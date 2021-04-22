@@ -125,6 +125,7 @@ const Needs = styled.div`
   flex-direction: column;
   background: #f2f2f2;
   border-radius: 20px;
+  overflow: hidden;
   h2 {
     margin: 10px 0 0 20px;
   }

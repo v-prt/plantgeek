@@ -31,7 +31,7 @@ export const Homepage = () => {
   return (
     <Wrapper>
       <Heading>
-        {loggedIn ? (
+        {loggedIn && user ? (
           <Row>
             <h1>welcome back, {user.username}</h1>
             <img src={user.image ? user.image[0] : placeholder} alt="" />
@@ -121,7 +121,7 @@ const Heading = styled.section`
   width: 80%;
   display: flex;
   justify-content: flex-end;
-  margin: 15px 30px;
+  margin-top: 30px;
   border-radius: 20px;
   padding: 30px;
   h1 {
@@ -143,7 +143,7 @@ const Row = styled.div`
 const InfoCard = styled.section`
   background: #fff;
   width: 80%;
-  margin: 15px 30px;
+  margin: 30px;
   border-radius: 20px;
   padding: 0 30px 20px 30px;
   h2 {

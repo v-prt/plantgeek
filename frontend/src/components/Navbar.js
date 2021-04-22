@@ -132,11 +132,14 @@ const LogoutBtn = styled.button`
   color: #fff;
   display: flex;
   align-items: center;
-  &.active {
+  span {
+    font-size: 1rem;
+  }
+  &:hover {
     color: ${COLORS.light};
   }
   &:focus {
-    // TODO: need focus
+    color: ${COLORS.light};
   }
 `;
 
@@ -159,7 +162,7 @@ const Label = styled.span`
   }
 `;
 
-const Icon = styled.span`
+const Icon = styled.div`
   font-size: 2rem;
   margin: 10px 10px 0 10px;
 `;

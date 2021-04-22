@@ -31,7 +31,6 @@ export const DetailedPlantList = ({ title }) => {
     }
   }, [title, user]);
 
-  // TODO: add information about icons and plant needs
   return (
     <Wrapper>
       <Banner />
@@ -132,7 +131,7 @@ export const DetailedPlantList = ({ title }) => {
                 })}
             </Plants>
           ) : (
-            <>
+            <Alert>
               {title === "collection" && (
                 <p>
                   Your collection is empty! Do you have any of these plants?
@@ -147,7 +146,7 @@ export const DetailedPlantList = ({ title }) => {
                 <p>Your wishlist is empty! Do you want any of these plants?</p>
               )}
               <FeaturedPlants />
-            </>
+            </Alert>
           )}
         </>
       )}
@@ -172,7 +171,9 @@ const Heading = styled.h1`
   background: ${COLORS.medium};
   color: #fff;
   width: 100%;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-bottom: 3px solid ${COLORS.light};
 `;
 
@@ -181,7 +182,7 @@ const Plants = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  padding-top: 10px;
+  padding: 10px 0;
 `;
 
 const Plant = styled.div`
@@ -261,4 +262,11 @@ const Indicator = styled.div`
   width: ${(props) => props.level === "2" && "50%"};
   width: ${(props) => props.level === "2-3" && "80%"};
   width: ${(props) => props.level === "3" && "100%"};
+`;
+
+const Alert = styled.div`
+  p {
+    text-align: center;
+    margin: 20px;
+  }
 `;
