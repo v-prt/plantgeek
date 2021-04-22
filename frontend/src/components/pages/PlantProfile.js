@@ -10,6 +10,7 @@ import { FaPaw, FaSkullCrossbones } from "react-icons/fa";
 import background from "../../assets/monstera-bg.jpg";
 
 import { ActionBar } from "../ActionBar";
+import { Comments } from "../Comments";
 
 export const PlantProfile = () => {
   const plants = useSelector(plantsArray);
@@ -33,56 +34,61 @@ export const PlantProfile = () => {
         <Div>
           <Image src={plant.image} alt="" />
           <Name>{plant.name}</Name>
-          <Needs>
-            <h2>needs</h2>
-            <Info>{plant.light} light</Info>
-            <Bar>
-              {plant.light === "low to bright indirect" && (
-                <Indicator level={"1-3"} />
+          <ResponsiveDiv>
+            <Needs>
+              <h2>needs</h2>
+              <Info>{plant.light} light</Info>
+              <Bar>
+                {plant.light === "low to bright indirect" && (
+                  <Indicator level={"1-3"} />
+                )}
+                {plant.light === "medium indirect" && <Indicator level={"2"} />}
+                {plant.light === "medium to bright indirect" && (
+                  <Indicator level={"2-3"} />
+                )}
+                {plant.light === "bright indirect" && <Indicator level={"3"} />}
+              </Bar>
+              <Info>{plant.water} water</Info>
+              <Bar>
+                {plant.water === "low" && <Indicator level={"1"} />}
+                {plant.water === "low to medium" && <Indicator level={"1-2"} />}
+                {plant.water === "medium" && <Indicator level={"2"} />}
+                {plant.water === "medium to high" && (
+                  <Indicator level={"2-3"} />
+                )}
+                {plant.water === "high" && <Indicator level={"3"} />}
+              </Bar>
+              <Info>{plant.temperature} temperature</Info>
+              <Bar>
+                {plant.temperature === "average" && <Indicator level={"1-2"} />}
+                {plant.temperature === "above average" && (
+                  <Indicator level={"2-3"} />
+                )}
+              </Bar>
+              <Info>{plant.humidity} humidity</Info>
+              <Bar>
+                {plant.humidity === "average" && <Indicator level={"1-2"} />}
+                {plant.humidity === "above average" && (
+                  <Indicator level={"2-3"} />
+                )}
+              </Bar>
+              {plant.toxic ? (
+                <Toxicity toxic={true}>
+                  <FaSkullCrossbones /> <p>not pet friendly</p>
+                </Toxicity>
+              ) : (
+                <Toxicity toxic={false}>
+                  <FaPaw /> <p>pet friendly</p>
+                </Toxicity>
               )}
-              {plant.light === "medium indirect" && <Indicator level={"2"} />}
-              {plant.light === "medium to bright indirect" && (
-                <Indicator level={"2-3"} />
+              {loggedIn && (
+                <Sizer>
+                  <ActionBar id={plant._id} />
+                </Sizer>
               )}
-              {plant.light === "bright indirect" && <Indicator level={"3"} />}
-            </Bar>
-            <Info>{plant.water} water</Info>
-            <Bar>
-              {plant.water === "low" && <Indicator level={"1"} />}
-              {plant.water === "low to medium" && <Indicator level={"1-2"} />}
-              {plant.water === "medium" && <Indicator level={"2"} />}
-              {plant.water === "medium to high" && <Indicator level={"2-3"} />}
-              {plant.water === "high" && <Indicator level={"3"} />}
-            </Bar>
-            <Info>{plant.temperature} temperature</Info>
-            <Bar>
-              {plant.temperature === "average" && <Indicator level={"1-2"} />}
-              {plant.temperature === "above average" && (
-                <Indicator level={"2-3"} />
-              )}
-            </Bar>
-            <Info>{plant.humidity} humidity</Info>
-            <Bar>
-              {plant.humidity === "average" && <Indicator level={"1-2"} />}
-              {plant.humidity === "above average" && (
-                <Indicator level={"2-3"} />
-              )}
-            </Bar>
-            {plant.toxic ? (
-              <Toxicity toxic={true}>
-                <FaSkullCrossbones /> <p>not pet friendly</p>
-              </Toxicity>
-            ) : (
-              <Toxicity toxic={false}>
-                <FaPaw /> <p>pet friendly</p>
-              </Toxicity>
-            )}
-            {loggedIn && (
-              <Sizer>
-                <ActionBar id={plant._id} />
-              </Sizer>
-            )}
-          </Needs>
+            </Needs>
+            <Comments />
+          </ResponsiveDiv>
         </Div>
       )}
     </Wrapper>
@@ -120,10 +126,18 @@ const Image = styled.img`
 
 const Name = styled.h1``;
 
+const ResponsiveDiv = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+`;
+
 const Needs = styled.div`
   display: flex;
   flex-direction: column;
   background: #f2f2f2;
+  margin: 15px;
   border-radius: 20px;
   overflow: hidden;
   h2 {

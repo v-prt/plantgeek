@@ -211,6 +211,7 @@ const Options = styled.ul`
 `;
 
 const Option = styled.li`
+  color: ${(props) => (props.last ? "#cc0000" : "")};
   display: flex;
   align-items: center;
   justify-content: space-between;

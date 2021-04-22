@@ -193,6 +193,7 @@ const Search = styled.form`
   justify-content: space-between;
   overflow: hidden;
   input {
+    width: 90%;
     border: none;
     &:focus {
       outline: none;
@@ -202,6 +203,9 @@ const Search = styled.form`
     margin-right: 10px;
     padding-top: 5px;
     font-size: 1.7rem;
+    &:hover {
+      color: ${COLORS.light};
+    }
   }
 `;
 
