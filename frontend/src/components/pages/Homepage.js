@@ -34,7 +34,7 @@ export const Homepage = () => {
         {loggedIn ? (
           <Row>
             <h1>welcome back, {user.username}</h1>
-            <img src={user.avatar ? user.avatar : placeholder} alt="" />
+            <img src={user.image ? user.image[0] : placeholder} alt="" />
           </Row>
         ) : (
           <h1>welcome to plantgeek</h1>
