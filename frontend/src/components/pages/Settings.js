@@ -189,14 +189,15 @@ const Banner = styled.div`
 
 const UserDetails = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   img {
     height: 150px;
     border-radius: 50%;
-    margin: 20px;
+    margin-top: 20px;
   }
   p {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 `;
 

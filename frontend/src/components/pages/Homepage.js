@@ -40,7 +40,9 @@ export const Homepage = () => {
           </h2>
         </Link>
         <li>view your plant's profile to learn how to care for it</li>
-        <li>find out if your plant is pet friendly</li>
+        <li>
+          find out if your plant is pet friendly (look for the toxicity symbol)
+        </li>
         {currentUser ? (
           <>
             <Link to={`/user-profile/${currentUser.username}`}>
@@ -49,11 +51,11 @@ export const Homepage = () => {
               </h2>
             </Link>
             <li>
-              view your own collection and quickly refer to your plants' needs
+              manage your collection and quickly refer to your plants' needs
             </li>
             <li>keep a list of your favorite plants</li>
             <li>add plants you would like to own to your wishlist</li>
-            <li>see your friends</li>
+            <li>view your friends</li>
           </>
         ) : (
           <>
@@ -62,14 +64,14 @@ export const Homepage = () => {
                 create an account <RiArrowRightSFill />
               </h2>
             </Link>
-            <p>keep a list of your own houseplant collection</p>
+            <li>keep a list of your own houseplant collection</li>
             <li>quickly view your plant's needs</li>
-            <li>upload photos of your own plants</li>
-            <p>save your favorite plants</p>
-            <p>create a wishlist</p>
-            <p>make friends</p>
-            <li>find users who like similar plants</li>
-            <li>share plant care tips with other users</li>
+            <li>save your favorite plants</li>
+            <li>create a wishlist</li>
+            <li>add your friends</li>
+            <li>
+              chat with other users about plants and share tips with each other
+            </li>
           </>
         )}
       </InfoCard>
