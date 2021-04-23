@@ -87,7 +87,7 @@ export const PlantProfile = () => {
                 </Sizer>
               )}
             </Needs>
-            <Comments />
+            <Comments plant={plant} />
           </ResponsiveDiv>
         </Div>
       )}

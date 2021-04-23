@@ -13,7 +13,11 @@ const {
   addToUser,
   removeFromUser,
 } = require("./handlers/userHandlers");
-const { getPlants, getPlant } = require("./handlers/plantHandlers");
+const {
+  getPlants,
+  getPlant,
+  postComment,
+} = require("./handlers/plantHandlers");
 
 const PORT = 4000;
 
@@ -40,6 +44,7 @@ express()
   .put("/:username/remove", removeFromUser)
   .get("/plants", getPlants)
   .get("/plants/:_id", getPlant)
+  .put("/plants/:_id/comments", postComment)
 
   // CATCH-ALL ENDPOINT
   .get("*", (req, res) => {

@@ -1,9 +1,14 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { requestPlants, receivePlants } from "../actions.js";
+
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
 import { BiSend } from "react-icons/bi";
 
-export const Comments = () => {
+export const Comments = ({ plant }) => {
+  const dispatch = useDispatch();
+
   const [comment, setComment] = useState("");
   const handleComment = (ev) => {
     setComment(ev.target.value);
@@ -11,6 +16,29 @@ export const Comments = () => {
 
   const submitComment = (ev) => {
     ev.preventDefault();
+    fetch(`/plants/${plant._id}/comments`, {
+      method: "PUT",
+      body: JSON.stringify({ comments: comment }),
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+      },
+    }).then((res) => {
+      if (res.status === 200) {
+        console.log(`Posted a new comment about ${plant.name}`);
+        dispatch(requestPlants());
+        fetch("/plants")
+          .then((res) => res.json())
+          .then((json) => {
+            dispatch(receivePlants(json.data));
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else if (res.status === 404) {
+        console.log("Something went wrong");
+      }
+    });
   };
 
   return (
