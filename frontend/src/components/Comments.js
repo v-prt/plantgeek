@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { requestPlants, receivePlants } from "../actions.js";
+import { LoginContext } from "../context/LoginContext";
 
 import styled from "styled-components";
 import { COLORS } from "../GlobalStyles";
@@ -8,6 +10,7 @@ import { BiSend } from "react-icons/bi";
 
 export const Comments = ({ plant }) => {
   const dispatch = useDispatch();
+  const { currentUser } = useContext(LoginContext);
 
   const [comment, setComment] = useState("");
   const handleComment = (ev) => {
@@ -18,7 +21,9 @@ export const Comments = ({ plant }) => {
     ev.preventDefault();
     fetch(`/plants/${plant._id}/comments`, {
       method: "PUT",
-      body: JSON.stringify({ comments: comment }),
+      body: JSON.stringify({
+        comments: { comment: comment, username: currentUser.username },
+      }),
       headers: {
         Accept: "application/json",
         "Content-type": "application/json",
@@ -26,6 +31,7 @@ export const Comments = ({ plant }) => {
     }).then((res) => {
       if (res.status === 200) {
         console.log(`Posted a new comment about ${plant.name}`);
+        setComment("");
         dispatch(requestPlants());
         fetch("/plants")
           .then((res) => res.json())
@@ -49,12 +55,28 @@ export const Comments = ({ plant }) => {
           type="text"
           onChange={handleComment}
           placeholder="do you have any questions or tips you would like to share?"
+          value={comment}
         />
         <button type="submit" onClick={submitComment}>
           <BiSend />
         </button>
       </form>
-      <div>render all comments here</div>
+      {plant.comments ? (
+        <>
+          {plant.comments.map((comment) => {
+            return (
+              <Card key={comment}>
+                <Username to={`/user-profile/${comment.username}`}>
+                  {comment.username}
+                </Username>
+                <Comment>{comment.comment}</Comment>
+              </Card>
+            );
+          })}
+        </>
+      ) : (
+        <Card>no comments yet</Card>
+      )}
     </Wrapper>
   );
 };
@@ -65,16 +87,20 @@ const Wrapper = styled.section`
   flex-direction: column;
   border-radius: 20px;
   margin: 15px;
-  padding: 20px;
+  padding: 10px 20px;
   width: 300px;
+  h2 {
+    margin-bottom: 5px;
+  }
   form {
     background: #fff;
     height: 100px;
     width: 100%;
-    border: 2px solid ${COLORS.light};
-    border-radius: 20px;
     display: flex;
     justify-content: space-between;
+    margin: 10px 0;
+    border: 2px solid ${COLORS.light};
+    border-radius: 20px;
     overflow: hidden;
     textarea {
       width: 90%;
@@ -95,4 +121,19 @@ const Wrapper = styled.section`
       }
     }
   }
+`;
+
+const Card = styled.div`
+  background: #fff;
+  margin: 5px 0;
+  border-radius: 20px;
+  padding: 10px;
+`;
+
+const Username = styled(Link)`
+  font-size: 0.8rem;
+`;
+
+const Comment = styled.p`
+  color: #333;
 `;

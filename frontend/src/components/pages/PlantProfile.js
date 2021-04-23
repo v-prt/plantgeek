@@ -134,9 +134,10 @@ const ResponsiveDiv = styled.div`
 `;
 
 const Needs = styled.div`
+  background: #f2f2f2;
+  height: fit-content;
   display: flex;
   flex-direction: column;
-  background: #f2f2f2;
   margin: 15px;
   border-radius: 20px;
   overflow: hidden;
