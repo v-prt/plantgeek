@@ -1,7 +1,7 @@
 # plantgeek
 
 ### an app for houseplant lovers
-- [Video Tour](https://drive.google.com/file/d/1dgOxPwHq7GW33dQjWKoTZAOVQHgwteT_/view?usp=sharing)
+- [Video Tour](https://youtu.be/_LXWqhxIMrQ)
 
 ## Feature Summary
 ### Plants
