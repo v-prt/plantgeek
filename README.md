@@ -31,6 +31,7 @@
 <img width="800" alt="Screen Shot 2021-04-22 at 9 08 57 PM" src="https://user-images.githubusercontent.com/73324816/115817092-03020380-a3af-11eb-8c5a-f1614e8c6c2f.png">
 
 ## Sign Up
+- [x] backend password encryption
 <img width="800" alt="Screen Shot 2021-04-22 at 9 14 48 PM" src="https://user-images.githubusercontent.com/73324816/115817559-f205c200-a3af-11eb-93ca-42d05d8562f8.png">
 
 ## Log In
