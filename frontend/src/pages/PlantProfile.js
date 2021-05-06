@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { plantsArray } from "../../reducers/plantReducer";
-import { LoginContext } from "../../context/LoginContext";
+import { plantsArray } from "../reducers/plantReducer";
+import { LoginContext } from "../context/LoginContext";
 
 import styled from "styled-components";
-import { COLORS } from "../../GlobalStyles";
+import { COLORS } from "../GlobalStyles";
 import { FaPaw, FaSkullCrossbones } from "react-icons/fa";
-import background from "../../assets/monstera-bg.jpg";
+import background from "../assets/monstera-bg.jpg";
 
-import { ActionBar } from "../ActionBar";
-import { Comments } from "../Comments";
+import { ActionBar } from "../components/ActionBar";
+import { Comments } from "../components/Comments";
 
 export const PlantProfile = () => {
   const plants = useSelector(plantsArray);

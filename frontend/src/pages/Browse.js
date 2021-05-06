@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { plantsArray } from "../../reducers/plantReducer";
+import { plantsArray } from "../reducers/plantReducer";
 
 import styled from "styled-components";
-import { COLORS } from "../../GlobalStyles";
-import background from "../../assets/monstera-bg.jpg";
-import { PlantCard } from "../PlantCard";
+import { COLORS } from "../GlobalStyles";
+import background from "../assets/monstera-bg.jpg";
+import { PlantCard } from "../components/PlantCard";
 import { BiSearch } from "react-icons/bi";
 
 export const Browse = () => {

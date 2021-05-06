@@ -1,13 +1,13 @@
 import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { LoginContext } from "../../context/LoginContext";
+import { LoginContext } from "../context/LoginContext";
 
 import styled from "styled-components";
-import { COLORS } from "../../GlobalStyles";
+import { COLORS } from "../GlobalStyles";
 import { RiArrowRightSFill } from "react-icons/ri";
-import placeholder from "../../assets/avatar-placeholder.png";
+import placeholder from "../assets/avatar-placeholder.png";
 
-import { FeaturedPlants } from "../FeaturedPlants";
+import { FeaturedPlants } from "../components/FeaturedPlants";
 
 export const Homepage = () => {
   const { currentUser } = useContext(LoginContext);

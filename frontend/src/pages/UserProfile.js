@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { usersArray } from "../../reducers/userReducer";
+import { usersArray } from "../reducers/userReducer";
 import styled from "styled-components";
-import { COLORS } from "../../GlobalStyles";
-import background from "../../assets/monstera-bg.jpg";
-import placeholder from "../../assets/avatar-placeholder.png";
+import { COLORS } from "../GlobalStyles";
+import background from "../assets/monstera-bg.jpg";
+import placeholder from "../assets/avatar-placeholder.png";
 import moment from "moment";
-import { SimplePlantList } from "../lists/SimplePlantList";
-import { Friends } from "../Friends";
+import { SimplePlantList } from "../components/lists/SimplePlantList";
+import { Friends } from "../components/Friends";
 
 export const UserProfile = () => {
   const users = useSelector(usersArray);

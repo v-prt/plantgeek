@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { usersArray } from "../../reducers/userReducer";
-import { LoginContext } from "../../context/LoginContext";
+import { usersArray } from "../reducers/userReducer";
+import { LoginContext } from "../context/LoginContext";
 
 import styled from "styled-components";
-import { COLORS } from "../../GlobalStyles";
-import background from "../../assets/monstera-bg.jpg";
+import { COLORS } from "../GlobalStyles";
+import background from "../assets/monstera-bg.jpg";
 
 export const Login = () => {
   const history = useHistory();

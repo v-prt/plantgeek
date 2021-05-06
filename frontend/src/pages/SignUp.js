@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { usersArray } from "../../reducers/userReducer";
-import { requestUsers, receiveUsers } from "../../actions.js";
+import { usersArray } from "../reducers/userReducer";
+import { requestUsers, receiveUsers } from "../actions.js";
 
 import styled from "styled-components";
-import { COLORS } from "../../GlobalStyles";
+import { COLORS } from "../GlobalStyles";
 import { TiHeartOutline } from "react-icons/ti";
 import { MdStarBorder } from "react-icons/md";
 import { RiPlantLine } from "react-icons/ri";
-import background from "../../assets/monstera-bg.jpg";
+import background from "../assets/monstera-bg.jpg";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 
 export const SignUp = () => {

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useDispatch } from "react-redux";
-import { requestUsers, receiveUsers } from "../../actions.js";
-import { LoginContext } from "../../context/LoginContext";
+import { requestUsers, receiveUsers } from "../actions.js";
+import { LoginContext } from "../context/LoginContext";
 
 import styled from "styled-components";
-import { COLORS } from "../../GlobalStyles";
-import background from "../../assets/monstera-bg.jpg";
-import placeholder from "../../assets/avatar-placeholder.png";
+import { COLORS } from "../GlobalStyles";
+import background from "../assets/monstera-bg.jpg";
+import placeholder from "../assets/avatar-placeholder.png";
 
 export const Settings = () => {
   const dispatch = useDispatch();

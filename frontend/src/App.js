@@ -3,13 +3,13 @@ import { usePlantsFetcher, useUsersFetcher } from "./utilities/fetch";
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
-import { Homepage } from "./components/pages/Homepage";
-import { Browse } from "./components/pages/Browse";
-import { Login } from "./components/pages/Login";
-import { SignUp } from "./components/pages/SignUp";
-import { Settings } from "./components/pages/Settings";
-import { PlantProfile } from "./components/pages/PlantProfile";
-import { UserProfile } from "./components/pages/UserProfile";
+import { Homepage } from "./pages/Homepage";
+import { Browse } from "./pages/Browse";
+import { Login } from "./pages/Login";
+import { SignUp } from "./pages/SignUp";
+import { Settings } from "./pages/Settings";
+import { PlantProfile } from "./pages/PlantProfile";
+import { UserProfile } from "./pages/UserProfile";
 import { DetailedPlantList } from "./components/lists/DetailedPlantList";
 import { Footer } from "./components/Footer";
 
