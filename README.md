@@ -1,7 +1,7 @@
 # plantgeek
 
 ### an app for houseplant lovers
-- [Video Tour](https://drive.google.com/file/d/1dgOxPwHq7GW33dQjWKoTZAOVQHgwteT_/view?usp=sharing)
+- [Video Tour](https://youtu.be/_LXWqhxIMrQ)
 
 ## Feature Summary
 ### Plants
@@ -26,11 +26,12 @@
 
 ## Homepage
 - [x] features 6 random plants
-<img width="800" alt="Screen Shot 2021-04-22 at 8 46 08 PM" src="https://user-images.githubusercontent.com/73324816/115815453-d4365e00-a3ab-11eb-800f-e84e67a6ce3d.png">
+<img width="800" alt="Screen Shot 2021-04-22 at 8 46 56 PM" src="https://user-images.githubusercontent.com/73324816/116456099-b38c5f00-a816-11eb-9ad5-7c18760d650f.png">
 <img width="800" alt="Screen Shot 2021-04-22 at 8 46 56 PM" src="https://user-images.githubusercontent.com/73324816/115815506-eadcb500-a3ab-11eb-840f-4bc1ca23a388.png">
 <img width="800" alt="Screen Shot 2021-04-22 at 9 08 57 PM" src="https://user-images.githubusercontent.com/73324816/115817092-03020380-a3af-11eb-8c5a-f1614e8c6c2f.png">
 
 ## Sign Up
+- [x] backend password encryption
 <img width="800" alt="Screen Shot 2021-04-22 at 9 14 48 PM" src="https://user-images.githubusercontent.com/73324816/115817559-f205c200-a3af-11eb-93ca-42d05d8562f8.png">
 
 ## Log In
