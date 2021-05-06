@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import {
-  requestPlants,
-  receivePlants,
-  requestUsers,
-  receiveUsers,
-} from "./actions.js";
+import { usePlantsFetcher, useUsersFetcher } from "./utilities/fetch";
 
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
@@ -23,36 +17,13 @@ import styled from "styled-components";
 import GlobalStyles from "./GlobalStyles";
 
 export const App = () => {
-  const dispatch = useDispatch();
-
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    dispatch(requestPlants());
-    fetch("/plants")
-      .then((res) => res.json())
-      .then((json) => {
-        dispatch(receivePlants(json.data));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(requestUsers());
-    fetch("/users")
-      .then((res) => res.json())
-      .then((json) => {
-        dispatch(receiveUsers(json.data));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [dispatch]);
+  usePlantsFetcher();
+  useUsersFetcher();
 
   return (
     <BrowserRouter>
