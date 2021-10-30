@@ -4,6 +4,10 @@
     "file-system": "^2.2.2",
     "mongodb": "^3.6.6"
   },
+  "scripts": {
+    "start": "node backend/server.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install npm && run build"
+  },
   "engines": {
     "node": "14.18.1"
   }

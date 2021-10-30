@@ -1,92 +1,90 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { plantsArray } from "../reducers/plantReducer";
+import React, { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { plantsArray } from '../reducers/plantReducer'
 
-import styled from "styled-components";
-import { COLORS } from "../GlobalStyles";
-import background from "../assets/monstera-bg.jpg";
-import { PlantCard } from "../components/PlantCard";
-import { BiSearch } from "react-icons/bi";
+import styled from 'styled-components'
+import { COLORS } from '../GlobalStyles'
+import background from '../assets/monstera-bg.jpg'
+import { PlantCard } from '../components/PlantCard'
+import { BiSearch } from 'react-icons/bi'
 
 export const Browse = () => {
-  const plants = useSelector(plantsArray);
+  const plants = useSelector(plantsArray)
 
   // makes window scroll to top between renders
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo(0, 0)
+  }, [])
 
   // SORTS ALL PLANTS ALPHABETICALLY BY NAME
   const compare = (a, b) => {
-    const plantA = a.name.toLowerCase();
-    const plantB = b.name.toLowerCase();
-    let comparison = 0;
+    const plantA = a.name.toLowerCase()
+    const plantB = b.name.toLowerCase()
+    let comparison = 0
     if (plantA > plantB) {
-      comparison = 1;
+      comparison = 1
     } else if (plantA < plantB) {
-      comparison = -1;
+      comparison = -1
     }
-    return comparison;
-  };
-  plants.sort(compare);
+    return comparison
+  }
+  plants.sort(compare)
 
   // GETS ALL TYPES OF PLANTS AND SORTS ALPHABETICALLY
-  const [types, setTypes] = useState([]);
+  const [types, setTypes] = useState([])
   useEffect(() => {
-    let tempArr = [];
+    let tempArr = []
     plants.forEach((plant) => {
       // skip type if already added to array
       if (!tempArr.includes(plant.type)) {
-        tempArr.push(plant.type);
+        tempArr.push(plant.type)
       }
-    });
-    setTypes(tempArr);
-  }, [plants]);
-  types.sort();
+    })
+    setTypes(tempArr)
+  }, [plants])
+  types.sort()
 
   // FILTERS PLANTS BASED ON SELECTED TYPE
   // FIXME: make filter not reset after using action bar
-  const [filteredPlants, setFilteredPlants] = useState(plants);
-  const [selectedType, setSelectedType] = useState("all");
+  const [filteredPlants, setFilteredPlants] = useState(plants)
+  const [selectedType, setSelectedType] = useState('all')
   // initially sets filter to all plants in db
   useEffect(() => {
-    setFilteredPlants(plants);
-  }, [plants]);
+    setFilteredPlants(plants)
+  }, [plants])
   const handleFilter = (type) => {
-    if (type === "pet friendly") {
-      setFilteredPlants(plants.filter((plant) => plant.toxic === false));
-      setSelectedType("pet friendly");
+    if (type === 'pet friendly') {
+      setFilteredPlants(plants.filter((plant) => plant.toxic === false))
+      setSelectedType('pet friendly')
     } else {
-      let tempArr = [];
+      let tempArr = []
       plants.forEach((plant) => {
         if (plant.type === type) {
-          tempArr.push(plant);
+          tempArr.push(plant)
         }
-      });
-      setFilteredPlants(tempArr);
-      setSelectedType(type);
+      })
+      setFilteredPlants(tempArr)
+      setSelectedType(type)
     }
-  };
+  }
   const removeFilter = () => {
-    setFilteredPlants(plants);
-    setSelectedType("all");
-  };
+    setFilteredPlants(plants)
+    setSelectedType('all')
+  }
 
   // SETS THE SEARCH VALUE
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('')
   const handleQuery = (ev) => {
-    setQuery(ev.target.value);
-  };
+    setQuery(ev.target.value)
+  }
 
   const handleSearch = (ev) => {
-    ev.preventDefault();
+    ev.preventDefault()
     setFilteredPlants(
-      plants.filter(
-        (plant) => plant.name.includes(query) || plant.type.includes(query)
-      )
-    );
-    setSelectedType("all");
-  };
+      plants.filter((plant) => plant.name.includes(query) || plant.type.includes(query))
+    )
+    setSelectedType('all')
+  }
 
   return (
     <>
@@ -96,31 +94,22 @@ export const Browse = () => {
           <Main>
             <Actions>
               <Search>
-                <input
-                  type="text"
-                  placeholder="search houseplants"
-                  onChange={handleQuery}
-                />
-                <button type="submit" onClick={handleSearch}>
+                <input type='text' placeholder='Search houseplants' onChange={handleQuery} />
+                <button type='submit' onClick={handleSearch}>
                   <BiSearch />
                 </button>
               </Search>
               <Filter>
-                <h2>filter plants</h2>
+                <h2>filters</h2>
                 <Types>
                   <div>
-                    <Type
-                      key="all"
-                      onClick={() => removeFilter()}
-                      active={selectedType === "all"}
-                    >
+                    <Type key='all' onClick={() => removeFilter()} active={selectedType === 'all'}>
                       all
                     </Type>
                     <Type
-                      key="pet friendly"
-                      onClick={() => handleFilter("pet friendly")}
-                      active={selectedType === "pet friendly"}
-                    >
+                      key='pet friendly'
+                      onClick={() => handleFilter('pet friendly')}
+                      active={selectedType === 'pet friendly'}>
                       pet friendly
                     </Type>
                   </div>
@@ -131,11 +120,10 @@ export const Browse = () => {
                         <Type
                           key={type}
                           onClick={() => handleFilter(type)}
-                          active={type === selectedType}
-                        >
+                          active={type === selectedType}>
                           {type}
                         </Type>
-                      );
+                      )
                     })}
                   </div>
                 </Types>
@@ -143,34 +131,34 @@ export const Browse = () => {
             </Actions>
             <Results>
               {filteredPlants.map((plant) => {
-                return <PlantCard key={plant._id} plant={plant} />;
+                return <PlantCard key={plant._id} plant={plant} />
               })}
             </Results>
           </Main>
         </Wrapper>
       )}
     </>
-  );
-};
+  )
+}
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-`;
+`
 
 const Banner = styled.div`
   background: url(${background}) center center / cover;
   height: 120px;
   width: 100%;
-`;
+`
 
 const Main = styled.main`
   display: flex;
   @media (max-width: 1000px) {
     flex-direction: column;
   }
-`;
+`
 
 const Actions = styled.div`
   width: 250px;
@@ -181,7 +169,7 @@ const Actions = styled.div`
   @media (max-width: 1000px) {
     width: calc(100% - 50px);
   }
-`;
+`
 
 const Search = styled.form`
   background: #fff;
@@ -207,7 +195,7 @@ const Search = styled.form`
       color: ${COLORS.light};
     }
   }
-`;
+`
 
 const Filter = styled.div`
   width: 100%;
@@ -218,7 +206,7 @@ const Filter = styled.div`
   h3 {
     margin: 5px 0 0 5px;
   }
-`;
+`
 
 const Types = styled.ul`
   display: flex;
@@ -231,20 +219,20 @@ const Types = styled.ul`
       flex-direction: row;
     }
   }
-`;
+`
 
 const Type = styled.li`
-  background: ${(props) => (props.active ? `${COLORS.light}` : "#f2f2f2")};
+  background: ${(props) => (props.active ? `${COLORS.light}` : '#f2f2f2')};
   border-radius: 20px;
   margin: 2px;
   padding: 0 10px;
-  font-style: ${(props) => (props.active ? "italic" : "normal")};
+  font-style: ${(props) => (props.active ? 'italic' : 'normal')};
   &:hover {
     background: ${COLORS.light};
     cursor: pointer;
     font-style: italic;
   }
-`;
+`
 
 const Results = styled.div`
   width: 75%;
@@ -255,4 +243,4 @@ const Results = styled.div`
   @media (max-width: 1000px) {
     width: 100%;
   }
-`;
+`

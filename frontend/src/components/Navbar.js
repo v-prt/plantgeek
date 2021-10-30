@@ -1,38 +1,38 @@
-import React, { useContext } from "react";
-import { useHistory } from "react-router";
-import { NavLink } from "react-router-dom";
-import { LoginContext } from "../context/LoginContext";
+import React, { useContext } from 'react'
+import { useHistory } from 'react-router'
+import { NavLink } from 'react-router-dom'
+import { LoginContext } from '../context/LoginContext'
 
-import plantgeekLogo from "../assets/logo.png";
-import { BiSearch, BiLogInCircle, BiLogOutCircle } from "react-icons/bi";
-import { RiPlantLine } from "react-icons/ri";
-import { BsPerson } from "react-icons/bs";
-import { TiHeartOutline } from "react-icons/ti";
-import { MdStarBorder } from "react-icons/md";
-import { GoGear } from "react-icons/go";
-import styled from "styled-components";
-import { COLORS } from "../GlobalStyles";
+import plantgeekLogo from '../assets/logo.png'
+import { BiSearch, BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
+import { RiPlantLine } from 'react-icons/ri'
+import { CgProfile } from 'react-icons/cg'
+import { TiHeartOutline } from 'react-icons/ti'
+import { MdStarBorder } from 'react-icons/md'
+import { GoGear } from 'react-icons/go'
+import styled from 'styled-components'
+import { COLORS } from '../GlobalStyles'
 
 export const Navbar = () => {
-  const history = useHistory();
-  const { currentUser, setCurrentUser, setLoggedIn } = useContext(LoginContext);
+  const history = useHistory()
+  const { currentUser, setCurrentUser, setLoggedIn } = useContext(LoginContext)
 
   const handleLogout = (ev) => {
-    ev.preventDefault();
-    setCurrentUser(undefined);
-    setLoggedIn(false);
-    history.push("/");
-  };
+    ev.preventDefault()
+    setCurrentUser(undefined)
+    setLoggedIn(false)
+    history.push('/')
+  }
 
   return (
     <Wrapper>
       <Div>
-        <Link to="/">
+        <Link to='/'>
           <Title>plantgeek</Title>
-          <Logo src={plantgeekLogo} alt="" />
+          <Logo src={plantgeekLogo} alt='' />
         </Link>
       </Div>
-      <Link to="/browse">
+      <Link to='/browse'>
         <Label>browse</Label>
         <Icon>
           <BiSearch />
@@ -43,7 +43,7 @@ export const Navbar = () => {
           <Link to={`/user-profile/${currentUser.username}`}>
             <Label>profile</Label>
             <Icon>
-              <BsPerson />
+              <CgProfile />
             </Icon>
           </Link>
           <Link to={`/user-collection/${currentUser.username}`}>
@@ -64,7 +64,7 @@ export const Navbar = () => {
               <MdStarBorder />
             </Icon>
           </Link>
-          <Link to="/settings">
+          <Link to='/settings'>
             <Label>settings</Label>
             <Icon>
               <GoGear />
@@ -79,7 +79,7 @@ export const Navbar = () => {
         </>
       ) : (
         <>
-          <Link to="/login">
+          <Link to='/login'>
             <Label>login</Label>
             <Icon>
               <BiLogInCircle />
@@ -88,8 +88,8 @@ export const Navbar = () => {
         </>
       )}
     </Wrapper>
-  );
-};
+  )
+}
 
 const Wrapper = styled.nav`
   background: ${COLORS.darkest};
@@ -104,12 +104,12 @@ const Wrapper = styled.nav`
     width: 200px;
     align-items: flex-end;
   }
-`;
+`
 
 const Div = styled.div`
   display: flex;
   margin: 20px 0;
-`;
+`
 
 const Logo = styled.img`
   filter: invert(1);
@@ -118,7 +118,7 @@ const Logo = styled.img`
   @media (min-width: 1000px) {
     margin-right: 6px;
   }
-`;
+`
 
 const Link = styled(NavLink)`
   color: #fff;
@@ -127,7 +127,7 @@ const Link = styled(NavLink)`
   &.active {
     color: ${COLORS.light};
   }
-`;
+`
 
 const LogoutBtn = styled.button`
   color: #fff;
@@ -142,18 +142,18 @@ const LogoutBtn = styled.button`
   &:focus {
     color: ${COLORS.light};
   }
-`;
+`
 
 const Title = styled.span`
   display: none;
-  font-family: "Comfortaa", sans-serif;
+  font-family: 'Comfortaa', sans-serif;
   color: #fff;
   font-size: 1.5rem;
   margin-right: 15px;
   @media (min-width: 1000px) {
     display: block;
   }
-`;
+`
 
 const Label = styled.span`
   display: none;
@@ -161,9 +161,9 @@ const Label = styled.span`
   @media (min-width: 1000px) {
     display: block;
   }
-`;
+`
 
 const Icon = styled.div`
   font-size: 2rem;
   margin: 10px 10px 0 10px;
-`;
+`

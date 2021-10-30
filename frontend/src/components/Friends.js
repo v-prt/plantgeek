@@ -1,205 +1,195 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Link, useParams } from "react-router-dom";
-import { LoginContext } from "../context/LoginContext";
-import { useSelector, useDispatch } from "react-redux";
-import { usersArray } from "../reducers/userReducer.js";
-import { requestUsers, receiveUsers } from "../actions.js";
+import React, { useState, useEffect, useContext } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { LoginContext } from '../context/LoginContext'
+import { useSelector, useDispatch } from 'react-redux'
+import { usersArray } from '../reducers/userReducer.js'
+import { requestUsers, receiveUsers } from '../actions.js'
 
-import styled from "styled-components";
-import { COLORS } from "../GlobalStyles";
-import placeholder from "../assets/avatar-placeholder.png";
+import styled from 'styled-components'
+import { COLORS } from '../GlobalStyles'
+import placeholder from '../assets/avatar-placeholder.png'
 
 export const Friends = () => {
-  const dispatch = useDispatch();
-  const { username } = useParams();
-  const { currentUser } = useContext(LoginContext);
-  const users = useSelector(usersArray);
-  const [clicked, setClicked] = useState(false);
+  const dispatch = useDispatch()
+  const { username } = useParams()
+  const { currentUser } = useContext(LoginContext)
+  const users = useSelector(usersArray)
+  const [clicked, setClicked] = useState(false)
 
   // SETS THE USER TO ACCESS THEIR FRIENDS
-  const [user, setUser] = useState();
+  const [user, setUser] = useState()
   useEffect(() => {
-    setUser(users.find((user) => user.username === username));
-  }, [users, user, username]);
+    setUser(users.find((user) => user.username === username))
+  }, [users, user, username])
 
   // CHECKS IF USERS ARE ALREADY FRIENDS
-  const [alreadyFriends, setAlreadyFriends] = useState(undefined);
+  const [alreadyFriends, setAlreadyFriends] = useState(undefined)
   useEffect(() => {
     if (currentUser && currentUser.friends && currentUser.friends.length > 0) {
       if (currentUser.friends.find((friend) => friend === username)) {
-        setAlreadyFriends(true);
+        setAlreadyFriends(true)
       }
     } else {
-      setAlreadyFriends(false);
+      setAlreadyFriends(false)
     }
-  }, [currentUser, username]);
+  }, [currentUser, username])
 
   // SETS USER'S FRIENDS TO ACCESS THEIR FRIENDS' DATA
-  const [friends, setFriends] = useState(undefined);
+  const [friends, setFriends] = useState(undefined)
   useEffect(() => {
     if (user && user.friends && user.friends.length > 0) {
-      let tempArr = [];
+      let tempArr = []
       user.friends.forEach((friend) => {
-        tempArr.push(users.find((user) => user.username === friend));
-      });
-      setFriends(tempArr);
+        tempArr.push(users.find((user) => user.username === friend))
+      })
+      setFriends(tempArr)
     } else {
-      setFriends(undefined);
+      setFriends(undefined)
     }
-  }, [user, users]);
+  }, [user, users])
 
   // SETS SUGGESTED FRIENDS
-  const [suggestedFriends, setSuggestedFriends] = useState(undefined);
+  const [suggestedFriends, setSuggestedFriends] = useState(undefined)
   useEffect(() => {
     if (users.length > 3) {
       const getRandomUser = () => {
-        const randomIndex = Math.floor(Math.random() * users.length);
-        const randomUser = users[randomIndex];
-        return randomUser;
-      };
+        const randomIndex = Math.floor(Math.random() * users.length)
+        const randomUser = users[randomIndex]
+        return randomUser
+      }
       // only run function when users length > 0
-      let tempArray = users.length > 0 ? [] : undefined;
+      let tempArray = users.length > 0 ? [] : undefined
       if (tempArray) {
         while (tempArray.length < 3) {
-          let randomUser = getRandomUser(users);
-          if (
-            !tempArray.find((user) => user.username === randomUser.username)
-          ) {
-            tempArray.push(randomUser);
+          let randomUser = getRandomUser(users)
+          if (!tempArray.find((user) => user.username === randomUser.username)) {
+            tempArray.push(randomUser)
           }
         }
       }
-      setSuggestedFriends(tempArray);
-    } else setSuggestedFriends(undefined);
-  }, [users]);
+      setSuggestedFriends(tempArray)
+    } else setSuggestedFriends(undefined)
+  }, [users])
 
   const addFriend = () => {
     // prevents spamming
-    setClicked(true);
+    setClicked(true)
     setTimeout(() => {
-      setClicked(false);
-    }, 3000);
+      setClicked(false)
+    }, 3000)
     // ADDS USER TO CURRENT USER'S FRIENDS
     fetch(`/${currentUser.username}/add`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify({
         friends: user.username,
       }),
       headers: {
-        Accept: "application/json",
-        "Content-type": "application/json",
+        Accept: 'application/json',
+        'Content-type': 'application/json',
       },
     }).then((res) => {
       if (res.status === 200) {
-        console.log(
-          `${user.username} and ${currentUser.username} are now friends!`
-        );
-        dispatch(requestUsers());
-        fetch("/users")
+        console.log(`${user.username} and ${currentUser.username} are now friends!`)
+        dispatch(requestUsers())
+        fetch('/users')
           .then((res) => res.json())
           .then((json) => {
-            dispatch(receiveUsers(json.data));
+            dispatch(receiveUsers(json.data))
           })
           .catch((err) => {
-            console.log(err);
-          });
+            console.log(err)
+          })
       } else if (res.status === 404) {
-        console.log("Something went wrong");
+        console.log('Something went wrong')
       }
-    });
+    })
     // ADDS CURRENT USER TO USER'S FRIENDS
     fetch(`/${user.username}/add`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify({
         friends: currentUser.username,
       }),
       headers: {
-        Accept: "application/json",
-        "Content-type": "application/json",
+        Accept: 'application/json',
+        'Content-type': 'application/json',
       },
     }).then((res) => {
       if (res.status === 200) {
-        console.log(
-          `${user.username} and ${currentUser.username} are now friends!`
-        );
-        dispatch(requestUsers());
-        fetch("/users")
+        console.log(`${user.username} and ${currentUser.username} are now friends!`)
+        dispatch(requestUsers())
+        fetch('/users')
           .then((res) => res.json())
           .then((json) => {
-            dispatch(receiveUsers(json.data));
+            dispatch(receiveUsers(json.data))
           })
           .catch((err) => {
-            console.log(err);
-          });
+            console.log(err)
+          })
       } else if (res.status === 404) {
-        console.log("Something went wrong");
+        console.log('Something went wrong')
       }
-    });
-  };
+    })
+  }
 
   const removeFriend = () => {
     // prevents spamming
-    setClicked(true);
+    setClicked(true)
     setTimeout(() => {
-      setClicked(false);
-    }, 3000);
+      setClicked(false)
+    }, 3000)
     // REMOVES USER FROM CURRENT USER'S FRIENDS
     fetch(`/${currentUser.username}/remove`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify({
         friends: user.username,
       }),
       headers: {
-        Accept: "application/json",
-        "Content-type": "application/json",
+        Accept: 'application/json',
+        'Content-type': 'application/json',
       },
     }).then((res) => {
       if (res.status === 200) {
-        console.log(
-          `${user.username} and ${currentUser.username} are not friends anymore!`
-        );
-        dispatch(requestUsers());
-        fetch("/users")
+        console.log(`${user.username} and ${currentUser.username} are not friends anymore!`)
+        dispatch(requestUsers())
+        fetch('/users')
           .then((res) => res.json())
           .then((json) => {
-            dispatch(receiveUsers(json.data));
+            dispatch(receiveUsers(json.data))
           })
           .catch((err) => {
-            console.log(err);
-          });
+            console.log(err)
+          })
       } else if (res.status === 404) {
-        console.log("Something went wrong");
+        console.log('Something went wrong')
       }
-    });
+    })
     // REMOVES CURRENT USER FROM USER'S FRIENDS
     fetch(`/${user.username}/remove`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify({
         friends: currentUser.username,
       }),
       headers: {
-        Accept: "application/json",
-        "Content-type": "application/json",
+        Accept: 'application/json',
+        'Content-type': 'application/json',
       },
     }).then((res) => {
       if (res.status === 200) {
-        console.log(
-          `${user.username} and ${currentUser.username} are not friends anymore!`
-        );
-        dispatch(requestUsers());
-        fetch("/users")
+        console.log(`${user.username} and ${currentUser.username} are not friends anymore!`)
+        dispatch(requestUsers())
+        fetch('/users')
           .then((res) => res.json())
           .then((json) => {
-            dispatch(receiveUsers(json.data));
+            dispatch(receiveUsers(json.data))
           })
           .catch((err) => {
-            console.log(err);
-          });
+            console.log(err)
+          })
       } else if (res.status === 404) {
-        console.log("Something went wrong");
+        console.log('Something went wrong')
       }
-    });
-  };
+    })
+  }
 
   return (
     <Wrapper>
@@ -227,7 +217,7 @@ export const Friends = () => {
                       </Link>
                       {friend.username}
                     </User>
-                  );
+                  )
                 })}
                 {currentUser && currentUser.username !== user.username && (
                   <>
@@ -255,7 +245,7 @@ export const Friends = () => {
                           </Link>
                           {user.username}
                         </User>
-                      );
+                      )
                     })}
                   </GreyCard>
                 )}
@@ -264,7 +254,7 @@ export const Friends = () => {
               <>
                 {currentUser && currentUser.username === user.username ? (
                   <>
-                    <p>you have no friends yet</p>
+                    <p>You have no friends yet.</p>
                     {suggestedFriends && (
                       <>
                         <h3>people you may know</h3>
@@ -280,14 +270,14 @@ export const Friends = () => {
                               </Link>
                               {user.username}
                             </User>
-                          );
+                          )
                         })}
                       </>
                     )}
                   </>
                 ) : (
                   <>
-                    <p>{user.username} has no friends yet</p>
+                    <p>{user.username} has no friends yet.</p>
                     {currentUser && (
                       <FriendBtn onClick={addFriend} disabled={clicked}>
                         Add Friend
@@ -301,14 +291,14 @@ export const Friends = () => {
         )}
       </Card>
     </Wrapper>
-  );
-};
+  )
+}
 
 const Wrapper = styled.section`
   display: flex;
   flex-wrap: wrap;
   color: ${COLORS.darkest};
-`;
+`
 
 const Card = styled.div`
   background: #fff;
@@ -326,30 +316,30 @@ const Card = styled.div`
     text-align: center;
     margin-bottom: 10px;
   }
-`;
+`
 
 const GreyCard = styled.div`
   background: #f2f2f2;
-`;
+`
 
 const Heading = styled.h2`
   background: ${COLORS.light};
   text-align: center;
   margin-bottom: 10px;
-`;
+`
 
 const User = styled.div`
   display: flex;
   align-items: center;
   padding: 0 10px;
-`;
+`
 
 const Avatar = styled.img`
   height: 40px;
   width: 40px;
   margin: 5px 10px;
   border-radius: 50%;
-`;
+`
 
 const FriendBtn = styled.button`
   background: ${COLORS.darkest};
@@ -365,4 +355,4 @@ const FriendBtn = styled.button`
     cursor: not-allowed;
     background: ${COLORS.darkest};
   }
-`;
+`

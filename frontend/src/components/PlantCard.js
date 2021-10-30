@@ -1,9 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import { COLORS } from "../GlobalStyles";
-import { ActionBar } from "./ActionBar";
-import { FaPaw, FaSkullCrossbones } from "react-icons/fa";
+import React from 'react'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import { COLORS } from '../GlobalStyles'
+import { ActionBar } from './ActionBar'
+import { FaPaw, FaSkullCrossbones } from 'react-icons/fa'
+import plantSilhouette from '../assets/plant-silhouette.png'
 
 export const PlantCard = ({ plant }) => {
   return (
@@ -19,14 +20,14 @@ export const PlantCard = ({ plant }) => {
           </Toxicity>
         )}
         <InfoLink to={`/plant-profile/${plant._id}`}>
-          <img src={plant.image} alt={plant.name} />
+          <img src={plant.image ? plant.image : plantSilhouette} alt={plant.name} />
         </InfoLink>
         <Name>{plant.name}</Name>
       </Div>
       <ActionBar id={plant._id} />
     </Plant>
-  );
-};
+  )
+}
 
 const Plant = styled.div`
   background: #fff;
@@ -47,27 +48,27 @@ const Plant = styled.div`
     color: ${COLORS.darkest};
     box-shadow: 0 0 10px ${COLORS.light};
   }
-`;
+`
 
 const Div = styled.div`
   display: flex;
   flex-direction: column;
-`;
+`
 
 const InfoLink = styled(Link)`
   display: flex;
   justify-content: center;
-`;
+`
 
 const Name = styled.p`
   font-size: 1.1rem;
   font-weight: bold;
   align-self: center;
   margin: 5px 0;
-`;
+`
 
 const Toxicity = styled.div`
-  color: ${(props) => (props.toxic ? `${COLORS.medium}` : "#68b234}")};
+  color: ${(props) => (props.toxic ? `${COLORS.medium}` : '#68b234}')};
   position: absolute;
   background: ${COLORS.lightest};
   border-radius: 50%;
@@ -76,4 +77,4 @@ const Toxicity = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+`

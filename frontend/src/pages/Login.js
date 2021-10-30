@@ -1,83 +1,83 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { usersArray } from "../reducers/userReducer";
-import { LoginContext } from "../context/LoginContext";
+import React, { useState, useEffect, useRef, useContext } from 'react'
+import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { usersArray } from '../reducers/userReducer'
+import { LoginContext } from '../context/LoginContext'
 
-import styled from "styled-components";
-import { COLORS } from "../GlobalStyles";
-import background from "../assets/monstera-bg.jpg";
+import styled from 'styled-components'
+import { COLORS } from '../GlobalStyles'
+import background from '../assets/monstera-bg.jpg'
 
 export const Login = () => {
-  const history = useHistory();
-  const users = useSelector(usersArray);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [incorrectUsername, setIncorrectUsername] = useState(undefined);
-  const [incorrectPassword, setIncorrectPassword] = useState(undefined);
-  const { currentUser, setLoggedIn } = useContext(LoginContext);
+  const history = useHistory()
+  const users = useSelector(usersArray)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [incorrectUsername, setIncorrectUsername] = useState(undefined)
+  const [incorrectPassword, setIncorrectPassword] = useState(undefined)
+  const { currentUser, setLoggedIn } = useContext(LoginContext)
 
   // makes window scroll to top between renders
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo(0, 0)
+  }, [])
 
   // FOCUSES ON FIRST INPUT ON LOAD
-  const input = useRef(null);
+  const input = useRef(null)
   useEffect(() => {
     if (!currentUser) {
-      input.current.focus();
+      input.current.focus()
     }
-  }, [currentUser, input]);
+  }, [currentUser, input])
 
   const handleUsername = (ev) => {
-    setUsername(ev.target.value);
-  };
+    setUsername(ev.target.value)
+  }
 
   const handlePassword = (ev) => {
-    setPassword(ev.target.value);
-  };
+    setPassword(ev.target.value)
+  }
 
   const handleLogin = (ev) => {
-    ev.preventDefault();
+    ev.preventDefault()
     // resets values between login attempts
-    setIncorrectUsername(undefined);
-    setIncorrectPassword(undefined);
+    setIncorrectUsername(undefined)
+    setIncorrectPassword(undefined)
     if (users.length > 0) {
-      fetch("/login", {
-        method: "POST",
+      fetch('/login', {
+        method: 'POST',
         body: JSON.stringify({
           username: username,
           password: password,
         }),
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
       }).then((res) => {
         if (res.status === 200) {
-          history.push(`/user-profile/${username}`);
+          history.push(`/user-profile/${username}`)
           setLoggedIn({
             username: username,
             timestamp: new Date().getTime(),
-          });
+          })
         } else if (res.status === 403) {
-          console.log("Incorrect password!");
-          setIncorrectPassword(true);
+          console.log('Incorrect password!')
+          setIncorrectPassword(true)
         } else if (res.status === 401) {
-          console.log("Incorrect username!");
-          setIncorrectUsername(true);
+          console.log('Incorrect username!')
+          setIncorrectUsername(true)
         } else if (res.status === 500) {
-          console.log("Internal server error!");
+          console.log('Internal server error!')
         }
-        return res.json();
-      });
+        return res.json()
+      })
     } else {
-      console.log("No users registered!");
-      setIncorrectUsername(true);
+      console.log('No users registered!')
+      setIncorrectUsername(true)
     }
-  };
+  }
 
   return (
     <Wrapper>
@@ -86,39 +86,33 @@ export const Login = () => {
           <Alert>You're already logged in, {currentUser.username}!</Alert>
         ) : (
           <>
-            <SignUpLink to="/signup">Don't have an account? Sign up</SignUpLink>
+            <SignUpLink to='/signup'>Don't have an account? Sign up</SignUpLink>
             <Welcome>
               <h1>welcome</h1>
             </Welcome>
-            <Form autoComplete="off">
-              <Label htmlFor="username">username</Label>
+            <Form autoComplete='off'>
+              <Label htmlFor='username'>username</Label>
               <Input
                 required
-                type="text"
-                name="login"
-                id="username"
+                type='text'
+                name='login'
+                id='username'
                 onChange={handleUsername}
                 error={incorrectUsername}
                 ref={input}
               />
-              <Error error={incorrectUsername}>
-                this username doesn't exist
-              </Error>
-              <Label htmlFor="password">password</Label>
+              <Error error={incorrectUsername}>This username doesn't exist.</Error>
+              <Label htmlFor='password'>password</Label>
               <Input
                 required
-                type="password"
-                name="login"
-                id="password"
+                type='password'
+                name='login'
+                id='password'
                 onChange={handlePassword}
                 error={incorrectPassword}
               />
-              <Error error={incorrectPassword}>incorrect password</Error>
-              <LoginBtn
-                type="submit"
-                onClick={handleLogin}
-                disabled={!username || !password}
-              >
+              <Error error={incorrectPassword}>Incorrect password.</Error>
+              <LoginBtn type='submit' onClick={handleLogin} disabled={!username || !password}>
                 LOG IN
               </LoginBtn>
             </Form>
@@ -126,8 +120,8 @@ export const Login = () => {
         )}
       </Card>
     </Wrapper>
-  );
-};
+  )
+}
 
 const Wrapper = styled.div`
   background: url(${background}) center center / cover;
@@ -135,20 +129,20 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
+`
 
 const Card = styled.div`
   background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
   width: 500px;
-`;
+`
 
 const Alert = styled.div`
   text-align: center;
   font-size: 1.5rem;
   padding: 50px;
-`;
+`
 
 const SignUpLink = styled(Link)`
   background: ${COLORS.medium};
@@ -161,7 +155,7 @@ const SignUpLink = styled(Link)`
     background: #1a1a1a;
     color: #fff;
   }
-`;
+`
 
 const Welcome = styled.div`
   background: ${COLORS.light};
@@ -170,14 +164,14 @@ const Welcome = styled.div`
     margin: 10px;
     text-align: center;
   }
-`;
+`
 
 const Form = styled.form`
   background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
   padding: 0 30px;
-`;
+`
 
 const Label = styled.label`
   background: ${COLORS.lightest};
@@ -188,25 +182,24 @@ const Label = styled.label`
   padding: 0 10px;
   font-size: 0.9rem;
   border-radius: 10px;
-`;
+`
 
 const Input = styled.input`
   background: ${COLORS.lightest};
-  border: ${(props) =>
-    props.error ? "2px solid #ff0000" : `2px solid ${COLORS.light}`};
+  border: ${(props) => (props.error ? '2px solid #ff0000' : `2px solid ${COLORS.light}`)};
   border-radius: 15px;
   text-align: right;
   &:focus {
     outline: none;
     border: 2px solid ${COLORS.medium};
   }
-`;
+`
 
 const Error = styled.p`
-  display: ${(props) => (props.error ? "block" : "none")};
+  display: ${(props) => (props.error ? 'block' : 'none')};
   color: #ff0000;
   text-align: center;
-`;
+`
 
 const LoginBtn = styled.button`
   background: ${COLORS.darkest};
@@ -223,4 +216,4 @@ const LoginBtn = styled.button`
   &:disabled:hover {
     background: ${COLORS.darkest};
   }
-`;
+`

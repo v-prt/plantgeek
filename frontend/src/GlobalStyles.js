@@ -1,12 +1,12 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components'
 
 export const COLORS = {
-  darkest: "#1A1A1A",
-  dark: "#112211",
-  medium: "#224422",
-  light: "#92D265",
-  lightest: "#E5EFDC",
-};
+  darkest: '#1A1A1A',
+  dark: '#112211',
+  medium: '#224422',
+  light: '#92D265',
+  lightest: '#E5EFDC',
+}
 
 export default createGlobalStyle`
     * {
@@ -17,6 +17,7 @@ export default createGlobalStyle`
     }
     html, body {
         background: ${COLORS.lightest};
+        overscroll-behavior: none;
     }
     h1, h2, h3 {
         font-family: "Raleway", sans-serif;
@@ -52,4 +53,4 @@ export default createGlobalStyle`
             cursor: auto;
         }
     }
-`;
+`
