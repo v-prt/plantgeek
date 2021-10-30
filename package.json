@@ -3,5 +3,8 @@
     "dotenv": "^8.2.0",
     "file-system": "^2.2.2",
     "mongodb": "^3.6.6"
+  },
+  "engines": {
+    "node": "14.18.1"
   }
 }
