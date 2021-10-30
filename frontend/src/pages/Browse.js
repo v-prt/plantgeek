@@ -7,6 +7,7 @@ import { COLORS } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
 import { PlantCard } from '../components/PlantCard'
 import { BiSearch } from 'react-icons/bi'
+import { BeatingHeart } from '../components/BeatingHeart'
 
 export const Browse = () => {
   const plants = useSelector(plantsArray)
@@ -130,9 +131,13 @@ export const Browse = () => {
               </Filter>
             </Actions>
             <Results>
-              {filteredPlants.map((plant) => {
-                return <PlantCard key={plant._id} plant={plant} />
-              })}
+              {plants.length > 0 && filteredPlants ? (
+                filteredPlants.map((plant) => {
+                  return <PlantCard key={plant._id} plant={plant} />
+                })
+              ) : (
+                <BeatingHeart />
+              )}
             </Results>
           </Main>
         </Wrapper>
@@ -227,10 +232,10 @@ const Type = styled.li`
   margin: 2px;
   padding: 0 10px;
   font-style: ${(props) => (props.active ? 'italic' : 'normal')};
+  transition: 0.2s ease-in-out;
   &:hover {
     background: ${COLORS.light};
     cursor: pointer;
-    font-style: italic;
   }
 `
 

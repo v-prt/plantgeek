@@ -107,6 +107,7 @@ export const ActionBar = ({ id }) => {
       {currentUser && plant && (
         <Wrapper>
           <>
+            {/* FIXME: change action buttons into checkboxes? need to fix issue with featured/filtered plants list reloading after action */}
             <Action
               onClick={() => handleList(currentUser.collection)}
               disabled={clicked1}

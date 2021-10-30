@@ -14,10 +14,11 @@ export const Footer = () => {
           </a>
           .
         </p>
+        {/* TODO: */}
         <StyledLink to='#'>about</StyledLink>
         <StyledLink to='#'>contact</StyledLink>
         <StyledLink to='#'>support</StyledLink>
-        <StyledLink to='#'>&copy; plantgeek 2021</StyledLink>
+        <p>&copy; plantgeek 2021</p>
       </Links>
     </Wrapper>
   )
@@ -40,10 +41,10 @@ const Links = styled.div`
   p {
     margin: 10px;
     a {
-      color: green;
+      color: ${COLORS.dark};
       text-decoration: underline;
       &:hover {
-        color: green;
+        color: #fff;
       }
     }
   }

@@ -219,6 +219,7 @@ const Plant = styled.div`
   margin: 10px;
   border-radius: 20px;
   padding: 10px;
+  transition: 0.2s ease-in-out;
   img {
     height: 150px;
     width: 150px;
@@ -226,7 +227,7 @@ const Plant = styled.div`
   }
   &:hover {
     color: ${COLORS.darkest};
-    box-shadow: 0 0 10px ${COLORS.light};
+    box-shadow: 0 0 5px ${COLORS.light};
   }
 `
 

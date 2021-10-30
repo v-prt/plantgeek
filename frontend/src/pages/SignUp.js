@@ -1,112 +1,112 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { usersArray } from "../reducers/userReducer";
-import { requestUsers, receiveUsers } from "../actions.js";
+import React, { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { usersArray } from '../reducers/userReducer'
+import { requestUsers, receiveUsers } from '../actions.js'
 
-import styled from "styled-components";
-import { COLORS } from "../GlobalStyles";
-import { TiHeartOutline } from "react-icons/ti";
-import { MdStarBorder } from "react-icons/md";
-import { RiPlantLine } from "react-icons/ri";
-import background from "../assets/monstera-bg.jpg";
-import { GoEye, GoEyeClosed } from "react-icons/go";
+import styled from 'styled-components'
+import { COLORS } from '../GlobalStyles'
+import { TiHeartOutline } from 'react-icons/ti'
+import { MdStarBorder } from 'react-icons/md'
+import { RiPlantLine } from 'react-icons/ri'
+import background from '../assets/monstera-bg.jpg'
+import { GoEye, GoEyeClosed } from 'react-icons/go'
 
 export const SignUp = () => {
-  const dispatch = useDispatch();
-  const users = useSelector(usersArray);
+  const dispatch = useDispatch()
+  const users = useSelector(usersArray)
 
   // makes window scroll to top between renders
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo(0, 0)
+  }, [])
 
   // FOCUSES ON FIRST INPUT ON LOAD
-  const input = useRef(null);
+  const input = useRef(null)
   useEffect(() => {
-    input.current.focus();
-  }, [input]);
+    input.current.focus()
+  }, [input])
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState('')
   const handleUsername = (ev) => {
-    setUsername(ev.target.value);
-  };
+    setUsername(ev.target.value)
+  }
 
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('')
   const handlePassword = (ev) => {
-    setPassword(ev.target.value);
-  };
+    setPassword(ev.target.value)
+  }
 
   // DISABLES BUTTON UNTIL FORM HAS BEEN COMPLETED
-  const [completeForm, setCompleteForm] = useState(false);
+  const [completeForm, setCompleteForm] = useState(false)
   useEffect(() => {
     if (username.length > 3 && password.length > 5) {
-      setCompleteForm(true);
+      setCompleteForm(true)
     } else {
-      setCompleteForm(false);
+      setCompleteForm(false)
     }
-  }, [username, password]);
+  }, [username, password])
 
   // UPDATES STORE AFTER NEW USER ADDED TO DB
-  const [newUser, setNewUser] = useState(false);
+  const [newUser, setNewUser] = useState(false)
   useEffect(() => {
-    dispatch(requestUsers());
-    fetch("/users")
+    dispatch(requestUsers())
+    fetch('/users')
       .then((res) => res.json())
       .then((json) => {
-        dispatch(receiveUsers(json.data));
+        dispatch(receiveUsers(json.data))
       })
       .catch((err) => {
-        console.log(err);
-      });
-  }, [dispatch, newUser]);
+        console.log(err)
+      })
+  }, [dispatch, newUser])
 
-  const [usernameTaken, setUsernameTaken] = useState(undefined);
+  const [usernameTaken, setUsernameTaken] = useState(undefined)
   const handleSignUp = (ev) => {
-    ev.preventDefault();
+    ev.preventDefault()
 
     // resets value between login attempts
-    setUsernameTaken(undefined);
+    setUsernameTaken(undefined)
 
     const existingUser = users.find((user) => {
-      return user.username.toLowerCase() === username.toLowerCase();
-    });
+      return user.username.toLowerCase() === username.toLowerCase()
+    })
     if (!existingUser) {
-      fetch("/users", {
-        method: "POST",
+      fetch('/users', {
+        method: 'POST',
         body: JSON.stringify({
           username: username,
           password: password,
         }),
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
       })
         .then((res) => {
           if (res.status === 500) {
-            console.error("Signup error!");
+            console.error('Signup error!')
           }
-          return res.json();
+          return res.json()
         })
         .then((data) => {
           if (data) {
-            console.log("Signup successful!");
-            setNewUser(true);
+            console.log('Signup successful!')
+            setNewUser(true)
           }
-        });
-    } else setUsernameTaken(true);
-  };
+        })
+    } else setUsernameTaken(true)
+  }
 
-  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false)
   const togglePassword = () => {
-    setPasswordVisible(!passwordVisible);
-  };
+    setPasswordVisible(!passwordVisible)
+  }
 
   return (
     <Wrapper>
       <Card>
-        <LoginLink to="/login">Have an account? Log in</LoginLink>
+        <LoginLink to='/login'>Have an account? Log in</LoginLink>
         <Info>
           <h1>welcome to plantgeek!</h1>
           {!newUser && (
@@ -156,40 +156,30 @@ export const SignUp = () => {
             </Box>
           </Confirmation>
         ) : (
-          <Form autoComplete="off">
-            <Label htmlFor="username">username</Label>
+          <Form autoComplete='off'>
+            <Label htmlFor='username'>username</Label>
             <Input
               required
-              type="text"
-              name="signup"
-              id="username"
-              maxLength="15"
+              type='text'
+              name='signup'
+              id='username'
+              maxLength='15'
               onChange={handleUsername}
               error={usernameTaken}
               ref={input}
             />
             <Error error={usernameTaken}>sorry, this username is taken</Error>
-            <Label htmlFor="password">password</Label>
-            <Input
-              required
-              type="password"
-              name="signup"
-              id="password"
-              onChange={handlePassword}
-            />
-            <SignUpBtn
-              type="submit"
-              onClick={handleSignUp}
-              disabled={!completeForm}
-            >
+            <Label htmlFor='password'>password</Label>
+            <Input required type='password' name='signup' id='password' onChange={handlePassword} />
+            <SignUpBtn type='submit' onClick={handleSignUp} disabled={!completeForm}>
               CREATE ACCOUNT
             </SignUpBtn>
           </Form>
         )}
       </Card>
     </Wrapper>
-  );
-};
+  )
+}
 
 const Wrapper = styled.div`
   background: url(${background}) center center / cover;
@@ -197,13 +187,13 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
+`
 
 const Card = styled.div`
   display: flex;
   flex-direction: column;
   width: 500px;
-`;
+`
 
 const LoginLink = styled(Link)`
   background: ${COLORS.medium};
@@ -216,7 +206,7 @@ const LoginLink = styled(Link)`
     background: #1a1a1a;
     color: #fff;
   }
-`;
+`
 
 const Info = styled.section`
   background: ${COLORS.light};
@@ -232,7 +222,7 @@ const Info = styled.section`
     font-size: 1.1rem;
     margin: 10px;
   }
-`;
+`
 
 const Icon = styled.div`
   background: ${COLORS.lightest};
@@ -244,7 +234,7 @@ const Icon = styled.div`
   margin-right: 10px;
   border-radius: 50%;
   font-size: 1.3rem;
-`;
+`
 
 const Confirmation = styled.div`
   background: ${COLORS.lightest};
@@ -252,12 +242,12 @@ const Confirmation = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 30px;
-`;
+`
 
 const Message = styled.div`
   text-align: center;
   margin-bottom: 30px;
-`;
+`
 
 const Box = styled.div`
   background: #f2f2f2;
@@ -268,7 +258,7 @@ const Box = styled.div`
   margin: 10px;
   border: 1px solid ${COLORS.light};
   border-radius: 10px;
-`;
+`
 
 const Tag = styled.p`
   background: ${COLORS.light};
@@ -277,20 +267,20 @@ const Tag = styled.p`
   margin-right: 10px;
   padding: 5px 10px;
   font-weight: bold;
-`;
+`
 
-const Username = styled.p``;
+const Username = styled.p``
 
 const Div = styled.div`
   display: flex;
   justify-content: space-between;
   flex-grow: 1;
-`;
+`
 
 // FIXME: need to account for long passwords pushing toggle button out of sight
 const Password = styled.p`
-  visibility: ${(props) => (props.show ? "visible" : "hidden")};
-`;
+  visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
+`
 
 const Toggle = styled.button`
   color: #808080;
@@ -301,14 +291,14 @@ const Toggle = styled.button`
   &:focus {
     color: ${COLORS.light};
   }
-`;
+`
 
 const Form = styled.form`
   background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
   padding: 0 30px;
-`;
+`
 
 const Label = styled.label`
   background: ${COLORS.lightest};
@@ -319,25 +309,24 @@ const Label = styled.label`
   padding: 0 10px;
   font-size: 0.9rem;
   border-radius: 10px;
-`;
+`
 
 const Input = styled.input`
   background: ${COLORS.lightest};
-  border: ${(props) =>
-    props.error ? "2px solid #ff0000" : `2px solid ${COLORS.light}`};
+  border: ${(props) => (props.error ? '2px solid #ff0000' : `2px solid ${COLORS.light}`)};
   border-radius: 15px;
   text-align: right;
   &:focus {
     outline: none;
     border: 2px solid ${COLORS.medium};
   }
-`;
+`
 
 const Error = styled.p`
-  display: ${(props) => (props.error ? "block" : "none")};
+  display: ${(props) => (props.error ? 'block' : 'none')};
   color: #ff0000;
   text-align: center;
-`;
+`
 
 const SignUpBtn = styled.button`
   background: ${COLORS.darkest};
@@ -354,4 +343,4 @@ const SignUpBtn = styled.button`
   &:disabled:hover {
     background: ${COLORS.darkest};
   }
-`;
+`

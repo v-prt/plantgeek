@@ -233,6 +233,7 @@ export const Friends = () => {
                 {suggestedFriends && (
                   <GreyCard>
                     <h3>people you may know</h3>
+                    {/* FIXME: don't include current user */}
                     {suggestedFriends.map((user) => {
                       return (
                         <User key={user._id}>

@@ -1,107 +1,107 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useDispatch } from "react-redux";
-import { requestUsers, receiveUsers } from "../actions.js";
-import { LoginContext } from "../context/LoginContext";
+import React, { useState, useEffect, useContext } from 'react'
+import { useDispatch } from 'react-redux'
+import { requestUsers, receiveUsers } from '../actions.js'
+import { LoginContext } from '../context/LoginContext'
 
-import styled from "styled-components";
-import { COLORS } from "../GlobalStyles";
-import background from "../assets/monstera-bg.jpg";
-import placeholder from "../assets/avatar-placeholder.png";
+import styled from 'styled-components'
+import { COLORS } from '../GlobalStyles'
+import background from '../assets/monstera-bg.jpg'
+import placeholder from '../assets/avatar-placeholder.png'
 
 export const Settings = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch()
   // const history = useHistory();
-  const { currentUser } = useContext(LoginContext);
+  const { currentUser } = useContext(LoginContext)
 
-  const [existingImage, setExistingImage] = useState(undefined);
+  const [existingImage, setExistingImage] = useState(undefined)
   useEffect(() => {
     if (currentUser && currentUser.image) {
-      setExistingImage(currentUser.image[0]);
+      setExistingImage(currentUser.image[0])
     }
-  }, [currentUser]);
+  }, [currentUser])
 
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState('')
   const handleUrl = (ev) => {
-    setUrl(ev.target.value);
-  };
+    setUrl(ev.target.value)
+  }
 
   const handleUpload = (ev) => {
-    ev.preventDefault();
+    ev.preventDefault()
     // REMOVES EXISTING IMAGE
     if (existingImage) {
       fetch(`/${currentUser.username}/remove`, {
-        method: "PUT",
+        method: 'PUT',
         body: JSON.stringify({ image: existingImage }),
         headers: {
-          Accept: "application/json",
-          "Content-type": "application/json",
+          Accept: 'application/json',
+          'Content-type': 'application/json',
         },
       }).then((res) => {
         if (res.status === 200) {
-          dispatch(requestUsers());
-          fetch("/users")
+          dispatch(requestUsers())
+          fetch('/users')
             .then((res) => res.json())
             .then((json) => {
-              dispatch(receiveUsers(json.data));
+              dispatch(receiveUsers(json.data))
             })
             .catch((err) => {
-              console.log(err);
-            });
+              console.log(err)
+            })
         } else if (res.status === 404) {
-          console.log("Something went wrong");
+          console.log('Something went wrong')
         }
-      });
+      })
     }
     // ADDS NEW IMAGE
     fetch(`/${currentUser.username}/add`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify({ image: url }),
       headers: {
-        Accept: "application/json",
-        "Content-type": "application/json",
+        Accept: 'application/json',
+        'Content-type': 'application/json',
       },
     }).then((res) => {
       if (res.status === 200) {
-        dispatch(requestUsers());
-        fetch("/users")
+        dispatch(requestUsers())
+        fetch('/users')
           .then((res) => res.json())
           .then((json) => {
-            dispatch(receiveUsers(json.data));
+            dispatch(receiveUsers(json.data))
           })
           .catch((err) => {
-            console.log(err);
-          });
+            console.log(err)
+          })
       } else if (res.status === 404) {
-        console.log("Something went wrong");
+        console.log('Something went wrong')
       }
-    });
-  };
+    })
+  }
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState('')
   const handleUsername = (ev) => {
-    setUsername(ev.target.value);
-  };
+    setUsername(ev.target.value)
+  }
 
   const changeUsername = () => {
     // check if username is taken
     // if not, update username
     // else, show error
-  };
+  }
 
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState('')
   const handlePassword = (ev) => {
-    setPassword(ev.target.value);
-  };
+    setPassword(ev.target.value)
+  }
 
   const changePassword = () => {
     // update password
-  };
+  }
 
   const deleteAccount = () => {
-    console.log(currentUser);
+    console.log(currentUser)
     // TODO: ask to confirm, delete account if yes
     // history push to homepage
-  };
+  }
 
   return (
     <Wrapper>
@@ -111,50 +111,42 @@ export const Settings = () => {
         {currentUser && (
           <>
             {currentUser.image ? (
-              <img src={currentUser.image[0]} alt="" />
+              <img src={currentUser.image[0]} alt='' />
             ) : (
-              <img src={placeholder} alt="" />
+              <img src={placeholder} alt='' />
             )}
             <p>{currentUser.username}</p>
           </>
         )}
       </UserDetails>
       <Options>
-        <Option key="upload-image">
+        <Option key='upload-image'>
           {currentUser && currentUser.image ? (
             <p>Change your profile image</p>
           ) : (
             <p>Upload a profile image</p>
           )}
           <form>
-            <Input type="text" placeholder="image url" onChange={handleUrl} />
-            <Button type="submit" onClick={handleUpload}>
+            <Input type='text' placeholder='image url' onChange={handleUrl} />
+            <Button type='submit' onClick={handleUpload}>
               Upload
             </Button>
           </form>
         </Option>
-        <Option key="change-username">
+        <Option key='change-username'>
           {currentUser && currentUser.username && <p>Change your username</p>}
           <form>
-            <Input
-              type="text"
-              placeholder="new username"
-              onChange={handleUsername}
-            />
-            <Button type="submit" onClick={changeUsername} disabled={true}>
+            <Input type='text' placeholder='new username' onChange={handleUsername} />
+            <Button type='submit' onClick={changeUsername} disabled={true}>
               Change
             </Button>
           </form>
         </Option>
-        <Option key="change-password">
+        <Option key='change-password'>
           {currentUser && currentUser.password && <p>Change your password</p>}
           <form>
-            <Input
-              type="text"
-              placeholder="new password"
-              onChange={handlePassword}
-            />
-            <Button type="submit" onClick={changePassword} disabled={true}>
+            <Input type='text' placeholder='new password' onChange={handlePassword} />
+            <Button type='submit' onClick={changePassword} disabled={true}>
               Change
             </Button>
           </form>
@@ -167,8 +159,8 @@ export const Settings = () => {
         </Option>
       </Options>
     </Wrapper>
-  );
-};
+  )
+}
 
 const Wrapper = styled.div`
   background: ${COLORS.lightest};
@@ -179,13 +171,13 @@ const Wrapper = styled.div`
   form {
     display: flex;
   }
-`;
+`
 
 const Banner = styled.div`
   background: url(${background}) center center / cover;
   height: 120px;
   width: 100%;
-`;
+`
 
 const UserDetails = styled.div`
   display: flex;
@@ -199,7 +191,7 @@ const UserDetails = styled.div`
   p {
     font-size: 1.5rem;
   }
-`;
+`
 
 const Options = styled.ul`
   background: #f2f2f2;
@@ -210,19 +202,19 @@ const Options = styled.ul`
     width: 100%;
     border-radius: 0px;
   }
-`;
+`
 
 const Option = styled.li`
-  color: ${(props) => (props.last ? "#cc0000" : "")};
+  color: ${(props) => (props.last ? '#cc0000' : '')};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: ${(props) => (props.last ? "none" : "1px dotted #ccc")};
+  border-bottom: ${(props) => (props.last ? 'none' : '1px dotted #ccc')};
   padding: 10px;
   @media (max-width: 800px) {
     flex-direction: column;
   }
-`;
+`
 
 const Heading = styled.h1`
   background: ${COLORS.medium};
@@ -230,7 +222,7 @@ const Heading = styled.h1`
   width: 100%;
   text-align: center;
   border-bottom: 3px solid ${COLORS.light};
-`;
+`
 
 const Input = styled.input`
   height: 40px;
@@ -238,7 +230,7 @@ const Input = styled.input`
   margin: 5px;
   border: none;
   border-radius: 10px;
-`;
+`
 
 const Button = styled.button`
   background: ${COLORS.light};
@@ -261,4 +253,4 @@ const Button = styled.button`
     background: #ccc;
     color: #000;
   }
-`;
+`

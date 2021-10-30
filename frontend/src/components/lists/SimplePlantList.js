@@ -1,40 +1,40 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useSelector } from "react-redux";
-import { usersArray } from "../../reducers/userReducer";
-import { plantsArray } from "../../reducers/plantReducer.js";
-import { Link } from "react-router-dom";
-import { LoginContext } from "../../context/LoginContext";
+import React, { useState, useEffect, useContext } from 'react'
+import { useSelector } from 'react-redux'
+import { usersArray } from '../../reducers/userReducer'
+import { plantsArray } from '../../reducers/plantReducer.js'
+import { Link } from 'react-router-dom'
+import { LoginContext } from '../../context/LoginContext'
 
-import styled from "styled-components";
-import { COLORS } from "../../GlobalStyles";
+import styled from 'styled-components'
+import { COLORS } from '../../GlobalStyles'
 
 export const SimplePlantList = ({ username, list, title }) => {
-  const plants = useSelector(plantsArray);
-  const users = useSelector(usersArray);
-  const [user, setUser] = useState(undefined);
-  const { currentUser } = useContext(LoginContext);
+  const plants = useSelector(plantsArray)
+  const users = useSelector(usersArray)
+  const [user, setUser] = useState(undefined)
+  const { currentUser } = useContext(LoginContext)
 
   useEffect(() => {
-    setUser(users.find((user) => user.username === username));
-  }, [users, user, username]);
+    setUser(users.find((user) => user.username === username))
+  }, [users, user, username])
 
   // SETS USER'S PLANTS TO ACCESS THEIR PLANTS' DATA
-  const [userPlants, setUserPlants] = useState(undefined);
+  const [userPlants, setUserPlants] = useState(undefined)
   useEffect(() => {
     if (user && plants && list && list.length > 0) {
-      let tempArr = [];
+      let tempArr = []
       list.forEach((id) => {
-        tempArr.push(plants.find((plant) => plant._id === id));
-      });
-      setUserPlants(tempArr);
+        tempArr.push(plants.find((plant) => plant._id === id))
+      })
+      setUserPlants(tempArr)
     } else {
-      setUserPlants(undefined);
+      setUserPlants(undefined)
     }
     return () => {
-      setUserPlants(undefined);
-      setUser(undefined);
-    };
-  }, [setUser, list, plants, username, user, title]);
+      setUserPlants(undefined)
+      setUser(undefined)
+    }
+  }, [setUser, list, plants, username, user, title])
 
   return (
     <Wrapper>
@@ -59,14 +59,14 @@ export const SimplePlantList = ({ username, list, title }) => {
                       <img src={plant.image} alt={plant.name} />
                     </Link>
                   </Plant>
-                );
+                )
               })}
           </Plants>
         </>
       )}
     </Wrapper>
-  );
-};
+  )
+}
 
 const Wrapper = styled.div`
   background: ${COLORS.lightest};
@@ -75,7 +75,7 @@ const Wrapper = styled.div`
   margin: 20px;
   border-radius: 20px;
   overflow: hidden;
-`;
+`
 
 const Heading = styled(Link)`
   background: ${COLORS.light};
@@ -83,7 +83,7 @@ const Heading = styled(Link)`
   &:hover {
     color: #fff;
   }
-`;
+`
 
 const Plants = styled.div`
   display: flex;
@@ -91,7 +91,7 @@ const Plants = styled.div`
   align-items: center;
   justify-content: center;
   padding: 10px;
-`;
+`
 
 const Plant = styled.div`
   background: #fff;
@@ -102,12 +102,13 @@ const Plant = styled.div`
   margin: 10px;
   border-radius: 20px;
   padding: 10px;
+  transition: 0.2s ease-in-out;
   img {
     height: 150px;
     width: 150px;
   }
   &:hover {
     color: ${COLORS.darkest};
-    box-shadow: 0 0 10px ${COLORS.light};
+    box-shadow: 0 0 5px ${COLORS.light};
   }
-`;
+`

@@ -5,6 +5,7 @@ import { plantsArray } from '../reducers/plantReducer.js'
 import styled from 'styled-components'
 import { RiArrowRightSFill } from 'react-icons/ri'
 import { PlantCard } from './PlantCard'
+import { BeatingHeart } from './BeatingHeart'
 
 export const FeaturedPlants = () => {
   const plants = useSelector(plantsArray)
@@ -34,7 +35,7 @@ export const FeaturedPlants = () => {
     <Wrapper>
       {featuredPlants ? (
         <>
-          <Heading>featured</Heading>
+          <Heading>featured houseplants</Heading>
           <Plants>
             {featuredPlants.map((plant) => {
               return <PlantCard key={plant._id} plant={plant} />
@@ -42,12 +43,12 @@ export const FeaturedPlants = () => {
           </Plants>
           <Link to='/browse'>
             <BrowseLink>
-              browse more houseplants <RiArrowRightSFill />
+              browse more <RiArrowRightSFill />
             </BrowseLink>
           </Link>
         </>
       ) : (
-        <>Loading...</>
+        <BeatingHeart />
       )}
     </Wrapper>
   )
