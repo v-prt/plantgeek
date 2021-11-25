@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { usersArray } from '../reducers/userReducer.js'
 import { requestUsers, receiveUsers } from '../actions.js'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import placeholder from '../assets/avatar-placeholder.png'
 

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { usersArray } from '../reducers/userReducer'
 import { requestUsers, receiveUsers } from '../actions.js'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { TiHeartOutline } from 'react-icons/ti'
 import { MdStarBorder } from 'react-icons/md'

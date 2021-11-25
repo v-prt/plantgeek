@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "cloudinary": "^1.27.1",
     "dotenv": "^8.2.0",
     "file-system": "^2.2.2",
     "mongodb": "^3.6.6"

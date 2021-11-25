@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { LoginContext } from '../context/LoginContext'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { RiArrowRightSFill } from 'react-icons/ri'
 import placeholder from '../assets/avatar-placeholder.png'
@@ -18,6 +18,7 @@ export const Homepage = () => {
   }, [])
 
   // TODO: improve site info, fix lists, add more content to heading (profile info/image? stats? random tip?)
+  // TODO: add lazy loading animation for each div (load from top to bottom, slide up/fade in)
   return (
     <Wrapper>
       <Heading>
@@ -37,7 +38,7 @@ export const Homepage = () => {
           </h2>
         </Link>
         <li>View your plant's profile to learn how to care for it</li>
-        <li>Find out if your plant is pet friendly (look for the toxicity symbol)</li>
+        <li>Find out if your plant is toxic (if so, keep away from pets & children)</li>
         {currentUser ? (
           <>
             <Link to={`/user-profile/${currentUser.username}`}>

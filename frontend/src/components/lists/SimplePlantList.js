@@ -5,7 +5,7 @@ import { plantsArray } from '../../reducers/plantReducer.js'
 import { Link } from 'react-router-dom'
 import { LoginContext } from '../../context/LoginContext'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { COLORS } from '../../GlobalStyles'
 
 export const SimplePlantList = ({ username, list, title }) => {

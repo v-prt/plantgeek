@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer'
 import { LoginContext } from '../context/LoginContext'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { FaPaw, FaSkullCrossbones } from 'react-icons/fa'
 import background from '../assets/monstera-bg.jpg'
@@ -64,11 +64,11 @@ export const PlantProfile = () => {
               </Bar>
               {plant.toxic ? (
                 <Toxicity toxic={true}>
-                  <FaSkullCrossbones /> <p>not pet friendly</p>
+                  <FaSkullCrossbones /> <p>toxic</p>
                 </Toxicity>
               ) : (
                 <Toxicity toxic={false}>
-                  <FaPaw /> <p>pet friendly</p>
+                  <FaPaw /> <p>nontoxic</p>
                 </Toxicity>
               )}
               {currentUser && (

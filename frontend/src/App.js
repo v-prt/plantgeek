@@ -8,13 +8,13 @@ import { Browse } from './pages/Browse'
 import { Login } from './pages/Login'
 import { SignUp } from './pages/SignUp'
 import { Settings } from './pages/Settings'
-import { DataContribution } from './pages/DataContribution'
+import { Contribute } from './pages/Contribute'
 import { PlantProfile } from './pages/PlantProfile'
 import { UserProfile } from './pages/UserProfile'
 import { DetailedPlantList } from './components/lists/DetailedPlantList'
 import { Footer } from './components/Footer'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import GlobalStyles from './GlobalStyles'
 
 export const App = () => {
@@ -48,7 +48,7 @@ export const App = () => {
             <Settings />
           </Route>
           <Route exact path='/contribute'>
-            <DataContribution />
+            <Contribute />
           </Route>
           <Route path='/user-profile/:username'>
             <UserProfile />
@@ -74,6 +74,7 @@ export const App = () => {
 
 // adjusts width of main content to account for responsive navbar
 const Main = styled.main`
+  overscroll-behavior: none;
   width: calc(100vw - 240px);
   @media (max-width: 999px) {
     width: calc(100vw - 92px);

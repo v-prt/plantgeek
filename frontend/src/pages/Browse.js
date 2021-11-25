@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
 import { PlantCard } from '../components/PlantCard'
@@ -47,6 +47,7 @@ export const Browse = () => {
 
   // FILTERS PLANTS BASED ON SELECTED TYPE
   // FIXME: make filter not reset after using action bar
+  // TODO: filters should be checkboxes
   const [filteredPlants, setFilteredPlants] = useState(plants)
   const [selectedType, setSelectedType] = useState('all')
   // initially sets filter to all plants in db
@@ -54,9 +55,9 @@ export const Browse = () => {
     setFilteredPlants(plants)
   }, [plants])
   const handleFilter = (type) => {
-    if (type === 'pet friendly') {
+    if (type === 'nontoxic') {
       setFilteredPlants(plants.filter((plant) => plant.toxic === false))
-      setSelectedType('pet friendly')
+      setSelectedType('nontoxic')
     } else {
       let tempArr = []
       plants.forEach((plant) => {
@@ -108,10 +109,10 @@ export const Browse = () => {
                       all
                     </Type>
                     <Type
-                      key='pet friendly'
-                      onClick={() => handleFilter('pet friendly')}
-                      active={selectedType === 'pet friendly'}>
-                      pet friendly
+                      key='nontoxic'
+                      onClick={() => handleFilter('nontoxic')}
+                      active={selectedType === 'nontoxic'}>
+                      nontoxic
                     </Type>
                   </div>
                   <h3>by genus</h3>

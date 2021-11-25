@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer.js'
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { RiArrowRightSFill } from 'react-icons/ri'
 import { PlantCard } from './PlantCard'
 import { BeatingHeart } from './BeatingHeart'
@@ -67,7 +67,7 @@ const Heading = styled.h2`
   text-align: center;
 `
 
-const BrowseLink = styled.h2`
+const BrowseLink = styled.h3`
   display: flex;
   align-items: center;
   margin-top: 20px;

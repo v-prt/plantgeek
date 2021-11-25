@@ -4,7 +4,7 @@ import { LoginContext } from '../context/LoginContext'
 import { plantsArray } from '../reducers/plantReducer'
 import { requestUsers, receiveUsers } from '../actions.js'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
@@ -149,6 +149,7 @@ const Wrapper = styled.div`
 
 const Action = styled.button`
   background: ${(props) => (props.added ? `${COLORS.light}` : '')};
+  color: #000;
   opacity: ${(props) => (props.added ? '100%' : '30%')};
   border-radius: 50%;
   height: 30px;

@@ -5,7 +5,7 @@ import { usersArray } from '../../reducers/userReducer'
 import { plantsArray } from '../../reducers/plantReducer.js'
 import { LoginContext } from '../../context/LoginContext'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import background from '../../assets/monstera-bg.jpg'
 import { COLORS } from '../../GlobalStyles'
 import { ImDroplet } from 'react-icons/im'

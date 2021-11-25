@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { usersArray } from '../reducers/userReducer'
 import { LoginContext } from '../context/LoginContext'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
 

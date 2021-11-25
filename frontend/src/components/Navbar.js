@@ -10,7 +10,8 @@ import { CgProfile } from 'react-icons/cg'
 import { TiHeartOutline } from 'react-icons/ti'
 import { MdStarBorder } from 'react-icons/md'
 import { GoGear } from 'react-icons/go'
-import styled from 'styled-components'
+import { FiUpload } from 'react-icons/fi'
+import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 
 export const Navbar = () => {
@@ -68,6 +69,12 @@ export const Navbar = () => {
             <Label>settings</Label>
             <Icon>
               <GoGear />
+            </Icon>
+          </Link>
+          <Link to='/contribute'>
+            <Label>contribute</Label>
+            <Icon>
+              <FiUpload />
             </Icon>
           </Link>
           <LogoutBtn onClick={handleLogout}>

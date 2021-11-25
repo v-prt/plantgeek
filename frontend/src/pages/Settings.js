@@ -3,8 +3,9 @@ import { useDispatch } from 'react-redux'
 import { requestUsers, receiveUsers } from '../actions.js'
 import { LoginContext } from '../context/LoginContext'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
+import { Button } from '../components/ReusableComponents'
 import background from '../assets/monstera-bg.jpg'
 import placeholder from '../assets/avatar-placeholder.png'
 
@@ -80,6 +81,7 @@ export const Settings = () => {
   const [username, setUsername] = useState('')
   const handleUsername = (ev) => {
     setUsername(ev.target.value)
+    console.log(username)
   }
 
   const changeUsername = () => {
@@ -91,6 +93,7 @@ export const Settings = () => {
   const [password, setPassword] = useState('')
   const handlePassword = (ev) => {
     setPassword(ev.target.value)
+    console.log(password)
   }
 
   const changePassword = () => {
@@ -153,7 +156,7 @@ export const Settings = () => {
         </Option>
         <Option last={true}>
           <p>Permanently delete your account</p>
-          <Button onClick={deleteAccount} disabled={true}>
+          <Button style={{ width: '100px' }} onClick={deleteAccount} disabled={true}>
             Delete
           </Button>
         </Option>
@@ -230,27 +233,4 @@ const Input = styled.input`
   margin: 5px;
   border: none;
   border-radius: 10px;
-`
-
-const Button = styled.button`
-  background: ${COLORS.light};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 40px;
-  margin: 5px;
-  border-radius: 10px;
-  h2 {
-    margin-right: 10px;
-  }
-  &:hover {
-    background: ${COLORS.medium};
-    color: #fff;
-  }
-  &:disabled {
-    cursor: not-allowed;
-    background: #ccc;
-    color: #000;
-  }
 `

@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { requestPlants, receivePlants } from '../actions.js'
 import { LoginContext } from '../context/LoginContext'
 
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { BiSend } from 'react-icons/bi'
 
