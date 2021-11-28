@@ -112,7 +112,11 @@ export const Login = () => {
                 error={incorrectPassword}
               />
               <Error error={incorrectPassword}>Incorrect password.</Error>
-              <LoginBtn type='submit' onClick={handleLogin} disabled={!username || !password}>
+              {/* TEMPORARILY DISABLED FOR LIVE SITE */}
+              {/* <LoginBtn type='submit' onClick={handleLogin} disabled={!username || !password}>
+                LOG IN
+              </LoginBtn> */}
+              <LoginBtn type='submit' onClick={handleLogin} disabled={true}>
                 LOG IN
               </LoginBtn>
             </Form>

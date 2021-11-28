@@ -32,40 +32,40 @@ export const Homepage = () => {
         )}
       </Heading>
       <InfoCard>
-        <Link to='/browse'>
-          <h2>
+        <h2>
+          <Link to='/browse'>
             browse houseplants <RiArrowRightSFill />
-          </h2>
-        </Link>
+          </Link>
+        </h2>
         <li>View your plant's profile to learn how to care for it</li>
         <li>Find out if your plant is toxic (if so, keep away from pets & children)</li>
         {currentUser ? (
           <>
-            <Link to={`/user-profile/${currentUser.username}`}>
-              <h2>
+            <h2>
+              <Link to={`/user-profile/${currentUser.username}`}>
                 view your profile <RiArrowRightSFill />
-              </h2>
-            </Link>
+              </Link>
+            </h2>
             <li>Manage your collection and quickly refer to your plants' needs</li>
             <li>Keep a list of your favorite plants</li>
             <li>Add plants you would like to own to your wishlist</li>
             <li>View your friends</li>
-            <Link to='/contribute'>
-              <h2>
+            <h2>
+              <Link to='/contribute'>
                 contribute <RiArrowRightSFill />
-              </h2>
-            </Link>
+              </Link>
+            </h2>
             <li>Help us grow our database of houseplants</li>
             <li>Upload images to our gallery</li>
             <li>Correct or add missing information</li>
           </>
         ) : (
           <>
-            <Link to='/signup'>
-              <h2>
+            <h2>
+              <Link to='/signup'>
                 create an account <RiArrowRightSFill />
-              </h2>
-            </Link>
+              </Link>
+            </h2>
             <li>Keep a list of your own houseplant collection</li>
             <li>Quickly view your plant's needs</li>
             <li>Save your favorite plants</li>
@@ -139,9 +139,13 @@ const InfoCard = styled.section`
   border-radius: 20px;
   padding: 0 30px 20px 30px;
   h2 {
-    display: flex;
-    align-items: center;
+    width: fit-content;
     margin-top: 20px;
+    a {
+      font-family: 'Raleway', sans-serif;
+      display: flex;
+      align-items: center;
+    }
   }
   h3 {
     margin-top: 20px;

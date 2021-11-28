@@ -4,6 +4,9 @@
   "main": "server.js",
   "license": "MIT",
   "scripts": {
+    "build": "cd frontend && npm run build",
+    "install-frontend": "cd frontend && npm install",
+    "heroku-postbuild": "npm run install-frontend && npm run build",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },

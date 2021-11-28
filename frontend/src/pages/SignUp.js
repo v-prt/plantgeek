@@ -171,7 +171,11 @@ export const SignUp = () => {
             <Error error={usernameTaken}>sorry, this username is taken</Error>
             <Label htmlFor='password'>password</Label>
             <Input required type='password' name='signup' id='password' onChange={handlePassword} />
-            <SignUpBtn type='submit' onClick={handleSignUp} disabled={!completeForm}>
+            {/* TEMPORARILY DISABLED FOR LIVE SITE */}
+            {/* <SignUpBtn type='submit' onClick={handleSignUp} disabled={!completeForm}>
+              CREATE ACCOUNT
+            </SignUpBtn> */}
+            <SignUpBtn type='submit' onClick={handleSignUp} disabled={true}>
               CREATE ACCOUNT
             </SignUpBtn>
           </Form>
