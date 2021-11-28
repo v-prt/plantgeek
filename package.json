@@ -3,7 +3,10 @@
     "cloudinary": "^1.27.1",
     "dotenv": "^8.2.0",
     "file-system": "^2.2.2",
-    "mongodb": "^3.6.6"
+    "mongodb": "^3.6.6",
+    "bcrypt": "^5.0.1",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
   },
   "scripts": {
     "build": "cd frontend && npm run build",
