@@ -6,10 +6,13 @@
     "mongodb": "^3.6.6"
   },
   "scripts": {
-    "start": "node backend/server.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install npm && run build"
+    "build": "cd frontend && npm run build",
+    "install-frontend": "cd frontend && npm install",
+    "heroku-postbuild": "npm run install-frontend && npm run build",
+    "start": "node backend/server.js"
   },
   "engines": {
-    "node": "14.18.1"
+    "node": "14.18.1",
+    "npm": "8.1.0"
   }
 }
