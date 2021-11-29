@@ -1,5 +1,8 @@
 {
   "name": "plantgeek",
+  "version": "1.0.0",
+  "main": "server.js",
+  "license": "MIT",
   "dependencies": {
     "cloudinary": "^1.27.1",
     "dotenv": "^8.2.0",
