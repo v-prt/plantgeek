@@ -5,7 +5,7 @@ import { plantsArray } from '../reducers/plantReducer.js'
 import styled from 'styled-components/macro'
 import { RiArrowRightSFill } from 'react-icons/ri'
 import { PlantCard } from './PlantCard'
-import { BeatingHeart } from './BeatingHeart'
+import { BeatingHeart } from './loaders/BeatingHeart'
 
 export const FeaturedPlants = () => {
   const plants = useSelector(plantsArray)

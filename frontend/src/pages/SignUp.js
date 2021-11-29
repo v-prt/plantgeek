@@ -11,10 +11,13 @@ import { MdStarBorder } from 'react-icons/md'
 import { RiPlantLine } from 'react-icons/ri'
 import background from '../assets/monstera-bg.jpg'
 import { GoEye, GoEyeClosed } from 'react-icons/go'
+import { Ellipsis } from '../components/loaders/Ellipsis'
+import { Form, Label, Input, Error, Button } from './Login'
 
 export const SignUp = () => {
   const dispatch = useDispatch()
   const users = useSelector(usersArray)
+  const [loading, setLoading] = useState(false)
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -31,6 +34,15 @@ export const SignUp = () => {
   const handleUsername = (ev) => {
     setUsername(ev.target.value)
   }
+
+  const [existingUser, setExistingUser] = useState(false)
+  useEffect(() => {
+    setExistingUser(
+      users.find((user) => {
+        return user.lowerCaseUsername.toLowerCase() === username.toLowerCase()
+      })
+    )
+  }, [users, username])
 
   const [password, setPassword] = useState('')
   const handlePassword = (ev) => {
@@ -61,41 +73,35 @@ export const SignUp = () => {
       })
   }, [dispatch, newUser])
 
-  const [usernameTaken, setUsernameTaken] = useState(undefined)
   const handleSignUp = (ev) => {
     ev.preventDefault()
-
-    // resets value between login attempts
-    setUsernameTaken(undefined)
-
-    const existingUser = users.find((user) => {
-      return user.username.toLowerCase() === username.toLowerCase()
+    setLoading(true)
+    fetch('/users', {
+      method: 'POST',
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     })
-    if (!existingUser) {
-      fetch('/users', {
-        method: 'POST',
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+      .then((res) => {
+        if (res.status === 500) {
+          // TODO: display error to user
+          console.error('Signup error!')
+          setLoading(false)
+        }
+        return res.json()
       })
-        .then((res) => {
-          if (res.status === 500) {
-            console.error('Signup error!')
-          }
-          return res.json()
-        })
-        .then((data) => {
-          if (data) {
-            console.log('Signup successful!')
-            setNewUser(true)
-          }
-        })
-    } else setUsernameTaken(true)
+      .then((data) => {
+        if (data) {
+          console.log('Signup successful!')
+          setNewUser(true)
+          setLoading(false)
+        }
+      })
   }
 
   const [passwordVisible, setPasswordVisible] = useState(false)
@@ -165,19 +171,18 @@ export const SignUp = () => {
               id='username'
               maxLength='15'
               onChange={handleUsername}
-              error={usernameTaken}
+              error={existingUser}
               ref={input}
             />
-            <Error error={usernameTaken}>sorry, this username is taken</Error>
+            <Error error={existingUser}>Sorry, this username is taken.</Error>
             <Label htmlFor='password'>password</Label>
             <Input required type='password' name='signup' id='password' onChange={handlePassword} />
-            {/* TEMPORARILY DISABLED FOR LIVE SITE */}
-            {/* <SignUpBtn type='submit' onClick={handleSignUp} disabled={!completeForm}>
-              CREATE ACCOUNT
-            </SignUpBtn> */}
-            <SignUpBtn type='submit' onClick={handleSignUp} disabled={true}>
-              CREATE ACCOUNT
-            </SignUpBtn>
+            <Button
+              type='submit'
+              onClick={handleSignUp}
+              disabled={!completeForm || existingUser || loading}>
+              {loading ? <Ellipsis /> : 'CREATE ACCOUNT'}
+            </Button>
           </Form>
         )}
       </Card>
@@ -294,57 +299,5 @@ const Toggle = styled.button`
   font-size: 1.1rem;
   &:focus {
     color: ${COLORS.light};
-  }
-`
-
-const Form = styled.form`
-  background: ${COLORS.lightest};
-  display: flex;
-  flex-direction: column;
-  padding: 0 30px;
-`
-
-const Label = styled.label`
-  background: ${COLORS.lightest};
-  width: fit-content;
-  position: relative;
-  top: 15px;
-  left: 30px;
-  padding: 0 10px;
-  font-size: 0.9rem;
-  border-radius: 10px;
-`
-
-const Input = styled.input`
-  background: ${COLORS.lightest};
-  border: ${(props) => (props.error ? '2px solid #ff0000' : `2px solid ${COLORS.light}`)};
-  border-radius: 15px;
-  text-align: right;
-  &:focus {
-    outline: none;
-    border: 2px solid ${COLORS.medium};
-  }
-`
-
-const Error = styled.p`
-  display: ${(props) => (props.error ? 'block' : 'none')};
-  color: #ff0000;
-  text-align: center;
-`
-
-const SignUpBtn = styled.button`
-  background: ${COLORS.darkest};
-  color: ${COLORS.lightest};
-  margin: 30px 0;
-  border-radius: 15px;
-  padding: 10px;
-  &:hover {
-    background: ${COLORS.medium};
-  }
-  &:focus {
-    background: ${COLORS.medium};
-  }
-  &:disabled:hover {
-    background: ${COLORS.darkest};
   }
 `

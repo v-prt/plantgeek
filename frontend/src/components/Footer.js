@@ -18,7 +18,7 @@ export const Footer = () => {
         <StyledLink to='#'>about</StyledLink>
         <StyledLink to='#'>contact</StyledLink>
         <StyledLink to='#'>support</StyledLink>
-        <p>&copy; plantgeek 2021</p>
+        <p>&copy;2021 plantgeek</p>
       </Links>
     </Wrapper>
   )

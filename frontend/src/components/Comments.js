@@ -97,9 +97,10 @@ const Wrapper = styled.section`
     display: flex;
     justify-content: space-between;
     margin: 10px 0;
-    border: 2px solid ${COLORS.light};
+    border: 2px solid transparent;
     border-radius: 20px;
     overflow: hidden;
+    transition: 0.2s ease-in-out;
     textarea {
       width: 90%;
       margin: 10px;
@@ -108,6 +109,9 @@ const Wrapper = styled.section`
       &:focus {
         outline: none;
       }
+    }
+    &:focus-within {
+      border: 2px solid ${COLORS.light};
     }
     button {
       align-self: flex-end;

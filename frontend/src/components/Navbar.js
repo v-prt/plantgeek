@@ -22,7 +22,7 @@ export const Navbar = () => {
     ev.preventDefault()
     setCurrentUser(undefined)
     setLoggedIn(false)
-    history.push('/')
+    history.push('/login')
   }
 
   return (

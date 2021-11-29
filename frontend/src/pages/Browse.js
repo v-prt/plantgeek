@@ -7,7 +7,7 @@ import { COLORS } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
 import { PlantCard } from '../components/PlantCard'
 import { BiSearch } from 'react-icons/bi'
-import { BeatingHeart } from '../components/BeatingHeart'
+import { BeatingHeart } from '../components/loaders/BeatingHeart'
 
 export const Browse = () => {
   const plants = useSelector(plantsArray)

@@ -8,10 +8,12 @@ import { LoginContext } from '../context/LoginContext'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
+import { Ellipsis } from '../components/loaders/Ellipsis'
 
 export const Login = () => {
   const history = useHistory()
   const users = useSelector(usersArray)
+  const [loading, setLoading] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [incorrectUsername, setIncorrectUsername] = useState(undefined)
@@ -41,6 +43,7 @@ export const Login = () => {
 
   const handleLogin = (ev) => {
     ev.preventDefault()
+    setLoading(true)
     // resets values between login attempts
     setIncorrectUsername(undefined)
     setIncorrectPassword(undefined)
@@ -57,25 +60,30 @@ export const Login = () => {
         },
       }).then((res) => {
         if (res.status === 200) {
-          history.push(`/user-profile/${username}`)
+          // TODO: return user data from backend and setLoggedIn using user id or email and push to profile with username
           setLoggedIn({
             username: username,
             timestamp: new Date().getTime(),
           })
+          setLoading(false)
+          history.push(`/user-profile/${username}`)
         } else if (res.status === 403) {
           console.log('Incorrect password!')
           setIncorrectPassword(true)
+          setLoading(false)
         } else if (res.status === 401) {
           console.log('Incorrect username!')
           setIncorrectUsername(true)
+          setLoading(false)
         } else if (res.status === 500) {
           console.log('Internal server error!')
         }
-        return res.json()
+        // return res.json()
       })
     } else {
       console.log('No users registered!')
       setIncorrectUsername(true)
+      setLoading(false)
     }
   }
 
@@ -112,13 +120,12 @@ export const Login = () => {
                 error={incorrectPassword}
               />
               <Error error={incorrectPassword}>Incorrect password.</Error>
-              {/* TEMPORARILY DISABLED FOR LIVE SITE */}
-              {/* <LoginBtn type='submit' onClick={handleLogin} disabled={!username || !password}>
-                LOG IN
-              </LoginBtn> */}
-              <LoginBtn type='submit' onClick={handleLogin} disabled={true}>
-                LOG IN
-              </LoginBtn>
+              <Button
+                type='submit'
+                onClick={handleLogin}
+                disabled={!username || !password || loading}>
+                {loading ? <Ellipsis /> : 'LOG IN'}
+              </Button>
             </Form>
           </>
         )}
@@ -170,14 +177,14 @@ const Welcome = styled.div`
   }
 `
 
-const Form = styled.form`
+export const Form = styled.form`
   background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
   padding: 0 30px;
 `
 
-const Label = styled.label`
+export const Label = styled.label`
   background: ${COLORS.lightest};
   width: fit-content;
   position: relative;
@@ -188,24 +195,28 @@ const Label = styled.label`
   border-radius: 10px;
 `
 
-const Input = styled.input`
+export const Input = styled.input`
   background: ${COLORS.lightest};
   border: ${(props) => (props.error ? '2px solid #ff0000' : `2px solid ${COLORS.light}`)};
   border-radius: 15px;
   text-align: right;
+  transition: 0.2s ease-in-out;
   &:focus {
+    border: ${(props) => (props.error ? '2px solid #ff0000' : `2px solid ${COLORS.medium}`)};
     outline: none;
-    border: 2px solid ${COLORS.medium};
   }
 `
 
-const Error = styled.p`
-  display: ${(props) => (props.error ? 'block' : 'none')};
+export const Error = styled.p`
+  visibility: ${(props) => (props.error ? 'visible' : 'hidden')};
+  max-height: ${(props) => (props.error ? '100px' : '0')};
+  opacity: ${(props) => (props.error ? '1' : '0')};
   color: #ff0000;
   text-align: center;
+  transition: 0.2s ease-in-out;
 `
 
-const LoginBtn = styled.button`
+export const Button = styled.button`
   background: ${COLORS.darkest};
   color: ${COLORS.lightest};
   margin: 30px 0;
