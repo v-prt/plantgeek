@@ -4,6 +4,7 @@
 
 const express = require('express')
 const morgan = require('morgan') // logs request on the terminal (example: Get /users 100ms 200)
+const path = require('path')
 
 // HANDLERS
 const {
@@ -39,16 +40,23 @@ app
   .get('/plants/:_id', getPlant)
   .put('/plants/:_id/comments', postComment)
 
-  // CATCH-ALL ENDPOINT
-  .get('*', (req, res) => {
-    res.status(404).json({
-      status: 404,
-      message: 'Oops, nothing here!',
-    })
-  })
-
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('../frontend/build'))
+  app.use(express.static(path.join(__dirname, 'frontend', 'build')))
 }
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static('../frontend/build'))
+// }
+
+// CATCH-ALL ENDPOINT
+// .get('*', (req, res) => {
+//   res.status(404).json({
+//     status: 404,
+//     message: 'Oops, nothing here!',
+//   })
+// })
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'))
+})
 
 app.listen(PORT, () => console.info(`Listening on port ${PORT}`))
