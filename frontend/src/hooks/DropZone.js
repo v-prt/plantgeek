@@ -97,14 +97,12 @@ export const DropZone = () => {
     <Wrapper>
       <p>Please follow our image standards:</p>
       <ul>
-        <li key={1}>
-          - <b>houseplants only</b>
-        </li>
+        <li key={1}>- houseplants only</li>
         <li key={2}>- 1:1 aspect ratio (square)</li>
         <li key={3}>- display the whole plant in a plain pot</li>
         <li key={4}>- white background</li>
         <li>- well lit and in focus (no blurry images)</li>
-        <li>- max filesize: </li>
+        <li>- max filesize: 1mb</li>
       </ul>
       <p>Example:</p>
       <img style={{ height: '200px' }} src={maranta} alt='' />
@@ -123,7 +121,7 @@ export const DropZone = () => {
 }
 
 const Wrapper = styled.div`
-  margin: 50px 0;
+  margin: 50px;
 `
 
 const DropBox = styled.div`
@@ -135,14 +133,14 @@ const DropBox = styled.div`
   color: ${COLORS.medium};
   color: ${(props) => props.isDragAccept && `${COLORS.light}`};
   color: ${(props) => props.isDragReject && 'red'};
-  margin: 10px;
+  margin: 10px 0;
   padding: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  height: 200px;
-  width: 200px;
+  height: 150px;
+  width: 150px;
   cursor: pointer;
   &:hover {
     background: rgba(255, 255, 255, 0.8);

@@ -32,6 +32,7 @@ export const Browse = () => {
   plants.sort(compare)
 
   // GETS ALL TYPES OF PLANTS AND SORTS ALPHABETICALLY
+  // TODO: change plant.type to plant.genus
   const [types, setTypes] = useState([])
   useEffect(() => {
     let tempArr = []

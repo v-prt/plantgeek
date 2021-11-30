@@ -8,6 +8,33 @@ const options = {
   useUnifiedTopology: true,
 }
 
+// (CREATE/POST) ADD A NEW PLANT TO DB
+// TODO: make sure this works
+const createPlant = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  try {
+    await client.connect()
+    const db = client.db('plantgeekdb')
+    const plant = await db.collection('plants').insertOne({
+      species: req.body.species,
+      genus: req.body.genus,
+      light: req.body.light,
+      water: req.body.water,
+      temperature: req.body.temperature,
+      humidity: req.body.humidity,
+      toxic: req.body.toxic,
+      imageUrl: req.body.imageUrl,
+      sourceUrl: req.body.sourceUrl,
+    })
+    assert.strictEqual(1, plant.insertedCount)
+    res.status(201).json({ status: 201, data: plant })
+  } catch (err) {
+    res.status(500).json({ status: 500, data: req.body, message: err.message })
+    console.log(err.stack)
+  }
+  client.close()
+}
+
 // GETS ALL PLANTS IN DATABASE
 const getPlants = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
@@ -68,4 +95,4 @@ const postComment = async (req, res) => {
   client.close()
 }
 
-module.exports = { getPlants, getPlant, postComment }
+module.exports = { createPlant, getPlants, getPlant, postComment }

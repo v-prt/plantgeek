@@ -7,46 +7,38 @@ export const Footer = () => {
   return (
     <Wrapper>
       <Links>
-        <p>
-          All houseplant images property of{' '}
-          <a href='https://planterina.com/' target='blank' rel='noopenner noreferrer'>
-            Planterina
-          </a>
-          .
-        </p>
         {/* TODO: */}
-        <StyledLink to='#'>about</StyledLink>
-        <StyledLink to='#'>contact</StyledLink>
-        <StyledLink to='#'>support</StyledLink>
-        <p>&copy;2021 plantgeek</p>
+        <p>&copy; 2021 Plantgeek, Inc. All rights reserved.</p>
+        <StyledLink to='#'>Terms of Use</StyledLink>•<StyledLink to='#'>Privacy Policy</StyledLink>•
+        <StyledLink to='#'>Support</StyledLink>
       </Links>
     </Wrapper>
   )
 }
 
 const Wrapper = styled.footer`
+  background: ${COLORS.light};
+  color: ${COLORS.dark};
   width: 100%;
   position: relative;
   bottom: 100%;
-  background: ${COLORS.light};
   display: flex;
   justify-content: center;
   font-size: 0.8rem;
+  a {
+    text-decoration: underline;
+    &:hover {
+      color: #fff;
+    }
+  }
 `
 
 const Links = styled.div`
   display: flex;
-  justify-content: space-around;
-  width: 60%;
+  align-items: center;
+  justify-content: space-between;
   p {
-    margin: 10px;
-    a {
-      color: ${COLORS.dark};
-      text-decoration: underline;
-      &:hover {
-        color: #fff;
-      }
-    }
+    margin: 10px 20px;
   }
   @media (max-width: 800px) {
     width: 100%;
@@ -54,7 +46,8 @@ const Links = styled.div`
 `
 
 const StyledLink = styled(Link)`
-  margin: 10px;
+  text-decoration: underline;
+  margin: 10px 20px;
   &:hover {
     color: #fff;
   }
