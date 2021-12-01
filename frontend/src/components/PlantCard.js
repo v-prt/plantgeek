@@ -20,9 +20,9 @@ export const PlantCard = ({ plant }) => {
           </Toxicity>
         )}
         <InfoLink to={`/plant-profile/${plant._id}`}>
-          <img src={plant.image ? plant.image : plantSilhouette} alt={plant.name} />
+          <img src={plant.imageUrl ? plant.imageUrl : plantSilhouette} alt={plant.species} />
         </InfoLink>
-        <Name>{plant.name}</Name>
+        <Name>{plant.species}</Name>
       </Div>
       <ActionBar id={plant._id} />
     </Plant>

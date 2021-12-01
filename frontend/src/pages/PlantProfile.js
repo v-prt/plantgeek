@@ -32,8 +32,8 @@ export const PlantProfile = () => {
       <Banner />
       {plant && (
         <Div>
-          <Image src={plant.image} alt='' />
-          <Name>{plant.name}</Name>
+          <Image src={plant.imageUrl} alt='' />
+          <Name>{plant.species}</Name>
           <ResponsiveDiv>
             <Needs>
               <h2>needs</h2>

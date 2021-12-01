@@ -17,8 +17,8 @@ export const Homepage = () => {
     window.scrollTo(0, 0)
   }, [])
 
-  // TODO: improve site info, fix lists, add more content to heading (profile info/image? stats? random tip?)
-  // TODO: add lazy loading animation for each div (load from top to bottom, slide up/fade in)
+  // TODO: improve site info, add more content to heading (profile info/image? stats? random tip?)
+  // TODO: add lazy loading animation for each div? (load from top to bottom, slide up/fade in)
   return (
     <Wrapper>
       <Heading>
@@ -37,8 +37,10 @@ export const Homepage = () => {
             browse houseplants <RiArrowRightSFill />
           </Link>
         </h2>
-        <li>View your plant's profile to learn how to care for it</li>
-        <li>Find out if your plant is toxic (if so, keep away from pets & children)</li>
+        <ul>
+          <li>View your plant's profile to learn how to care for it</li>
+          <li>Find out if your plant is toxic (if so, keep away from pets & children)</li>
+        </ul>
         {currentUser ? (
           <>
             <h2>
@@ -46,18 +48,22 @@ export const Homepage = () => {
                 view your profile <RiArrowRightSFill />
               </Link>
             </h2>
-            <li>Manage your collection and quickly refer to your plants' needs</li>
-            <li>Keep a list of your favorite plants</li>
-            <li>Add plants you would like to own to your wishlist</li>
-            <li>View your friends</li>
+            <ul>
+              <li>Manage your collection and quickly refer to your plants' needs</li>
+              <li>Keep a list of your favorite plants</li>
+              <li>Add plants you would like to own to your wishlist</li>
+              <li>View your friends</li>
+            </ul>
             <h2>
               <Link to='/contribute'>
                 contribute <RiArrowRightSFill />
               </Link>
             </h2>
-            <li>Help us grow our database of houseplants</li>
-            <li>Upload images to our gallery</li>
-            <li>Correct or add missing information</li>
+            <ul>
+              <li>Help us grow our database of houseplants</li>
+              <li>Upload images to our gallery</li>
+              <li>Correct or add missing information</li>
+            </ul>
           </>
         ) : (
           <>
@@ -66,12 +72,14 @@ export const Homepage = () => {
                 create an account <RiArrowRightSFill />
               </Link>
             </h2>
-            <li>Keep a list of your own houseplant collection</li>
-            <li>Quickly view your plant's needs</li>
-            <li>Save your favorite plants</li>
-            <li>Create a wishlist</li>
-            <li>Add your friends</li>
-            <li>Chat with other users about plants and share tips with each other</li>
+            <ul>
+              <li>Keep a list of your own houseplant collection</li>
+              <li>Quickly view your plant's needs</li>
+              <li>Save your favorite plants</li>
+              <li>Create a wishlist</li>
+              <li>Add your friends</li>
+              <li>Chat with other users about plants and share tips with each other</li>
+            </ul>
           </>
         )}
       </InfoCard>
@@ -106,16 +114,19 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  padding: 20px 0;
+  section {
+    width: 80%;
+    margin: 20px;
+    padding: 40px;
+    border-radius: 20px;
+  }
 `
 
 const Heading = styled.section`
   background: ${COLORS.light};
-  width: 80%;
   display: flex;
   justify-content: flex-end;
-  margin-top: 30px;
-  border-radius: 20px;
-  padding: 30px;
   h1 {
     font-size: 1.8rem;
   }
@@ -134,13 +145,8 @@ const Row = styled.div`
 
 const InfoCard = styled.section`
   background: #fff;
-  width: 80%;
-  margin: 30px;
-  border-radius: 20px;
-  padding: 0 30px 20px 30px;
   h2 {
     width: fit-content;
-    margin-top: 20px;
     a {
       font-family: 'Raleway', sans-serif;
       display: flex;
@@ -150,7 +156,11 @@ const InfoCard = styled.section`
   h3 {
     margin-top: 20px;
   }
-  li {
-    margin-left: 20px;
+  ul {
+    list-style: disc;
+    margin-bottom: 20px;
+    li {
+      margin-left: 20px;
+    }
   }
 `

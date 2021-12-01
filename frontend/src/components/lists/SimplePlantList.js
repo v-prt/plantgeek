@@ -56,7 +56,7 @@ export const SimplePlantList = ({ username, list, title }) => {
                 return (
                   <Plant key={plant._id}>
                     <Link to={`/plant-profile/${plant._id}`}>
-                      <img src={plant.image} alt={plant.name} />
+                      <img src={plant.imageUrl} alt={plant.species} />
                     </Link>
                   </Plant>
                 )

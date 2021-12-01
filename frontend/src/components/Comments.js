@@ -30,7 +30,7 @@ export const Comments = ({ plant }) => {
       },
     }).then((res) => {
       if (res.status === 200) {
-        console.log(`Posted a new comment about ${plant.name}`)
+        console.log(`Posted a new comment about ${plant.species}`)
         setComment('')
         dispatch(requestPlants())
         fetch('/plants')

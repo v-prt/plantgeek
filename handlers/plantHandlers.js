@@ -1,5 +1,5 @@
 const { MongoClient, ObjectId } = require('mongodb')
-// const assert = require("assert");
+const assert = require('assert')
 require('dotenv').config()
 const MONGO_URI = process.env.MONGO_URI
 

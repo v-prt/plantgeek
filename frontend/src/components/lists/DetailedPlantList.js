@@ -86,9 +86,9 @@ export const DetailedPlantList = ({ title }) => {
                           </Toxicity>
                         )}
                         <InfoLink to={`/plant-profile/${plant._id}`}>
-                          <img src={plant.image} alt={plant.name} />
+                          <img src={plant.imageUrl} alt={plant.species} />
                         </InfoLink>
-                        <Name>{plant.name}</Name>
+                        <Name>{plant.species}</Name>
                       </Div>
                       <Needs>
                         <Row>

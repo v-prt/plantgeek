@@ -89,7 +89,7 @@ export const SignUp = () => {
     })
       .then((res) => {
         if (res.status === 500) {
-          // TODO: display error to user
+          // TODO: display error to user?
           console.error('Signup error!')
           setLoading(false)
         }

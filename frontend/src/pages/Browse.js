@@ -19,8 +19,8 @@ export const Browse = () => {
 
   // SORTS ALL PLANTS ALPHABETICALLY BY NAME
   const compare = (a, b) => {
-    const plantA = a.name.toLowerCase()
-    const plantB = b.name.toLowerCase()
+    const plantA = a.species.toLowerCase()
+    const plantB = b.species.toLowerCase()
     let comparison = 0
     if (plantA > plantB) {
       comparison = 1
@@ -32,14 +32,13 @@ export const Browse = () => {
   plants.sort(compare)
 
   // GETS ALL TYPES OF PLANTS AND SORTS ALPHABETICALLY
-  // TODO: change plant.type to plant.genus
   const [types, setTypes] = useState([])
   useEffect(() => {
     let tempArr = []
     plants.forEach((plant) => {
-      // skip type if already added to array
-      if (!tempArr.includes(plant.type)) {
-        tempArr.push(plant.type)
+      // skip genus/type if already added to array
+      if (!tempArr.includes(plant.genus)) {
+        tempArr.push(plant.genus)
       }
     })
     setTypes(tempArr)
@@ -62,7 +61,7 @@ export const Browse = () => {
     } else {
       let tempArr = []
       plants.forEach((plant) => {
-        if (plant.type === type) {
+        if (plant.genus === type) {
           tempArr.push(plant)
         }
       })
@@ -84,7 +83,7 @@ export const Browse = () => {
   const handleSearch = (ev) => {
     ev.preventDefault()
     setFilteredPlants(
-      plants.filter((plant) => plant.name.includes(query) || plant.type.includes(query))
+      plants.filter((plant) => plant.species.includes(query) || plant.genus.includes(query))
     )
     setSelectedType('all')
   }
