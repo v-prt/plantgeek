@@ -109,6 +109,6 @@ const Plant = styled.div`
   }
   &:hover {
     color: ${COLORS.darkest};
-    box-shadow: 0 0 5px ${COLORS.light};
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   }
 `

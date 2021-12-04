@@ -62,15 +62,17 @@ export const SignUp = () => {
   // UPDATES STORE AFTER NEW USER ADDED TO DB
   const [newUser, setNewUser] = useState(false)
   useEffect(() => {
-    dispatch(requestUsers())
-    fetch('/users')
-      .then((res) => res.json())
-      .then((json) => {
-        dispatch(receiveUsers(json.data))
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    if (newUser) {
+      dispatch(requestUsers())
+      fetch('/users')
+        .then((res) => res.json())
+        .then((json) => {
+          dispatch(receiveUsers(json.data))
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
   }, [dispatch, newUser])
 
   const handleSignUp = (ev) => {

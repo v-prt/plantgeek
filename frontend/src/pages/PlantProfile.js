@@ -39,7 +39,7 @@ export const PlantProfile = () => {
               <h2>needs</h2>
               <Info>{plant.light} light</Info>
               <Bar>
-                {plant.light === 'low to bright indirect' && <Indicator level={'1-3'} />}
+                {plant.light === 'low to bright indirect' && <Indicator level={'2'} />}
                 {plant.light === 'medium indirect' && <Indicator level={'2'} />}
                 {plant.light === 'medium to bright indirect' && <Indicator level={'2-3'} />}
                 {plant.light === 'bright indirect' && <Indicator level={'3'} />}

@@ -18,18 +18,19 @@ export const FeaturedPlants = () => {
       const randomPlant = plants[randomIndex]
       return randomPlant
     }
-    // only run function when plants length > 0
-    let tempArray = plants.length > 0 ? [] : undefined
+    // only run function if there are more than 6 plants in db
+    let tempArray = plants.length > 6 ? [] : undefined
     if (tempArray) {
-      // FIXME: infinite loop if less than 6 plants
       while (tempArray.length < 6) {
         let randomPlant = getRandomPlant(plants)
         if (!tempArray.find((plant) => plant.species === randomPlant.species)) {
           tempArray.push(randomPlant)
         }
       }
+      setFeaturedPlants(tempArray)
+    } else {
+      setFeaturedPlants(plants)
     }
-    setFeaturedPlants(tempArray)
   }, [plants])
 
   return (

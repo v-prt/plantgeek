@@ -94,9 +94,7 @@ export const DetailedPlantList = ({ title }) => {
                         <Row>
                           <FaSun />
                           <Bar>
-                            {plant.light === 'low to bright indirect' && (
-                              <Indicator level={'1-3'} />
-                            )}
+                            {plant.light === 'low to bright indirect' && <Indicator level={'2'} />}
                             {plant.light === 'medium indirect' && <Indicator level={'2'} />}
                             {plant.light === 'medium to bright indirect' && (
                               <Indicator level={'2-3'} />
@@ -227,7 +225,7 @@ const Plant = styled.div`
   }
   &:hover {
     color: ${COLORS.darkest};
-    box-shadow: 0 0 5px ${COLORS.light};
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   }
 `
 

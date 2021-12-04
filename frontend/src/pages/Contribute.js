@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useDropzone } from 'react-dropzone'
 import { LoginContext } from '../context/LoginContext'
 import { plantsArray } from '../reducers/plantReducer'
 import { requestPlants, receivePlants } from '../actions.js'
@@ -7,17 +8,23 @@ import { requestPlants, receivePlants } from '../actions.js'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
-// import { DropZone } from '../hooks/DropZone.js'
 import { Error, Button } from './Login'
 import { Ellipsis } from '../components/loaders/Ellipsis'
+import checkmark from '../assets/checkmark.svg'
+import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
+import { ImCross } from 'react-icons/im'
+import maranta from '../assets/maranta.jpeg'
+
+import { PlantCard } from '../components/PlantCard'
 
 export const Contribute = () => {
   const dispatch = useDispatch()
-  // TODO: reward users with badges for approved submissions?
+  // TODO: reward users with badges for approved submissions? (display # of submissions)
   const { currentUser } = useContext(LoginContext)
   const plants = useSelector(plantsArray)
   const [loading, setLoading] = useState(false)
 
+  // plant data
   const [species, setSpecies] = useState('')
   const [genus, setGenus] = useState('')
   const [light, setLight] = useState('')
@@ -25,9 +32,14 @@ export const Contribute = () => {
   const [temperature, setTemperature] = useState('')
   const [humidity, setHumidity] = useState('')
   const [toxic, setToxic] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
   const [sourceUrl, setSourceUrl] = useState('')
 
+  // makes window scroll to top between renders
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  // check if plant data already exists in db to prevent duplicates
   const [existingPlant, setExistingPlant] = useState(false)
   useEffect(() => {
     setExistingPlant(
@@ -37,6 +49,30 @@ export const Contribute = () => {
     )
   }, [plants, species])
 
+  // DROPZONE
+  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`
+  const [images, setImages] = useState()
+  const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
+    accept: 'image/*',
+    multiple: false, // accepts only 1 image
+    onDrop: (acceptedFiles) => {
+      setImages(
+        acceptedFiles.map((image) =>
+          Object.assign(image, {
+            preview: URL.createObjectURL(image),
+          })
+        )
+      )
+    },
+  })
+  useEffect(() => {
+    if (images) {
+      // revokes the data uris to avoid memory leaks
+      images.forEach((image) => URL.revokeObjectURL(image.preview))
+    }
+  }, [images])
+
+  // prevent form submission unless all fields have been completed
   const [completeForm, setCompleteForm] = useState(false)
   useEffect(() => {
     if (
@@ -47,71 +83,101 @@ export const Contribute = () => {
       temperature &&
       humidity &&
       toxic &&
-      imageUrl &&
+      images &&
       sourceUrl
     ) {
       setCompleteForm(true)
     } else {
       setCompleteForm(false)
     }
-  }, [species, genus, light, water, temperature, humidity, toxic, imageUrl, sourceUrl])
+  }, [species, genus, light, water, temperature, humidity, toxic, images, sourceUrl])
 
   // UPDATES STORE AFTER NEW PLANT ADDED TO DB
-  const [newPlant, setNewPlant] = useState(false)
+  const [newPlant, setNewPlant] = useState()
   useEffect(() => {
-    dispatch(requestPlants())
-    fetch('/plants')
-      .then((res) => res.json())
-      .then((json) => {
-        dispatch(receivePlants(json.data))
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    if (newPlant) {
+      dispatch(requestPlants())
+      fetch('/plants')
+        .then((res) => res.json())
+        .then((json) => {
+          dispatch(receivePlants(json.data))
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
   }, [dispatch, newPlant])
 
   const handleSubmit = (ev) => {
     ev.preventDefault()
-    setLoading(true)
-    if (currentUser.role === 'admin') {
-      // submit data directly to plants collection in db
-      console.log('admin, submitting to db')
-      fetch('/plants', {
-        method: 'POST',
-        body: JSON.stringify({
-          species: species,
-          genus: genus,
-          light: light,
-          water: water,
-          temperature: temperature,
-          humidity: humidity,
-          toxic: toxic,
-          imageUrl: imageUrl,
-          sourceUrl: sourceUrl,
-        }),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((res) => {
-          if (res.status === 500) {
-            // TODO: display error to user?
-            console.error('An error occured when submitting plant data.')
-            setLoading(false)
-          }
-          return res.json()
+    if (completeForm) {
+      setLoading(true)
+      if (currentUser.role === 'admin') {
+        // upload image to cloudinary via dropzone
+        images.forEach(async (image) => {
+          const formData = new FormData()
+          formData.append('file', image)
+          formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
+          // FIXME: Moderation parameter is not allowed when using unsigned upload
+          // formData.append('moderation', 'manual')
+          const response = await fetch(cloudinaryUrl, {
+            method: 'POST',
+            body: formData,
+          })
+          const cloudinaryResponse = await response.json()
+          // submit data to mongodb
+          fetch('/plants', {
+            method: 'POST',
+            body: JSON.stringify({
+              species: species,
+              genus: genus,
+              light: light,
+              water: water,
+              temperature: temperature,
+              humidity: humidity,
+              toxic: toxic === 'true' ? true : false,
+              imageUrl: cloudinaryResponse.url,
+              sourceUrl: sourceUrl,
+            }),
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          })
+            .then((res) => {
+              if (res.status === 500) {
+                // TODO: display error to user?
+                console.error('An error occured when submitting plant data.')
+                setLoading(false)
+              }
+              return res.json()
+            })
+            .then((data) => {
+              if (data) {
+                // console.log(data.data.ops[0])
+                console.log('New plant successfully added to database.')
+                setNewPlant(data.data.ops[0])
+                // reset form and clear state
+                document.getElementById('plant-submission-form').reset()
+                setSpecies('')
+                setGenus('')
+                setLight('')
+                setWater('')
+                setTemperature('')
+                setHumidity('')
+                setToxic('')
+                setImages()
+                setSourceUrl('')
+                setLoading(false)
+                // scroll to top
+                window.scrollTo(0, 0)
+              }
+            })
         })
-        .then((data) => {
-          if (data) {
-            console.log('New plant successfully added to database.')
-            setNewPlant(true)
-            setLoading(false)
-          }
-        })
-    } else {
-      // TODO: submit data for review (create new collection in db for review?)
-      console.log('not admin, submitting for review')
+      } else {
+        // TODO:
+        console.log('not admin')
+      }
     }
   }
 
@@ -120,7 +186,23 @@ export const Contribute = () => {
       <Banner />
       <Heading>contribute</Heading>
       <div className='content'>
-        <section>
+        {newPlant && (
+          <section className='confirmation'>
+            <div className='msg'>
+              <h2>
+                <img className='checkmark' src={checkmark} alt='' />
+                New plant submitted
+              </h2>
+              <p>
+                Thank you! Your submission will be reviewed shortly and, if approved, you will see
+                the new plant on site soon. In the meantime, you may submit additional plant
+                information below.
+              </p>
+            </div>
+            <PlantCard key={newPlant._id} plant={newPlant} />
+          </section>
+        )}
+        <section className='introduction'>
           <h2>Help us grow</h2>
           <p>
             Submit new data through the form below so we can all take better care of our beloved
@@ -129,10 +211,7 @@ export const Contribute = () => {
             integrity of our database.
           </p>
         </section>
-        {/* TODO: improve confirmation message */}
-        {newPlant && 'Thanks for submitting new plant data!'}
-        <Form autoComplete='off'>
-          {/* <DropZone /> */}
+        <Form id='plant-submission-form' autoComplete='off'>
           <h2>Houseplant Info</h2>
           <p className='info-text'>Note: all fields required.</p>
           <div className='form-group text'>
@@ -145,8 +224,8 @@ export const Contribute = () => {
               onChange={(ev) => setSpecies(ev.target.value.toLowerCase())}
               autoFocus
             />
+            <Error error={existingPlant}>This plant has already been registered.</Error>
           </div>
-          <Error error={existingPlant}>This plant has already been registered.</Error>
           <div className='form-group text'>
             <label htmlFor='genus'>Genus</label>
             <input
@@ -236,16 +315,43 @@ export const Contribute = () => {
               </label>
             </div>
           </div>
-          <div className='form-group text'>
-            <label htmlFor='image'>Image</label>
-            <input
-              required
-              type='url'
-              id='image'
-              placeholder='Insert URL'
-              onChange={(ev) => setImageUrl(ev.target.value)}
-            />
-          </div>
+          <DropZone>
+            {/* TODO:
+              - set up signed uploads with cloudinary
+              - set up a way to approve images before saving to db (cloudinary analysis using amazon rekognition, must be plant and pass guidelines, no offensive content) */}
+            <p>
+              Upload image <span className='info-text'>(please follow our guidelines)</span>
+            </p>
+            <ul className='guidelines'>
+              <li key={1}>houseplants only</li>
+              <li key={2}>1:1 aspect ratio (square)</li>
+              <li key={3}>display the whole plant in a plain pot</li>
+              <li key={4}>white background</li>
+              <li>well lit & in focus (no blurry images)</li>
+              <li>full color (no filters)</li>
+              <li>max 1 image (up to 1mb)</li>
+            </ul>
+            <p className='info-text'>Example:</p>
+            <img style={{ height: '200px' }} src={maranta} alt='' />
+            <DropBox {...getRootProps()} isDragAccept={isDragAccept} isDragReject={isDragReject}>
+              <input {...getInputProps()} />
+              <div className='icon'>
+                {isDragAccept && <RiImageAddFill />}
+                {isDragReject && <ImCross />}
+                {!isDragActive && <RiImageAddLine />}
+              </div>
+            </DropBox>
+            <div className='preview-container'>
+              {images &&
+                images.map((image) => (
+                  <div className='thumbnail' key={image.name}>
+                    <div className='thumbnail-inner'>
+                      <img src={image.preview} alt={image.name} />
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </DropZone>
           <div className='form-group text'>
             <label htmlFor='source'>Source</label>
             <input
@@ -284,6 +390,29 @@ const Wrapper = styled.main`
       margin-top: 30px;
       border-radius: 20px;
       padding: 30px;
+      &.confirmation {
+        background: ${COLORS.light};
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        .msg {
+          h2 {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            .checkmark {
+              background: ${COLORS.lightest};
+              padding: 2px;
+              border-radius: 50%;
+              height: 40px;
+              margin-right: 10px;
+            }
+          }
+          p {
+            max-width: 400px;
+          }
+        }
+      }
     }
   }
 `
@@ -308,11 +437,13 @@ const Form = styled.form`
   background: #f2f2f2;
   display: flex;
   flex-direction: column;
-  margin: 50px;
-  padding: 20px 50px;
+  align-items: center;
+  width: 80%;
+  margin: 30px 0;
+  padding: 30px;
   border-radius: 20px;
   .form-group {
-    width: 300px;
+    width: 80%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -353,5 +484,64 @@ const Form = styled.form`
     color: #666;
     font-style: italic;
     font-size: 0.8rem;
+  }
+`
+
+const DropZone = styled.div`
+  width: 80%;
+  padding: 15px 0;
+  border-bottom: 1px solid #fff;
+  .guidelines {
+    font-size: 0.9rem;
+    list-style: disc inside;
+  }
+  .preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    .thumbnail {
+      display: inline-flex;
+      border-radius: 2px;
+      border: 1px solid #eaeaea;
+      margin-bottom: 8px;
+      margin-right: 8px;
+      width: 100px;
+      height: 100px;
+      padding: 4px;
+      box-sizing: border-box;
+      .thumbnail-inner {
+        display: flex;
+        min-width: 0px;
+        overflow: hidden;
+        img {
+          display: block;
+          width: auto;
+          height: 100%;
+        }
+      }
+    }
+  }
+`
+
+const DropBox = styled.div`
+  background: ${(props) =>
+    props.isDragAccept ? `rgba(255,255,255,0.8)` : `rgba(255,255,255,0.4)`};
+  border: ${(props) => (props.isDragAccept ? `2px solid ${COLORS.light}` : `2px dotted #ccc`)};
+  color: ${(props) => (props.isDragAccept ? `${COLORS.light}` : '#ccc')};
+  margin: 10px 0;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 150px;
+  cursor: pointer;
+  .icon {
+    font-size: 4rem;
+  }
+  &:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid ${COLORS.light};
+    color: ${COLORS.light};
   }
 `
