@@ -14,7 +14,7 @@ const {
   addToUser,
   removeFromUser,
 } = require('./handlers/userHandlers')
-const { getPlants, getPlant, postComment } = require('./handlers/plantHandlers')
+const { createPlant, getPlants, getPlant, postComment } = require('./handlers/plantHandlers')
 
 // run on whatever port heroku has available or 4000 (local)
 const PORT = process.env.PORT || 4000
@@ -36,6 +36,7 @@ app
   .get('/users', getUsers)
   .put('/:username/add', addToUser)
   .put('/:username/remove', removeFromUser)
+  .post('/plants', createPlant)
   .get('/plants', getPlants)
   .get('/plants/:_id', getPlant)
   .put('/plants/:_id/comments', postComment)

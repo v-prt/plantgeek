@@ -19,6 +19,10 @@ const createUser = async (req, res) => {
     const hashedPwd = await bcrypt.hash(req.body.password, saltRounds)
     const user = await db.collection('users').insertOne({
       username: req.body.username,
+      lowerCaseUsername: req.body.username.toLowerCase(),
+      firstName: '',
+      lastName: '',
+      email: '',
       password: hashedPwd,
       joined: new Date(),
       friends: [],
@@ -41,7 +45,9 @@ const authenticateUser = async (req, res) => {
   try {
     await client.connect()
     const db = client.db('plantgeekdb')
-    const user = await db.collection('users').findOne({ username: req.body.username })
+    const user = await db
+      .collection('users')
+      .findOne({ lowerCaseUsername: req.body.username.toLowerCase() })
     if (user) {
       const cmp = await bcrypt.compare(req.body.password, user.password)
       if (cmp) {

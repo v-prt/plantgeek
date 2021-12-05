@@ -4,8 +4,9 @@ import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer.js'
 import styled from 'styled-components/macro'
 import { RiArrowRightSFill } from 'react-icons/ri'
+import { FadeIn } from './FadeIn.js'
 import { PlantCard } from './PlantCard'
-import { BeatingHeart } from './BeatingHeart'
+import { BeatingHeart } from './loaders/BeatingHeart'
 
 export const FeaturedPlants = () => {
   const plants = useSelector(plantsArray)
@@ -18,27 +19,33 @@ export const FeaturedPlants = () => {
       const randomPlant = plants[randomIndex]
       return randomPlant
     }
-    // only run function when plants length > 0
-    let tempArray = plants.length > 0 ? [] : undefined
+    // only run function if there are more than 6 plants in db
+    let tempArray = plants.length > 6 ? [] : undefined
     if (tempArray) {
       while (tempArray.length < 6) {
         let randomPlant = getRandomPlant(plants)
-        if (!tempArray.find((plant) => plant.name === randomPlant.name)) {
+        if (!tempArray.find((plant) => plant.species === randomPlant.species)) {
           tempArray.push(randomPlant)
         }
       }
+      setFeaturedPlants(tempArray)
+    } else {
+      setFeaturedPlants(plants)
     }
-    setFeaturedPlants(tempArray)
   }, [plants])
 
   return (
     <Wrapper>
-      {featuredPlants ? (
+      {featuredPlants && featuredPlants.length > 0 ? (
         <>
           <Heading>featured houseplants</Heading>
           <Plants>
             {featuredPlants.map((plant) => {
-              return <PlantCard key={plant._id} plant={plant} />
+              return (
+                <FadeIn>
+                  <PlantCard key={plant._id} plant={plant} />
+                </FadeIn>
+              )
             })}
           </Plants>
           <Link to='/browse'>

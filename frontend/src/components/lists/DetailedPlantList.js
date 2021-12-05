@@ -12,7 +12,7 @@ import { ImDroplet } from 'react-icons/im'
 import { RiTempColdFill, RiCloudWindyLine, RiPlantLine } from 'react-icons/ri'
 import { FaSun, FaPaw, FaSkullCrossbones } from 'react-icons/fa'
 import { TiHeartOutline } from 'react-icons/ti'
-import { MdStarBorder } from 'react-icons/md'
+import { AiOutlineStar } from 'react-icons/ai'
 
 import { ActionBar } from '../ActionBar'
 import { FeaturedPlants } from '../FeaturedPlants'
@@ -86,17 +86,15 @@ export const DetailedPlantList = ({ title }) => {
                           </Toxicity>
                         )}
                         <InfoLink to={`/plant-profile/${plant._id}`}>
-                          <img src={plant.image} alt={plant.name} />
+                          <img src={plant.imageUrl} alt={plant.species} />
                         </InfoLink>
-                        <Name>{plant.name}</Name>
+                        <Name>{plant.species}</Name>
                       </Div>
                       <Needs>
                         <Row>
                           <FaSun />
                           <Bar>
-                            {plant.light === 'low to bright indirect' && (
-                              <Indicator level={'1-3'} />
-                            )}
+                            {plant.light === 'low to bright indirect' && <Indicator level={'2'} />}
                             {plant.light === 'medium indirect' && <Indicator level={'2'} />}
                             {plant.light === 'medium to bright indirect' && (
                               <Indicator level={'2-3'} />
@@ -163,7 +161,7 @@ export const DetailedPlantList = ({ title }) => {
                   <p>Your wishlist is empty! Do you want any of these plants?</p>
                   <Info>
                     <Icon>
-                      <MdStarBorder />
+                      <AiOutlineStar />
                     </Icon>
                     Add it to your wishlist
                   </Info>
@@ -227,7 +225,7 @@ const Plant = styled.div`
   }
   &:hover {
     color: ${COLORS.darkest};
-    box-shadow: 0 0 5px ${COLORS.light};
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   }
 `
 

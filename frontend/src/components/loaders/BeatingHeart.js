@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'styled-components'
-import logo from '../assets/logo.png'
+import logo from '../../assets/logo.png'
 
 export const BeatingHeart = () => {
   return (
@@ -32,6 +32,7 @@ const beat = keyframes`
 
 const Wrapper = styled.div`
   margin: auto;
+  line-height: 1;
   img {
     height: 40px;
     animation: ${beat} 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);

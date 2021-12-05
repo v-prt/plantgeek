@@ -20,9 +20,9 @@ export const PlantCard = ({ plant }) => {
           </Toxicity>
         )}
         <InfoLink to={`/plant-profile/${plant._id}`}>
-          <img src={plant.image ? plant.image : plantSilhouette} alt={plant.name} />
+          <img src={plant.imageUrl ? plant.imageUrl : plantSilhouette} alt={plant.species} />
         </InfoLink>
-        <Name>{plant.name}</Name>
+        <Name>{plant.species}</Name>
       </Div>
       <ActionBar id={plant._id} />
     </Plant>
@@ -47,7 +47,7 @@ const Plant = styled.div`
   }
   &:hover {
     color: ${COLORS.darkest};
-    box-shadow: 0 0 5px ${COLORS.light};
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   }
 `
 

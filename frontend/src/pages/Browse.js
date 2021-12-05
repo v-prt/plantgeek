@@ -7,7 +7,8 @@ import { COLORS } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
 import { PlantCard } from '../components/PlantCard'
 import { BiSearch } from 'react-icons/bi'
-import { BeatingHeart } from '../components/BeatingHeart'
+import { FadeIn } from '../components/FadeIn.js'
+import { BeatingHeart } from '../components/loaders/BeatingHeart'
 
 export const Browse = () => {
   const plants = useSelector(plantsArray)
@@ -19,8 +20,8 @@ export const Browse = () => {
 
   // SORTS ALL PLANTS ALPHABETICALLY BY NAME
   const compare = (a, b) => {
-    const plantA = a.name.toLowerCase()
-    const plantB = b.name.toLowerCase()
+    const plantA = a.species.toLowerCase()
+    const plantB = b.species.toLowerCase()
     let comparison = 0
     if (plantA > plantB) {
       comparison = 1
@@ -36,9 +37,9 @@ export const Browse = () => {
   useEffect(() => {
     let tempArr = []
     plants.forEach((plant) => {
-      // skip type if already added to array
-      if (!tempArr.includes(plant.type)) {
-        tempArr.push(plant.type)
+      // skip genus/type if already added to array
+      if (!tempArr.includes(plant.genus)) {
+        tempArr.push(plant.genus)
       }
     })
     setTypes(tempArr)
@@ -61,7 +62,7 @@ export const Browse = () => {
     } else {
       let tempArr = []
       plants.forEach((plant) => {
-        if (plant.type === type) {
+        if (plant.genus === type) {
           tempArr.push(plant)
         }
       })
@@ -83,7 +84,7 @@ export const Browse = () => {
   const handleSearch = (ev) => {
     ev.preventDefault()
     setFilteredPlants(
-      plants.filter((plant) => plant.name.includes(query) || plant.type.includes(query))
+      plants.filter((plant) => plant.species.includes(query) || plant.genus.includes(query))
     )
     setSelectedType('all')
   }
@@ -134,7 +135,11 @@ export const Browse = () => {
             <Results>
               {plants.length > 0 && filteredPlants ? (
                 filteredPlants.map((plant) => {
-                  return <PlantCard key={plant._id} plant={plant} />
+                  return (
+                    <FadeIn>
+                      <PlantCard key={plant._id} plant={plant} />
+                    </FadeIn>
+                  )
                 })
               ) : (
                 <BeatingHeart />
