@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
-import { MdStarBorder } from 'react-icons/md'
+import { AiOutlineStar } from 'react-icons/ai'
 
 export const ActionBar = ({ id }) => {
   const dispatch = useDispatch()
@@ -126,7 +126,7 @@ export const ActionBar = ({ id }) => {
               onClick={() => handleList(currentUser.wishlist)}
               disabled={clicked3}
               added={currentUser.wishlist && currentUser.wishlist.find((el) => el === plant._id)}>
-              <MdStarBorder />
+              <AiOutlineStar />
             </Action>
           </>
         </Wrapper>

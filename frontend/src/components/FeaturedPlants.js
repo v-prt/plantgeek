@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer.js'
 import styled from 'styled-components/macro'
 import { RiArrowRightSFill } from 'react-icons/ri'
+import { FadeIn } from './FadeIn.js'
 import { PlantCard } from './PlantCard'
 import { BeatingHeart } from './loaders/BeatingHeart'
 
@@ -35,12 +36,16 @@ export const FeaturedPlants = () => {
 
   return (
     <Wrapper>
-      {featuredPlants ? (
+      {featuredPlants && featuredPlants.length > 0 ? (
         <>
           <Heading>featured houseplants</Heading>
           <Plants>
             {featuredPlants.map((plant) => {
-              return <PlantCard key={plant._id} plant={plant} />
+              return (
+                <FadeIn>
+                  <PlantCard key={plant._id} plant={plant} />
+                </FadeIn>
+              )
             })}
           </Plants>
           <Link to='/browse'>

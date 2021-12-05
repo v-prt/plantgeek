@@ -8,9 +8,8 @@ import { BiSearch, BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
 import { RiPlantLine } from 'react-icons/ri'
 import { CgProfile } from 'react-icons/cg'
 import { TiHeartOutline } from 'react-icons/ti'
-import { MdStarBorder } from 'react-icons/md'
-import { GoGear } from 'react-icons/go'
-import { FiUpload } from 'react-icons/fi'
+import { AiOutlineStar, AiOutlinePlusCircle } from 'react-icons/ai'
+import { BiCog } from 'react-icons/bi'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 
@@ -62,19 +61,19 @@ export const Navbar = () => {
           <Link to={`/user-wishlist/${currentUser.username}`}>
             <Label>wishlist</Label>
             <Icon>
-              <MdStarBorder />
+              <AiOutlineStar />
             </Icon>
           </Link>
           <Link to='/settings'>
             <Label>settings</Label>
             <Icon>
-              <GoGear />
+              <BiCog />
             </Icon>
           </Link>
           <Link to='/contribute'>
             <Label>contribute</Label>
             <Icon>
-              <FiUpload />
+              <AiOutlinePlusCircle />
             </Icon>
           </Link>
           <LogoutBtn onClick={handleLogout}>

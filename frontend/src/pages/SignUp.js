@@ -7,7 +7,7 @@ import { requestUsers, receiveUsers } from '../actions.js'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { TiHeartOutline } from 'react-icons/ti'
-import { MdStarBorder } from 'react-icons/md'
+import { AiOutlineStar } from 'react-icons/ai'
 import { RiPlantLine } from 'react-icons/ri'
 import background from '../assets/monstera-bg.jpg'
 import { GoEye, GoEyeClosed } from 'react-icons/go'
@@ -135,7 +135,7 @@ export const SignUp = () => {
                 </li>
                 <li>
                   <Icon>
-                    <MdStarBorder />
+                    <AiOutlineStar />
                   </Icon>
                   create a wishlist
                 </li>
@@ -179,12 +179,16 @@ export const SignUp = () => {
             <Error error={existingUser}>Sorry, this username is taken.</Error>
             <Label htmlFor='password'>password</Label>
             <Input required type='password' name='signup' id='password' onChange={handlePassword} />
-            <Button
+            {/* TEMPORARILY DISABLED FOR LIVE SITE */}
+            <Button type='submit' onClick={handleSignUp} disabled>
+              {loading ? <Ellipsis /> : 'CREATE ACCOUNT'}
+            </Button>
+            {/* <Button
               type='submit'
               onClick={handleSignUp}
               disabled={!completeForm || existingUser || loading}>
               {loading ? <Ellipsis /> : 'CREATE ACCOUNT'}
-            </Button>
+            </Button> */}
           </Form>
         )}
       </Card>

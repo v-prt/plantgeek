@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { COLORS } from '../../GlobalStyles'
 
+// TODO: fix height/fit for submit buttons
 export const Ellipsis = () => {
   return (
     <Wrapper>

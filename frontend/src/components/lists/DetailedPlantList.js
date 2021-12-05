@@ -12,7 +12,7 @@ import { ImDroplet } from 'react-icons/im'
 import { RiTempColdFill, RiCloudWindyLine, RiPlantLine } from 'react-icons/ri'
 import { FaSun, FaPaw, FaSkullCrossbones } from 'react-icons/fa'
 import { TiHeartOutline } from 'react-icons/ti'
-import { MdStarBorder } from 'react-icons/md'
+import { AiOutlineStar } from 'react-icons/ai'
 
 import { ActionBar } from '../ActionBar'
 import { FeaturedPlants } from '../FeaturedPlants'
@@ -161,7 +161,7 @@ export const DetailedPlantList = ({ title }) => {
                   <p>Your wishlist is empty! Do you want any of these plants?</p>
                   <Info>
                     <Icon>
-                      <MdStarBorder />
+                      <AiOutlineStar />
                     </Icon>
                     Add it to your wishlist
                   </Info>
