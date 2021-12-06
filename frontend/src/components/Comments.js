@@ -87,6 +87,7 @@ const Wrapper = styled.section`
   margin: 15px;
   padding: 10px 20px;
   width: 300px;
+  flex: 1;
   h2 {
     margin-bottom: 5px;
   }
