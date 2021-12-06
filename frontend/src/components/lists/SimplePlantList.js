@@ -7,6 +7,7 @@ import { LoginContext } from '../../context/LoginContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../../GlobalStyles'
+import placeholder from '../../assets/plant-placeholder.svg'
 
 export const SimplePlantList = ({ username, list, title }) => {
   const plants = useSelector(plantsArray)
@@ -50,14 +51,18 @@ export const SimplePlantList = ({ username, list, title }) => {
             )}
           </Heading>
           <Plants>
-            {/* FIXME: TypeError: Cannot read property '_id' of undefined - when refreshing user's profile */}
             {userPlants &&
               userPlants.map((plant) => {
                 return (
                   <Plant key={plant._id}>
-                    <Link to={`/plant-profile/${plant._id}`}>
-                      <img src={plant.imageUrl} alt={plant.species} />
-                    </Link>
+                    <InfoLink to={`/plant-profile/${plant._id}`}>
+                      {plant.imageUrl ? (
+                        <img src={plant.imageUrl} alt='' />
+                      ) : (
+                        <img className='placeholder' src={placeholder} alt='' />
+                      )}
+                    </InfoLink>
+                    <p className='name'>{plant.species}</p>
                   </Plant>
                 )
               })}
@@ -103,12 +108,27 @@ const Plant = styled.div`
   border-radius: 20px;
   padding: 10px;
   transition: 0.2s ease-in-out;
-  img {
-    height: 150px;
-    width: 150px;
+  p {
+    font-size: 0.8rem;
+    color: ${COLORS.darkest};
   }
   &:hover {
-    color: ${COLORS.darkest};
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  }
+`
+
+const InfoLink = styled(Link)`
+  height: 150px;
+  width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  img {
+    max-height: 100%;
+    max-width: 100%;
+    &.placeholder {
+      height: 100px;
+    }
   }
 `

@@ -50,14 +50,14 @@ export const SignUp = () => {
   }
 
   // DISABLES BUTTON UNTIL FORM HAS BEEN COMPLETED
-  const [completeForm, setCompleteForm] = useState(false)
-  useEffect(() => {
-    if (username.length > 3 && password.length > 5) {
-      setCompleteForm(true)
-    } else {
-      setCompleteForm(false)
-    }
-  }, [username, password])
+  // const [completeForm, setCompleteForm] = useState(false)
+  // useEffect(() => {
+  //   if (username.length > 3 && password.length > 5) {
+  //     setCompleteForm(true)
+  //   } else {
+  //     setCompleteForm(false)
+  //   }
+  // }, [username, password])
 
   // UPDATES STORE AFTER NEW USER ADDED TO DB
   const [newUser, setNewUser] = useState(false)

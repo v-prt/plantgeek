@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { ActionBar } from './ActionBar'
-import { FaPaw, FaSkullCrossbones } from 'react-icons/fa'
-import plantSilhouette from '../assets/plant-silhouette.png'
+import { FaPaw } from 'react-icons/fa'
+import placeholder from '../assets/plant-placeholder.svg'
+import skull from '../assets/skull.svg'
 
 export const PlantCard = ({ plant }) => {
   return (
@@ -12,7 +13,7 @@ export const PlantCard = ({ plant }) => {
       <Div>
         {plant.toxic ? (
           <Toxicity toxic={true}>
-            <FaSkullCrossbones />
+            <img src={skull} alt='toxic' />
           </Toxicity>
         ) : (
           <Toxicity toxic={false}>
@@ -20,7 +21,11 @@ export const PlantCard = ({ plant }) => {
           </Toxicity>
         )}
         <InfoLink to={`/plant-profile/${plant._id}`}>
-          <img src={plant.imageUrl ? plant.imageUrl : plantSilhouette} alt={plant.species} />
+          {plant.imageUrl ? (
+            <img src={plant.imageUrl} alt='' />
+          ) : (
+            <img className='placeholder' src={placeholder} alt='' />
+          )}
         </InfoLink>
         <Name>{plant.species}</Name>
       </Div>
@@ -39,12 +44,7 @@ const Plant = styled.div`
   border-radius: 20px;
   padding: 10px;
   transition: 0.2s ease-in-out;
-  img {
-    height: 200px;
-    width: 200px;
-    align-self: center;
-    border-radius: 20px;
-  }
+  min-width: 250px;
   &:hover {
     color: ${COLORS.darkest};
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -57,8 +57,19 @@ const Div = styled.div`
 `
 
 const InfoLink = styled(Link)`
+  height: 200px;
+  width: 200px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  margin: auto;
+  img {
+    max-height: 100%;
+    max-width: 100%;
+    &.placeholder {
+      height: 150px;
+    }
+  }
 `
 
 const Name = styled.p`
@@ -69,13 +80,14 @@ const Name = styled.p`
 `
 
 const Toxicity = styled.div`
-  color: ${(props) => (props.toxic ? `${COLORS.medium}` : '#68b234}')};
+  color: ${COLORS.light};
   position: absolute;
-  background: ${COLORS.lightest};
   border-radius: 50%;
   height: 30px;
   width: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
+  img {
+    width: 20px;
+  }
 `

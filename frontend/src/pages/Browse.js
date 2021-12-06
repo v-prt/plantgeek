@@ -251,6 +251,7 @@ const Results = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   padding: 10px 0;
+  margin: auto;
   @media (max-width: 1000px) {
     width: 100%;
   }

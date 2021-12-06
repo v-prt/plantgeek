@@ -6,8 +6,14 @@ import { LoginContext } from '../context/LoginContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
-import { FaPaw, FaSkullCrossbones } from 'react-icons/fa'
+import { FaPaw } from 'react-icons/fa'
 import background from '../assets/monstera-bg.jpg'
+import placeholder from '../assets/plant-placeholder.svg'
+import skull from '../assets/skull.svg'
+import sun from '../assets/sun.svg'
+import water from '../assets/water.svg'
+import temp from '../assets/temp.svg'
+import humidity from '../assets/humidity.svg'
 
 import { ActionBar } from '../components/ActionBar'
 import { Comments } from '../components/Comments'
@@ -17,6 +23,7 @@ export const PlantProfile = () => {
   const [plant, setPlant] = useState([])
   const { id } = useParams()
   const { currentUser } = useContext(LoginContext)
+  const [difficulty, setDifficulty] = useState()
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -27,53 +34,154 @@ export const PlantProfile = () => {
     setPlant(plants.find((plant) => plant._id === id))
   }, [plants, plant, id])
 
+  useEffect(() => {
+    if (plant && plant.light && plant.water && plant.temperature && plant.humidity) {
+      let lightLevel = 0
+      let waterLevel = 0
+      let temperatureLevel = 0
+      let humidityLevel = 0
+      if (plant.light === 'low to bright indirect') {
+        lightLevel = 0
+      } else if (plant.light === 'medium indirect') {
+        lightLevel = 1
+      } else if (plant.light === 'medium to bright indirect') {
+        lightLevel = 2
+      } else if (plant.light === 'bright indirect') {
+        lightLevel = 3
+      }
+      if (plant.water === 'low') {
+        waterLevel = 0
+      } else if (plant.water === 'low to medium') {
+        waterLevel = 1
+      } else if (plant.water === 'medium') {
+        waterLevel = 2
+      } else if (plant.water === 'medium to high') {
+        waterLevel = 3
+      } else if (plant.water === 'high') {
+        waterLevel = 4
+      }
+      if (plant.temperature === 'average') {
+        temperatureLevel = 0
+      } else if (plant.temperature === 'above average') {
+        temperatureLevel = 2
+      }
+      if (plant.humidity === 'average') {
+        humidityLevel = 0
+      } else if (plant.humidity === 'above average') {
+        humidityLevel = 2
+      }
+      let total = lightLevel + waterLevel + temperatureLevel + humidityLevel
+      // lowest = 0
+      // highest = 9
+      if (total <= 3) {
+        setDifficulty('Easy')
+      } else if (total <= 6) {
+        setDifficulty('Medium')
+      } else if (total <= 9) {
+        setDifficulty('Hard')
+      }
+    }
+  }, [plant])
+
   return (
     <Wrapper>
       <Banner />
       {plant && (
         <Div>
-          <Image src={plant.imageUrl} alt='' />
-          <Name>{plant.species}</Name>
+          <div className='plant-details-wrapper'>
+            <div className='image-wrapper'>
+              {plant.imageUrl ? (
+                <Image src={plant.imageUrl} alt='' />
+              ) : (
+                <Image className='placeholder' src={placeholder} alt='' />
+              )}
+            </div>
+            <div className='details'>
+              <h1>{plant.species}</h1>
+              {/* <p className='latin-name'>latin name</p> */}
+              {/* <p className='region'>region</p> */}
+              {/* <p className='type'>type (desert/tropical/etc)</p> */}
+              {plant.toxic ? (
+                <>
+                  <Toxicity toxic={true}>
+                    <img src={skull} alt='' /> <p>toxic</p>
+                    <span className='tooltip' toxic={true}>
+                      Don't let the skull scare you! Though this plant may be toxic if ingested, it
+                      can still make a great addition to your home. Simply keep it out of reach of
+                      pets and children, and wear gloves during pruning to prevent skin irritation.
+                    </span>
+                  </Toxicity>
+                </>
+              ) : (
+                <>
+                  <Toxicity toxic={false}>
+                    <FaPaw /> <p>nontoxic</p>
+                    <span className='tooltip'>
+                      This plant is nontoxic and considered to be pet-friendly and child-safe.
+                      However, anything can be dangerous when consumed in large quantities. Please
+                      use your judgment and seek emergency care when necessary.
+                    </span>
+                  </Toxicity>
+                </>
+              )}
+            </div>
+          </div>
           <ResponsiveDiv>
             <Needs>
-              <h2>needs</h2>
-              <Info>{plant.light} light</Info>
-              <Bar>
-                {plant.light === 'low to bright indirect' && <Indicator level={'2'} />}
-                {plant.light === 'medium indirect' && <Indicator level={'2'} />}
-                {plant.light === 'medium to bright indirect' && <Indicator level={'2-3'} />}
-                {plant.light === 'bright indirect' && <Indicator level={'3'} />}
-              </Bar>
-              <Info>{plant.water} water</Info>
-              <Bar>
-                {plant.water === 'low' && <Indicator level={'1'} />}
-                {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
-                {plant.water === 'medium' && <Indicator level={'2'} />}
-                {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
-                {plant.water === 'high' && <Indicator level={'3'} />}
-              </Bar>
-              <Info>{plant.temperature} temperature</Info>
-              <Bar>
-                {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                {plant.temperature === 'above average' && <Indicator level={'2-3'} />}
-              </Bar>
-              <Info>{plant.humidity} humidity</Info>
-              <Bar>
-                {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-                {plant.humidity === 'above average' && <Indicator level={'2-3'} />}
-              </Bar>
-              {plant.toxic ? (
-                <Toxicity toxic={true}>
-                  <FaSkullCrossbones /> <p>toxic</p>
-                </Toxicity>
-              ) : (
-                <Toxicity toxic={false}>
-                  <FaPaw /> <p>nontoxic</p>
-                </Toxicity>
-              )}
+              <h2>
+                needs <span className='difficulty'>Difficulty: {difficulty}</span>
+              </h2>
+              <div className='row'>
+                <img src={sun} alt='' />
+                <div className='column'>
+                  <p>{plant.light} light</p>
+                  <Bar>
+                    {plant.light === 'low to bright indirect' && <Indicator level={'2'} />}
+                    {plant.light === 'medium indirect' && <Indicator level={'2'} />}
+                    {plant.light === 'medium to bright indirect' && <Indicator level={'2-3'} />}
+                    {plant.light === 'bright indirect' && <Indicator level={'3'} />}
+                  </Bar>
+                </div>
+              </div>
+              <div className='row'>
+                <img src={water} alt='' />
+                <div className='column'>
+                  <p>{plant.water} water</p>
+                  <Bar>
+                    {plant.water === 'low' && <Indicator level={'1'} />}
+                    {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+                    {plant.water === 'medium' && <Indicator level={'2'} />}
+                    {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+                    {plant.water === 'high' && <Indicator level={'3'} />}
+                  </Bar>
+                </div>
+              </div>
+              <div className='row'>
+                <img src={temp} alt='' />
+                <div className='column'>
+                  <p>{plant.temperature} temperature</p>
+                  <Bar>
+                    {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+                    {plant.temperature === 'above average' && <Indicator level={'2-3'} />}
+                  </Bar>
+                </div>
+              </div>
+              <div className='row'>
+                <img src={humidity} alt='' />
+                <div className='column'>
+                  <p>{plant.humidity} humidity</p>
+                  <Bar>
+                    {plant.humidity === 'average' && <Indicator level={'1-2'} />}
+                    {plant.humidity === 'above average' && <Indicator level={'2-3'} />}
+                  </Bar>
+                </div>
+              </div>
+              <p className='sources'>
+                Source(s): <a href={plant.sourceUrl}>[1]</a>
+              </p>
               {currentUser && (
                 <Sizer>
-                  <ActionBar id={plant._id} />
+                  <ActionBar id={plant._id} style={{ background: '#fff' }} />
                 </Sizer>
               )}
             </Needs>
@@ -99,22 +207,50 @@ const Banner = styled.div`
 `
 
 const Div = styled.div`
-  width: 100%;
+  width: 80%;
   position: relative;
-  top: -70px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  top: -70px;
+  .plant-details-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    .image-wrapper {
+      height: 300px;
+      width: 300px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: white;
+      overflow: hidden;
+      margin-right: 30px;
+    }
+    .details {
+      max-width: 500px;
+      h1 {
+        line-height: 1.5;
+        margin-top: 30px;
+      }
+      .latin-name {
+        color: #666;
+        font-style: italic;
+        font-size: 0.9rem;
+      }
+    }
+  }
 `
 
 const Image = styled.img`
-  background: white;
-  height: 300px;
-  width: 300px;
-  border-radius: 50%;
+  max-height: 100%;
+  max-width: 100%;
+  &.placeholder {
+    height: 200px;
+  }
 `
-
-const Name = styled.h1``
 
 const ResponsiveDiv = styled.div`
   display: flex;
@@ -128,25 +264,75 @@ const Needs = styled.div`
   height: fit-content;
   display: flex;
   flex-direction: column;
+  padding: 10px 20px;
   margin: 15px;
   border-radius: 20px;
   overflow: hidden;
+  flex: 1;
   h2 {
-    margin: 10px 0 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .difficulty {
+      color: #999;
+      font-size: 0.9rem;
+    }
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    img {
+      height: 40px;
+      margin-right: 15px;
+    }
+    .column {
+      flex: 1;
+    }
+  }
+  .sources {
+    color: #999;
+    font-size: 0.8rem;
+    margin: 10px 0;
   }
 `
 
 const Toxicity = styled.div`
-  background: #fff;
   color: ${(props) => (props.toxic ? `${COLORS.medium}` : '#68b234}')};
-  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  align-self: center;
+  width: fit-content;
+  position: relative;
   margin-top: 20px;
+  cursor: default;
+  img {
+    width: 20px;
+  }
   p {
-    margin: 0 10px;
+    margin-left: 10px;
+  }
+  .tooltip {
+    background: ${(props) => (props.toxic ? `${COLORS.medium}` : `${COLORS.light}`)};
+    color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    width: 300px;
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    z-index: 1;
+    transition: 0.2s ease-in-out;
+    transition-delay: 0.2s;
+  }
+  &:hover {
+    .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
   }
 `
 
@@ -154,30 +340,36 @@ const Sizer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #fff;
+  margin-top: 10px;
+  padding-top: 10px;
 `
 
 const Info = styled.p`
+  display: flex;
+  align-items: center;
   align-self: flex-start;
-  margin: 10px 0 0 20px;
+  img {
+    margin-right: 10px;
+    height: 30px;
+  }
 `
 
 const Bar = styled.div`
   background: white;
   height: 20px;
-  width: 300px;
   border-radius: 10px;
-  margin: 5px 20px;
+  margin: 5px 0;
 `
 
 const Indicator = styled.div`
   background: linear-gradient(to right, ${COLORS.lightest}, ${COLORS.light});
   height: 100%;
   border-radius: 10px;
-  width: ${(props) => props.level === '1' && '20%'};
+  width: ${(props) => props.level === '1' && '25%'};
   width: ${(props) => props.level === '1-2' && '50%'};
   width: ${(props) => props.level === '1-3' && '100%'};
   width: ${(props) => props.level === '2' && '50%'};
-  width: ${(props) => props.level === '2-3' && '80%'};
+  width: ${(props) => props.level === '2-3' && '75%'};
   width: ${(props) => props.level === '3' && '100%'};
 `
