@@ -95,9 +95,9 @@ export const Homepage = () => {
           doors, or heating/cooling vents. Plastic pots with drainage holes are recommended to help
           keep the soil moist, but not soggy. Water when top inch or two of soil is dry.
         </p>
-        <h3>dessert</h3>
+        <h3>desert</h3>
         <p>
-          Dessert plants such as cacti and other succulents generally need direct sunlight or bright
+          Desert plants such as cacti and other succulents generally need direct sunlight or bright
           indirect light or else they tend to stretch and become leggy. Avoid watering them too
           often as they are prone to rotting. Wait until their soil is completely dry, then water
           generously. Make sure to use fast-draining soil and provide holes to allow the water to
