@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -10,6 +10,7 @@ import { COLORS } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 
+// TODO: formik, jwt authentication token
 export const Login = () => {
   const history = useHistory()
   const users = useSelector(usersArray)
@@ -24,14 +25,6 @@ export const Login = () => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
-
-  // FOCUSES ON FIRST INPUT ON LOAD
-  const input = useRef(null)
-  useEffect(() => {
-    if (!currentUser) {
-      input.current.focus()
-    }
-  }, [currentUser, input])
 
   const handleUsername = (ev) => {
     setUsername(ev.target.value)
@@ -98,7 +91,7 @@ export const Login = () => {
             <Welcome>
               <h1>welcome</h1>
             </Welcome>
-            <Form autoComplete='off'>
+            <FormWrapper autoComplete='off'>
               <Label htmlFor='username'>username</Label>
               <Input
                 required
@@ -107,7 +100,7 @@ export const Login = () => {
                 id='username'
                 onChange={handleUsername}
                 error={incorrectUsername}
-                ref={input}
+                autoFocus
               />
               <Error error={incorrectUsername}>This username doesn't exist.</Error>
               <Label htmlFor='password'>password</Label>
@@ -126,7 +119,7 @@ export const Login = () => {
                 disabled={!username || !password || loading}>
                 {loading ? <Ellipsis /> : 'LOG IN'}
               </Button>
-            </Form>
+            </FormWrapper>
           </>
         )}
       </Card>
@@ -161,7 +154,6 @@ const SignUpLink = styled(Link)`
   padding: 5px;
   display: flex;
   justify-content: center;
-  font-weight: bold;
   &:hover {
     background: #1a1a1a;
     color: #fff;
@@ -177,7 +169,7 @@ const Welcome = styled.div`
   }
 `
 
-export const Form = styled.form`
+export const FormWrapper = styled.form`
   background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;

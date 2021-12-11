@@ -24,75 +24,56 @@ export const Terms = () => {
         <p>For the purposes of these Terms and Conditions:</p>
         <ul>
           <li>
-            <p>
-              <strong>Affiliate</strong> means an entity that controls, is controlled by or is under
-              common control with a party, where &quot;control&quot; means ownership of 50% or more
-              of the shares, equity interest or other securities entitled to vote for election of
-              directors or other managing authority.
-            </p>
+            <strong>Affiliate</strong> means an entity that controls, is controlled by or is under
+            common control with a party, where &quot;control&quot; means ownership of 50% or more of
+            the shares, equity interest or other securities entitled to vote for election of
+            directors or other managing authority.
           </li>
           <li>
-            <p>
-              <strong>Country</strong> refers to: British Columbia, Canada
-            </p>
+            <strong>Country</strong> refers to: British Columbia, Canada
           </li>
           <li>
-            <p>
-              <strong>Company</strong> (referred to as either &quot;the Company&quot;,
-              &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to
-              plantgeek.
-            </p>
+            <strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;,
+            &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to plantgeek.
           </li>
           <li>
-            <p>
-              <strong>Device</strong> means any device that can access the Service such as a
-              computer, a cellphone or a digital tablet.
-            </p>
+            <strong>Device</strong> means any device that can access the Service such as a computer,
+            a cellphone or a digital tablet.
           </li>
           <li>
-            <p>
-              <strong>Service</strong> refers to the Website.
-            </p>
+            <strong>Service</strong> refers to the Website.
           </li>
           <li>
-            <p>
-              <strong>Terms and Conditions</strong> (also referred as &quot;Terms&quot;) mean these
-              Terms and Conditions that form the entire agreement between You and the Company
-              regarding the use of the Service. This Terms and Conditions agreement has been created
-              with the help of the{' '}
-              <a
-                href='https://www.termsfeed.com/terms-conditions-generator/'
-                target='_blank'
-                rel='noopener noreferrer'>
-                Terms and Conditions Generator
-              </a>
-              .
-            </p>
+            <strong>Terms and Conditions</strong> (also referred as &quot;Terms&quot;) mean these
+            Terms and Conditions that form the entire agreement between You and the Company
+            regarding the use of the Service. This Terms and Conditions agreement has been created
+            with the help of the{' '}
+            <a
+              href='https://www.termsfeed.com/terms-conditions-generator/'
+              target='_blank'
+              rel='noopener noreferrer'>
+              Terms and Conditions Generator
+            </a>
+            .
           </li>
           <li>
-            <p>
-              <strong>Third-party Social Media Service</strong> means any services or content
-              (including data, information, products or services) provided by a third-party that may
-              be displayed, included or made available by the Service.
-            </p>
+            <strong>Third-party Social Media Service</strong> means any services or content
+            (including data, information, products or services) provided by a third-party that may
+            be displayed, included or made available by the Service.
           </li>
           <li>
-            <p>
-              <strong>Website</strong> refers to plantgeek, accessible from{' '}
-              <a
-                href='https://www.plantgeek.co'
-                rel='external nofollow noopener noreferrer'
-                target='_blank'>
-                https://www.plantgeek.co
-              </a>
-            </p>
+            <strong>Website</strong> refers to plantgeek, accessible from{' '}
+            <a
+              href='https://www.plantgeek.co'
+              rel='external nofollow noopener noreferrer'
+              target='_blank'>
+              https://www.plantgeek.co
+            </a>
           </li>
           <li>
-            <p>
-              <strong>You</strong> means the individual accessing or using the Service, or the
-              company, or other legal entity on behalf of which such individual is accessing or
-              using the Service, as applicable.
-            </p>
+            <strong>You</strong> means the individual accessing or using the Service, or the
+            company, or other legal entity on behalf of which such individual is accessing or using
+            the Service, as applicable.
           </li>
         </ul>
         <h2>Acknowledgment</h2>
@@ -260,18 +241,16 @@ export const Terms = () => {
           in part, please stop using the website and the Service.
         </p>
         <h2>Contact Us</h2>
-        <p>If you have any questions about these Terms and Conditions, You can contact us:</p>
-        <ul>
-          <li>
-            By visiting this page on our website:{' '}
-            <a
-              href='https://www.plantgeek.co/contact'
-              rel='external nofollow noopener noreferrer'
-              target='_blank'>
-              https://www.plantgeek.co/contact
-            </a>
-          </li>
-        </ul>
+        <p>
+          If you have any questions about these Terms and Conditions, You can contact us by visiting
+          this page on our website:{' '}
+          <a
+            href='https://www.plantgeek.co/contact'
+            rel='external nofollow noopener noreferrer'
+            target='_blank'>
+            https://www.plantgeek.co/contact
+          </a>
+        </p>
       </div>
     </Wrapper>
   )
@@ -293,6 +272,12 @@ const Wrapper = styled.div`
     }
     h3 {
       margin: 5px 0 0 0;
+    }
+    a {
+      text-decoration: underline;
+    }
+    ul {
+      list-style: disc inside;
     }
   }
 `

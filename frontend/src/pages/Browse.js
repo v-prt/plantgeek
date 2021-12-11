@@ -237,7 +237,7 @@ const Type = styled.li`
   border-radius: 20px;
   margin: 2px;
   padding: 0 10px;
-  font-style: ${(props) => (props.active ? 'italic' : 'normal')};
+  font-weight: ${(props) => (props.active ? '700' : '')};
   transition: 0.2s ease-in-out;
   &:hover {
     background: ${COLORS.light};

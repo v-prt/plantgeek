@@ -310,6 +310,7 @@ const Toxicity = styled.div`
   }
   p {
     margin-left: 10px;
+    font-weight: 700;
   }
   .tooltip {
     background: ${(props) => (props.toxic ? `${COLORS.medium}` : `${COLORS.light}`)};

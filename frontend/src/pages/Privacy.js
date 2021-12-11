@@ -13,9 +13,16 @@ export const Privacy = () => {
         <h1>Privacy Policy</h1>
         <p>Last updated: December 11, 2021</p>
         <p>
-          At plantgeek, accessible from https://www.plantgeek.co, one of our main priorities is the
-          privacy of our visitors. This Privacy Policy document contains types of information that
-          is collected and recorded by plantgeek and how we use it.
+          At plantgeek (accessible from{' '}
+          <a
+            href='https://www.plantgeek.co'
+            rel='external nofollow noopener noreferrer'
+            target='_blank'>
+            https://www.plantgeek.co
+          </a>
+          ) one of our main priorities is the privacy of our visitors. This Privacy Policy document
+          contains types of information that is collected and recorded by plantgeek and how we use
+          it.
         </p>
         <p>
           If you have additional questions or require more information about our Privacy Policy, do
@@ -194,6 +201,12 @@ const Wrapper = styled.div`
     }
     h3 {
       margin: 5px 0 0 0;
+    }
+    a {
+      text-decoration: underline;
+    }
+    ul {
+      list-style: disc inside;
     }
   }
 `

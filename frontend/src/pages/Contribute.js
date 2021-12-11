@@ -17,6 +17,7 @@ import maranta from '../assets/maranta.jpeg'
 
 import { PlantCard } from '../components/PlantCard'
 
+// TODO: formik
 export const Contribute = () => {
   const dispatch = useDispatch()
   // TODO: reward users with badges for approved submissions? (display # of submissions)
@@ -226,6 +227,7 @@ export const Contribute = () => {
             />
             <Error error={existingPlant}>This plant has already been registered.</Error>
           </div>
+          {/* TODO: choose from existing genus or input new */}
           <div className='form-group text'>
             <label htmlFor='genus'>Genus</label>
             <input
@@ -352,6 +354,7 @@ export const Contribute = () => {
                 ))}
             </div>
           </DropZone>
+          {/* TODO: accept multiple source links? */}
           <div className='form-group text'>
             <label htmlFor='source'>Source</label>
             <input
@@ -369,7 +372,7 @@ export const Contribute = () => {
             {loading ? <Ellipsis /> : 'SUBMIT'}
           </Button>
         </Form>
-        {/* TODO: find a nice illustration or photo of a plant and/or contribution vibes */}
+        {/* TODO: background/decorative image */}
       </div>
     </Wrapper>
   )

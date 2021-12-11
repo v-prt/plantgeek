@@ -74,7 +74,6 @@ const InfoLink = styled(Link)`
 
 const Name = styled.p`
   font-size: 1.1rem;
-  font-weight: bold;
   align-self: center;
   margin: 5px 0;
 `

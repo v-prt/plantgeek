@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { usersArray } from '../reducers/userReducer'
 import { requestUsers, receiveUsers } from '../actions.js'
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
@@ -12,8 +14,9 @@ import { RiPlantLine } from 'react-icons/ri'
 import background from '../assets/monstera-bg.jpg'
 import { GoEye, GoEyeClosed } from 'react-icons/go'
 import { Ellipsis } from '../components/loaders/Ellipsis'
-import { Form, Label, Input, Error, Button } from './Login'
+import { FormWrapper, Label, Input, Error, Button } from './Login'
 
+// TODO: formik
 export const SignUp = () => {
   const dispatch = useDispatch()
   const users = useSelector(usersArray)
@@ -23,12 +26,6 @@ export const SignUp = () => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
-
-  // FOCUSES ON FIRST INPUT ON LOAD
-  const input = useRef(null)
-  useEffect(() => {
-    input.current.focus()
-  }, [input])
 
   const [username, setUsername] = useState('')
   const handleUsername = (ev) => {
@@ -164,7 +161,7 @@ export const SignUp = () => {
             </Box>
           </Confirmation>
         ) : (
-          <Form autoComplete='off'>
+          <FormWrapper autoComplete='off'>
             <Label htmlFor='username'>username</Label>
             <Input
               required
@@ -174,11 +171,12 @@ export const SignUp = () => {
               maxLength='15'
               onChange={handleUsername}
               error={existingUser}
-              ref={input}
+              autoFocus
             />
             <Error error={existingUser}>Sorry, this username is taken.</Error>
             <Label htmlFor='password'>password</Label>
             <Input required type='password' name='signup' id='password' onChange={handlePassword} />
+            {/* TODO: checkbox (agree to terms of use & privacy policy) */}
             {/* TEMPORARILY DISABLED FOR LIVE SITE */}
             <Button type='submit' onClick={handleSignUp} disabled>
               {loading ? <Ellipsis /> : 'CREATE ACCOUNT'}
@@ -189,7 +187,7 @@ export const SignUp = () => {
               disabled={!completeForm || existingUser || loading}>
               {loading ? <Ellipsis /> : 'CREATE ACCOUNT'}
             </Button> */}
-          </Form>
+          </FormWrapper>
         )}
       </Card>
     </Wrapper>
@@ -216,7 +214,6 @@ const LoginLink = styled(Link)`
   padding: 5px;
   display: flex;
   justify-content: center;
-  font-weight: bold;
   &:hover {
     background: #1a1a1a;
     color: #fff;
