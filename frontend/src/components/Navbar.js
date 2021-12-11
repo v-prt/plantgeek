@@ -152,7 +152,7 @@ const LogoutBtn = styled.button`
 
 const Title = styled.span`
   display: none;
-  font-family: 'Comfortaa', sans-serif;
+  font-family: 'Comfortaa', cursive;
   color: #fff;
   font-size: 1.5rem;
   margin-right: 15px;

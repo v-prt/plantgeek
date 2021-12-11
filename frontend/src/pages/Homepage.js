@@ -148,7 +148,6 @@ const InfoCard = styled.section`
   h2 {
     width: fit-content;
     a {
-      font-family: 'Raleway', sans-serif;
       display: flex;
       align-items: center;
     }

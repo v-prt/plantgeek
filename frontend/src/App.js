@@ -7,6 +7,8 @@ import { Homepage } from './pages/Homepage'
 import { Browse } from './pages/Browse'
 import { Login } from './pages/Login'
 import { SignUp } from './pages/SignUp'
+import { Terms } from './pages/Terms'
+import { Privacy } from './pages/Privacy'
 import { Settings } from './pages/Settings'
 import { Contribute } from './pages/Contribute'
 import { PlantProfile } from './pages/PlantProfile'
@@ -44,6 +46,12 @@ export const App = () => {
           <Route exact path='/signup'>
             <SignUp />
           </Route>
+          <Route exact path='/terms'>
+            <Terms />
+          </Route>
+          <Route exact path='/privacy'>
+            <Privacy />
+          </Route>
           <Route exact path='/settings'>
             <Settings />
           </Route>
@@ -76,6 +84,8 @@ export const App = () => {
 const Main = styled.main`
   overscroll-behavior: none;
   width: calc(100vw - 240px);
+  display: flex;
+  flex-direction: column;
   @media (max-width: 999px) {
     width: calc(100vw - 92px);
   }

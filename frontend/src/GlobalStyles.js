@@ -20,12 +20,14 @@ export default createGlobalStyle`
         overscroll-behavior: none;
     }
     h1, h2, h3 {
-        font-family: "Raleway", sans-serif;
+        font-family: 'Quicksand', sans-serif;
+        font-weight: 700;
     }
     ol, ul {
         list-style: none;
     }
     a {
+        font-family: 'Quicksand', sans-serif;
         text-decoration: none;
         color: ${COLORS.darkest};
         transition: 0.2s ease-in-out;

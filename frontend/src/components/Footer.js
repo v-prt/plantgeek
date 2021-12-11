@@ -8,9 +8,10 @@ export const Footer = () => {
     <Wrapper>
       <Links>
         {/* TODO: */}
-        <p>&copy; 2021 Plantgeek, Inc. All rights reserved.</p>
-        <StyledLink to='#'>Terms of Use</StyledLink>•<StyledLink to='#'>Privacy Policy</StyledLink>•
-        <StyledLink to='#'>Support</StyledLink>
+        <p>&copy; 2021 plantgeek - All rights reserved.</p>
+        <StyledLink to='/terms'>Terms of Use</StyledLink>•
+        <StyledLink to='/privacy'>Privacy Policy</StyledLink>•
+        <StyledLink to='/contact'>Contact</StyledLink>
       </Links>
     </Wrapper>
   )
