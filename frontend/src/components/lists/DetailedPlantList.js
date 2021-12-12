@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { usersArray } from '../../reducers/userReducer'
 import { plantsArray } from '../../reducers/plantReducer.js'
-import { LoginContext } from '../../context/LoginContext'
+import { UserContext } from '../../context/UserContext'
 
 import styled from 'styled-components/macro'
 import background from '../../assets/monstera-bg.jpg'
@@ -28,7 +28,7 @@ export const DetailedPlantList = ({ title }) => {
   const [user, setUser] = useState(undefined)
   const [list, setList] = useState(undefined)
   const { username } = useParams()
-  const { currentUser } = useContext(LoginContext)
+  const { currentUser } = useContext(UserContext)
 
   // makes window scroll to top between renders
   useEffect(() => {

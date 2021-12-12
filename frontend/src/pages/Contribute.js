@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
-import { LoginContext } from '../context/LoginContext'
+import { UserContext } from '../context/UserContext'
 import { plantsArray } from '../reducers/plantReducer'
 import { requestPlants, receivePlants } from '../actions.js'
 
@@ -20,7 +20,7 @@ import { PlantCard } from '../components/PlantCard'
 export const Contribute = () => {
   const dispatch = useDispatch()
   // TODO: reward users with badges for approved submissions? (display # of submissions)
-  const { currentUser } = useContext(LoginContext)
+  const { currentUser } = useContext(UserContext)
   const plants = useSelector(plantsArray)
   const [loading, setLoading] = useState(false)
 

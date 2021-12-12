@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { LoginContext } from '../context/LoginContext'
+import { UserContext } from '../context/UserContext'
 import { useSelector, useDispatch } from 'react-redux'
 import { usersArray } from '../reducers/userReducer.js'
 import { requestUsers, receiveUsers } from '../actions.js'
@@ -12,7 +12,7 @@ import placeholder from '../assets/avatar-placeholder.png'
 export const Friends = () => {
   const dispatch = useDispatch()
   const { username } = useParams()
-  const { currentUser } = useContext(LoginContext)
+  const { currentUser } = useContext(UserContext)
   const users = useSelector(usersArray)
   const [clicked, setClicked] = useState(false)
 

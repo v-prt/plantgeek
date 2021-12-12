@@ -4,6 +4,7 @@ require('dotenv').config()
 const MONGO_URI = process.env.MONGO_URI
 const bcrypt = require('bcrypt')
 const saltRounds = 10
+const jwt = require('jsonwebtoken')
 
 const options = {
   useNewUrlParser: true,
@@ -17,21 +18,33 @@ const createUser = async (req, res) => {
     await client.connect()
     const db = client.db('plantgeekdb')
     const hashedPwd = await bcrypt.hash(req.body.password, saltRounds)
-    const user = await db.collection('users').insertOne({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+    const existingEmail = await db.collection('users').findOne({
       email: req.body.email,
-      username: req.body.username,
-      lowerCaseUsername: req.body.username.toLowerCase(),
-      password: hashedPwd,
-      joined: new Date(),
-      friends: [],
-      collection: [],
-      favorites: [],
-      wishlist: [],
     })
-    assert.strictEqual(1, user.insertedCount)
-    res.status(201).json({ status: 201, data: user })
+    const existingUsername = await db.collection('users').findOne({
+      lowerCaseUsername: req.body.username.toLowerCase(),
+    })
+    if (existingEmail) {
+      res.status(409).json({ status: 409, message: 'Email already registered' })
+    } else if (existingUsername) {
+      res.status(409).json({ status: 409, message: 'Username taken' })
+    } else {
+      const user = await db.collection('users').insertOne({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        username: req.body.username,
+        lowerCaseUsername: req.body.username.toLowerCase(),
+        password: hashedPwd,
+        joined: new Date(),
+        friends: [],
+        collection: [],
+        favorites: [],
+        wishlist: [],
+      })
+      assert.strictEqual(1, user.insertedCount)
+      res.status(201).json({ status: 201, data: user })
+    }
   } catch (err) {
     res.status(500).json({ status: 500, data: req.body, message: err.message })
     console.log(err.stack)
@@ -49,19 +62,39 @@ const authenticateUser = async (req, res) => {
       .collection('users')
       .findOne({ lowerCaseUsername: req.body.username.toLowerCase() })
     if (user) {
-      const cmp = await bcrypt.compare(req.body.password, user.password)
-      if (cmp) {
-        res.status(200).json({ status: 200, data: user })
+      const isValid = await bcrypt.compare(req.body.password, user.password)
+      if (isValid) {
+        res.status(200).json({
+          status: 200,
+          // TODO: look into how "expiresIn" works, remove from local storage if expired
+          token: jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '7d' }),
+        })
       } else {
         res.status(403).json({ status: 403, message: 'Incorrect password' })
       }
     } else {
-      res.status(401).json({ status: 401, message: 'Incorrect username' })
+      res.status(401).json({ status: 401, message: 'Username not found' })
     }
   } catch (err) {
     console.log(err)
     res.status(500).send('Internal server error')
   }
+}
+
+// (READ/GET) GETS USER BY USERNAME
+const getUserByUsername = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  const user = await db.collection('users').findOne({
+    username: req.params.username,
+  })
+  if (user) {
+    res.status(200).json({ status: 200, data: user })
+  } else {
+    res.status(404).json({ status: 404, message: 'User not found' })
+  }
+  client.close()
 }
 
 // (READ/GET) GETS ALL USERS IN DATABASE
@@ -193,6 +226,7 @@ const removeFromUser = async (req, res) => {
 module.exports = {
   createUser,
   authenticateUser,
+  getUserByUsername,
   getUsers,
   addToUser,
   removeFromUser,

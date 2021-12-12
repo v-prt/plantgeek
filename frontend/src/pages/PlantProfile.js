@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer'
-import { LoginContext } from '../context/LoginContext'
+import { UserContext } from '../context/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
@@ -22,7 +22,7 @@ export const PlantProfile = () => {
   const plants = useSelector(plantsArray)
   const [plant, setPlant] = useState([])
   const { id } = useParams()
-  const { currentUser } = useContext(LoginContext)
+  const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
 
   // makes window scroll to top between renders

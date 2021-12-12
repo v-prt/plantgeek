@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
-import { useHistory } from 'react-router'
 import { NavLink } from 'react-router-dom'
-import { LoginContext } from '../context/LoginContext'
+import { UserContext } from '../context/UserContext'
 
 import plantgeekLogo from '../assets/logo.png'
 import { BiSearch, BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
@@ -14,15 +13,7 @@ import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 
 export const Navbar = () => {
-  const history = useHistory()
-  const { currentUser, setCurrentUser, setLoggedIn } = useContext(LoginContext)
-
-  const handleLogout = (ev) => {
-    ev.preventDefault()
-    setCurrentUser(undefined)
-    setLoggedIn(false)
-    history.push('/login')
-  }
+  const { handleLogout, currentUser } = useContext(UserContext)
 
   return (
     <Wrapper>

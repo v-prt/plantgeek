@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-// import { usersArray } from '../reducers/userReducer'
 import { requestUsers, receiveUsers } from '../actions.js'
-import { LoginContext } from '../context/LoginContext'
+import { UserContext } from '../context/UserContext'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
+import YupPassword from 'yup-password'
 import { Text, Checkbox } from '../components/forms/FormItems.js'
 
 import styled from 'styled-components/macro'
@@ -17,21 +17,12 @@ import { RiPlantLine } from 'react-icons/ri'
 import background from '../assets/monstera-bg.jpg'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 
-const SignUpSchema = Yup.object().shape({
-  firstName: Yup.string().min(2, 'Too short').max(50, 'Too long').required('First name required'),
-  lastName: Yup.string().min(2, 'Too short').max(50, 'Too long').required('Last name required'),
-  email: Yup.string().email('Invalid email').required('Email required'),
-  username: Yup.string().min(4, 'Too short').max(20, 'Too long').required('Username required'),
-  password: Yup.string().min(6, 'Too short').max(50, 'Too long').required('Password required'),
-  acceptedTerms: Yup.boolean()
-    .required('Required')
-    .oneOf([true], 'You must accept the Terms and Conditions'),
-})
+YupPassword(Yup) // extend yup
 
 export const SignUp = () => {
   const dispatch = useDispatch()
-  const { loggedIn } = useContext(LoginContext)
-  // const users = useSelector(usersArray)
+  const { token } = useContext(UserContext)
+  const [status, setStatus] = useState()
   const [firstName, setFirstName] = useState()
   const [email, setEmail] = useState()
   const [username, setUsername] = useState()
@@ -42,15 +33,26 @@ export const SignUp = () => {
     window.scrollTo(0, 0)
   }, [])
 
-  // TODO: check for existing username and email
-  // const [existingUser, setExistingUser] = useState(false)
-  // useEffect(() => {
-  //   setExistingUser(
-  //     users.find((user) => {
-  //       return user.lowerCaseUsername.toLowerCase() === username.toLowerCase()
-  //     })
-  //   )
-  // }, [users, username])
+  const SignUpSchema = Yup.object().shape({
+    firstName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('First name required'),
+    lastName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Last name required'),
+    email: Yup.string().email('Invalid email').required('Email required'),
+    username: Yup.string()
+      .min(4, 'Too short')
+      .max(20, 'Too long')
+      .required('Username required')
+      .matches(/^[a-zA-Z0-9]+$/, 'No special characters or spaces allowed'),
+    password: Yup.string()
+      .min(6, 'Too short')
+      .minLowercase(1, 'Must include at least 1 lowercase letter')
+      .minUppercase(1, 'Must include at least 1 uppercase letter')
+      .minNumbers(1, 'Must include at least 1 number')
+      .minSymbols(1, 'Must include at least 1 symbol')
+      .required('Password required'),
+    acceptedTerms: Yup.boolean()
+      .required('Required')
+      .oneOf([true], 'You must accept the Terms and Conditions'),
+  })
 
   // UPDATES STORE AFTER NEW USER ADDED TO DB
   useEffect(() => {
@@ -67,7 +69,7 @@ export const SignUp = () => {
     }
   }, [dispatch, username])
 
-  const handleSignUp = async (values, { setSubmitting }) => {
+  const handleSignup = async (values, { setSubmitting }) => {
     await fetch('/users', {
       method: 'POST',
       body: JSON.stringify({
@@ -82,27 +84,27 @@ export const SignUp = () => {
         'Content-Type': 'application/json',
       },
     })
-      .then((res) => {
-        if (res.status === 500) {
-          console.error('Signup error!')
-          setSubmitting(false)
-        }
-        return res.json()
-      })
-      .then((data) => {
-        if (data) {
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.status === 201) {
           console.log('Signup successful!')
           setSubmitting(false)
           setFirstName(values.firstName)
           setEmail(values.email)
           setUsername(values.username)
           setPassword(values.password)
+        } else if (json.status === 409) {
+          setStatus(json.message)
+          setSubmitting(false)
+        } else if (json.status === 500) {
+          console.log(json.message)
+          setSubmitting(false)
         }
       })
   }
 
   // checks if user is logged in (has token), if so then redirects to homepage
-  return loggedIn ? (
+  return token ? (
     <Redirect to='/' />
   ) : (
     <Wrapper>
@@ -167,9 +169,12 @@ export const SignUp = () => {
               acceptedTerms: false,
             }}
             validationSchema={SignUpSchema}
-            onSubmit={handleSignUp}>
+            validateOnChange={false}
+            onSubmit={handleSignup}>
             {({ isSubmitting }) => (
               <Form>
+                {/* TODO: improve error status message (show beside specific input - email/username) */}
+                {status && <div className='status'>{status}</div>}
                 <Text label='First name' name='firstName' type='text' autoFocus />
                 <Text label='Last name' name='lastName' type='text' />
                 <Text label='Email address' name='email' type='email' />
@@ -232,6 +237,14 @@ export const Card = styled.div`
     display: flex;
     flex-direction: column;
     padding: 0 30px;
+    .status {
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid #ff0000;
+      border-radius: 5px;
+      color: #ff0000;
+      text-align: center;
+      margin-top: 10px;
+    }
     // TODO: error styling for labels & inputs (red border, red font color, smooth transitions)
     .text-label {
       background: ${COLORS.lightest};

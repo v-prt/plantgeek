@@ -22,7 +22,8 @@
     "redux": "^4.0.5",
     "styled-components": "^5.2.3",
     "web-vitals": "^1.0.1",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "yup-password": "^0.2.2"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -3,15 +3,15 @@ import ReactDOM from 'react-dom'
 import { App } from './App'
 import { Provider } from 'react-redux'
 import configureStore from './store'
-import { LoginProvider } from './context/LoginContext'
+import { UserProvider } from './context/UserContext'
 
 const store = configureStore()
 
 ReactDOM.render(
   <Provider store={store}>
-    <LoginProvider>
+    <UserProvider>
       <App />
-    </LoginProvider>
+    </UserProvider>
   </Provider>,
   document.getElementById('root')
 )

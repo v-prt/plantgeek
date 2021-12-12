@@ -10,6 +10,7 @@ const path = require('path')
 const {
   createUser,
   authenticateUser,
+  getUserByUsername,
   getUsers,
   addToUser,
   removeFromUser,
@@ -33,6 +34,7 @@ app
   // ENDPOINTS
   .post('/users', createUser)
   .post('/login', authenticateUser)
+  .get('/users/:username', getUserByUsername)
   .get('/users', getUsers)
   .put('/:username/add', addToUser)
   .put('/:username/remove', removeFromUser)

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useDispatch } from 'react-redux'
 import { requestUsers, receiveUsers } from '../actions.js'
-import { LoginContext } from '../context/LoginContext'
+import { UserContext } from '../context/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
@@ -12,7 +12,7 @@ import placeholder from '../assets/avatar-placeholder.png'
 export const Settings = () => {
   const dispatch = useDispatch()
   // const history = useHistory();
-  const { currentUser } = useContext(LoginContext)
+  const { currentUser } = useContext(UserContext)
 
   const [existingImage, setExistingImage] = useState(undefined)
   useEffect(() => {

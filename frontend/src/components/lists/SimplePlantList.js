@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { usersArray } from '../../reducers/userReducer'
 import { plantsArray } from '../../reducers/plantReducer.js'
 import { Link } from 'react-router-dom'
-import { LoginContext } from '../../context/LoginContext'
+import { UserContext } from '../../context/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../../GlobalStyles'
@@ -13,7 +13,7 @@ export const SimplePlantList = ({ username, list, title }) => {
   const plants = useSelector(plantsArray)
   const users = useSelector(usersArray)
   const [user, setUser] = useState(undefined)
-  const { currentUser } = useContext(LoginContext)
+  const { currentUser } = useContext(UserContext)
 
   useEffect(() => {
     setUser(users.find((user) => user.username === username))

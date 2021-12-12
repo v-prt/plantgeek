@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { LoginContext } from '../context/LoginContext'
+import { UserContext } from '../context/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
@@ -10,7 +10,7 @@ import placeholder from '../assets/avatar-placeholder.png'
 import { FeaturedPlants } from '../components/FeaturedPlants'
 
 export const Homepage = () => {
-  const { currentUser } = useContext(LoginContext)
+  const { currentUser } = useContext(UserContext)
 
   // makes window scroll to top between renders
   useEffect(() => {

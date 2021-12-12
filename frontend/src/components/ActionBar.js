@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { LoginContext } from '../context/LoginContext'
+import { UserContext } from '../context/UserContext'
 import { plantsArray } from '../reducers/plantReducer'
 import { requestUsers, receiveUsers } from '../actions.js'
 
@@ -12,7 +12,7 @@ import { AiOutlineStar } from 'react-icons/ai'
 
 export const ActionBar = ({ id }) => {
   const dispatch = useDispatch()
-  const { currentUser } = useContext(LoginContext)
+  const { currentUser } = useContext(UserContext)
   const plants = useSelector(plantsArray)
   const [plant, setPlant] = useState(undefined)
   const [clicked1, setClicked1] = useState(false)

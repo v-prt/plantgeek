@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { requestPlants, receivePlants } from '../actions.js'
-import { LoginContext } from '../context/LoginContext'
+import { UserContext } from '../context/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
@@ -10,7 +10,7 @@ import { BiSend } from 'react-icons/bi'
 
 export const Comments = ({ plant }) => {
   const dispatch = useDispatch()
-  const { currentUser } = useContext(LoginContext)
+  const { currentUser } = useContext(UserContext)
 
   const [comment, setComment] = useState('')
   const handleComment = (ev) => {
