@@ -37,15 +37,11 @@ export const FeaturedPlants = () => {
   return (
     <Wrapper>
       {featuredPlants && featuredPlants.length > 0 ? (
-        <>
+        <FadeIn>
           <Heading>featured houseplants</Heading>
           <Plants>
             {featuredPlants.map((plant) => {
-              return (
-                <FadeIn>
-                  <PlantCard key={plant._id} plant={plant} />
-                </FadeIn>
-              )
+              return <PlantCard key={plant._id} plant={plant} />
             })}
           </Plants>
           <Link to='/browse'>
@@ -53,7 +49,7 @@ export const FeaturedPlants = () => {
               browse more <RiArrowRightSFill />
             </BrowseLink>
           </Link>
-        </>
+        </FadeIn>
       ) : (
         <BeatingHeart />
       )}
@@ -77,6 +73,7 @@ const Heading = styled.h2`
 const BrowseLink = styled.h3`
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-top: 20px;
 `
 

@@ -5,10 +5,11 @@ import { usersArray } from '../reducers/userReducer'
 
 export const LoginContext = createContext(null)
 export const LoginProvider = ({ children }) => {
-  const [loggedIn, setLoggedIn] = usePersistedState('logged-in', false)
+  const [loggedIn, setLoggedIn] = usePersistedState('plantgeekToken', false)
   const [currentUser, setCurrentUser] = useState(undefined)
   const users = useSelector(usersArray)
 
+  // TODO: use jwt authentication token for better security
   useEffect(() => {
     if (loggedIn) {
       setCurrentUser(users.find((user) => user.username === loggedIn.username))

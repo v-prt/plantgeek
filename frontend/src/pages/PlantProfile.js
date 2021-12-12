@@ -346,16 +346,6 @@ const Sizer = styled.div`
   padding-top: 10px;
 `
 
-const Info = styled.p`
-  display: flex;
-  align-items: center;
-  align-self: flex-start;
-  img {
-    margin-right: 10px;
-    height: 30px;
-  }
-`
-
 const Bar = styled.div`
   background: white;
   height: 20px;

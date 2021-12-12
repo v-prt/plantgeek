@@ -136,6 +136,7 @@ export const Browse = () => {
               {plants.length > 0 && filteredPlants ? (
                 filteredPlants.map((plant) => {
                   return (
+                    // FIXME: each child in list needs unique key
                     <FadeIn>
                       <PlantCard key={plant._id} plant={plant} />
                     </FadeIn>

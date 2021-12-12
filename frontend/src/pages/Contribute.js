@@ -8,7 +8,6 @@ import { requestPlants, receivePlants } from '../actions.js'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
-import { Error, Button } from './Login'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import checkmark from '../assets/checkmark.svg'
 import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
@@ -487,6 +486,32 @@ const Form = styled.form`
     color: #666;
     font-style: italic;
     font-size: 0.8rem;
+  }
+`
+
+const Error = styled.p`
+  visibility: ${(props) => (props.error ? 'visible' : 'hidden')};
+  max-height: ${(props) => (props.error ? '100px' : '0')};
+  opacity: ${(props) => (props.error ? '1' : '0')};
+  color: #ff0000;
+  text-align: center;
+  transition: 0.2s ease-in-out;
+`
+
+const Button = styled.button`
+  background: ${COLORS.darkest};
+  color: ${COLORS.lightest};
+  margin: 30px 0;
+  border-radius: 15px;
+  padding: 10px;
+  &:hover {
+    background: ${COLORS.medium};
+  }
+  &:focus {
+    background: ${COLORS.medium};
+  }
+  &:disabled:hover {
+    background: ${COLORS.darkest};
   }
 `
 

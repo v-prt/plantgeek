@@ -18,11 +18,11 @@ const createUser = async (req, res) => {
     const db = client.db('plantgeekdb')
     const hashedPwd = await bcrypt.hash(req.body.password, saltRounds)
     const user = await db.collection('users').insertOne({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
       username: req.body.username,
       lowerCaseUsername: req.body.username.toLowerCase(),
-      firstName: '',
-      lastName: '',
-      email: '',
       password: hashedPwd,
       joined: new Date(),
       friends: [],
