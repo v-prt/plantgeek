@@ -52,7 +52,7 @@ const createUser = async (req, res) => {
   client.close()
 }
 
-// (READ/POST) AUTHENTICATE USER
+// (READ/POST) LOGIN - AUTHENTICATE USER
 const authenticateUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   try {
@@ -80,6 +80,38 @@ const authenticateUser = async (req, res) => {
     console.log(err)
     res.status(500).send('Internal server error')
   }
+  client.close()
+}
+
+// (READ/POST) VERIFY USER BY JWT TOKEN
+const verifyUser = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  const verifiedUserId = jwt.verify(
+    req.body.token,
+    process.env.TOKEN_SECRET,
+    function (err, decoded) {
+      if (err) {
+        return err
+      } else {
+        return decoded.userId
+      }
+    }
+  )
+  if (verifiedUserId) {
+    const user = await db.collection('users').findOne({
+      _id: ObjectId(verifiedUserId),
+    })
+    if (user) {
+      res.status(200).json({ status: 200, data: user })
+    } else {
+      res.status(404).json({ status: 404, message: 'User not found' })
+    }
+  } else {
+    console.log("User ID couldn't be verified")
+  }
+  client.close()
 }
 
 // (READ/GET) GETS USER BY USERNAME
@@ -227,6 +259,7 @@ const removeFromUser = async (req, res) => {
 module.exports = {
   createUser,
   authenticateUser,
+  verifyUser,
   getUserByUsername,
   getUsers,
   addToUser,

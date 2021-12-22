@@ -1,3 +1,8 @@
+// STYLE GUIDELINES
+// - lowercase for all heading text
+// - proper sentence case for body text
+// - rounded corners for all sections/cards
+
 import { createGlobalStyle } from 'styled-components'
 import styled from 'styled-components/macro'
 

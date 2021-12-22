@@ -10,6 +10,7 @@ const path = require('path')
 const {
   createUser,
   authenticateUser,
+  verifyUser,
   getUserByUsername,
   getUsers,
   addToUser,
@@ -32,8 +33,10 @@ app
   .use(express.json())
 
   // ENDPOINTS
+  // TODO: use nouns in endpoints, no verbs
   .post('/users', createUser)
   .post('/login', authenticateUser)
+  .post('/verify', verifyUser)
   .get('/users/:username', getUserByUsername)
   .get('/users', getUsers)
   .put('/:username/add', addToUser)

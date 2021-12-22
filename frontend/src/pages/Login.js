@@ -14,17 +14,16 @@ const LoginSchema = Yup.object().shape({
   password: Yup.string().required('Password required'),
 })
 
-// TODO: formik, jwt authentication token
 export const Login = () => {
-  const { handleLogin, incorrectUsername, incorrectPassword, token } = useContext(UserContext)
+  const { handleLogin, incorrectUsername, incorrectPassword, currentUser } = useContext(UserContext)
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  return token ? (
-    <Redirect to='/' />
+  return currentUser ? (
+    <Redirect to={`/user-profile/${currentUser.username}`} />
   ) : (
     <Wrapper>
       <Card>

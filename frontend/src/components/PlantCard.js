@@ -44,7 +44,9 @@ const Plant = styled.div`
   border-radius: 20px;
   padding: 10px;
   transition: 0.2s ease-in-out;
-  min-width: 250px;
+  // FIXME: inconsistent size based on plant name length
+  min-height: 250px;
+  width: 250px;
   &:hover {
     color: ${COLORS.darkest};
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -75,7 +77,9 @@ const InfoLink = styled(Link)`
 const Name = styled.p`
   font-size: 1.1rem;
   align-self: center;
-  margin: 5px 0;
+  text-align: center;
+  max-width: 230px;
+  margin: 5px;
 `
 
 const Toxicity = styled.div`

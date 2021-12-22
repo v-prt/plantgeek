@@ -1,21 +1,13 @@
-import React, { createContext, useState } from 'react'
-import { useHistory } from 'react-router'
-// import usePersistedState from '../hooks/use-persisted-state.hook'
-// import { useSelector } from 'react-redux'
-// import { usersArray } from '../reducers/userReducer'
+import React, { createContext, useState, useEffect } from 'react'
 
 export const UserContext = createContext(null)
 export const UserProvider = ({ children }) => {
-  const history = useHistory()
-  // const [token, setToken] = usePersistedState('plantgeekToken', false)
-  const token = localStorage.getItem('plantgeekToken')
+  const [token, setToken] = useState(localStorage.getItem('plantgeekToken'))
   const [incorrectUsername, setIncorrectUsername] = useState(false)
   const [incorrectPassword, setIncorrectPassword] = useState(false)
   const [currentUser, setCurrentUser] = useState(undefined)
-  // const users = useSelector(usersArray)
 
-  console.log(currentUser)
-
+  // LOGIN
   const handleLogin = async (values, { setSubmitting }) => {
     // FIXME: improve incorrect username/password error messages
     setIncorrectUsername(false)
@@ -39,8 +31,7 @@ export const UserProvider = ({ children }) => {
             setCurrentUser(json.data)
             // set token in local storage (not best practice)
             localStorage.setItem('plantgeekToken', json.token)
-            // TODO: figure out how to push to profile
-            // history.push(`/user-profile/${currentUser.lowerCaseUsername}`)
+            setToken(json.token)
           } else if (json.status === 401) {
             // username not found
             console.log(json.message)
@@ -58,27 +49,49 @@ export const UserProvider = ({ children }) => {
     }
   }
 
+  // VERIFY USER WITH TOKEN
+  const verifyUser = async (token) => {
+    try {
+      fetch('/verify', {
+        method: 'POST',
+        body: JSON.stringify({
+          token: token,
+        }),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.status === 200) {
+            setCurrentUser(json.data)
+          } else {
+            // delete token? set current user undefined?
+            localStorage.removeItem('plantgeekToken')
+            setToken(false)
+            setCurrentUser(undefined)
+            console.log(json)
+          }
+        })
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  useEffect(() => {
+    if (token) {
+      verifyUser(token)
+    }
+  }, [token])
+
+  // LOGOUT
   const handleLogout = (ev) => {
     ev.preventDefault()
-    // FIXME:
-    // history.push('/login')
+    window.location.replace('/login')
     localStorage.removeItem('plantgeekToken')
     setCurrentUser(undefined)
   }
-
-  // TODO: verify and set current user somehow (id from jwt token?)
-  // useEffect(() => {
-  //   if (token) {
-  //     setCurrentUser(users.find((user) => user.username === loggedIn.username))
-  //     let timeElapsed = new Date().getTime() - loggedIn.timestamp
-  //     let seconds = timeElapsed / 1000
-  //     // makes login expire after 24 hours
-  //     if (seconds >= 86400) {
-  //       setCurrentUser(undefined)
-  //       setLoggedIn(false)
-  //     }
-  //   }
-  // }, [])
 
   return (
     <UserContext.Provider
