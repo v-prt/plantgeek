@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
-import { UserContext } from '../context/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import { plantsArray } from '../reducers/plantReducer'
 import { requestPlants, receivePlants } from '../actions.js'
 

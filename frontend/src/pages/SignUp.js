@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { requestUsers, receiveUsers } from '../actions.js'
-import { UserContext } from '../context/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
@@ -177,7 +177,7 @@ export const SignUp = () => {
                 {status && <div className='status'>{status}</div>}
                 <Text label='First name' name='firstName' type='text' autoFocus />
                 <Text label='Last name' name='lastName' type='text' />
-                <Text label='Email address' name='email' type='email' />
+                <Text label='Email' name='email' type='email' />
                 <Text label='Username' name='username' type='text' />
                 <Text label='Password' name='password' type='password' />
                 <Checkbox name='acceptedTerms'>

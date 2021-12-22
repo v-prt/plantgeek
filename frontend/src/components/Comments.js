@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { requestPlants, receivePlants } from '../actions.js'
-import { UserContext } from '../context/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'

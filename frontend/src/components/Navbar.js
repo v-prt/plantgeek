@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
-import { UserContext } from '../context/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 import plantgeekLogo from '../assets/logo.png'
 import { BiSearch, BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'

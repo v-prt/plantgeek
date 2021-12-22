@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { UserContext } from '../context/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import { plantsArray } from '../reducers/plantReducer'
 import { requestUsers, receiveUsers } from '../actions.js'
 

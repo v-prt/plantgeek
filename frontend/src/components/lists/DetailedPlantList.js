@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { usersArray } from '../../reducers/userReducer'
 import { plantsArray } from '../../reducers/plantReducer.js'
-import { UserContext } from '../../context/UserContext'
+import { UserContext } from '../../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import background from '../../assets/monstera-bg.jpg'

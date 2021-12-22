@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useDispatch } from 'react-redux'
 import { requestUsers, receiveUsers } from '../actions.js'
-import { UserContext } from '../context/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
-import { Button } from '../components/ReusableComponents'
+import { COLORS, Button } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
 import placeholder from '../assets/avatar-placeholder.png'
 

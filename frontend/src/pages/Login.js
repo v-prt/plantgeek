@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react'
 import { Redirect } from 'react-router-dom'
-import { UserContext } from '../context/UserContext'
+import { UserContext } from '../contexts/UserContext'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
@@ -38,6 +38,7 @@ export const Login = () => {
             password: '',
           }}
           validationSchema={LoginSchema}
+          validateOnChange={false}
           onSubmit={handleLogin}>
           {({ isSubmitting }) => (
             <Form>

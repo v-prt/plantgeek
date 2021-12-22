@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { App } from './App'
 import { Provider } from 'react-redux'
 import configureStore from './store'
-import { UserProvider } from './context/UserContext'
+import { UserProvider } from './contexts/UserContext'
 
 const store = configureStore()
 

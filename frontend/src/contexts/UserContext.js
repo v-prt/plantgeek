@@ -14,6 +14,8 @@ export const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(undefined)
   // const users = useSelector(usersArray)
 
+  console.log(currentUser)
+
   const handleLogin = async (values, { setSubmitting }) => {
     // FIXME: improve incorrect username/password error messages
     setIncorrectUsername(false)
@@ -33,10 +35,12 @@ export const UserProvider = ({ children }) => {
         .then((res) => res.json())
         .then((json) => {
           if (json.status === 200) {
+            setSubmitting(false)
+            setCurrentUser(json.data)
             // set token in local storage (not best practice)
             localStorage.setItem('plantgeekToken', json.token)
-            setSubmitting(false)
-            history.push(`/user-profile/${values.username}`)
+            // TODO: figure out how to push to profile
+            // history.push(`/user-profile/${currentUser.lowerCaseUsername}`)
           } else if (json.status === 401) {
             // username not found
             console.log(json.message)
@@ -56,9 +60,10 @@ export const UserProvider = ({ children }) => {
 
   const handleLogout = (ev) => {
     ev.preventDefault()
+    // FIXME:
+    // history.push('/login')
     localStorage.removeItem('plantgeekToken')
     setCurrentUser(undefined)
-    history.push('/login')
   }
 
   // TODO: verify and set current user somehow (id from jwt token?)

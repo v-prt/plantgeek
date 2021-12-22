@@ -68,6 +68,7 @@ const authenticateUser = async (req, res) => {
           status: 200,
           // TODO: look into how "expiresIn" works, remove from local storage if expired
           token: jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '7d' }),
+          data: user,
         })
       } else {
         res.status(403).json({ status: 403, message: 'Incorrect password' })

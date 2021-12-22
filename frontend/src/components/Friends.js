@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { UserContext } from '../context/UserContext'
+import { UserContext } from '../contexts/UserContext'
 import { useSelector, useDispatch } from 'react-redux'
 import { usersArray } from '../reducers/userReducer.js'
 import { requestUsers, receiveUsers } from '../actions.js'
