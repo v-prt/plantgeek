@@ -103,9 +103,9 @@ export const PlantProfile = () => {
               {/* <p className='type'>type (desert/tropical/etc)</p> */}
               {plant.toxic ? (
                 <>
-                  <Toxicity toxic={true}>
+                  <Toxicity toxic='true'>
                     <img src={skull} alt='' /> <p>toxic</p>
-                    <span className='tooltip' toxic={true}>
+                    <span className='tooltip' toxic='true'>
                       Don't let the skull scare you! Though this plant may be toxic if ingested, it
                       can still make a great addition to your home. Simply keep it out of reach of
                       pets and children, and wear gloves during pruning to prevent skin irritation.
@@ -114,7 +114,7 @@ export const PlantProfile = () => {
                 </>
               ) : (
                 <>
-                  <Toxicity toxic={false}>
+                  <Toxicity toxic='false'>
                     <FaPaw /> <p>nontoxic</p>
                     <span className='tooltip'>
                       This plant is nontoxic and considered to be pet-friendly and child-safe.
@@ -298,7 +298,7 @@ const Needs = styled.div`
 `
 
 const Toxicity = styled.div`
-  color: ${(props) => (props.toxic ? `${COLORS.medium}` : '#68b234}')};
+  color: ${(props) => (props.toxic === 'true' ? `${COLORS.medium}` : '#68b234}')};
   display: flex;
   align-items: center;
   width: fit-content;
@@ -313,7 +313,7 @@ const Toxicity = styled.div`
     font-weight: 700;
   }
   .tooltip {
-    background: ${(props) => (props.toxic ? `${COLORS.medium}` : `${COLORS.light}`)};
+    background: ${(props) => (props.toxic === 'true' ? `${COLORS.medium}` : `${COLORS.light}`)};
     color: #fff;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     width: 300px;

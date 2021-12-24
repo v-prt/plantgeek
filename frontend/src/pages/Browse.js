@@ -7,7 +7,6 @@ import { COLORS } from '../GlobalStyles'
 import background from '../assets/monstera-bg.jpg'
 import { PlantCard } from '../components/PlantCard'
 import { BiSearch } from 'react-icons/bi'
-import { FadeIn } from '../components/FadeIn.js'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 
 export const Browse = () => {
@@ -135,12 +134,7 @@ export const Browse = () => {
             <Results>
               {plants.length > 0 && filteredPlants ? (
                 filteredPlants.map((plant) => {
-                  return (
-                    // FIXME: each child in list needs unique key
-                    <FadeIn>
-                      <PlantCard key={plant._id} plant={plant} />
-                    </FadeIn>
-                  )
+                  return <PlantCard key={plant._id} plant={plant} />
                 })
               ) : (
                 <BeatingHeart />
