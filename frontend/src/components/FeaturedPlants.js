@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer.js'
+
 import styled from 'styled-components/macro'
-import { RiArrowRightSFill } from 'react-icons/ri'
-import { FadeIn } from './FadeIn.js'
-import { PlantCard } from './PlantCard'
 import { BeatingHeart } from './loaders/BeatingHeart'
+import { FadeIn } from './loaders/FadeIn.js'
+import { RiArrowRightSFill } from 'react-icons/ri'
+
+import { PlantCard } from './PlantCard'
 
 export const FeaturedPlants = () => {
   const plants = useSelector(plantsArray)
@@ -60,7 +62,6 @@ export const FeaturedPlants = () => {
 const Wrapper = styled.section`
   background: #f2f2f2;
   padding: 30px;
-  width: 100%;
   display: grid;
   place-content: center;
 `

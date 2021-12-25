@@ -8,7 +8,7 @@ import { Text } from '../components/forms/FormItems.js'
 import { Wrapper, Card } from './SignUp.js'
 
 import { Ellipsis } from '../components/loaders/Ellipsis'
-import { FadeIn } from '../components/FadeIn.js'
+import { FadeIn } from '../components/loaders/FadeIn.js'
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string().required('Username required'),

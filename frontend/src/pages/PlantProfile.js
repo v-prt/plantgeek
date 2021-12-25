@@ -6,7 +6,7 @@ import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
-import { FadeIn } from '../components/FadeIn.js'
+import { FadeIn } from '../components/loaders/FadeIn.js'
 import { FaPaw } from 'react-icons/fa'
 import placeholder from '../assets/plant-placeholder.svg'
 import skull from '../assets/skull.svg'

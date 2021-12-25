@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { COLORS } from '../../GlobalStyles'
 
-// TODO: fix height/fit for submit buttons
 export const Ellipsis = () => {
   return (
     <Wrapper>
@@ -21,11 +20,11 @@ const Wrapper = styled.div`
     margin: auto;
     position: relative;
     width: 40px;
-    height: 40px;
+    height: 30px;
   }
   .ellipsis div {
     position: absolute;
-    top: 16px;
+    top: 10px;
     width: 6px;
     height: 6px;
     border-radius: 50%;

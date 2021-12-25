@@ -7,6 +7,7 @@ import { requestPlants, receivePlants } from '../actions.js'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
+import { FadeIn } from '../components/loaders/FadeIn'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import checkmark from '../assets/checkmark.svg'
 import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
@@ -182,203 +183,203 @@ export const Contribute = () => {
 
   return (
     <Wrapper>
-      <Heading>contribute</Heading>
-      <div className='content'>
-        {newPlant && (
-          <section className='confirmation'>
-            <div className='msg'>
-              <h2>
-                <img className='checkmark' src={checkmark} alt='' />
-                New plant submitted
-              </h2>
-              <p>
-                Thank you! Your submission will be reviewed shortly and, if approved, you will see
-                the new plant on site soon. In the meantime, you may submit additional plant
-                information below.
-              </p>
-            </div>
-            <PlantCard key={newPlant._id} plant={newPlant} />
+      <FadeIn>
+        <Heading>contribute</Heading>
+        <div className='content'>
+          {newPlant && (
+            <section className='confirmation'>
+              <div className='msg'>
+                <h2>
+                  <img className='checkmark' src={checkmark} alt='' />
+                  New plant submitted
+                </h2>
+                <p>
+                  Thank you! Your submission will be reviewed shortly and, if approved, you will see
+                  the new plant on site soon. In the meantime, you may submit additional plant
+                  information below.
+                </p>
+              </div>
+              <PlantCard key={newPlant._id} plant={newPlant} />
+            </section>
+          )}
+          <section className='introduction'>
+            <h2>Help us grow</h2>
+            <p>
+              Submit new data through the form below so we can all take better care of our beloved
+              houseplants! Please include a link to a reliable source to help verify the information
+              you provide. We review all submissions prior to uploading in order to maintain the
+              integrity of our database.
+            </p>
           </section>
-        )}
-        <section className='introduction'>
-          <h2>Help us grow</h2>
-          <p>
-            Submit new data through the form below so we can all take better care of our beloved
-            houseplants! Please include a link to a reliable source to help verify the information
-            you provide. We review all submissions prior to uploading in order to maintain the
-            integrity of our database.
-          </p>
-        </section>
-        <Form id='plant-submission-form' autoComplete='off'>
-          <h2>Houseplant Info</h2>
-          <p className='info-text'>Note: all fields required.</p>
-          <div className='form-group text'>
-            <label htmlFor='species'>Species</label>
-            <input
-              required
-              type='text'
-              id='species'
-              placeholder='e.g. Monstera deliciosa'
-              onChange={(ev) => setSpecies(ev.target.value.toLowerCase())}
-              autoFocus
-            />
-            <Error error={existingPlant}>This plant has already been registered.</Error>
-          </div>
-          {/* TODO: choose from existing genus or input new */}
-          <div className='form-group text'>
-            <label htmlFor='genus'>Genus</label>
-            <input
-              required
-              type='text'
-              id='genus'
-              placeholder='e.g. Monstera'
-              onChange={(ev) => setGenus(ev.target.value.toLowerCase())}
-            />
-          </div>
-          <div className='form-group'>
-            <label htmlFor='light'>Light</label>
-            <select required name='light' id='light' onChange={(ev) => setLight(ev.target.value)}>
-              {/* FIXME: Warning: Use the `defaultValue` or `value` props on <select> instead of setting `selected` on <option>. */}
-              <option value='DEFAULT' selected disabled>
-                select
-              </option>
-              <option value='low to bright indirect'>low to bright indirect</option>
-              <option value='medium indirect'>medium indirect</option>
-              <option value='medium to bright indirect'>medium to bright indirect</option>
-              <option value='bright indirect'>bright indirect</option>
-            </select>
-          </div>
-          <div className='form-group'>
-            <label htmlFor='water'>Water</label>
-            <select required name='water' id='water' onChange={(ev) => setWater(ev.target.value)}>
-              <option value='DEFAULT' selected disabled>
-                select
-              </option>
-              <option value='low'>low</option>
-              <option value='low to medium'>low to medium</option>
-              <option value='medium'>medium</option>
-              <option value='medium to high'>medium to high</option>
-              <option value='high'>high</option>
-            </select>
-          </div>
-          <div className='form-group'>
-            <label htmlFor='temperature'>Temperature</label>
-            <select
-              required
-              name='temperature'
-              id='temperature'
-              onChange={(ev) => setTemperature(ev.target.value)}>
-              <option value='DEFAULT' selected disabled>
-                select
-              </option>
-              <option value='average'>average</option>
-              <option value='above average'>above average</option>
-            </select>
-          </div>
-          <div className='form-group'>
-            <label htmlFor='humidity'>Humidity</label>
-            <select
-              required
-              name='humidity'
-              id='humidity'
-              onChange={(ev) => setHumidity(ev.target.value)}>
-              <option value='DEFAULT' selected disabled>
-                select
-              </option>
-              <option value='average'>average</option>
-              <option value='above average'>above average</option>
-            </select>
-          </div>
-          <div className='form-group'>
-            <p>Toxic?</p>
-            <div>
+          <Form id='plant-submission-form' autoComplete='off'>
+            <h2>Houseplant Info</h2>
+            <p className='info-text'>Note: all fields required.</p>
+            <div className='form-group text'>
+              <label htmlFor='species'>Species</label>
               <input
-                name='toxic'
-                id='toxic'
-                type='radio'
-                value={true}
-                onChange={(ev) => setToxic(ev.target.value)}
+                required
+                type='text'
+                id='species'
+                placeholder='e.g. Monstera deliciosa'
+                onChange={(ev) => setSpecies(ev.target.value.toLowerCase())}
+                autoFocus
               />
-              <label htmlFor='toxic' style={{ margin: '0 30px 0 5px' }}>
-                Yes
-              </label>
-              <input
-                name='toxic'
-                id='nontoxic'
-                type='radio'
-                value={false}
-                onChange={(ev) => setToxic(ev.target.value)}
-              />
-              <label htmlFor='nontoxic' style={{ marginLeft: '5px' }}>
-                No
-              </label>
+              <Error error={existingPlant}>This plant has already been registered.</Error>
             </div>
-          </div>
-          <DropZone>
-            {/* TODO:
+            {/* TODO: choose from existing genus or input new */}
+            <div className='form-group text'>
+              <label htmlFor='genus'>Genus</label>
+              <input
+                required
+                type='text'
+                id='genus'
+                placeholder='e.g. Monstera'
+                onChange={(ev) => setGenus(ev.target.value.toLowerCase())}
+              />
+            </div>
+            <div className='form-group'>
+              <label htmlFor='light'>Light</label>
+              <select required name='light' id='light' onChange={(ev) => setLight(ev.target.value)}>
+                {/* FIXME: Warning: Use the `defaultValue` or `value` props on <select> instead of setting `selected` on <option>. */}
+                <option value='DEFAULT' selected disabled>
+                  select
+                </option>
+                <option value='low to bright indirect'>low to bright indirect</option>
+                <option value='medium indirect'>medium indirect</option>
+                <option value='medium to bright indirect'>medium to bright indirect</option>
+                <option value='bright indirect'>bright indirect</option>
+              </select>
+            </div>
+            <div className='form-group'>
+              <label htmlFor='water'>Water</label>
+              <select required name='water' id='water' onChange={(ev) => setWater(ev.target.value)}>
+                <option value='DEFAULT' selected disabled>
+                  select
+                </option>
+                <option value='low'>low</option>
+                <option value='low to medium'>low to medium</option>
+                <option value='medium'>medium</option>
+                <option value='medium to high'>medium to high</option>
+                <option value='high'>high</option>
+              </select>
+            </div>
+            <div className='form-group'>
+              <label htmlFor='temperature'>Temperature</label>
+              <select
+                required
+                name='temperature'
+                id='temperature'
+                onChange={(ev) => setTemperature(ev.target.value)}>
+                <option value='DEFAULT' selected disabled>
+                  select
+                </option>
+                <option value='average'>average</option>
+                <option value='above average'>above average</option>
+              </select>
+            </div>
+            <div className='form-group'>
+              <label htmlFor='humidity'>Humidity</label>
+              <select
+                required
+                name='humidity'
+                id='humidity'
+                onChange={(ev) => setHumidity(ev.target.value)}>
+                <option value='DEFAULT' selected disabled>
+                  select
+                </option>
+                <option value='average'>average</option>
+                <option value='above average'>above average</option>
+              </select>
+            </div>
+            <div className='form-group'>
+              <p>Toxic?</p>
+              <div>
+                <input
+                  name='toxic'
+                  id='toxic'
+                  type='radio'
+                  value={true}
+                  onChange={(ev) => setToxic(ev.target.value)}
+                />
+                <label htmlFor='toxic' style={{ margin: '0 30px 0 5px' }}>
+                  Yes
+                </label>
+                <input
+                  name='toxic'
+                  id='nontoxic'
+                  type='radio'
+                  value={false}
+                  onChange={(ev) => setToxic(ev.target.value)}
+                />
+                <label htmlFor='nontoxic' style={{ marginLeft: '5px' }}>
+                  No
+                </label>
+              </div>
+            </div>
+            <DropZone>
+              {/* TODO:
               - set up signed uploads with cloudinary
               - set up a way to approve images before saving to db (cloudinary analysis using amazon rekognition, must be plant and pass guidelines, no offensive content) */}
-            <p>
-              Upload image <span className='info-text'>(please follow our guidelines)</span>
-            </p>
-            <ul className='guidelines'>
-              <li key={1}>houseplants only</li>
-              <li key={2}>1:1 aspect ratio (square)</li>
-              <li key={3}>display the whole plant in a plain pot</li>
-              <li key={4}>white background</li>
-              <li>well lit & in focus (no blurry images)</li>
-              <li>full color (no filters)</li>
-              <li>max 1 image (up to 1mb)</li>
-            </ul>
-            <p className='info-text'>Example:</p>
-            <img style={{ height: '200px' }} src={maranta} alt='' />
-            <DropBox {...getRootProps()} isDragAccept={isDragAccept} isDragReject={isDragReject}>
-              <input {...getInputProps()} />
-              <div className='icon'>
-                {isDragAccept && <RiImageAddFill />}
-                {isDragReject && <ImCross />}
-                {!isDragActive && <RiImageAddLine />}
-              </div>
-            </DropBox>
-            <div className='preview-container'>
-              {images &&
-                images.map((image) => (
-                  <div className='thumbnail' key={image.name}>
-                    <div className='thumbnail-inner'>
-                      <img src={image.preview} alt={image.name} />
+              <p>
+                Upload image <span className='info-text'>(please follow our guidelines)</span>
+              </p>
+              <ul className='guidelines'>
+                <li key={1}>houseplants only</li>
+                <li key={2}>1:1 aspect ratio (square)</li>
+                <li key={3}>display the whole plant in a plain pot</li>
+                <li key={4}>white background</li>
+                <li>well lit & in focus (no blurry images)</li>
+                <li>full color (no filters)</li>
+                <li>max 1 image (up to 1mb)</li>
+              </ul>
+              <p className='info-text'>Example:</p>
+              <img style={{ height: '200px' }} src={maranta} alt='' />
+              <DropBox {...getRootProps()} isDragAccept={isDragAccept} isDragReject={isDragReject}>
+                <input {...getInputProps()} />
+                <div className='icon'>
+                  {isDragAccept && <RiImageAddFill />}
+                  {isDragReject && <ImCross />}
+                  {!isDragActive && <RiImageAddLine />}
+                </div>
+              </DropBox>
+              <div className='preview-container'>
+                {images &&
+                  images.map((image) => (
+                    <div className='thumbnail' key={image.name}>
+                      <div className='thumbnail-inner'>
+                        <img src={image.preview} alt={image.name} />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+              </div>
+            </DropZone>
+            {/* TODO: accept multiple source links? */}
+            <div className='form-group text'>
+              <label htmlFor='source'>Source</label>
+              <input
+                required
+                type='url'
+                id='source'
+                placeholder='Insert URL'
+                onChange={(ev) => setSourceUrl(ev.target.value)}
+              />
             </div>
-          </DropZone>
-          {/* TODO: accept multiple source links? */}
-          <div className='form-group text'>
-            <label htmlFor='source'>Source</label>
-            <input
-              required
-              type='url'
-              id='source'
-              placeholder='Insert URL'
-              onChange={(ev) => setSourceUrl(ev.target.value)}
-            />
-          </div>
-          <Button
-            type='submit'
-            onClick={handleSubmit}
-            disabled={!completeForm || existingPlant || loading}>
-            {loading ? <Ellipsis /> : 'SUBMIT'}
-          </Button>
-        </Form>
-        {/* TODO: background/decorative image */}
-      </div>
+            <Button
+              type='submit'
+              onClick={handleSubmit}
+              disabled={!completeForm || existingPlant || loading}>
+              {loading ? <Ellipsis /> : 'SUBMIT'}
+            </Button>
+          </Form>
+          {/* TODO: background/decorative image */}
+        </div>
+      </FadeIn>
     </Wrapper>
   )
 }
 
 // TODO: cleanup css code
 const Wrapper = styled.main`
-  /* TODO: automatically get height of footer for calc */
-  min-height: calc(100vh - 60px);
   .content {
     display: flex;
     flex-direction: column;

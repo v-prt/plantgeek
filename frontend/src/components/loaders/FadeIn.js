@@ -1,7 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
 
-// TODO: wrap more components with this
 export const FadeIn = ({ duration = 400, delay = 100, children, ...delegated }) => {
   return (
     <Wrapper

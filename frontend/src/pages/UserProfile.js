@@ -4,11 +4,12 @@ import { useSelector } from 'react-redux'
 import { usersArray } from '../reducers/userReducer'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
+import { FadeIn } from '../components/loaders/FadeIn.js'
 import placeholder from '../assets/avatar-placeholder.png'
 import moment from 'moment'
+
 import { SimplePlantList } from '../components/lists/SimplePlantList'
 import { Friends } from '../components/Friends'
-import { FadeIn } from '../components/FadeIn.js'
 
 export const UserProfile = () => {
   const users = useSelector(usersArray)

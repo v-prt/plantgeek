@@ -11,11 +11,11 @@ import { Text, Checkbox } from '../components/forms/FormItems.js'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
+import { FadeIn } from '../components/loaders/FadeIn.js'
+import { Ellipsis } from '../components/loaders/Ellipsis'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import { RiPlantLine } from 'react-icons/ri'
-import { Ellipsis } from '../components/loaders/Ellipsis'
-import { FadeIn } from '../components/FadeIn.js'
 
 YupPassword(Yup) // extend yup
 
@@ -297,6 +297,7 @@ export const Card = styled.div`
     button {
       background: ${COLORS.darkest};
       color: ${COLORS.lightest};
+      height: 50px;
       margin: 30px 0;
       border-radius: 15px;
       padding: 10px;
