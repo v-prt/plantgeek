@@ -61,9 +61,8 @@ const Wrapper = styled.section`
   background: #f2f2f2;
   padding: 30px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  place-content: center;
 `
 
 const Heading = styled.h2`

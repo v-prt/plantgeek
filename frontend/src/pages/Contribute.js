@@ -7,7 +7,6 @@ import { requestPlants, receivePlants } from '../actions.js'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
-import background from '../assets/monstera-bg.jpg'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import checkmark from '../assets/checkmark.svg'
 import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
@@ -183,7 +182,6 @@ export const Contribute = () => {
 
   return (
     <Wrapper>
-      <Banner />
       <Heading>contribute</Heading>
       <div className='content'>
         {newPlant && (
@@ -417,12 +415,6 @@ const Wrapper = styled.main`
       }
     }
   }
-`
-
-const Banner = styled.div`
-  background: url(${background}) center center / cover;
-  height: 120px;
-  width: 100%;
 `
 
 const Heading = styled.h1`

@@ -256,7 +256,7 @@ export const Terms = () => {
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.main`
   margin: 30px;
   .document {
     background: #fff;

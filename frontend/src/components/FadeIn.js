@@ -26,6 +26,8 @@ const fadeIn = keyframes`
 `
 
 const Wrapper = styled.div`
+  height: 100%;
+  width: 100%;
   @media (prefers-reduced-motion: no-preference) {
     animation-name: ${fadeIn};
     animation-fill-mode: backwards;

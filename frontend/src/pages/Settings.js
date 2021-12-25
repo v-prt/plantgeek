@@ -5,7 +5,6 @@ import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS, Button } from '../GlobalStyles'
-import background from '../assets/monstera-bg.jpg'
 import placeholder from '../assets/avatar-placeholder.png'
 
 export const Settings = () => {
@@ -107,7 +106,6 @@ export const Settings = () => {
 
   return (
     <Wrapper>
-      <Banner />
       <Heading>account settings</Heading>
       <UserDetails>
         {currentUser && (
@@ -164,7 +162,7 @@ export const Settings = () => {
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.main`
   background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
@@ -173,12 +171,6 @@ const Wrapper = styled.div`
   form {
     display: flex;
   }
-`
-
-const Banner = styled.div`
-  background: url(${background}) center center / cover;
-  height: 120px;
-  width: 100%;
 `
 
 const UserDetails = styled.div`

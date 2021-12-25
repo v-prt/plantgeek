@@ -4,7 +4,6 @@ import { plantsArray } from '../reducers/plantReducer'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
-import background from '../assets/monstera-bg.jpg'
 import { PlantCard } from '../components/PlantCard'
 import { BiSearch } from 'react-icons/bi'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
@@ -89,74 +88,65 @@ export const Browse = () => {
   }
 
   return (
-    <>
+    <Wrapper>
       {plants && types && filteredPlants && (
-        <Wrapper>
-          <Banner />
-          <Main>
-            <Actions>
-              <Search>
-                <input type='text' placeholder='Search houseplants' onChange={handleQuery} />
-                <button type='submit' onClick={handleSearch}>
-                  <BiSearch />
-                </button>
-              </Search>
-              <Filter>
-                <h2>filters</h2>
-                <Types>
-                  <div>
-                    <Type key='all' onClick={() => removeFilter()} active={selectedType === 'all'}>
-                      all
-                    </Type>
-                    <Type
-                      key='nontoxic'
-                      onClick={() => handleFilter('nontoxic')}
-                      active={selectedType === 'nontoxic'}>
-                      nontoxic
-                    </Type>
-                  </div>
-                  <h3>by genus</h3>
-                  <div>
-                    {types.map((type) => {
-                      return (
-                        <Type
-                          key={type}
-                          onClick={() => handleFilter(type)}
-                          active={type === selectedType}>
-                          {type}
-                        </Type>
-                      )
-                    })}
-                  </div>
-                </Types>
-              </Filter>
-            </Actions>
-            <Results>
-              {plants.length > 0 && filteredPlants ? (
-                filteredPlants.map((plant) => {
-                  return <PlantCard key={plant._id} plant={plant} />
-                })
-              ) : (
-                <BeatingHeart />
-              )}
-            </Results>
-          </Main>
-        </Wrapper>
+        <Main>
+          <Actions>
+            <Search>
+              <input type='text' placeholder='Search houseplants' onChange={handleQuery} />
+              <button type='submit' onClick={handleSearch}>
+                <BiSearch />
+              </button>
+            </Search>
+            <Filter>
+              <h2>filters</h2>
+              <Types>
+                <div>
+                  <Type key='all' onClick={() => removeFilter()} active={selectedType === 'all'}>
+                    all
+                  </Type>
+                  <Type
+                    key='nontoxic'
+                    onClick={() => handleFilter('nontoxic')}
+                    active={selectedType === 'nontoxic'}>
+                    nontoxic
+                  </Type>
+                </div>
+                <h3>by genus</h3>
+                <div>
+                  {types.map((type) => {
+                    return (
+                      <Type
+                        key={type}
+                        onClick={() => handleFilter(type)}
+                        active={type === selectedType}>
+                        {type}
+                      </Type>
+                    )
+                  })}
+                </div>
+              </Types>
+            </Filter>
+          </Actions>
+          <Results>
+            {plants.length > 0 && filteredPlants ? (
+              filteredPlants.map((plant) => {
+                return <PlantCard key={plant._id} plant={plant} />
+              })
+            ) : (
+              <BeatingHeart />
+            )}
+          </Results>
+        </Main>
       )}
-    </>
+    </Wrapper>
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-`
-
-const Banner = styled.div`
-  background: url(${background}) center center / cover;
-  height: 120px;
-  width: 100%;
 `
 
 const Main = styled.main`

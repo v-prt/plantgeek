@@ -14,8 +14,8 @@ import { COLORS } from '../GlobalStyles'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import { RiPlantLine } from 'react-icons/ri'
-import background from '../assets/monstera-bg.jpg'
 import { Ellipsis } from '../components/loaders/Ellipsis'
+import { FadeIn } from '../components/FadeIn.js'
 
 YupPassword(Yup) // extend yup
 
@@ -108,111 +108,114 @@ export const SignUp = () => {
     <Redirect to='/' />
   ) : (
     <Wrapper>
-      <Card>
-        <div className='welcome-header'>
-          <h1>welcome to plantgeek!</h1>
-          {!username && (
-            <>
-              <p>You may create an account in order to...</p>
-              <ul>
-                <li>
-                  <Icon>
-                    <RiPlantLine />
-                  </Icon>
-                  show off your collection
-                </li>
-                <li>
-                  <Icon>
-                    <TiHeartOutline />
-                  </Icon>
-                  save your favorite plants
-                </li>
-                <li>
-                  <Icon>
-                    <AiOutlineStar />
-                  </Icon>
-                  create a wishlist
-                </li>
-              </ul>
-            </>
-          )}
-        </div>
-        {username ? (
-          <Confirmation>
-            <div className='message'>
-              <p>Thanks for signing up, {firstName}!</p>
-              <p>Please save your credentials in a safe place.</p>
-            </div>
-            <div className='box'>
-              <p className='tag'>email</p>
-              <p>{email}</p>
-            </div>
-            <div className='box'>
-              <p className='tag'>username</p>
-              <p>{username}</p>
-            </div>
-            <div className='box'>
-              <p className='tag'>password</p>
-              {/* TODO: toggle hide/show password (use password type input?) */}
-              <p>{password}</p>
-            </div>
-          </Confirmation>
-        ) : (
-          <Formik
-            initialValues={{
-              firstName: '',
-              lastName: '',
-              email: '',
-              username: '',
-              password: '',
-              acceptedTerms: false,
-            }}
-            validationSchema={SignUpSchema}
-            onSubmit={handleSignup}>
-            {({ isSubmitting }) => (
-              <Form>
-                {/* TODO: improve error status message (show beside specific input - email/username) */}
-                {status && <div className='status'>{status}</div>}
-                <Text label='First name' name='firstName' type='text' autoFocus />
-                <Text label='Last name' name='lastName' type='text' />
-                <Text label='Email' name='email' type='email' />
-                <Text label='Username' name='username' type='text' />
-                {/* TODO: add password visibility toggle button */}
-                <Text label='Password' name='password' type='password' />
-                <Checkbox name='acceptedTerms'>
-                  I have read and agree to the{' '}
-                  <a
-                    href='https://www.plantgeek.co/terms'
-                    target='_blank'
-                    rel='noopener noreferrer'>
-                    Terms and Conditions
-                  </a>
-                </Checkbox>
-                {/* TEMPORARILY DISABLED FOR LIVE SITE */}
-                <button type='submit' disabled>
-                  {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                </button>
-                {/* <button type='submit' disabled={isSubmitting}>
+      <FadeIn duration={700} delay={150}>
+        <Card>
+          <div className='welcome-header'>
+            <h1>welcome to plantgeek!</h1>
+            {!username && (
+              <>
+                <p>You may create an account in order to...</p>
+                <ul>
+                  <li>
+                    <Icon>
+                      <RiPlantLine />
+                    </Icon>
+                    show off your collection
+                  </li>
+                  <li>
+                    <Icon>
+                      <TiHeartOutline />
+                    </Icon>
+                    save your favorite plants
+                  </li>
+                  <li>
+                    <Icon>
+                      <AiOutlineStar />
+                    </Icon>
+                    create a wishlist
+                  </li>
+                </ul>
+              </>
+            )}
+          </div>
+          {username ? (
+            <Confirmation>
+              <div className='message'>
+                <p>Thanks for signing up, {firstName}!</p>
+                <p>Please save your credentials in a safe place.</p>
+              </div>
+              <div className='box'>
+                <p className='tag'>email</p>
+                <p>{email}</p>
+              </div>
+              <div className='box'>
+                <p className='tag'>username</p>
+                <p>{username}</p>
+              </div>
+              <div className='box'>
+                <p className='tag'>password</p>
+                {/* TODO: toggle hide/show password (use password type input?) */}
+                <p>{password}</p>
+              </div>
+            </Confirmation>
+          ) : (
+            <Formik
+              initialValues={{
+                firstName: '',
+                lastName: '',
+                email: '',
+                username: '',
+                password: '',
+                acceptedTerms: false,
+              }}
+              validationSchema={SignUpSchema}
+              validateOnChange={false}
+              validateOnBlur={false}
+              onSubmit={handleSignup}>
+              {({ isSubmitting }) => (
+                <Form>
+                  {/* TODO: improve error status message (show beside specific input - email/username) */}
+                  {status && <div className='status'>{status}</div>}
+                  <Text label='First name' name='firstName' type='text' autoFocus />
+                  <Text label='Last name' name='lastName' type='text' />
+                  <Text label='Email' name='email' type='email' />
+                  <Text label='Username' name='username' type='text' />
+                  {/* TODO: add password visibility toggle button */}
+                  <Text label='Password' name='password' type='password' />
+                  <Checkbox name='acceptedTerms'>
+                    I have read and agree to the{' '}
+                    <a
+                      href='https://www.plantgeek.co/terms'
+                      target='_blank'
+                      rel='noopener noreferrer'>
+                      Terms and Conditions
+                    </a>
+                  </Checkbox>
+                  {/* TEMPORARILY DISABLED FOR LIVE SITE */}
+                  <button type='submit' disabled>
+                    {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                  </button>
+                  {/* <button type='submit' disabled={isSubmitting}>
                   {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
                 </button> */}
-              </Form>
-            )}
-          </Formik>
-        )}
-        <p className='subtext'>
-          Already have an account? <Link to='/login'>Log in</Link>
-        </p>
-      </Card>
+                </Form>
+              )}
+            </Formik>
+          )}
+          <p className='subtext'>
+            Already have an account? <Link to='/login'>Log in</Link>
+          </p>
+        </Card>
+      </FadeIn>
     </Wrapper>
   )
 }
 
-export const Wrapper = styled.div`
-  background: url(${background}) center center / cover;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+export const Wrapper = styled.main`
+  background: ${COLORS.dark};
+  flex: 1;
+  display: grid;
+  place-content: center;
 `
 
 export const Card = styled.div`
@@ -253,6 +256,7 @@ export const Card = styled.div`
     // TODO: error styling for labels & inputs (red border, red font color, smooth transitions)
     .text-label {
       background: ${COLORS.lightest};
+      color: ${COLORS.dark};
       width: fit-content;
       position: relative;
       top: 15px;
@@ -264,7 +268,7 @@ export const Card = styled.div`
     .text-input {
       background: ${COLORS.lightest};
       border-radius: 15px;
-      border: 2px solid ${COLORS.dark};
+      border: 2px solid ${COLORS.light};
       text-align: right;
       transition: 0.2s ease-in-out;
       &:focus {
@@ -311,6 +315,9 @@ export const Card = styled.div`
     margin: auto auto 30px auto;
     a {
       text-decoration: underline;
+      &:hover {
+        color: ${COLORS.medium};
+      }
     }
   }
 `
