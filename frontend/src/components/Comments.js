@@ -81,6 +81,7 @@ export const Comments = ({ plant }) => {
 
 const Wrapper = styled.section`
   background: #f2f2f2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   border-radius: 20px;

@@ -8,10 +8,7 @@ import { UserContext } from '../../contexts/UserContext'
 import styled from 'styled-components/macro'
 import { COLORS } from '../../GlobalStyles'
 import { FadeIn } from '../loaders/FadeIn.js'
-import { RiPlantLine } from 'react-icons/ri'
 import { FaPaw } from 'react-icons/fa'
-import { TiHeartOutline } from 'react-icons/ti'
-import { AiOutlineStar } from 'react-icons/ai'
 import placeholder from '../../assets/plant-placeholder.svg'
 import skull from '../../assets/skull.svg'
 import sun from '../../assets/sun.svg'
@@ -65,7 +62,9 @@ export const DetailedPlantList = ({ title }) => {
         <FadeIn>
           <Heading>
             {currentUser && user.username === currentUser.username ? (
-              <>your {title}</>
+              <>
+                your {title} - {user[title].length} plants
+              </>
             ) : (
               <>
                 {user.username}'s {title}
@@ -146,39 +145,9 @@ export const DetailedPlantList = ({ title }) => {
             </Plants>
           ) : (
             <Alert>
-              {title === 'collection' && (
-                <>
-                  <p>Your collection is empty! Do you have any of these plants?</p>
-                  <Info>
-                    <Icon>
-                      <RiPlantLine />
-                    </Icon>
-                    Add it to your collection
-                  </Info>
-                </>
-              )}
-              {title === 'favorites' && (
-                <>
-                  <p>You have no favorite plants! Do you love any of these plants?</p>
-                  <Info>
-                    <Icon>
-                      <TiHeartOutline />
-                    </Icon>
-                    Add it to your favorites
-                  </Info>
-                </>
-              )}
-              {title === 'wishlist' && (
-                <>
-                  <p>Your wishlist is empty! Do you want any of these plants?</p>
-                  <Info>
-                    <Icon>
-                      <AiOutlineStar />
-                    </Icon>
-                    Add it to your wishlist
-                  </Info>
-                </>
-              )}
+              {title === 'collection' && <p className='msg'>Your collection is empty</p>}
+              {title === 'favorites' && <p className='msg'>You have no favorite plants</p>}
+              {title === 'wishlist' && <p className='msg'>Your wishlist is empty</p>}
               <FeaturedPlants />
             </Alert>
           )}
@@ -189,11 +158,11 @@ export const DetailedPlantList = ({ title }) => {
 }
 
 const Wrapper = styled.div`
+  width: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  width: 100%;
 `
 
 const Heading = styled.h1`
@@ -308,24 +277,8 @@ const Alert = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  p {
+  .msg {
     text-align: center;
     margin: 20px;
   }
-`
-
-const Info = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-`
-
-const Icon = styled.div`
-  background: ${COLORS.light};
-  display: flex;
-  align-items: center;
-  font-size: 1.5rem;
-  margin: 0 10px;
-  border-radius: 50%;
-  padding: 5px;
 `

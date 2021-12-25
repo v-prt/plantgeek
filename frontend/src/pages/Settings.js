@@ -189,6 +189,7 @@ const UserDetails = styled.div`
 
 const Options = styled.ul`
   background: #f2f2f2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   width: 80%;
   margin: 20px;
   border-radius: 20px;

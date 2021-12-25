@@ -4,9 +4,13 @@ import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer.js'
 
 import styled from 'styled-components/macro'
+import { COLORS } from '../GlobalStyles'
 import { BeatingHeart } from './loaders/BeatingHeart'
 import { FadeIn } from './loaders/FadeIn.js'
 import { RiArrowRightSFill } from 'react-icons/ri'
+import { TiHeartOutline } from 'react-icons/ti'
+import { AiOutlineStar } from 'react-icons/ai'
+import { RiPlantLine } from 'react-icons/ri'
 
 import { PlantCard } from './PlantCard'
 
@@ -46,6 +50,29 @@ export const FeaturedPlants = () => {
               return <PlantCard key={plant._id} plant={plant} />
             })}
           </Plants>
+          <div className='info-box'>
+            <Info>
+              <Icon>
+                <RiPlantLine />
+              </Icon>
+              <p>Have a plant?</p>
+              <p>Add it to your collection</p>
+            </Info>
+            <Info>
+              <Icon>
+                <TiHeartOutline />
+              </Icon>
+              <p>Love a plant?</p>
+              <p>Add it to your favorites</p>
+            </Info>
+            <Info>
+              <Icon>
+                <AiOutlineStar />
+              </Icon>
+              <p>Want a plant?</p>
+              <p>Add it to your wishlist</p>
+            </Info>
+          </div>
           <Link to='/browse'>
             <BrowseLink>
               browse more <RiArrowRightSFill />
@@ -61,9 +88,22 @@ export const FeaturedPlants = () => {
 
 const Wrapper = styled.section`
   background: #f2f2f2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   padding: 30px;
   display: grid;
   place-content: center;
+  margin: 20px;
+  border-radius: 20px;
+  .info-box {
+    background: #fff;
+    border: 1px dotted #ccc;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    margin: 20px 60px;
+  }
 `
 
 const Heading = styled.h2`
@@ -83,4 +123,22 @@ const Plants = styled.div`
   justify-content: center;
   margin: 0 50px;
   max-width: 900px;
+`
+
+const Info = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 20px;
+`
+
+const Icon = styled.div`
+  background: ${COLORS.light};
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  margin: 0 10px;
+  border-radius: 50%;
+  padding: 10px;
 `
