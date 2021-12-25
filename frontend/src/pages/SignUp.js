@@ -109,7 +109,6 @@ export const SignUp = () => {
   ) : (
     <Wrapper>
       <Card>
-        <StyledLink to='/login'>Have an account? Log in</StyledLink>
         <div className='welcome-header'>
           <h1>welcome to plantgeek!</h1>
           {!username && (
@@ -169,7 +168,6 @@ export const SignUp = () => {
               acceptedTerms: false,
             }}
             validationSchema={SignUpSchema}
-            validateOnChange={false}
             onSubmit={handleSignup}>
             {({ isSubmitting }) => (
               <Form>
@@ -179,6 +177,7 @@ export const SignUp = () => {
                 <Text label='Last name' name='lastName' type='text' />
                 <Text label='Email' name='email' type='email' />
                 <Text label='Username' name='username' type='text' />
+                {/* TODO: add password visibility toggle button */}
                 <Text label='Password' name='password' type='password' />
                 <Checkbox name='acceptedTerms'>
                   I have read and agree to the{' '}
@@ -190,16 +189,19 @@ export const SignUp = () => {
                   </a>
                 </Checkbox>
                 {/* TEMPORARILY DISABLED FOR LIVE SITE */}
-                {/* <button type='submit' disabled={isSubmitting}>
-                  {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                </button> */}
                 <button type='submit' disabled>
                   {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
                 </button>
+                {/* <button type='submit' disabled={isSubmitting}>
+                  {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                </button> */}
               </Form>
             )}
           </Formik>
         )}
+        <p className='subtext'>
+          Already have an account? <Link to='/login'>Log in</Link>
+        </p>
       </Card>
     </Wrapper>
   )
@@ -207,16 +209,20 @@ export const SignUp = () => {
 
 export const Wrapper = styled.div`
   background: url(${background}) center center / cover;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 `
 
 export const Card = styled.div`
+  background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
   width: 500px;
+  margin: 40px 20px;
+  border-radius: 20px;
+  overflow: hidden;
   .welcome-header {
     background: ${COLORS.light};
     display: flex;
@@ -233,7 +239,6 @@ export const Card = styled.div`
     }
   }
   form {
-    background: ${COLORS.lightest};
     display: flex;
     flex-direction: column;
     padding: 0 30px;
@@ -259,7 +264,7 @@ export const Card = styled.div`
     .text-input {
       background: ${COLORS.lightest};
       border-radius: 15px;
-      border: 2px solid ${COLORS.light};
+      border: 2px solid ${COLORS.dark};
       text-align: right;
       transition: 0.2s ease-in-out;
       &:focus {
@@ -302,17 +307,11 @@ export const Card = styled.div`
       }
     }
   }
-`
-
-export const StyledLink = styled(Link)`
-  background: ${COLORS.medium};
-  color: #fff;
-  padding: 5px;
-  display: flex;
-  justify-content: center;
-  &:hover {
-    background: #1a1a1a;
-    color: #fff;
+  .subtext {
+    margin: auto auto 30px auto;
+    a {
+      text-decoration: underline;
+    }
   }
 `
 

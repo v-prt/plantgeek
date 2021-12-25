@@ -9,7 +9,7 @@ export const Footer = () => {
       <Links>
         {/* TODO: */}
         <p>&copy; 2021 plantgeek - All rights reserved.</p>
-        <StyledLink to='/terms'>Terms of Use</StyledLink>•
+        <StyledLink to='/terms'>Terms and Conditions</StyledLink>•
         <StyledLink to='/privacy'>Privacy Policy</StyledLink>•
         <StyledLink to='/contact'>Contact</StyledLink>
       </Links>

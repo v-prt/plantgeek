@@ -49,10 +49,19 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-  // VERIFY USER WITH TOKEN
-  const verifyUser = async (token) => {
+  // LOGOUT
+  const handleLogout = (ev) => {
+    ev.preventDefault()
+    window.location.replace('/login')
+    localStorage.removeItem('plantgeekToken')
+    setToken(false)
+    setCurrentUser(undefined)
+  }
+
+  // VERIFY TOKEN AND SET CURRENT USER
+  const verifyToken = async (token) => {
     try {
-      fetch('/verify', {
+      fetch('/token', {
         method: 'POST',
         body: JSON.stringify({
           token: token,
@@ -67,7 +76,8 @@ export const UserProvider = ({ children }) => {
           if (json.status === 200) {
             setCurrentUser(json.data)
           } else {
-            // delete token? set current user undefined?
+            // something wrong with token
+            window.location.replace('/login')
             localStorage.removeItem('plantgeekToken')
             setToken(false)
             setCurrentUser(undefined)
@@ -81,16 +91,30 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      verifyUser(token)
+      verifyToken(token)
     }
   }, [token])
 
-  // LOGOUT
-  const handleLogout = (ev) => {
-    ev.preventDefault()
-    window.location.replace('/login')
-    localStorage.removeItem('plantgeekToken')
-    setCurrentUser(undefined)
+  // GET USER BY ID AND SET AS CURRENT USER
+  const getUser = async (id) => {
+    try {
+      fetch(`/users/${id}`, {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          if (json.status === 200) {
+            setCurrentUser(json.data)
+          } else {
+            console.log('user not found', json)
+          }
+        })
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return (
@@ -101,6 +125,7 @@ export const UserProvider = ({ children }) => {
         handleLogout,
         incorrectUsername,
         incorrectPassword,
+        getUser,
         currentUser,
         setCurrentUser,
       }}>

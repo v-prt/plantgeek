@@ -1,11 +1,11 @@
 import React, { useEffect, useContext } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import { Text } from '../components/forms/FormItems.js'
-import { Wrapper, Card, StyledLink } from './SignUp.js'
+import { Wrapper, Card } from './SignUp.js'
 
 import { Ellipsis } from '../components/loaders/Ellipsis'
 
@@ -27,7 +27,6 @@ export const Login = () => {
   ) : (
     <Wrapper>
       <Card>
-        <StyledLink to='/signup'>Don't have an account? Sign up</StyledLink>
         <div className='welcome-header'>
           <h1>welcome back!</h1>
         </div>
@@ -37,12 +36,12 @@ export const Login = () => {
             password: '',
           }}
           validationSchema={LoginSchema}
-          validateOnChange={false}
           onSubmit={handleLogin}>
           {({ isSubmitting }) => (
             <Form>
               <Text label='Username' name='username' type='text' autoFocus />
               {incorrectUsername && <div className='error'>Username not found</div>}
+              {/* TODO: add password visibility toggle button */}
               <Text label='Password' name='password' type='password' />
               {incorrectPassword && <div className='error'>Password is incorrect</div>}
               <button type='submit' disabled={isSubmitting}>
@@ -51,6 +50,9 @@ export const Login = () => {
             </Form>
           )}
         </Formik>
+        <p className='subtext'>
+          Don't have an account yet? <Link to='/signup'>Sign up</Link>
+        </p>
       </Card>
     </Wrapper>
   )

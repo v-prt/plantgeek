@@ -8,8 +8,7 @@ const options = {
   useUnifiedTopology: true,
 }
 
-// (CREATE/POST) ADD A NEW PLANT TO DB
-// TODO: make sure this works
+// (CREATE/POST) ADDS A NEW PLANT
 const createPlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   try {
@@ -35,7 +34,7 @@ const createPlant = async (req, res) => {
   client.close()
 }
 
-// GETS ALL PLANTS IN DATABASE
+// (READ/GET) GETS ALL PLANTS
 const getPlants = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
@@ -44,12 +43,12 @@ const getPlants = async (req, res) => {
   if (plants) {
     res.status(200).json({ status: 200, data: plants })
   } else {
-    res.status(404).json({ status: 404, message: 'Oops, nothing here!' })
+    res.status(404).json({ status: 404, message: 'No plants found' })
   }
   client.close()
 }
 
-// GETS PLANT BY ID FROM DATABASE
+// (READ/GET) GETS PLANT BY ID
 const getPlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   const _id = req.params._id
@@ -59,13 +58,13 @@ const getPlant = async (req, res) => {
   if (plant) {
     res.status(200).json({ status: 200, data: plant })
   } else {
-    res.status(404).json({ status: 404, message: 'Oops, nothing here!' })
+    res.status(404).json({ status: 404, message: 'Plant not found' })
   }
   client.close()
 }
 
-// GETS PLANT BY ID & POSTS NEW COMMENT
-const postComment = async (req, res) => {
+// (UPDATE/PUT) ADDS COMMENT TO A PLANT BY ID
+const addComment = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   const _id = req.params._id
   try {
@@ -91,8 +90,11 @@ const postComment = async (req, res) => {
     )
   } catch (err) {
     res.status(404).json({ status: 404, message: err.message })
+    console.log(err.stack)
   }
   client.close()
 }
 
-module.exports = { createPlant, getPlants, getPlant, postComment }
+// TODO: (DELETE) REMOVE A PLANT
+
+module.exports = { createPlant, getPlants, getPlant, addComment }

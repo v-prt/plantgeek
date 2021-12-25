@@ -10,13 +10,13 @@ const path = require('path')
 const {
   createUser,
   authenticateUser,
-  verifyUser,
-  getUserByUsername,
+  verifyToken,
   getUsers,
+  getUser,
   addToUser,
   removeFromUser,
 } = require('./handlers/userHandlers')
-const { createPlant, getPlants, getPlant, postComment } = require('./handlers/plantHandlers')
+const { createPlant, getPlants, getPlant, addComment } = require('./handlers/plantHandlers')
 
 // run on whatever port heroku has available or 4000 (local)
 const PORT = process.env.PORT || 4000
@@ -33,18 +33,19 @@ app
   .use(express.json())
 
   // ENDPOINTS
-  // TODO: use nouns in endpoints, no verbs
   .post('/users', createUser)
+  // FIXME: change /login endpoint to use noun instead of verb
   .post('/login', authenticateUser)
-  .post('/verify', verifyUser)
-  .get('/users/:username', getUserByUsername)
+  .post('/token', verifyToken)
   .get('/users', getUsers)
+  .get('/users/:_id', getUser)
+  // FIXME: change /add and /remove endpoints to use nouns instead of verb (eg: /:username/collection ?) & update handler function(s)
   .put('/:username/add', addToUser)
   .put('/:username/remove', removeFromUser)
   .post('/plants', createPlant)
   .get('/plants', getPlants)
   .get('/plants/:_id', getPlant)
-  .put('/plants/:_id/comments', postComment)
+  .put('/plants/:_id/comments', addComment)
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'frontend', 'build')))

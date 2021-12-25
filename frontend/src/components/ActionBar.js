@@ -12,9 +12,10 @@ import { AiOutlineStar } from 'react-icons/ai'
 
 export const ActionBar = ({ id }) => {
   const dispatch = useDispatch()
-  const { currentUser } = useContext(UserContext)
+  const { getUser, currentUser } = useContext(UserContext)
   const plants = useSelector(plantsArray)
   const [plant, setPlant] = useState(undefined)
+  // FIXME: need to improve loading state of action buttons (don't use set timeout)
   const [clicked1, setClicked1] = useState(false)
   const [clicked2, setClicked2] = useState(false)
   const [clicked3, setClicked3] = useState(false)
@@ -30,7 +31,6 @@ export const ActionBar = ({ id }) => {
   const handleList = (list) => {
     let data
     if (list === currentUser.collection) {
-      // prevents spam
       setClicked1(true)
       setTimeout(() => {
         setClicked1(false)
@@ -70,6 +70,7 @@ export const ActionBar = ({ id }) => {
             .catch((err) => {
               console.log(err)
             })
+          getUser(currentUser._id)
         } else if (res.status === 404) {
           console.log('Something went wrong')
         }
@@ -95,6 +96,7 @@ export const ActionBar = ({ id }) => {
             .catch((err) => {
               console.log(err)
             })
+          getUser(currentUser._id)
         } else if (res.status === 404) {
           console.log('Something went wrong')
         }
@@ -168,6 +170,7 @@ const Action = styled.button`
     opacity: 100%;
   }
   &:disabled {
+    pointer-events: none;
     background: ${COLORS.light};
     color: #000;
     opacity: 100%;

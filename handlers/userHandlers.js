@@ -11,7 +11,7 @@ const options = {
   useUnifiedTopology: true,
 }
 
-// (CREATE/POST) ADD A NEW USER TO DATABASE
+// (CREATE/POST) ADDS A NEW USER
 const createUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   try {
@@ -52,7 +52,7 @@ const createUser = async (req, res) => {
   client.close()
 }
 
-// (READ/POST) LOGIN - AUTHENTICATE USER
+// (READ/POST) AUTHENTICATES USER WHEN LOGGING IN
 const authenticateUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   try {
@@ -77,18 +77,18 @@ const authenticateUser = async (req, res) => {
       res.status(401).json({ status: 401, message: 'Username not found' })
     }
   } catch (err) {
-    console.log(err)
     res.status(500).send('Internal server error')
+    console.log(err.stack)
   }
   client.close()
 }
 
-// (READ/POST) VERIFY USER BY JWT TOKEN
-const verifyUser = async (req, res) => {
+// (READ/POST) VERIFIES JWT TOKEN
+const verifyToken = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
-  const verifiedUserId = jwt.verify(
+  const verifiedToken = jwt.verify(
     req.body.token,
     process.env.TOKEN_SECRET,
     function (err, decoded) {
@@ -99,9 +99,9 @@ const verifyUser = async (req, res) => {
       }
     }
   )
-  if (verifiedUserId) {
+  if (verifiedToken) {
     const user = await db.collection('users').findOne({
-      _id: ObjectId(verifiedUserId),
+      _id: ObjectId(verifiedToken),
     })
     if (user) {
       res.status(200).json({ status: 200, data: user })
@@ -109,28 +109,12 @@ const verifyUser = async (req, res) => {
       res.status(404).json({ status: 404, message: 'User not found' })
     }
   } else {
-    console.log("User ID couldn't be verified")
+    console.log("Token couldn't be verified")
   }
   client.close()
 }
 
-// (READ/GET) GETS USER BY USERNAME
-const getUserByUsername = async (req, res) => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
-  const user = await db.collection('users').findOne({
-    username: req.params.username,
-  })
-  if (user) {
-    res.status(200).json({ status: 200, data: user })
-  } else {
-    res.status(404).json({ status: 404, message: 'User not found' })
-  }
-  client.close()
-}
-
-// (READ/GET) GETS ALL USERS IN DATABASE
+// (READ/GET) GETS ALL USERS
 const getUsers = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
@@ -139,12 +123,27 @@ const getUsers = async (req, res) => {
   if (users) {
     res.status(200).json({ status: 200, data: users })
   } else {
-    res.status(404).json({ status: 404, message: 'Oops, nothing here!' })
+    res.status(404).json({ status: 404, message: 'No users found' })
   }
   client.close()
 }
 
-// (UPDATE/PUT) ADD A PLANT, FRIEND, OR IMAGE TO USER'S PROFILE
+// (READ/GET) GETS USER BY ID
+const getUser = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  const _id = req.params._id
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  const user = await db.collection('users').findOne({ _id: ObjectId(_id) })
+  if (user) {
+    res.status(200).json({ status: 200, data: user })
+  } else {
+    res.status(404).json({ status: 404, message: 'User not found' })
+  }
+  client.close()
+}
+
+// (UPDATE/PUT) ADDS A PLANT, FRIEND, OR IMAGE TO USER'S DATA
 const addToUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   const username = req.params.username
@@ -195,11 +194,12 @@ const addToUser = async (req, res) => {
     )
   } catch (err) {
     res.status(404).json({ status: 404, message: err.message })
+    console.log(err.stack)
   }
   client.close()
 }
 
-// (UPDATE/PUT) REMOVE A PLANT, FRIEND, OR IMAGE FROM USER'S PROFILE
+// (UPDATE/PUT) REMOVES A PLANT, FRIEND, OR IMAGE FROM USER'S DATA
 const removeFromUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   const username = req.params.username
@@ -250,17 +250,18 @@ const removeFromUser = async (req, res) => {
     )
   } catch (err) {
     res.status(404).json({ status: 404, message: err.message })
+    console.log(err.stack)
   }
   client.close()
 }
 
-// TODO: (DELETE) REMOVE A USER FROM DB
+// TODO: (DELETE) REMOVE A USER
 
 module.exports = {
   createUser,
   authenticateUser,
-  verifyUser,
-  getUserByUsername,
+  verifyToken,
+  getUser,
   getUsers,
   addToUser,
   removeFromUser,
