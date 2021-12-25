@@ -21,7 +21,7 @@ YupPassword(Yup) // extend yup
 
 export const SignUp = () => {
   const dispatch = useDispatch()
-  const { token } = useContext(UserContext)
+  const { currentUser } = useContext(UserContext)
   const [status, setStatus] = useState()
   const [firstName, setFirstName] = useState()
   const [email, setEmail] = useState()
@@ -103,8 +103,7 @@ export const SignUp = () => {
       })
   }
 
-  // checks if user is logged in (has token), if so then redirects to homepage
-  return token ? (
+  return currentUser ? (
     <Redirect to='/' />
   ) : (
     <Wrapper>
@@ -196,8 +195,8 @@ export const SignUp = () => {
                     {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
                   </button>
                   {/* <button type='submit' disabled={isSubmitting}>
-                  {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                </button> */}
+                    {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                  </button> */}
                 </Form>
               )}
             </Formik>

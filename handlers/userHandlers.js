@@ -86,30 +86,31 @@ const authenticateUser = async (req, res) => {
 // (READ/POST) VERIFIES JWT TOKEN
 const verifyToken = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
-  const verifiedToken = jwt.verify(
-    req.body.token,
-    process.env.TOKEN_SECRET,
-    function (err, decoded) {
+  try {
+    await client.connect()
+    const db = client.db('plantgeekdb')
+    const verifiedToken = jwt.verify(req.body.token, process.env.TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        return err
+        return false
       } else {
         return decoded.userId
       }
-    }
-  )
-  if (verifiedToken) {
-    const user = await db.collection('users').findOne({
-      _id: ObjectId(verifiedToken),
     })
-    if (user) {
-      res.status(200).json({ status: 200, data: user })
+    if (verifiedToken) {
+      const user = await db.collection('users').findOne({
+        _id: ObjectId(verifiedToken),
+      })
+      if (user) {
+        res.status(200).json({ status: 200, data: user })
+      } else {
+        res.status(404).json({ status: 404, message: 'User not found' })
+      }
     } else {
-      res.status(404).json({ status: 404, message: 'User not found' })
+      res.status(500).json({ status: 500, message: `Token couldn't be verified` })
     }
-  } else {
-    console.log("Token couldn't be verified")
+  } catch (err) {
+    res.status(500).json({ status: 500, message: err.message })
+    console.log(err.stack)
   }
   client.close()
 }

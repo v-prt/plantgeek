@@ -143,12 +143,22 @@ export const DetailedPlantList = ({ title }) => {
                   )
                 })}
             </Plants>
-          ) : (
+          ) : currentUser && user.username === currentUser.username ? (
             <Alert>
               {title === 'collection' && <p className='msg'>Your collection is empty</p>}
               {title === 'favorites' && <p className='msg'>You have no favorite plants</p>}
               {title === 'wishlist' && <p className='msg'>Your wishlist is empty</p>}
               <FeaturedPlants />
+            </Alert>
+          ) : (
+            <Alert>
+              {title === 'collection' && (
+                <p className='msg'>{user.username}'s collection is empty</p>
+              )}
+              {title === 'favorites' && (
+                <p className='msg'>{user.username} has no favorite plants</p>
+              )}
+              {title === 'wishlist' && <p className='msg'>{user.username}'s wishlist is empty</p>}
             </Alert>
           )}
         </FadeIn>
