@@ -12,9 +12,9 @@ import placeholder from '../assets/avatar-placeholder.png'
 export const Friends = () => {
   const dispatch = useDispatch()
   const { username } = useParams()
-  const { currentUser } = useContext(UserContext)
+  const { getUser, currentUser } = useContext(UserContext)
   const users = useSelector(usersArray)
-  const [clicked, setClicked] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   // SETS THE USER TO ACCESS THEIR FRIENDS
   const [user, setUser] = useState()
@@ -68,16 +68,21 @@ export const Friends = () => {
         }
       }
       setSuggestedFriends(tempArray)
-    } else setSuggestedFriends(undefined)
-  }, [users])
+    }
+    // FIXME: filter out current friends
+    else
+      setSuggestedFriends(
+        users.filter(
+          (user) => user.username !== currentUser?.username && user.username !== username
+        )
+      )
+  }, [users, currentUser, username])
 
+  // FIXME: add/remove friend takes too long
+  // TODO: send friend request instead of forced add
   const addFriend = () => {
-    // prevents spamming
-    setClicked(true)
-    setTimeout(() => {
-      setClicked(false)
-    }, 3000)
-    // ADDS USER TO CURRENT USER'S FRIENDS
+    setLoading(true)
+    // ADDS OTHER USER TO CURRENT USER'S FRIENDS LIST
     fetch(`/${currentUser.username}/add`, {
       method: 'PUT',
       body: JSON.stringify({
@@ -89,42 +94,39 @@ export const Friends = () => {
       },
     }).then((res) => {
       if (res.status === 200) {
-        console.log(`${user.username} and ${currentUser.username} are now friends!`)
-        dispatch(requestUsers())
-        fetch('/users')
-          .then((res) => res.json())
-          .then((json) => {
-            dispatch(receiveUsers(json.data))
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-      } else if (res.status === 404) {
-        console.log('Something went wrong')
-      }
-    })
-    // ADDS CURRENT USER TO USER'S FRIENDS
-    fetch(`/${user.username}/add`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        friends: currentUser.username,
-      }),
-      headers: {
-        Accept: 'application/json',
-        'Content-type': 'application/json',
-      },
-    }).then((res) => {
-      if (res.status === 200) {
-        console.log(`${user.username} and ${currentUser.username} are now friends!`)
-        dispatch(requestUsers())
-        fetch('/users')
-          .then((res) => res.json())
-          .then((json) => {
-            dispatch(receiveUsers(json.data))
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+        // ADDS CURRENT USER TO OTHER USER'S FRIENDS LIST
+        fetch(`/${user.username}/add`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            friends: currentUser.username,
+          }),
+          headers: {
+            Accept: 'application/json',
+            'Content-type': 'application/json',
+          },
+        }).then((res) => {
+          if (res.status === 200) {
+            console.log(`${user.username} and ${currentUser.username} are now friends!`)
+            dispatch(requestUsers())
+            fetch('/users')
+              .then((res) => res.json())
+              .then((json) => {
+                dispatch(receiveUsers(json.data))
+              })
+              .catch((err) => {
+                console.log(err)
+              })
+            getUser(currentUser._id)
+            setTimeout(() => {
+              setLoading(false)
+            }, 2000)
+          } else if (res.status === 404) {
+            console.log('Something went wrong')
+            setTimeout(() => {
+              setLoading(false)
+            }, 2000)
+          }
+        })
       } else if (res.status === 404) {
         console.log('Something went wrong')
       }
@@ -132,12 +134,8 @@ export const Friends = () => {
   }
 
   const removeFriend = () => {
-    // prevents spamming
-    setClicked(true)
-    setTimeout(() => {
-      setClicked(false)
-    }, 3000)
-    // REMOVES USER FROM CURRENT USER'S FRIENDS
+    setLoading(true)
+    // REMOVES OTHER USER FROM CURRENT USER'S FRIENDS LIST
     fetch(`/${currentUser.username}/remove`, {
       method: 'PUT',
       body: JSON.stringify({
@@ -149,42 +147,36 @@ export const Friends = () => {
       },
     }).then((res) => {
       if (res.status === 200) {
-        console.log(`${user.username} and ${currentUser.username} are not friends anymore!`)
-        dispatch(requestUsers())
-        fetch('/users')
-          .then((res) => res.json())
-          .then((json) => {
-            dispatch(receiveUsers(json.data))
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-      } else if (res.status === 404) {
-        console.log('Something went wrong')
-      }
-    })
-    // REMOVES CURRENT USER FROM USER'S FRIENDS
-    fetch(`/${user.username}/remove`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        friends: currentUser.username,
-      }),
-      headers: {
-        Accept: 'application/json',
-        'Content-type': 'application/json',
-      },
-    }).then((res) => {
-      if (res.status === 200) {
-        console.log(`${user.username} and ${currentUser.username} are not friends anymore!`)
-        dispatch(requestUsers())
-        fetch('/users')
-          .then((res) => res.json())
-          .then((json) => {
-            dispatch(receiveUsers(json.data))
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+        // REMOVES CURRENT USER FROM OTHER USER'S FRIENDS LIST
+        fetch(`/${user.username}/remove`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            friends: currentUser.username,
+          }),
+          headers: {
+            Accept: 'application/json',
+            'Content-type': 'application/json',
+          },
+        }).then((res) => {
+          if (res.status === 200) {
+            console.log(`${user.username} and ${currentUser.username} are not friends anymore!`)
+            dispatch(requestUsers())
+            fetch('/users')
+              .then((res) => res.json())
+              .then((json) => {
+                dispatch(receiveUsers(json.data))
+              })
+              .catch((err) => {
+                console.log(err)
+              })
+            getUser(currentUser._id)
+            setTimeout(() => {
+              setLoading(false)
+            }, 2000)
+          } else if (res.status === 404) {
+            console.log('Something went wrong')
+          }
+        })
       } else if (res.status === 404) {
         console.log('Something went wrong')
       }
@@ -222,18 +214,19 @@ export const Friends = () => {
                 {currentUser && currentUser.username !== user.username && (
                   <>
                     {alreadyFriends ? (
-                      <FriendBtn onClick={removeFriend} disabled={clicked}>
-                        Remove Friend
+                      <FriendBtn onClick={removeFriend} disabled={loading}>
+                        REMOVE FRIEND
                       </FriendBtn>
                     ) : (
-                      <FriendBtn onClick={addFriend}>Add Friend</FriendBtn>
+                      <FriendBtn onClick={addFriend} disabled={loading}>
+                        ADD FRIEND
+                      </FriendBtn>
                     )}
                   </>
                 )}
-                {suggestedFriends && (
+                {suggestedFriends?.length > 0 && (
                   <GreyCard>
                     <h3>people you may know</h3>
-                    {/* FIXME: don't include current user */}
                     {suggestedFriends.map((user) => {
                       return (
                         <User key={user._id}>
@@ -256,7 +249,7 @@ export const Friends = () => {
                 {currentUser && currentUser.username === user.username ? (
                   <>
                     <p>You have no friends yet.</p>
-                    {suggestedFriends && (
+                    {suggestedFriends?.length > 0 && (
                       <>
                         <h3>people you may know</h3>
                         {suggestedFriends.map((user) => {
@@ -280,8 +273,8 @@ export const Friends = () => {
                   <>
                     <p>{user.username} has no friends yet.</p>
                     {currentUser && (
-                      <FriendBtn onClick={addFriend} disabled={clicked}>
-                        Add Friend
+                      <FriendBtn onClick={addFriend} disabled={loading}>
+                        ADD FRIEND
                       </FriendBtn>
                     )}
                   </>
@@ -332,7 +325,10 @@ const Heading = styled.h2`
 const User = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 10px;
+  margin: 0 10px 10px 10px;
+  a {
+    line-height: 1;
+  }
 `
 
 const Avatar = styled.img`
@@ -353,7 +349,7 @@ const FriendBtn = styled.button`
     background: ${COLORS.medium};
   }
   &:disabled {
-    cursor: not-allowed;
+    pointer-events: none;
     background: ${COLORS.darkest};
   }
 `
