@@ -52,10 +52,8 @@ export const UserProvider = ({ children }) => {
   // LOGOUT
   const handleLogout = (ev) => {
     ev.preventDefault()
-    window.location.replace('/login')
     localStorage.removeItem('plantgeekToken')
-    setToken(false)
-    setCurrentUser(undefined)
+    window.location.replace('/login')
   }
 
   // VERIFY TOKEN AND SET CURRENT USER
@@ -77,11 +75,8 @@ export const UserProvider = ({ children }) => {
             setCurrentUser(json.data)
           } else {
             // something wrong with token
-            window.location.replace('/login')
             localStorage.removeItem('plantgeekToken')
-            setToken(false)
-            setCurrentUser(undefined)
-            console.log(json)
+            window.location.replace('/login')
           }
         })
     } catch (err) {
@@ -109,7 +104,7 @@ export const UserProvider = ({ children }) => {
           if (json.status === 200) {
             setCurrentUser(json.data)
           } else {
-            console.log('user not found', json)
+            console.log('User not found')
           }
         })
     } catch (err) {

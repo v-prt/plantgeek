@@ -53,7 +53,7 @@ export const Homepage = () => {
                 </Link>
               </h2>
               <ul>
-                <li>Manage your collection and quickly refer to your plants' needs</li>
+                <li>Manage your personal collection and quickly refer to your plants' needs</li>
                 <li>Keep a list of your favorite plants</li>
                 <li>Add plants you would like to own to your wishlist</li>
                 <li>View your friends</li>

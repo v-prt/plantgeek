@@ -190,6 +190,7 @@ export const PlantProfile = () => {
             </ResponsiveDiv>
           </Div>
         </FadeIn>
+        // TODO: similar plants section (genus)
       )}
     </Wrapper>
   )
@@ -256,6 +257,7 @@ const ResponsiveDiv = styled.div`
 
 const Needs = styled.section`
   background: #f2f2f2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   height: fit-content;
   display: flex;
   flex-direction: column;

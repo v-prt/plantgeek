@@ -55,7 +55,7 @@ export const SimplePlantList = ({ username, list, title }) => {
               userPlants.map((plant) => {
                 return (
                   <Plant key={plant._id}>
-                    <InfoLink to={`/plant-profile/${plant._id}`}>
+                    <InfoLink to={`/plant-profile/${plant?._id}`}>
                       {plant.imageUrl ? (
                         <img src={plant.imageUrl} alt='' />
                       ) : (

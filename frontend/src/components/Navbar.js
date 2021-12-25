@@ -68,7 +68,7 @@ export const Navbar = () => {
             </Icon>
           </Link>
           <LogoutBtn onClick={handleLogout}>
-            <Label>logout</Label>
+            <Label>log out</Label>
             <Icon>
               <BiLogOutCircle />
             </Icon>
@@ -77,7 +77,7 @@ export const Navbar = () => {
       ) : (
         <>
           <Link to='/login'>
-            <Label>login</Label>
+            <Label>log in</Label>
             <Icon>
               <BiLogInCircle />
             </Icon>

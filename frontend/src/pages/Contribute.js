@@ -430,6 +430,7 @@ const Heading = styled.h1`
 
 const Form = styled.form`
   background: #f2f2f2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
