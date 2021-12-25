@@ -4,10 +4,10 @@ import { plantsArray } from '../reducers/plantReducer'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
-import background from '../assets/monstera-bg.jpg'
+import { BeatingHeart } from '../components/loaders/BeatingHeart'
+import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
 import { BiSearch } from 'react-icons/bi'
-import { BeatingHeart } from '../components/loaders/BeatingHeart'
 
 export const Browse = () => {
   const plants = useSelector(plantsArray)
@@ -89,11 +89,10 @@ export const Browse = () => {
   }
 
   return (
-    <>
+    <Wrapper>
       {plants && types && filteredPlants && (
-        <Wrapper>
-          <Banner />
-          <Main>
+        <FadeIn>
+          <Div>
             <Actions>
               <Search>
                 <input type='text' placeholder='Search houseplants' onChange={handleQuery} />
@@ -140,26 +139,20 @@ export const Browse = () => {
                 <BeatingHeart />
               )}
             </Results>
-          </Main>
-        </Wrapper>
+          </Div>
+        </FadeIn>
       )}
-    </>
+    </Wrapper>
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 `
 
-const Banner = styled.div`
-  background: url(${background}) center center / cover;
-  height: 120px;
-  width: 100%;
-`
-
-const Main = styled.main`
+const Div = styled.div`
   display: flex;
   @media (max-width: 1000px) {
     flex-direction: column;

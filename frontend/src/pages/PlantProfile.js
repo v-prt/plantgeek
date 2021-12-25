@@ -6,8 +6,8 @@ import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
+import { FadeIn } from '../components/loaders/FadeIn.js'
 import { FaPaw } from 'react-icons/fa'
-import background from '../assets/monstera-bg.jpg'
 import placeholder from '../assets/plant-placeholder.svg'
 import skull from '../assets/skull.svg'
 import sun from '../assets/sun.svg'
@@ -85,135 +85,130 @@ export const PlantProfile = () => {
 
   return (
     <Wrapper>
-      <Banner />
       {plant && (
-        <Div>
-          <div className='plant-details-wrapper'>
-            <div className='image-wrapper'>
-              {plant.imageUrl ? (
-                <Image src={plant.imageUrl} alt='' />
-              ) : (
-                <Image className='placeholder' src={placeholder} alt='' />
-              )}
+        <FadeIn>
+          <Div>
+            <div className='plant-details-wrapper'>
+              <div className='image-wrapper'>
+                {plant.imageUrl ? (
+                  <Image src={plant.imageUrl} alt='' />
+                ) : (
+                  <Image className='placeholder' src={placeholder} alt='' />
+                )}
+              </div>
+              <div className='details'>
+                <h1>{plant.species}</h1>
+                {/* <p className='latin-name'>latin name</p> */}
+                {/* <p className='region'>region</p> */}
+                {/* <p className='type'>type (desert/tropical/etc)</p> */}
+                {plant.toxic ? (
+                  <>
+                    <Toxicity toxic='true'>
+                      <img src={skull} alt='' /> <p>toxic</p>
+                      <span className='tooltip' toxic='true'>
+                        Don't let the skull scare you! Though this plant may be toxic if ingested,
+                        it can still make a great addition to your home. Simply keep it out of reach
+                        of pets and children, and wear gloves during pruning to prevent skin
+                        irritation.
+                      </span>
+                    </Toxicity>
+                  </>
+                ) : (
+                  <>
+                    <Toxicity toxic='false'>
+                      <FaPaw /> <p>nontoxic</p>
+                      <span className='tooltip'>
+                        This plant is nontoxic and considered to be pet-friendly and child-safe.
+                        However, anything can be dangerous when consumed in large quantities. Please
+                        use your judgment and seek emergency care when necessary.
+                      </span>
+                    </Toxicity>
+                  </>
+                )}
+              </div>
             </div>
-            <div className='details'>
-              <h1>{plant.species}</h1>
-              {/* <p className='latin-name'>latin name</p> */}
-              {/* <p className='region'>region</p> */}
-              {/* <p className='type'>type (desert/tropical/etc)</p> */}
-              {plant.toxic ? (
-                <>
-                  <Toxicity toxic='true'>
-                    <img src={skull} alt='' /> <p>toxic</p>
-                    <span className='tooltip' toxic='true'>
-                      Don't let the skull scare you! Though this plant may be toxic if ingested, it
-                      can still make a great addition to your home. Simply keep it out of reach of
-                      pets and children, and wear gloves during pruning to prevent skin irritation.
-                    </span>
-                  </Toxicity>
-                </>
-              ) : (
-                <>
-                  <Toxicity toxic='false'>
-                    <FaPaw /> <p>nontoxic</p>
-                    <span className='tooltip'>
-                      This plant is nontoxic and considered to be pet-friendly and child-safe.
-                      However, anything can be dangerous when consumed in large quantities. Please
-                      use your judgment and seek emergency care when necessary.
-                    </span>
-                  </Toxicity>
-                </>
-              )}
-            </div>
-          </div>
-          <ResponsiveDiv>
-            <Needs>
-              <h2>
-                needs <span className='difficulty'>Difficulty: {difficulty}</span>
-              </h2>
-              <div className='row'>
-                <img src={sun} alt='' />
-                <div className='column'>
-                  <p>{plant.light} light</p>
-                  <Bar>
-                    {plant.light === 'low to bright indirect' && <Indicator level={'2'} />}
-                    {plant.light === 'medium indirect' && <Indicator level={'2'} />}
-                    {plant.light === 'medium to bright indirect' && <Indicator level={'2-3'} />}
-                    {plant.light === 'bright indirect' && <Indicator level={'3'} />}
-                  </Bar>
+            <ResponsiveDiv>
+              <Needs>
+                <h2>
+                  needs <span className='difficulty'>Difficulty: {difficulty}</span>
+                </h2>
+                <div className='row'>
+                  <img src={sun} alt='' />
+                  <div className='column'>
+                    <p>{plant.light} light</p>
+                    <Bar>
+                      {plant.light === 'low to bright indirect' && <Indicator level={'2'} />}
+                      {plant.light === 'medium indirect' && <Indicator level={'2'} />}
+                      {plant.light === 'medium to bright indirect' && <Indicator level={'2-3'} />}
+                      {plant.light === 'bright indirect' && <Indicator level={'3'} />}
+                    </Bar>
+                  </div>
                 </div>
-              </div>
-              <div className='row'>
-                <img src={water} alt='' />
-                <div className='column'>
-                  <p>{plant.water} water</p>
-                  <Bar>
-                    {plant.water === 'low' && <Indicator level={'1'} />}
-                    {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
-                    {plant.water === 'medium' && <Indicator level={'2'} />}
-                    {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
-                    {plant.water === 'high' && <Indicator level={'3'} />}
-                  </Bar>
+                <div className='row'>
+                  <img src={water} alt='' />
+                  <div className='column'>
+                    <p>{plant.water} water</p>
+                    <Bar>
+                      {plant.water === 'low' && <Indicator level={'1'} />}
+                      {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+                      {plant.water === 'medium' && <Indicator level={'2'} />}
+                      {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+                      {plant.water === 'high' && <Indicator level={'3'} />}
+                    </Bar>
+                  </div>
                 </div>
-              </div>
-              <div className='row'>
-                <img src={temp} alt='' />
-                <div className='column'>
-                  <p>{plant.temperature} temperature</p>
-                  <Bar>
-                    {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                    {plant.temperature === 'above average' && <Indicator level={'2-3'} />}
-                  </Bar>
+                <div className='row'>
+                  <img src={temp} alt='' />
+                  <div className='column'>
+                    <p>{plant.temperature} temperature</p>
+                    <Bar>
+                      {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+                      {plant.temperature === 'above average' && <Indicator level={'2-3'} />}
+                    </Bar>
+                  </div>
                 </div>
-              </div>
-              <div className='row'>
-                <img src={humidity} alt='' />
-                <div className='column'>
-                  <p>{plant.humidity} humidity</p>
-                  <Bar>
-                    {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-                    {plant.humidity === 'above average' && <Indicator level={'2-3'} />}
-                  </Bar>
+                <div className='row'>
+                  <img src={humidity} alt='' />
+                  <div className='column'>
+                    <p>{plant.humidity} humidity</p>
+                    <Bar>
+                      {plant.humidity === 'average' && <Indicator level={'1-2'} />}
+                      {plant.humidity === 'above average' && <Indicator level={'2-3'} />}
+                    </Bar>
+                  </div>
                 </div>
-              </div>
-              <p className='sources'>
-                Source(s): <a href={plant.sourceUrl}>[1]</a>
-              </p>
-              {currentUser && (
-                <Sizer>
-                  <ActionBar id={plant._id} style={{ background: '#fff' }} />
-                </Sizer>
-              )}
-            </Needs>
-            <Comments plant={plant} />
-          </ResponsiveDiv>
-        </Div>
+                <p className='sources'>
+                  Source(s): <a href={plant.sourceUrl}>[1]</a>
+                </p>
+                {currentUser && (
+                  <Sizer>
+                    <ActionBar id={plant._id} style={{ background: '#fff' }} />
+                  </Sizer>
+                )}
+              </Needs>
+              <Comments plant={plant} />
+            </ResponsiveDiv>
+          </Div>
+        </FadeIn>
       )}
     </Wrapper>
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
 `
 
-const Banner = styled.div`
-  background: url(${background}) center center / cover;
-  height: 120px;
-  width: 100%;
-`
-
 const Div = styled.div`
-  width: 80%;
+  width: 100%;
   position: relative;
+  top: -70px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
-  top: -70px;
   .plant-details-wrapper {
     display: flex;
     align-items: center;
@@ -253,13 +248,13 @@ const Image = styled.img`
 `
 
 const ResponsiveDiv = styled.div`
+  width: 80%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  width: 100%;
 `
 
-const Needs = styled.div`
+const Needs = styled.section`
   background: #f2f2f2;
   height: fit-content;
   display: flex;

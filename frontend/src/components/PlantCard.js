@@ -9,7 +9,7 @@ import skull from '../assets/skull.svg'
 
 export const PlantCard = ({ plant }) => {
   return (
-    <Plant key={plant._id}>
+    <Wrapper>
       <Div>
         {plant.toxic ? (
           <Toxicity toxic={true}>
@@ -30,11 +30,11 @@ export const PlantCard = ({ plant }) => {
         <Name>{plant.species}</Name>
       </Div>
       <ActionBar id={plant._id} />
-    </Plant>
+    </Wrapper>
   )
 }
 
-const Plant = styled.div`
+const Wrapper = styled.div`
   background: #fff;
   height: fit-content;
   overflow: hidden;

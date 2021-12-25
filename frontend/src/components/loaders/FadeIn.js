@@ -1,7 +1,6 @@
 import React from 'react'
 import styled, { keyframes } from 'styled-components'
 
-// TODO: wrap more components with this
 export const FadeIn = ({ duration = 400, delay = 100, children, ...delegated }) => {
   return (
     <Wrapper
@@ -26,6 +25,8 @@ const fadeIn = keyframes`
 `
 
 const Wrapper = styled.div`
+  height: 100%;
+  width: 100%;
   @media (prefers-reduced-motion: no-preference) {
     animation-name: ${fadeIn};
     animation-fill-mode: backwards;

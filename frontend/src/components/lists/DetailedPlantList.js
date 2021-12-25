@@ -6,8 +6,8 @@ import { plantsArray } from '../../reducers/plantReducer.js'
 import { UserContext } from '../../contexts/UserContext'
 
 import styled from 'styled-components/macro'
-import background from '../../assets/monstera-bg.jpg'
 import { COLORS } from '../../GlobalStyles'
+import { FadeIn } from '../loaders/FadeIn.js'
 import { RiPlantLine } from 'react-icons/ri'
 import { FaPaw } from 'react-icons/fa'
 import { TiHeartOutline } from 'react-icons/ti'
@@ -61,9 +61,8 @@ export const DetailedPlantList = ({ title }) => {
 
   return (
     <Wrapper>
-      <Banner />
       {user && (
-        <>
+        <FadeIn>
           <Heading>
             {currentUser && user.username === currentUser.username ? (
               <>your {title}</>
@@ -183,7 +182,7 @@ export const DetailedPlantList = ({ title }) => {
               <FeaturedPlants />
             </Alert>
           )}
-        </>
+        </FadeIn>
       )}
     </Wrapper>
   )
@@ -194,12 +193,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  width: 100%;
-`
-
-const Banner = styled.div`
-  background: url(${background}) center center / cover;
-  height: 120px;
   width: 100%;
 `
 

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { usePlantsFetcher, useUsersFetcher } from './utilities/fetch'
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import background from './assets/monstera-bg.jpg'
 import { Navbar } from './components/Navbar'
 import { Homepage } from './pages/Homepage'
 import { Browse } from './pages/Browse'
@@ -33,6 +34,7 @@ export const App = () => {
       <GlobalStyles />
       <Navbar />
       <Main>
+        <Banner />
         <Switch>
           <Route exact path='/'>
             <Homepage />
@@ -80,13 +82,19 @@ export const App = () => {
   )
 }
 
-// adjusts width of main content to account for responsive navbar
-const Main = styled.main`
+const Main = styled.div`
   overscroll-behavior: none;
+  min-height: 100vh;
   width: calc(100vw - 240px);
   display: flex;
   flex-direction: column;
   @media (max-width: 999px) {
     width: calc(100vw - 92px);
   }
+`
+
+const Banner = styled.div`
+  background: url(${background}) center center / cover;
+  height: 120px;
+  width: 100%;
 `

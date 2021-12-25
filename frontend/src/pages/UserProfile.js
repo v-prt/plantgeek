@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux'
 import { usersArray } from '../reducers/userReducer'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
-import background from '../assets/monstera-bg.jpg'
+import { FadeIn } from '../components/loaders/FadeIn.js'
 import placeholder from '../assets/avatar-placeholder.png'
 import moment from 'moment'
+
 import { SimplePlantList } from '../components/lists/SimplePlantList'
 import { Friends } from '../components/Friends'
 
@@ -26,43 +27,38 @@ export const UserProfile = () => {
 
   return (
     <Wrapper>
-      <Banner />
       {user && (
-        <Div>
-          <Avatar src={user.image ? user.image[0] : placeholder} alt='' />
-          <Name>{user.username}</Name>
-          <Joined>Member since {moment(user.joined).format('ll')}</Joined>
-          <Lists>
-            {user.collection && user.collection.length > 0 && (
-              <SimplePlantList username={username} list={user.collection} title='collection' />
-            )}
-            {user.favorites && user.favorites.length > 0 && (
-              <SimplePlantList username={username} list={user.favorites} title='favorites' />
-            )}
-            {user.wishlist && user.wishlist.length > 0 && (
-              <SimplePlantList username={username} list={user.wishlist} title='wishlist' />
-            )}
-          </Lists>
-          <Friends />
-        </Div>
+        <FadeIn>
+          <Div>
+            <Avatar src={user.image ? user.image[0] : placeholder} alt='' />
+            <h1>{user.username}</h1>
+            <p>Member since {moment(user.joined).format('ll')}</p>
+            <Lists>
+              {user.collection && user.collection.length > 0 && (
+                <SimplePlantList username={username} list={user.collection} title='collection' />
+              )}
+              {user.favorites && user.favorites.length > 0 && (
+                <SimplePlantList username={username} list={user.favorites} title='favorites' />
+              )}
+              {user.wishlist && user.wishlist.length > 0 && (
+                <SimplePlantList username={username} list={user.wishlist} title='wishlist' />
+              )}
+            </Lists>
+            <Friends />
+          </Div>
+        </FadeIn>
       )}
     </Wrapper>
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.main`
   background: ${COLORS.dark};
   color: #f2f2f2;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-`
-
-const Banner = styled.div`
-  background: url(${background}) center center / cover;
-  height: 120px;
-  width: 100%;
 `
 
 const Div = styled.div`
@@ -81,10 +77,6 @@ const Avatar = styled.img`
   border: 5px solid ${COLORS.light};
   padding: 5px;
 `
-
-const Name = styled.h1``
-
-const Joined = styled.p``
 
 const Lists = styled.section`
   width: 85%;
