@@ -20,6 +20,8 @@ export const FeaturedPlants = () => {
 
   // SETS FEATURED PLANTS (random plants change each time you load)
   useEffect(() => {
+    // if (plants) {
+    //   console.log('setting featured plants')
     const getRandomPlant = () => {
       const randomIndex = Math.floor(Math.random() * plants.length)
       const randomPlant = plants[randomIndex]
@@ -38,6 +40,7 @@ export const FeaturedPlants = () => {
     } else {
       setFeaturedPlants(plants)
     }
+    // }
   }, [plants])
 
   return (
@@ -45,11 +48,6 @@ export const FeaturedPlants = () => {
       {featuredPlants && featuredPlants.length > 0 ? (
         <FadeIn>
           <Heading>featured houseplants</Heading>
-          <Plants>
-            {featuredPlants.map((plant) => {
-              return <PlantCard key={plant._id} plant={plant} />
-            })}
-          </Plants>
           <div className='info-box'>
             <Info>
               <Icon>
@@ -73,6 +71,11 @@ export const FeaturedPlants = () => {
               <p>Add it to your wishlist</p>
             </Info>
           </div>
+          <Plants>
+            {featuredPlants.map((plant) => {
+              return <PlantCard key={plant._id} plant={plant} />
+            })}
+          </Plants>
           <Link to='/browse'>
             <BrowseLink>
               browse more <RiArrowRightSFill />
@@ -97,12 +100,12 @@ const Wrapper = styled.section`
   .info-box {
     background: #fff;
     border: 1px dotted #ccc;
-    border-radius: 10px;
+    border-radius: 20px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-around;
-    margin: 20px 60px;
+    margin: 20px 75px;
   }
 `
 

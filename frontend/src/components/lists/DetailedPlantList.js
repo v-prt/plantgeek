@@ -75,9 +75,11 @@ export const DetailedPlantList = ({ title }) => {
             <Plants>
               {user &&
                 userPlants &&
+                userPlants.length > 0 &&
                 userPlants.map((plant) => {
+                  /* FIXME: 50/50 chance of warning "reading _id of undefined" */
                   return (
-                    <Plant key={plant?._id}>
+                    <Plant key={plant._id}>
                       <Div>
                         {plant?.toxic ? (
                           <Toxicity toxic={true}>
