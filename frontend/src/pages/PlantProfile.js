@@ -204,20 +204,18 @@ const Wrapper = styled.main`
 `
 
 const Div = styled.div`
-  width: 100%;
+  width: 80%;
   position: relative;
   top: -70px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  margin: auto;
   .plant-details-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 30px;
+    margin-bottom: 50px;
     .image-wrapper {
-      height: 300px;
-      width: 300px;
+      height: 500px;
+      width: 500px;
       border-radius: 50%;
       display: grid;
       place-items: center;
@@ -229,7 +227,7 @@ const Div = styled.div`
       max-width: 500px;
       h1 {
         line-height: 1.5;
-        margin-top: 30px;
+        margin-top: 100px;
       }
       .latin-name {
         color: #666;
@@ -249,7 +247,7 @@ const Image = styled.img`
 `
 
 const ResponsiveDiv = styled.div`
-  width: 80%;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
