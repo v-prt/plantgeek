@@ -34,14 +34,14 @@ export const Browse = () => {
   // GETS ALL TYPES OF PLANTS AND SORTS ALPHABETICALLY
   const [types, setTypes] = useState([])
   useEffect(() => {
-    let tempArr = []
+    let genera = []
     plants.forEach((plant) => {
       // skip genus/type if already added to array
-      if (!tempArr.includes(plant.genus)) {
-        tempArr.push(plant.genus)
+      if (!genera.includes(plant.genus)) {
+        genera.push(plant.genus)
       }
     })
-    setTypes(tempArr)
+    setTypes(genera)
   }, [plants])
   types.sort()
 
@@ -59,13 +59,13 @@ export const Browse = () => {
       setFilteredPlants(plants.filter((plant) => plant.toxic === false))
       setSelectedType('nontoxic')
     } else {
-      let tempArr = []
+      let foundPlants = []
       plants.forEach((plant) => {
         if (plant.genus === type) {
-          tempArr.push(plant)
+          foundPlants.push(plant)
         }
       })
-      setFilteredPlants(tempArr)
+      setFilteredPlants(foundPlants)
       setSelectedType(type)
     }
   }
@@ -239,7 +239,6 @@ const Results = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   padding: 10px 0;
-  margin: auto;
   @media (max-width: 1000px) {
     width: 100%;
   }

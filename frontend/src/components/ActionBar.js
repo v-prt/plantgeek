@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
 import { plantsArray } from '../reducers/plantReducer'
 import { requestUsers, receiveUsers } from '../actions.js'
@@ -15,6 +16,9 @@ export const ActionBar = ({ id }) => {
   const { getUser, currentUser } = useContext(UserContext)
   const plants = useSelector(plantsArray)
   const [plant, setPlant] = useState(undefined)
+  const [inCollection, setInCollection] = useState(false)
+  const [inFavorites, setInFavorites] = useState(false)
+  const [inWishlist, setInWishlist] = useState(false)
   // FIXME: need to improve loading state of action buttons (don't use set timeout)
   const [clicked1, setClicked1] = useState(false)
   const [clicked2, setClicked2] = useState(false)
@@ -27,6 +31,14 @@ export const ActionBar = ({ id }) => {
       setPlant(undefined)
     }
   }, [plants, id])
+
+  useEffect(() => {
+    if (currentUser && plant) {
+      setInCollection(currentUser.collection.find((id) => id === plant._id))
+      setInFavorites(currentUser.favorites.find((id) => id === plant._id))
+      setInWishlist(currentUser.wishlist.find((id) => id === plant._id))
+    }
+  }, [currentUser, plant])
 
   const handleList = (list) => {
     let data
@@ -49,8 +61,9 @@ export const ActionBar = ({ id }) => {
       }, 3000)
       data = { wishlist: plant._id }
     }
-    if (list && list.find((el) => el === plant._id)) {
+    if (list && list.find((id) => id === plant._id)) {
       // REMOVES PLANT
+      // FIXME: use axios
       fetch(`/${currentUser.username}/remove`, {
         method: 'PUT',
         body: JSON.stringify(data),
@@ -61,15 +74,12 @@ export const ActionBar = ({ id }) => {
       }).then((res) => {
         if (res.status === 200) {
           console.log(`Removed ${plant.species} from user's list!`)
+          // FIXME: updating store causes plants to reload (use react query instead?)
           dispatch(requestUsers())
-          fetch('/users')
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data))
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+          axios
+            .get('/users')
+            .then((res) => dispatch(receiveUsers(res.data.data)))
+            .catch((err) => console.log(err))
           getUser(currentUser._id)
         } else if (res.status === 404) {
           console.log('Something went wrong')
@@ -77,6 +87,7 @@ export const ActionBar = ({ id }) => {
       })
     } else {
       // ADDS PLANT
+      // FIXME: use axios
       fetch(`/${currentUser.username}/add`, {
         method: 'PUT',
         body: JSON.stringify(data),
@@ -87,15 +98,12 @@ export const ActionBar = ({ id }) => {
       }).then((res) => {
         if (res.status === 200) {
           console.log(`Added ${plant.species} to user's list!`)
+          // FIXME: updating store causes plants to reload (use react query instead?)
           dispatch(requestUsers())
-          fetch('/users')
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data))
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+          axios
+            .get('/users')
+            .then((res) => dispatch(receiveUsers(res.data.data)))
+            .catch((err) => console.log(err))
           getUser(currentUser._id)
         } else if (res.status === 404) {
           console.log('Something went wrong')
@@ -108,29 +116,24 @@ export const ActionBar = ({ id }) => {
     <>
       {currentUser && plant && (
         <Wrapper>
-          <>
-            {/* FIXME: change action buttons into checkboxes? need to fix issue with featured/filtered plants list reloading after action */}
-            <Action
-              onClick={() => handleList(currentUser.collection)}
-              disabled={clicked1}
-              added={
-                currentUser.collection && currentUser.collection.find((el) => el === plant._id)
-              }>
-              <RiPlantLine />
-            </Action>
-            <Action
-              onClick={() => handleList(currentUser.favorites)}
-              disabled={clicked2}
-              added={currentUser.favorites && currentUser.favorites.find((el) => el === plant._id)}>
-              <TiHeartOutline />
-            </Action>
-            <Action
-              onClick={() => handleList(currentUser.wishlist)}
-              disabled={clicked3}
-              added={currentUser.wishlist && currentUser.wishlist.find((el) => el === plant._id)}>
-              <AiOutlineStar />
-            </Action>
-          </>
+          <Action
+            onClick={() => handleList(currentUser.collection)}
+            disabled={clicked1}
+            added={inCollection}>
+            <RiPlantLine />
+          </Action>
+          <Action
+            onClick={() => handleList(currentUser.favorites)}
+            disabled={clicked2}
+            added={inFavorites}>
+            <TiHeartOutline />
+          </Action>
+          <Action
+            onClick={() => handleList(currentUser.wishlist)}
+            disabled={clicked3}
+            added={inWishlist}>
+            <AiOutlineStar />
+          </Action>
         </Wrapper>
       )}
     </>
@@ -156,10 +159,8 @@ const Action = styled.button`
   border-radius: 50%;
   height: 30px;
   width: 30px;
-  padding-top: 5px;
-  display: flex;
-  align-content: center;
-  justify-content: center;
+  display: grid;
+  place-content: center;
   font-size: 1.3rem;
   &:hover {
     background: ${COLORS.light};

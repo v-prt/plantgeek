@@ -96,5 +96,6 @@ const addComment = async (req, res) => {
 }
 
 // TODO: (DELETE) REMOVE A PLANT
+// will need to remove from users' lists or add a check in case plant data is missing
 
 module.exports = { createPlant, getPlants, getPlant, addComment }

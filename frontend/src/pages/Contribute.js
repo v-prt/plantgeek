@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
+import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
 import { UserContext } from '../contexts/UserContext'
@@ -12,7 +13,7 @@ import { Ellipsis } from '../components/loaders/Ellipsis'
 import checkmark from '../assets/checkmark.svg'
 import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
 import { ImCross } from 'react-icons/im'
-import maranta from '../assets/maranta.jpeg'
+import monstera from '../assets/monstera.jpeg'
 
 import { PlantCard } from '../components/PlantCard'
 
@@ -97,14 +98,10 @@ export const Contribute = () => {
   useEffect(() => {
     if (newPlant) {
       dispatch(requestPlants())
-      fetch('/plants')
-        .then((res) => res.json())
-        .then((json) => {
-          dispatch(receivePlants(json.data))
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      axios
+        .get('/plants')
+        .then((res) => dispatch(receivePlants(res.data.data)))
+        .catch((err) => console.log(err))
     }
   }, [dispatch, newPlant])
 
@@ -120,12 +117,14 @@ export const Contribute = () => {
           formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
           // FIXME: Moderation parameter is not allowed when using unsigned upload
           // formData.append('moderation', 'manual')
+          // FIXME: use axios
           const response = await fetch(cloudinaryUrl, {
             method: 'POST',
             body: formData,
           })
           const cloudinaryResponse = await response.json()
           // submit data to mongodb
+          // FIXME: use axios
           fetch('/plants', {
             method: 'POST',
             body: JSON.stringify({
@@ -157,6 +156,7 @@ export const Contribute = () => {
                 // console.log(data.data.ops[0])
                 console.log('New plant successfully added to database.')
                 setNewPlant(data.data.ops[0])
+                // FIXME: form reset not working properly (use formik)
                 // reset form and clear state
                 document.getElementById('plant-submission-form').reset()
                 setSpecies('')
@@ -237,6 +237,19 @@ export const Contribute = () => {
                 onChange={(ev) => setGenus(ev.target.value.toLowerCase())}
               />
             </div>
+            {/* TODO: common name */}
+            {/* <div className='form-group text'>
+              <label htmlFor='common-name'>
+                AKA <span className='info-text'>(common name, if applicable)</span>
+              </label>
+              <input
+                required
+                type='text'
+                id='common-name'
+                placeholder='e.g. Swiss cheese plant'
+                onChange={(ev) => setCommonName(ev.target.value.toLowerCase())}
+              />
+            </div> */}
             <div className='form-group'>
               <label htmlFor='light'>Light</label>
               <select required name='light' id='light' onChange={(ev) => setLight(ev.target.value)}>
@@ -320,20 +333,26 @@ export const Contribute = () => {
               {/* TODO:
               - set up signed uploads with cloudinary
               - set up a way to approve images before saving to db (cloudinary analysis using amazon rekognition, must be plant and pass guidelines, no offensive content) */}
-              <p>
-                Upload image <span className='info-text'>(please follow our guidelines)</span>
-              </p>
-              <ul className='guidelines'>
-                <li key={1}>houseplants only</li>
-                <li key={2}>1:1 aspect ratio (square)</li>
-                <li key={3}>display the whole plant in a plain pot</li>
-                <li key={4}>white background</li>
-                <li>well lit & in focus (no blurry images)</li>
-                <li>full color (no filters)</li>
-                <li>max 1 image (up to 1mb)</li>
-              </ul>
-              <p className='info-text'>Example:</p>
-              <img style={{ height: '200px' }} src={maranta} alt='' />
+              <div className='guidelines'>
+                <div>
+                  <p>
+                    Upload image <span className='info-text'>(please follow our guidelines)</span>
+                  </p>
+                  <ul>
+                    <li key={1}>houseplants only</li>
+                    <li key={2}>1:1 aspect ratio (square)</li>
+                    <li key={3}>display the whole plant in a plain pot</li>
+                    <li key={4}>white background</li>
+                    <li>well lit & in focus (no blurry images)</li>
+                    <li>full color (no filters)</li>
+                    <li>max 1 image (up to 1mb)</li>
+                  </ul>
+                </div>
+                <div>
+                  <p className='info-text'>Example:</p>
+                  <img style={{ height: '200px' }} src={monstera} alt='' />
+                </div>
+              </div>
               <DropBox {...getRootProps()} isDragAccept={isDragAccept} isDragReject={isDragReject}>
                 <input {...getInputProps()} />
                 <div className='icon'>
@@ -514,8 +533,12 @@ const DropZone = styled.div`
   padding: 15px 0;
   border-bottom: 1px solid #fff;
   .guidelines {
-    font-size: 0.9rem;
-    list-style: disc inside;
+    display: flex;
+    justify-content: space-between;
+    ul {
+      font-size: 0.9rem;
+      list-style: disc inside;
+    }
   }
   .preview-container {
     display: flex;

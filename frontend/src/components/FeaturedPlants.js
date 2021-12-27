@@ -20,24 +20,27 @@ export const FeaturedPlants = () => {
 
   // SETS FEATURED PLANTS (random plants change each time you load)
   useEffect(() => {
+    // if (plants) {
+    //   console.log('setting featured plants')
     const getRandomPlant = () => {
       const randomIndex = Math.floor(Math.random() * plants.length)
       const randomPlant = plants[randomIndex]
       return randomPlant
     }
     // only run function if there are more than 6 plants in db
-    let tempArray = plants.length > 6 ? [] : undefined
-    if (tempArray) {
-      while (tempArray.length < 6) {
+    let randomPlants = plants.length > 6 ? [] : undefined
+    if (randomPlants) {
+      while (randomPlants.length < 6) {
         let randomPlant = getRandomPlant(plants)
-        if (!tempArray.find((plant) => plant.species === randomPlant.species)) {
-          tempArray.push(randomPlant)
+        if (!randomPlants.find((plant) => plant.species === randomPlant.species)) {
+          randomPlants.push(randomPlant)
         }
       }
-      setFeaturedPlants(tempArray)
+      setFeaturedPlants(randomPlants)
     } else {
       setFeaturedPlants(plants)
     }
+    // }
   }, [plants])
 
   return (
@@ -45,11 +48,6 @@ export const FeaturedPlants = () => {
       {featuredPlants && featuredPlants.length > 0 ? (
         <FadeIn>
           <Heading>featured houseplants</Heading>
-          <Plants>
-            {featuredPlants.map((plant) => {
-              return <PlantCard key={plant._id} plant={plant} />
-            })}
-          </Plants>
           <div className='info-box'>
             <Info>
               <Icon>
@@ -73,6 +71,11 @@ export const FeaturedPlants = () => {
               <p>Add it to your wishlist</p>
             </Info>
           </div>
+          <Plants>
+            {featuredPlants.map((plant) => {
+              return <PlantCard key={plant._id} plant={plant} />
+            })}
+          </Plants>
           <Link to='/browse'>
             <BrowseLink>
               browse more <RiArrowRightSFill />
@@ -97,12 +100,12 @@ const Wrapper = styled.section`
   .info-box {
     background: #fff;
     border: 1px dotted #ccc;
-    border-radius: 10px;
+    border-radius: 20px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-around;
-    margin: 20px 60px;
+    margin: 20px 75px;
   }
 `
 

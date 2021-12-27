@@ -46,11 +46,14 @@ export const DetailedPlantList = ({ title }) => {
   const [userPlants, setUserPlants] = useState(undefined)
   useEffect(() => {
     if (plants && list && list.length > 0) {
-      let tempArr = []
+      let foundPlants = []
       list.forEach((id) => {
-        tempArr.push(plants.find((plant) => plant._id === id))
+        // don't include IDs that aren't found in plant db
+        if (plants.find((plant) => plant._id === id)) {
+          foundPlants.push(plants.find((plant) => plant._id === id))
+        } else return
       })
-      setUserPlants(tempArr)
+      setUserPlants(foundPlants)
     } else {
       setUserPlants(undefined)
     }
@@ -75,7 +78,9 @@ export const DetailedPlantList = ({ title }) => {
             <Plants>
               {user &&
                 userPlants &&
+                userPlants.length > 0 &&
                 userPlants.map((plant) => {
+                  /* FIXME: 50/50 chance of warning "reading _id of undefined" */
                   return (
                     <Plant key={plant?._id}>
                       <Div>

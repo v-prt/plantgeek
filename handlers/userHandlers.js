@@ -257,6 +257,7 @@ const removeFromUser = async (req, res) => {
 }
 
 // TODO: (DELETE) REMOVE A USER
+// will need to remove from other users' friends or add a check in case friend user data is missing
 
 module.exports = {
   createUser,

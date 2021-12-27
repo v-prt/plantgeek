@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
 import { useSelector, useDispatch } from 'react-redux'
 import { usersArray } from '../reducers/userReducer.js'
@@ -38,11 +39,12 @@ export const Friends = () => {
   const [friends, setFriends] = useState(undefined)
   useEffect(() => {
     if (user && user.friends && user.friends.length > 0) {
-      let tempArr = []
+      let foundFriends = []
       user.friends.forEach((friend) => {
-        tempArr.push(users.find((user) => user.username === friend))
+        // FIXME: don't include friends that aren't found in user db
+        foundFriends.push(users.find((user) => user.username === friend))
       })
-      setFriends(tempArr)
+      setFriends(foundFriends)
     } else {
       setFriends(undefined)
     }
@@ -58,18 +60,18 @@ export const Friends = () => {
         return randomUser
       }
       // only run function when users length > 0
-      let tempArray = users.length > 0 ? [] : undefined
-      if (tempArray) {
-        while (tempArray.length < 3) {
+      let randomUsers = users.length > 0 ? [] : undefined
+      if (randomUsers) {
+        while (randomUsers.length < 3) {
           let randomUser = getRandomUser(users)
-          if (!tempArray.find((user) => user.username === randomUser.username)) {
-            tempArray.push(randomUser)
+          if (!randomUsers.find((user) => user.username === randomUser.username)) {
+            randomUsers.push(randomUser)
           }
         }
       }
-      setSuggestedFriends(tempArray)
+      setSuggestedFriends(randomUsers)
     }
-    // FIXME: filter out current friends
+    // FIXME: don't include current friends
     else
       setSuggestedFriends(
         users.filter(
@@ -83,6 +85,7 @@ export const Friends = () => {
   const addFriend = () => {
     setLoading(true)
     // ADDS OTHER USER TO CURRENT USER'S FRIENDS LIST
+    // FIXME: use axios
     fetch(`/${currentUser.username}/add`, {
       method: 'PUT',
       body: JSON.stringify({
@@ -95,7 +98,9 @@ export const Friends = () => {
     }).then((res) => {
       if (res.status === 200) {
         // ADDS CURRENT USER TO OTHER USER'S FRIENDS LIST
+        // FIXME: use axios
         fetch(`/${user.username}/add`, {
+          // FIXME: save user ID instead of username
           method: 'PUT',
           body: JSON.stringify({
             friends: currentUser.username,
@@ -108,14 +113,10 @@ export const Friends = () => {
           if (res.status === 200) {
             console.log(`${user.username} and ${currentUser.username} are now friends!`)
             dispatch(requestUsers())
-            fetch('/users')
-              .then((res) => res.json())
-              .then((json) => {
-                dispatch(receiveUsers(json.data))
-              })
-              .catch((err) => {
-                console.log(err)
-              })
+            axios
+              .get('/users')
+              .then((res) => dispatch(receiveUsers(res.data.data)))
+              .catch((err) => console.log(err))
             getUser(currentUser._id)
             setTimeout(() => {
               setLoading(false)
@@ -136,6 +137,7 @@ export const Friends = () => {
   const removeFriend = () => {
     setLoading(true)
     // REMOVES OTHER USER FROM CURRENT USER'S FRIENDS LIST
+    // FIXME: use axios
     fetch(`/${currentUser.username}/remove`, {
       method: 'PUT',
       body: JSON.stringify({
@@ -148,6 +150,7 @@ export const Friends = () => {
     }).then((res) => {
       if (res.status === 200) {
         // REMOVES CURRENT USER FROM OTHER USER'S FRIENDS LIST
+        // FIXME: use axios
         fetch(`/${user.username}/remove`, {
           method: 'PUT',
           body: JSON.stringify({
@@ -161,14 +164,10 @@ export const Friends = () => {
           if (res.status === 200) {
             console.log(`${user.username} and ${currentUser.username} are not friends anymore!`)
             dispatch(requestUsers())
-            fetch('/users')
-              .then((res) => res.json())
-              .then((json) => {
-                dispatch(receiveUsers(json.data))
-              })
-              .catch((err) => {
-                console.log(err)
-              })
+            axios
+              .get('/users')
+              .then((res) => dispatch(receiveUsers(res.data.data)))
+              .catch((err) => console.log(err))
             getUser(currentUser._id)
             setTimeout(() => {
               setLoading(false)

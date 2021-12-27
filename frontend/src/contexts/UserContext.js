@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react'
+import axios from 'axios'
 
 export const UserContext = createContext(null)
 export const UserProvider = ({ children }) => {
@@ -13,6 +14,7 @@ export const UserProvider = ({ children }) => {
     setIncorrectUsername(false)
     setIncorrectPassword(false)
     try {
+      // FIXME: use axios
       await fetch('/login', {
         method: 'POST',
         body: JSON.stringify({
@@ -59,6 +61,7 @@ export const UserProvider = ({ children }) => {
   // VERIFY TOKEN AND SET CURRENT USER
   const verifyToken = async (token) => {
     try {
+      // FIXME: use axios
       fetch('/token', {
         method: 'POST',
         body: JSON.stringify({
@@ -92,24 +95,10 @@ export const UserProvider = ({ children }) => {
 
   // GET USER BY ID AND SET AS CURRENT USER
   const getUser = async (id) => {
-    try {
-      fetch(`/users/${id}`, {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          if (json.status === 200) {
-            setCurrentUser(json.data)
-          } else {
-            console.log('User not found')
-          }
-        })
-    } catch (err) {
-      console.log(err)
-    }
+    await axios
+      .get(`/users/${id}`)
+      .then((res) => setCurrentUser(res.data.data))
+      .catch((err) => console.log(err))
   }
 
   return (

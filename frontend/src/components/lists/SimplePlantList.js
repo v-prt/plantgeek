@@ -23,11 +23,14 @@ export const SimplePlantList = ({ username, list, title }) => {
   const [userPlants, setUserPlants] = useState(undefined)
   useEffect(() => {
     if (user && plants && list && list.length > 0) {
-      let tempArr = []
+      let foundPlants = []
       list.forEach((id) => {
-        tempArr.push(plants.find((plant) => plant._id === id))
+        // don't include IDs that aren't found in plant db
+        if (plants.find((plant) => plant._id === id)) {
+          foundPlants.push(plants.find((plant) => plant._id === id))
+        } else return
       })
-      setUserPlants(tempArr)
+      setUserPlants(foundPlants)
     } else {
       setUserPlants(undefined)
     }
@@ -54,15 +57,16 @@ export const SimplePlantList = ({ username, list, title }) => {
             {userPlants &&
               userPlants.map((plant) => {
                 return (
-                  <Plant key={plant._id}>
+                  <Plant key={plant?._id}>
+                    <span className='plant-num'>{plant?._id}</span>
                     <InfoLink to={`/plant-profile/${plant?._id}`}>
-                      {plant.imageUrl ? (
+                      {plant?.imageUrl ? (
                         <img src={plant.imageUrl} alt='' />
                       ) : (
                         <img className='placeholder' src={placeholder} alt='' />
                       )}
                     </InfoLink>
-                    <p className='name'>{plant.species}</p>
+                    <p className='name'>{plant?.species}</p>
                   </Plant>
                 )
               })}

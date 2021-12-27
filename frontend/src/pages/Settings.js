@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { requestUsers, receiveUsers } from '../actions.js'
 import { UserContext } from '../contexts/UserContext'
@@ -10,7 +11,7 @@ import placeholder from '../assets/avatar-placeholder.png'
 export const Settings = () => {
   const dispatch = useDispatch()
   // const history = useHistory();
-  const { currentUser } = useContext(UserContext)
+  const { getUser, currentUser } = useContext(UserContext)
 
   const [existingImage, setExistingImage] = useState(undefined)
   useEffect(() => {
@@ -28,6 +29,7 @@ export const Settings = () => {
     ev.preventDefault()
     // REMOVES EXISTING IMAGE
     if (existingImage) {
+      // FIXME: use axios
       fetch(`/${currentUser.username}/remove`, {
         method: 'PUT',
         body: JSON.stringify({ image: existingImage }),
@@ -38,20 +40,18 @@ export const Settings = () => {
       }).then((res) => {
         if (res.status === 200) {
           dispatch(requestUsers())
-          fetch('/users')
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data))
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+          axios
+            .get('/users')
+            .then((res) => dispatch(receiveUsers(res.data.data)))
+            .catch((err) => console.log(err))
+          getUser(currentUser._id)
         } else if (res.status === 404) {
           console.log('Something went wrong')
         }
       })
     }
     // ADDS NEW IMAGE
+    // FIXME: use axios
     fetch(`/${currentUser.username}/add`, {
       method: 'PUT',
       body: JSON.stringify({ image: url }),
@@ -62,14 +62,11 @@ export const Settings = () => {
     }).then((res) => {
       if (res.status === 200) {
         dispatch(requestUsers())
-        fetch('/users')
-          .then((res) => res.json())
-          .then((json) => {
-            dispatch(receiveUsers(json.data))
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+        axios
+          .get('/users')
+          .then((res) => dispatch(receiveUsers(res.data.data)))
+          .catch((err) => console.log(err))
+        getUser(currentUser._id)
       } else if (res.status === 404) {
         console.log('Something went wrong')
       }
