@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 import { useDispatch } from 'react-redux'
 import { requestPlants, receivePlants } from '../actions.js'
 import { UserContext } from '../contexts/UserContext'
@@ -33,14 +34,10 @@ export const Comments = ({ plant }) => {
         console.log(`Posted a new comment about ${plant.species}`)
         setComment('')
         dispatch(requestPlants())
-        fetch('/plants')
-          .then((res) => res.json())
-          .then((json) => {
-            dispatch(receivePlants(json.data))
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+        axios
+          .get('/plants')
+          .then((res) => dispatch(receivePlants(res.data.data)))
+          .catch((err) => console.log(err))
       } else if (res.status === 404) {
         console.log('Something went wrong')
       }

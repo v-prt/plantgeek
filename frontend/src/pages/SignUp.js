@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import axios from 'axios'
 import { Redirect, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { requestUsers, receiveUsers } from '../actions.js'
@@ -58,14 +59,10 @@ export const SignUp = () => {
   useEffect(() => {
     if (username) {
       dispatch(requestUsers())
-      fetch('/users')
-        .then((res) => res.json())
-        .then((json) => {
-          dispatch(receiveUsers(json.data))
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      axios
+        .get('/users')
+        .then((res) => dispatch(receiveUsers(res.data.data)))
+        .catch((err) => console.log(err))
     }
   }, [dispatch, username])
 
@@ -191,12 +188,12 @@ export const SignUp = () => {
                     </a>
                   </Checkbox>
                   {/* TEMPORARILY DISABLED FOR LIVE SITE */}
-                  <button type='submit' disabled>
-                    {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                  </button>
-                  {/* <button type='submit' disabled={isSubmitting}>
+                  {/* <button type='submit' disabled>
                     {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
                   </button> */}
+                  <button type='submit' disabled={isSubmitting}>
+                    {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                  </button>
                 </Form>
               )}
             </Formik>

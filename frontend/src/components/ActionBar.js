@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
 import { plantsArray } from '../reducers/plantReducer'
 import { requestUsers, receiveUsers } from '../actions.js'
@@ -74,14 +75,10 @@ export const ActionBar = ({ id }) => {
           console.log(`Removed ${plant.species} from user's list!`)
           // FIXME: updating store causes plants to reload (use react query instead?)
           dispatch(requestUsers())
-          fetch('/users')
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data))
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+          axios
+            .get('/users')
+            .then((res) => dispatch(receiveUsers(res.data.data)))
+            .catch((err) => console.log(err))
           getUser(currentUser._id)
         } else if (res.status === 404) {
           console.log('Something went wrong')
@@ -101,14 +98,10 @@ export const ActionBar = ({ id }) => {
           console.log(`Added ${plant.species} to user's list!`)
           // FIXME: updating store causes plants to reload (use react query instead?)
           dispatch(requestUsers())
-          fetch('/users')
-            .then((res) => res.json())
-            .then((json) => {
-              dispatch(receiveUsers(json.data))
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+          axios
+            .get('/users')
+            .then((res) => dispatch(receiveUsers(res.data.data)))
+            .catch((err) => console.log(err))
           getUser(currentUser._id)
         } else if (res.status === 404) {
           console.log('Something went wrong')

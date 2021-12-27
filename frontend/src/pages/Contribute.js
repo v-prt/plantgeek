@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
+import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
 import { UserContext } from '../contexts/UserContext'
@@ -97,14 +98,10 @@ export const Contribute = () => {
   useEffect(() => {
     if (newPlant) {
       dispatch(requestPlants())
-      fetch('/plants')
-        .then((res) => res.json())
-        .then((json) => {
-          dispatch(receivePlants(json.data))
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      axios
+        .get('/plants')
+        .then((res) => dispatch(receivePlants(res.data.data)))
+        .catch((err) => console.log(err))
     }
   }, [dispatch, newPlant])
 

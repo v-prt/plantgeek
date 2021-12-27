@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
 import { useSelector, useDispatch } from 'react-redux'
 import { usersArray } from '../reducers/userReducer.js'
@@ -40,10 +41,8 @@ export const Friends = () => {
     if (user && user.friends && user.friends.length > 0) {
       let foundFriends = []
       user.friends.forEach((friend) => {
-        // don't include friends that aren't found in user db
-        if (users.find((user) => user.username) === friend) {
-          foundFriends.push(users.find((user) => user.username === friend))
-        } else return
+        // FIXME: don't include friends that aren't found in user db
+        foundFriends.push(users.find((user) => user.username === friend))
       })
       setFriends(foundFriends)
     } else {
@@ -72,7 +71,7 @@ export const Friends = () => {
       }
       setSuggestedFriends(randomUsers)
     }
-    // FIXME: filter out current friends
+    // FIXME: don't include current friends
     else
       setSuggestedFriends(
         users.filter(
@@ -112,14 +111,10 @@ export const Friends = () => {
           if (res.status === 200) {
             console.log(`${user.username} and ${currentUser.username} are now friends!`)
             dispatch(requestUsers())
-            fetch('/users')
-              .then((res) => res.json())
-              .then((json) => {
-                dispatch(receiveUsers(json.data))
-              })
-              .catch((err) => {
-                console.log(err)
-              })
+            axios
+              .get('/users')
+              .then((res) => dispatch(receiveUsers(res.data.data)))
+              .catch((err) => console.log(err))
             getUser(currentUser._id)
             setTimeout(() => {
               setLoading(false)
@@ -165,14 +160,10 @@ export const Friends = () => {
           if (res.status === 200) {
             console.log(`${user.username} and ${currentUser.username} are not friends anymore!`)
             dispatch(requestUsers())
-            fetch('/users')
-              .then((res) => res.json())
-              .then((json) => {
-                dispatch(receiveUsers(json.data))
-              })
-              .catch((err) => {
-                console.log(err)
-              })
+            axios
+              .get('/users')
+              .then((res) => dispatch(receiveUsers(res.data.data)))
+              .catch((err) => console.log(err))
             getUser(currentUser._id)
             setTimeout(() => {
               setLoading(false)
