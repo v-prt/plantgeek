@@ -38,11 +38,14 @@ export const Friends = () => {
   const [friends, setFriends] = useState(undefined)
   useEffect(() => {
     if (user && user.friends && user.friends.length > 0) {
-      let tempArr = []
+      let foundFriends = []
       user.friends.forEach((friend) => {
-        tempArr.push(users.find((user) => user.username === friend))
+        // don't include friends that aren't found in user db
+        if (users.find((user) => user.username) === friend) {
+          foundFriends.push(users.find((user) => user.username === friend))
+        } else return
       })
-      setFriends(tempArr)
+      setFriends(foundFriends)
     } else {
       setFriends(undefined)
     }
@@ -58,16 +61,16 @@ export const Friends = () => {
         return randomUser
       }
       // only run function when users length > 0
-      let tempArray = users.length > 0 ? [] : undefined
-      if (tempArray) {
-        while (tempArray.length < 3) {
+      let randomUsers = users.length > 0 ? [] : undefined
+      if (randomUsers) {
+        while (randomUsers.length < 3) {
           let randomUser = getRandomUser(users)
-          if (!tempArray.find((user) => user.username === randomUser.username)) {
-            tempArray.push(randomUser)
+          if (!randomUsers.find((user) => user.username === randomUser.username)) {
+            randomUsers.push(randomUser)
           }
         }
       }
-      setSuggestedFriends(tempArray)
+      setSuggestedFriends(randomUsers)
     }
     // FIXME: filter out current friends
     else
@@ -96,6 +99,7 @@ export const Friends = () => {
       if (res.status === 200) {
         // ADDS CURRENT USER TO OTHER USER'S FRIENDS LIST
         fetch(`/${user.username}/add`, {
+          // FIXME: save user ID instead of username
           method: 'PUT',
           body: JSON.stringify({
             friends: currentUser.username,

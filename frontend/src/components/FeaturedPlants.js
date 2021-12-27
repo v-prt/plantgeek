@@ -28,15 +28,15 @@ export const FeaturedPlants = () => {
       return randomPlant
     }
     // only run function if there are more than 6 plants in db
-    let tempArray = plants.length > 6 ? [] : undefined
-    if (tempArray) {
-      while (tempArray.length < 6) {
+    let randomPlants = plants.length > 6 ? [] : undefined
+    if (randomPlants) {
+      while (randomPlants.length < 6) {
         let randomPlant = getRandomPlant(plants)
-        if (!tempArray.find((plant) => plant.species === randomPlant.species)) {
-          tempArray.push(randomPlant)
+        if (!randomPlants.find((plant) => plant.species === randomPlant.species)) {
+          randomPlants.push(randomPlant)
         }
       }
-      setFeaturedPlants(tempArray)
+      setFeaturedPlants(randomPlants)
     } else {
       setFeaturedPlants(plants)
     }
