@@ -67,6 +67,7 @@ export const SignUp = () => {
   }, [dispatch, username])
 
   const handleSignup = async (values, { setSubmitting }) => {
+    // FIXME: use axios
     await fetch('/users', {
       method: 'POST',
       body: JSON.stringify({
@@ -188,12 +189,12 @@ export const SignUp = () => {
                     </a>
                   </Checkbox>
                   {/* TEMPORARILY DISABLED FOR LIVE SITE */}
-                  {/* <button type='submit' disabled>
-                    {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                  </button> */}
-                  <button type='submit' disabled={isSubmitting}>
+                  <button type='submit' disabled>
                     {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
                   </button>
+                  {/* <button type='submit' disabled={isSubmitting}>
+                    {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                  </button> */}
                 </Form>
               )}
             </Formik>

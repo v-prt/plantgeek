@@ -20,6 +20,7 @@ export const Comments = ({ plant }) => {
 
   const submitComment = (ev) => {
     ev.preventDefault()
+    // FIXME: use axios
     fetch(`/plants/${plant._id}/comments`, {
       method: 'PUT',
       body: JSON.stringify({

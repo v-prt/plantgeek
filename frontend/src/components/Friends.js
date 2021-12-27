@@ -85,6 +85,7 @@ export const Friends = () => {
   const addFriend = () => {
     setLoading(true)
     // ADDS OTHER USER TO CURRENT USER'S FRIENDS LIST
+    // FIXME: use axios
     fetch(`/${currentUser.username}/add`, {
       method: 'PUT',
       body: JSON.stringify({
@@ -97,6 +98,7 @@ export const Friends = () => {
     }).then((res) => {
       if (res.status === 200) {
         // ADDS CURRENT USER TO OTHER USER'S FRIENDS LIST
+        // FIXME: use axios
         fetch(`/${user.username}/add`, {
           // FIXME: save user ID instead of username
           method: 'PUT',
@@ -135,6 +137,7 @@ export const Friends = () => {
   const removeFriend = () => {
     setLoading(true)
     // REMOVES OTHER USER FROM CURRENT USER'S FRIENDS LIST
+    // FIXME: use axios
     fetch(`/${currentUser.username}/remove`, {
       method: 'PUT',
       body: JSON.stringify({
@@ -147,6 +150,7 @@ export const Friends = () => {
     }).then((res) => {
       if (res.status === 200) {
         // REMOVES CURRENT USER FROM OTHER USER'S FRIENDS LIST
+        // FIXME: use axios
         fetch(`/${user.username}/remove`, {
           method: 'PUT',
           body: JSON.stringify({

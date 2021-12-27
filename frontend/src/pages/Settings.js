@@ -29,6 +29,7 @@ export const Settings = () => {
     ev.preventDefault()
     // REMOVES EXISTING IMAGE
     if (existingImage) {
+      // FIXME: use axios
       fetch(`/${currentUser.username}/remove`, {
         method: 'PUT',
         body: JSON.stringify({ image: existingImage }),
@@ -50,6 +51,7 @@ export const Settings = () => {
       })
     }
     // ADDS NEW IMAGE
+    // FIXME: use axios
     fetch(`/${currentUser.username}/add`, {
       method: 'PUT',
       body: JSON.stringify({ image: url }),

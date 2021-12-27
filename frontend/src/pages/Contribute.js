@@ -117,12 +117,14 @@ export const Contribute = () => {
           formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
           // FIXME: Moderation parameter is not allowed when using unsigned upload
           // formData.append('moderation', 'manual')
+          // FIXME: use axios
           const response = await fetch(cloudinaryUrl, {
             method: 'POST',
             body: formData,
           })
           const cloudinaryResponse = await response.json()
           // submit data to mongodb
+          // FIXME: use axios
           fetch('/plants', {
             method: 'POST',
             body: JSON.stringify({

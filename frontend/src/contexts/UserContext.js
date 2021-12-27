@@ -14,6 +14,7 @@ export const UserProvider = ({ children }) => {
     setIncorrectUsername(false)
     setIncorrectPassword(false)
     try {
+      // FIXME: use axios
       await fetch('/login', {
         method: 'POST',
         body: JSON.stringify({
@@ -60,6 +61,7 @@ export const UserProvider = ({ children }) => {
   // VERIFY TOKEN AND SET CURRENT USER
   const verifyToken = async (token) => {
     try {
+      // FIXME: use axios
       fetch('/token', {
         method: 'POST',
         body: JSON.stringify({

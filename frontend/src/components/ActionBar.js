@@ -63,6 +63,7 @@ export const ActionBar = ({ id }) => {
     }
     if (list && list.find((id) => id === plant._id)) {
       // REMOVES PLANT
+      // FIXME: use axios
       fetch(`/${currentUser.username}/remove`, {
         method: 'PUT',
         body: JSON.stringify(data),
@@ -86,6 +87,7 @@ export const ActionBar = ({ id }) => {
       })
     } else {
       // ADDS PLANT
+      // FIXME: use axios
       fetch(`/${currentUser.username}/add`, {
         method: 'PUT',
         body: JSON.stringify(data),
