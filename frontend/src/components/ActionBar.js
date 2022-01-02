@@ -117,18 +117,21 @@ export const ActionBar = ({ id }) => {
       {currentUser && plant && (
         <Wrapper>
           <Action
+            aria-label='collect'
             onClick={() => handleList(currentUser.collection)}
             disabled={clicked1}
             added={inCollection}>
             <RiPlantLine />
           </Action>
           <Action
+            aria-label='favorite'
             onClick={() => handleList(currentUser.favorites)}
             disabled={clicked2}
             added={inFavorites}>
             <TiHeartOutline />
           </Action>
           <Action
+            aria-label='wishlist'
             onClick={() => handleList(currentUser.wishlist)}
             disabled={clicked3}
             added={inWishlist}>

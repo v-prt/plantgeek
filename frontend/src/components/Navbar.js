@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 
-import plantgeekLogo from '../assets/logo.png'
+import plantgeekLogo from '../assets/logo.webp'
 import { BiSearch, BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
 import { RiPlantLine } from 'react-icons/ri'
 import { CgProfile } from 'react-icons/cg'
@@ -110,6 +110,7 @@ const Div = styled.div`
 
 const Logo = styled.img`
   filter: invert(1);
+  height: 40px;
   width: 40px;
   margin: 10px 5px;
   @media (min-width: 1000px) {

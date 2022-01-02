@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { usePlantsFetcher, useUsersFetcher } from './utilities/fetch'
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import background from './assets/monstera-bg.jpg'
+import background from './assets/monstera-banner.webp'
 import { Navbar } from './components/Navbar'
 import { Homepage } from './pages/Homepage'
 import { Browse } from './pages/Browse'
