@@ -251,6 +251,12 @@ export const Card = styled.div`
       margin-top: 10px;
     }
     // TODO: error styling for labels & inputs (red border, red font color, smooth transitions)
+    .form-item {
+      .text-wrapper {
+        display: flex;
+        flex-direction: column;
+      }
+    }
     .text-label {
       background: ${COLORS.lightest};
       color: ${COLORS.dark};

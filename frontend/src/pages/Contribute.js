@@ -6,6 +6,10 @@ import { UserContext } from '../contexts/UserContext'
 import { plantsArray } from '../reducers/plantReducer'
 import { requestPlants, receivePlants } from '../actions.js'
 
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
+import { Text, Select, Checkbox } from '../components/forms/FormItems.js'
+
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
@@ -17,38 +21,29 @@ import monstera from '../assets/monstera.jpeg'
 
 import { PlantCard } from '../components/PlantCard'
 
-// TODO: formik
 export const Contribute = () => {
   const dispatch = useDispatch()
   // TODO: reward users with badges for approved submissions? (display # of submissions)
   const { currentUser } = useContext(UserContext)
   const plants = useSelector(plantsArray)
-  const [loading, setLoading] = useState(false)
-
-  // plant data
-  const [species, setSpecies] = useState('')
-  const [genus, setGenus] = useState('')
-  const [light, setLight] = useState('')
-  const [water, setWater] = useState('')
-  const [temperature, setTemperature] = useState('')
-  const [humidity, setHumidity] = useState('')
-  const [toxic, setToxic] = useState('')
-  const [sourceUrl, setSourceUrl] = useState('')
+  const [status, setStatus] = useState()
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  // check if plant data already exists in db to prevent duplicates
-  const [existingPlant, setExistingPlant] = useState(false)
-  useEffect(() => {
-    setExistingPlant(
-      plants.find((plant) => {
-        return plant.species === species.toLowerCase()
-      })
-    )
-  }, [plants, species])
+  const PlantSchema = Yup.object().shape({
+    species: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Required'),
+    genus: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Required'),
+    light: Yup.string().required('Required'),
+    water: Yup.string().required('Required'),
+    temperature: Yup.string().required('Required'),
+    humidity: Yup.string().required('Required'),
+    toxic: Yup.boolean(),
+    // TODO: imageUrl: Yup.string().required('Required'),
+    sourceUrl: Yup.string().required('Required'),
+  })
 
   // DROPZONE
   const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`
@@ -73,26 +68,6 @@ export const Contribute = () => {
     }
   }, [images])
 
-  // prevent form submission unless all fields have been completed
-  const [completeForm, setCompleteForm] = useState(false)
-  useEffect(() => {
-    if (
-      species &&
-      genus &&
-      light &&
-      water &&
-      temperature &&
-      humidity &&
-      toxic &&
-      images &&
-      sourceUrl
-    ) {
-      setCompleteForm(true)
-    } else {
-      setCompleteForm(false)
-    }
-  }, [species, genus, light, water, temperature, humidity, toxic, images, sourceUrl])
-
   // UPDATES STORE AFTER NEW PLANT ADDED TO DB
   const [newPlant, setNewPlant] = useState()
   useEffect(() => {
@@ -105,80 +80,73 @@ export const Contribute = () => {
     }
   }, [dispatch, newPlant])
 
-  const handleSubmit = (ev) => {
-    ev.preventDefault()
-    if (completeForm) {
-      setLoading(true)
-      if (currentUser.role === 'admin') {
-        // upload image to cloudinary via dropzone
-        images.forEach(async (image) => {
-          const formData = new FormData()
-          formData.append('file', image)
-          formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
-          // FIXME: Moderation parameter is not allowed when using unsigned upload
-          // formData.append('moderation', 'manual')
-          // FIXME: use axios
-          const response = await fetch(cloudinaryUrl, {
-            method: 'POST',
-            body: formData,
-          })
-          const cloudinaryResponse = await response.json()
-          // submit data to mongodb
-          // FIXME: use axios
-          fetch('/plants', {
-            method: 'POST',
-            body: JSON.stringify({
-              species: species,
-              genus: genus,
-              light: light,
-              water: water,
-              temperature: temperature,
-              humidity: humidity,
-              toxic: toxic === 'true' ? true : false,
-              imageUrl: cloudinaryResponse.url,
-              sourceUrl: sourceUrl,
-            }),
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          })
-            .then((res) => {
-              if (res.status === 500) {
-                // TODO: display error to user?
-                console.error('An error occured when submitting plant data.')
-                setLoading(false)
-              }
-              return res.json()
-            })
-            .then((data) => {
-              if (data) {
-                // console.log(data.data.ops[0])
-                console.log('New plant successfully added to database.')
-                setNewPlant(data.data.ops[0])
-                // FIXME: form reset not working properly (use formik)
-                // reset form and clear state
-                document.getElementById('plant-submission-form').reset()
-                setSpecies('')
-                setGenus('')
-                setLight('')
-                setWater('')
-                setTemperature('')
-                setHumidity('')
-                setToxic('')
-                setImages()
-                setSourceUrl('')
-                setLoading(false)
-                // scroll to top
-                window.scrollTo(0, 0)
-              }
-            })
-        })
-      } else {
-        // TODO:
-        console.log('not admin')
-      }
-    }
+  const handleSubmit = (values, { setSubmitting }) => {
+    console.log(values)
+    // if (currentUser.role === 'admin') {
+    //   // upload image to cloudinary via dropzone
+    //   images.forEach(async (image) => {
+    //     const formData = new FormData()
+    //     formData.append('file', image)
+    //     formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
+    //     // FIXME: Moderation parameter is not allowed when using unsigned upload
+    //     // formData.append('moderation', 'manual')
+    //     // FIXME: use axios
+    //     const response = await fetch(cloudinaryUrl, {
+    //       method: 'POST',
+    //       body: formData,
+    //     })
+    //     const cloudinaryResponse = await response.json()
+    //     // submit data to mongodb
+    //     // FIXME: use axios
+    //     await fetch('/plants', {
+    //       method: 'POST',
+    //       body: JSON.stringify({
+    //         species: species,
+    //         genus: genus,
+    //         light: light,
+    //         water: water,
+    //         temperature: temperature,
+    //         humidity: humidity,
+    //         toxic: toxic === 'true' ? true : false,
+    //         imageUrl: cloudinaryResponse.url,
+    //         sourceUrl: sourceUrl,
+    //       }),
+    //       headers: {
+    //         Accept: 'application/json',
+    //         'Content-Type': 'application/json',
+    //       },
+    //     })
+    //       .then((res) => {
+    //         if (res.status === 500) {
+    //           // TODO: display error to user?
+    //           console.error('An error occured when submitting plant data.')
+    //         }
+    //         return res.json()
+    //       })
+    //       .then((data) => {
+    //         if (data) {
+    //           // console.log(data.data.ops[0])
+    //           console.log('New plant successfully added to database.')
+    //           setNewPlant(data.data.ops[0])
+    //           // reset form and clear state
+    //           setSpecies('')
+    //           setGenus('')
+    //           setLight('')
+    //           setWater('')
+    //           setTemperature('')
+    //           setHumidity('')
+    //           setToxic('')
+    //           setImages()
+    //           setSourceUrl('')
+    //           // scroll to top
+    //           window.scrollTo(0, 0)
+    //         }
+    //       })
+    //   })
+    // } else {
+    //   // TODO:
+    //   console.log('not admin')
+    // }
   }
 
   return (
@@ -211,193 +179,133 @@ export const Contribute = () => {
               integrity of our database.
             </p>
           </section>
-          <Form id='plant-submission-form' autoComplete='off'>
+          <FormWrapper>
             <h2>Houseplant Info</h2>
-            <p className='info-text'>Note: all fields required.</p>
-            <div className='form-group text'>
-              <label htmlFor='species'>Species</label>
-              <input
-                required
-                type='text'
-                id='species'
-                placeholder='e.g. Monstera deliciosa'
-                onChange={(ev) => setSpecies(ev.target.value.toLowerCase())}
-                autoFocus
-              />
-              <Error error={existingPlant}>This plant has already been registered.</Error>
-            </div>
-            {/* TODO: choose from existing genus or input new */}
-            <div className='form-group text'>
-              <label htmlFor='genus'>Genus</label>
-              <input
-                required
-                type='text'
-                id='genus'
-                placeholder='e.g. Monstera'
-                onChange={(ev) => setGenus(ev.target.value.toLowerCase())}
-              />
-            </div>
-            {/* TODO: common name */}
-            {/* <div className='form-group text'>
-              <label htmlFor='common-name'>
-                AKA <span className='info-text'>(common name, if applicable)</span>
-              </label>
-              <input
-                required
-                type='text'
-                id='common-name'
-                placeholder='e.g. Swiss cheese plant'
-                onChange={(ev) => setCommonName(ev.target.value.toLowerCase())}
-              />
-            </div> */}
-            <div className='form-group'>
-              <label htmlFor='light'>Light</label>
-              <select required name='light' id='light' onChange={(ev) => setLight(ev.target.value)}>
-                {/* FIXME: Warning: Use the `defaultValue` or `value` props on <select> instead of setting `selected` on <option>. */}
-                <option value='DEFAULT' selected disabled>
-                  select
-                </option>
-                <option value='low to bright indirect'>low to bright indirect</option>
-                <option value='medium indirect'>medium indirect</option>
-                <option value='medium to bright indirect'>medium to bright indirect</option>
-                <option value='bright indirect'>bright indirect</option>
-              </select>
-            </div>
-            <div className='form-group'>
-              <label htmlFor='water'>Water</label>
-              <select required name='water' id='water' onChange={(ev) => setWater(ev.target.value)}>
-                <option value='DEFAULT' selected disabled>
-                  select
-                </option>
-                <option value='low'>low</option>
-                <option value='low to medium'>low to medium</option>
-                <option value='medium'>medium</option>
-                <option value='medium to high'>medium to high</option>
-                <option value='high'>high</option>
-              </select>
-            </div>
-            <div className='form-group'>
-              <label htmlFor='temperature'>Temperature</label>
-              <select
-                required
-                name='temperature'
-                id='temperature'
-                onChange={(ev) => setTemperature(ev.target.value)}>
-                <option value='DEFAULT' selected disabled>
-                  select
-                </option>
-                <option value='average'>average</option>
-                <option value='above average'>above average</option>
-              </select>
-            </div>
-            <div className='form-group'>
-              <label htmlFor='humidity'>Humidity</label>
-              <select
-                required
-                name='humidity'
-                id='humidity'
-                onChange={(ev) => setHumidity(ev.target.value)}>
-                <option value='DEFAULT' selected disabled>
-                  select
-                </option>
-                <option value='average'>average</option>
-                <option value='above average'>above average</option>
-              </select>
-            </div>
-            <div className='form-group'>
-              <p>Toxic?</p>
-              <div>
-                <input
-                  name='toxic'
-                  id='toxic'
-                  type='radio'
-                  value={true}
-                  onChange={(ev) => setToxic(ev.target.value)}
-                />
-                <label htmlFor='toxic' style={{ margin: '0 30px 0 5px' }}>
-                  Yes
-                </label>
-                <input
-                  name='toxic'
-                  id='nontoxic'
-                  type='radio'
-                  value={false}
-                  onChange={(ev) => setToxic(ev.target.value)}
-                />
-                <label htmlFor='nontoxic' style={{ marginLeft: '5px' }}>
-                  No
-                </label>
-              </div>
-            </div>
-            <DropZone>
-              {/* TODO:
+            <Formik
+              initialValues={{
+                species: '',
+                genus: '',
+                light: '',
+                water: '',
+                temperature: '',
+                humidity: '',
+                toxic: '',
+                imageUrl: '',
+                sourceUrl: '',
+              }}
+              validationSchema={PlantSchema}
+              // validateOnChange={false}
+              // validateOnBlur={false}
+              onSubmit={handleSubmit}>
+              {({ isSubmitting }) => (
+                <Form>
+                  {status && <div className='status'>{status}</div>}
+                  <Text
+                    label='Species'
+                    name='species'
+                    type='text'
+                    placeholder='e.g. Monstera deliciosa'
+                    autoFocus
+                  />
+                  {/* TODO: choose from existing genus or input new? */}
+                  <Text label='Genus' name='genus' type='text' placeholder='e.g. Monstera' />
+                  {/* TODO: common name
+                  <Text label='Common name' name='common-name' type='text' placeholder='e.g. Swiss cheese plant' /> */}
+                  <Select
+                    label='Light'
+                    name='light'
+                    type='select'
+                    options={[
+                      'low to bright indirect',
+                      'medium indirect',
+                      'medium to bright indirect',
+                      'bright indirect',
+                    ]}
+                  />
+                  <Select
+                    label='Water'
+                    name='water'
+                    type='select'
+                    options={['low', 'low to medium', 'medium', 'medium to high', 'high']}
+                  />
+                  <Select
+                    label='Temperature'
+                    name='temperature'
+                    type='select'
+                    options={['average', 'above average']}
+                  />
+                  <Select
+                    label='Humidity'
+                    name='humidity'
+                    type='select'
+                    options={['average', 'above average']}
+                  />
+                  {/* FIXME: radio instead of checkbox? */}
+                  <Checkbox name='toxic'>This plant is toxic</Checkbox>
+                  <DropZone>
+                    {/* TODO:
+                    - make this work with formik
               - set up signed uploads with cloudinary
               - set up a way to approve images before saving to db (cloudinary analysis using amazon rekognition, must be plant and pass guidelines, no offensive content) */}
-              <div className='guidelines'>
-                <div>
-                  <p>
-                    Upload image <span className='info-text'>(please follow our guidelines)</span>
-                  </p>
-                  <ul>
-                    <li key={1}>houseplants only</li>
-                    <li key={2}>1:1 aspect ratio (square)</li>
-                    <li key={3}>display the whole plant in a plain pot</li>
-                    <li key={4}>white background</li>
-                    <li>well lit & in focus (no blurry images)</li>
-                    <li>full color (no filters)</li>
-                    <li>max 1 image (up to 1mb)</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className='info-text'>Example:</p>
-                  <img style={{ height: '200px' }} src={monstera} alt='' />
-                </div>
-              </div>
-              <DropBox {...getRootProps()} isDragAccept={isDragAccept} isDragReject={isDragReject}>
-                <input {...getInputProps()} />
-                <div className='icon'>
-                  {isDragAccept && <RiImageAddFill />}
-                  {isDragReject && <ImCross />}
-                  {!isDragActive && <RiImageAddLine />}
-                </div>
-              </DropBox>
-              <div className='preview-container'>
-                {images &&
-                  images.map((image) => (
-                    <div className='thumbnail' key={image.name}>
-                      <div className='thumbnail-inner'>
-                        <img src={image.preview} alt={image.name} />
+                    <div className='guidelines-wrapper'>
+                      <div className='guidelines'>
+                        <p>
+                          Upload image{' '}
+                          <span className='info-text'>(please follow our guidelines)</span>
+                        </p>
+                        <ul>
+                          <li key={1}>houseplants only</li>
+                          <li key={2}>1:1 aspect ratio (square)</li>
+                          <li key={3}>display the whole plant in a plain pot</li>
+                          <li key={4}>white background</li>
+                          <li>well lit & in focus (no blurry images)</li>
+                          <li>full color (no filters)</li>
+                          <li>max 1 image (up to 1mb)</li>
+                        </ul>
+                      </div>
+                      <div className='example'>
+                        <p className='info-text'>Example:</p>
+                        <img style={{ height: '200px' }} src={monstera} alt='' />
                       </div>
                     </div>
-                  ))}
-              </div>
-            </DropZone>
-            {/* TODO: accept multiple source links? */}
-            <div className='form-group text'>
-              <label htmlFor='source'>Source</label>
-              <input
-                required
-                type='url'
-                id='source'
-                placeholder='Insert URL'
-                onChange={(ev) => setSourceUrl(ev.target.value)}
-              />
-            </div>
-            <Button
-              type='submit'
-              onClick={handleSubmit}
-              disabled={!completeForm || existingPlant || loading}>
-              {loading ? <Ellipsis /> : 'SUBMIT'}
-            </Button>
-          </Form>
-          {/* TODO: background/decorative image */}
+                    <DropBox
+                      {...getRootProps()}
+                      isDragAccept={isDragAccept}
+                      isDragReject={isDragReject}>
+                      <input {...getInputProps()} name='images' />
+                      <div className='icon'>
+                        {isDragAccept && <RiImageAddFill />}
+                        {isDragReject && <ImCross />}
+                        {!isDragActive && <RiImageAddLine />}
+                      </div>
+                    </DropBox>
+                    <div className='preview-container'>
+                      {images &&
+                        images.map((image) => (
+                          <div className='thumbnail' key={image.name}>
+                            <div className='thumbnail-inner'>
+                              <img src={image.preview} alt={image.name} />
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </DropZone>
+                  {/* TODO: accept multiple source links? */}
+                  <Text label='Source' name='sourceUrl' type='text' placeholder='Insert URL' />
+                  <button type='submit' disabled={isSubmitting}>
+                    {isSubmitting ? <Ellipsis /> : 'SUBMIT'}
+                  </button>
+                </Form>
+              )}
+            </Formik>
+          </FormWrapper>
+          {/* TODO: background/decorative image? */}
         </div>
       </FadeIn>
     </Wrapper>
   )
 }
 
-// TODO: cleanup css code
 const Wrapper = styled.main`
   .content {
     display: flex;
@@ -447,7 +355,7 @@ const Heading = styled.h1`
   border-bottom: 3px solid ${COLORS.light};
 `
 
-const Form = styled.form`
+const FormWrapper = styled.div`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -457,15 +365,32 @@ const Form = styled.form`
   margin: 30px 0;
   padding: 30px;
   border-radius: 20px;
-  .form-group {
-    width: 80%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 1px solid #fff;
-    &:last-child {
-      border: none;
+  form {
+    .form-item {
+      padding: 15px 0;
+      border-bottom: 1px solid #fff;
+      &:last-child {
+        border: none;
+      }
+    }
+    .text-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+    .select-wrapper {
+      display: flex;
+      justify-content: space-between;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      white-space: pre;
+      a {
+        text-decoration: underline;
+      }
+    }
+    .checkbox-input {
+      margin-right: 10px;
     }
     input,
     select {
@@ -476,7 +401,6 @@ const Form = styled.form`
       transition: 0.2s ease-in-out;
       &:focus {
         border: 2px solid ${COLORS.light};
-        /* TODO: improve focus style of radio buttons (use a custom styled span?) */
         &:not([type='radio']) {
           outline: none;
         }
@@ -485,59 +409,48 @@ const Form = styled.form`
         font-style: italic;
       }
     }
-    &.text {
-      flex-direction: column;
-      label {
-        align-self: flex-start;
+
+    .info-text {
+      color: #666;
+      font-style: italic;
+      font-size: 0.8rem;
+    }
+    .error {
+      color: #ff0000;
+      font-size: 0.8rem;
+    }
+    button {
+      background: ${COLORS.darkest};
+      color: ${COLORS.lightest};
+      height: 50px;
+      margin: 30px 0;
+      border-radius: 15px;
+      padding: 10px;
+      &:hover {
+        background: ${COLORS.medium};
       }
-      input {
-        width: 100%;
+      &:focus {
+        background: ${COLORS.medium};
+      }
+      &:disabled:hover {
+        background: ${COLORS.darkest};
       }
     }
-  }
-  .info-text {
-    color: #666;
-    font-style: italic;
-    font-size: 0.8rem;
-  }
-`
-
-const Error = styled.p`
-  visibility: ${(props) => (props.error ? 'visible' : 'hidden')};
-  max-height: ${(props) => (props.error ? '100px' : '0')};
-  opacity: ${(props) => (props.error ? '1' : '0')};
-  color: #ff0000;
-  text-align: center;
-  transition: 0.2s ease-in-out;
-`
-
-const Button = styled.button`
-  background: ${COLORS.darkest};
-  color: ${COLORS.lightest};
-  margin: 30px 0;
-  border-radius: 15px;
-  padding: 10px;
-  &:hover {
-    background: ${COLORS.medium};
-  }
-  &:focus {
-    background: ${COLORS.medium};
-  }
-  &:disabled:hover {
-    background: ${COLORS.darkest};
   }
 `
 
 const DropZone = styled.div`
-  width: 80%;
   padding: 15px 0;
   border-bottom: 1px solid #fff;
-  .guidelines {
+  .guidelines-wrapper {
     display: flex;
     justify-content: space-between;
-    ul {
-      font-size: 0.9rem;
-      list-style: disc inside;
+    .guidelines {
+      margin-right: 50px;
+      ul {
+        font-size: 0.9rem;
+        list-style: disc inside;
+      }
     }
   }
   .preview-container {
