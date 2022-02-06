@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { usePlantsFetcher, useUsersFetcher } from './utilities/fetch'
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import background from './assets/monstera-bg.jpg'
+import background from './assets/monstera-banner.webp'
 import { Navbar } from './components/Navbar'
 import { Homepage } from './pages/Homepage'
 import { Browse } from './pages/Browse'
@@ -14,7 +14,6 @@ import { Settings } from './pages/Settings'
 import { Contribute } from './pages/Contribute'
 import { PlantProfile } from './pages/PlantProfile'
 import { UserProfile } from './pages/UserProfile'
-import { DetailedPlantList } from './components/lists/DetailedPlantList'
 import { Footer } from './components/Footer'
 
 import styled from 'styled-components/macro'
@@ -33,7 +32,7 @@ export const App = () => {
     <BrowserRouter>
       <GlobalStyles />
       <Navbar />
-      <Main>
+      <Body>
         <Banner />
         <Switch>
           <Route exact path='/'>
@@ -63,33 +62,38 @@ export const App = () => {
           <Route path='/user-profile/:username'>
             <UserProfile />
           </Route>
-          <Route path='/user-collection/:username'>
-            <DetailedPlantList title='collection' />
-          </Route>
-          <Route path='/user-favorites/:username'>
-            <DetailedPlantList title='favorites' />
-          </Route>
-          <Route path='/user-wishlist/:username'>
-            <DetailedPlantList title='wishlist' />
-          </Route>
           <Route path='/plant-profile/:id'>
             <PlantProfile />
           </Route>
         </Switch>
         <Footer />
-      </Main>
+      </Body>
     </BrowserRouter>
   )
 }
 
-const Main = styled.div`
+const Body = styled.div`
   overscroll-behavior: none;
   min-height: 100vh;
-  width: calc(100vw - 240px);
   display: flex;
   flex-direction: column;
-  @media (max-width: 999px) {
-    width: calc(100vw - 92px);
+  margin-right: 45px;
+  main {
+    width: 90%;
+    margin: auto;
+    padding: 20px 0;
+  }
+  @media only screen and (min-width: 500px) {
+    margin-right: 55px;
+    main {
+      width: 80%;
+    }
+  }
+  @media only screen and (min-width: 1000px) {
+    margin-right: 240px;
+    main {
+      max-width: 1200px;
+    }
   }
 `
 

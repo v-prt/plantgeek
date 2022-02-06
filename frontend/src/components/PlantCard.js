@@ -26,8 +26,8 @@ export const PlantCard = ({ plant }) => {
           ) : (
             <img className='placeholder' src={placeholder} alt='' />
           )}
+          <Name>{plant.species}</Name>
         </InfoLink>
-        <Name>{plant.species}</Name>
       </Div>
       <ActionBar id={plant._id} />
     </Wrapper>
@@ -59,22 +59,25 @@ const Div = styled.div`
 `
 
 const InfoLink = styled(Link)`
-  height: 200px;
-  width: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
+  display: grid;
+  place-items: center;
   img {
-    max-height: 100%;
-    max-width: 100%;
+    height: 200px;
+    width: 200px;
     &.placeholder {
-      height: 150px;
+      height: 200px;
+      width: 150px;
+    }
+  }
+  &:hover {
+    p {
+      color: ${COLORS.darkest};
     }
   }
 `
 
 const Name = styled.p`
+  color: ${COLORS.darkest};
   font-size: 1.1rem;
   align-self: center;
   text-align: center;
@@ -91,6 +94,7 @@ const Toxicity = styled.div`
   display: grid;
   place-items: center;
   img {
+    height: 20px;
     width: 20px;
   }
 `

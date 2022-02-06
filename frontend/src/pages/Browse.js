@@ -150,23 +150,25 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-size: 0.8rem;
+  @media only screen and (min-width: 500px) {
+    font-size: 1rem;
+  }
 `
 
 const Div = styled.div`
   display: flex;
-  @media (max-width: 1000px) {
+  @media only screen and (max-width: 1000px) {
     flex-direction: column;
   }
 `
 
 const Actions = styled.div`
-  width: 250px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  @media (max-width: 1000px) {
-    width: calc(100% - 50px);
+  @media only screen and (min-width: 500px) {
+    padding: 20px;
   }
 `
 
@@ -214,7 +216,7 @@ const Types = styled.ul`
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    @media (max-width: 1000px) {
+    @media only screen and (max-width: 1000px) {
       flex-direction: row;
     }
   }
@@ -234,12 +236,16 @@ const Type = styled.li`
 `
 
 const Results = styled.div`
+  background: #f2f2f2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   width: 75%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   padding: 10px 0;
-  @media (max-width: 1000px) {
+  margin: 20px 0;
+  border-radius: 20px;
+  @media only screen and (max-width: 1000px) {
     width: 100%;
   }
 `

@@ -23,16 +23,16 @@ export const Homepage = () => {
   return (
     <Wrapper>
       <FadeIn>
-        <Heading>
+        <section className='heading'>
           {currentUser ? (
-            <Row>
+            <div className='row'>
               <h1>welcome back, {currentUser.username}</h1>
               <img src={currentUser.image ? currentUser.image[0] : placeholder} alt='' />
-            </Row>
+            </div>
           ) : (
             <h1>welcome to plantgeek</h1>
           )}
-        </Heading>
+        </section>
       </FadeIn>
       <FadeIn delay={200}>
         <InfoCard>
@@ -125,37 +125,49 @@ export const Homepage = () => {
 }
 
 const Wrapper = styled.main`
-  width: 80%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: auto;
-  padding: 20px 0;
   section {
-    margin: 20px;
-    padding: 40px;
+    margin: 10px 0;
+    padding: 20px;
     border-radius: 20px;
+    font-size: 0.8rem;
   }
-`
+  .heading {
+    background: ${COLORS.light};
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    h1 {
+      font-size: 1.2rem;
+      text-align: right;
+    }
+    img {
+      height: 80px;
+      width: 80px;
+      border-radius: 50%;
+      margin-left: 20px;
+    }
+  }
 
-const Heading = styled.section`
-  background: ${COLORS.light};
-  display: flex;
-  justify-content: flex-end;
-  h1 {
-    font-size: 1.8rem;
+  @media only screen and (min-width: 500px) {
+    section {
+      margin: 20px;
+      padding: 40px;
+      font-size: 1rem;
+    }
+    .heading {
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
   }
-  img {
-    height: 80px;
-    width: 80px;
-    border-radius: 50%;
-    margin-left: 20px;
-  }
-`
-
-const Row = styled.div`
-  display: flex;
-  align-items: center;
 `
 
 const InfoCard = styled.section`

@@ -6,13 +6,13 @@ import { COLORS } from '../GlobalStyles'
 export const Footer = () => {
   return (
     <Wrapper>
-      <Links>
-        {/* TODO: */}
-        <p>&copy; 2021 plantgeek - All rights reserved.</p>
-        <StyledLink to='/terms'>Terms and Conditions</StyledLink>•
-        <StyledLink to='/privacy'>Privacy Policy</StyledLink>•
-        <StyledLink to='/contact'>Contact</StyledLink>
-      </Links>
+      <div className='inner'>
+        <div className='links'>
+          <Link to='/terms'>Terms and Conditions</Link>•<Link to='/privacy'>Privacy Policy</Link>•
+          <Link to='/contact'>Contact</Link>
+        </div>
+        <p>&copy; 2022 plantgeek - All rights reserved.</p>
+      </div>
     </Wrapper>
   )
 }
@@ -20,36 +20,36 @@ export const Footer = () => {
 const Wrapper = styled.footer`
   background: ${COLORS.light};
   color: ${COLORS.dark};
-  width: 100%;
-  position: relative;
-  bottom: 100%;
-  display: flex;
-  justify-content: center;
-  font-size: 0.8rem;
-  a {
-    text-decoration: underline;
-    &:hover {
-      color: #fff;
+  font-size: 0.6rem;
+  padding: 10px;
+  .inner {
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    a {
+      text-decoration: underline;
+      margin: 10px;
+      &:hover {
+        color: #fff;
+      }
+    }
+    p {
+      margin: 10px;
     }
   }
-`
-
-const Links = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  p {
-    margin: 10px 20px;
-  }
-  @media (max-width: 800px) {
-    width: 100%;
-  }
-`
-
-const StyledLink = styled(Link)`
-  text-decoration: underline;
-  margin: 10px 20px;
-  &:hover {
-    color: #fff;
+  @media only screen and (min-width: 500px) {
+    font-size: 0.8rem;
+    padding: 20px;
+    .inner {
+      max-width: 1200px;
+      a {
+        margin: 10px 20px;
+      }
+      p {
+        margin: 10px 20px;
+      }
+    }
   }
 `

@@ -47,7 +47,7 @@ export const SimplePlantList = ({ username, list, title }) => {
           <Heading to={`/user-${title}/${user.username}/`}>
             {currentUser && username === currentUser.username ? (
               <h2>
-                <>your {title}</>
+                <>my {title}</>
               </h2>
             ) : (
               <h2>their {title}</h2>
@@ -58,7 +58,7 @@ export const SimplePlantList = ({ username, list, title }) => {
               userPlants.map((plant) => {
                 return (
                   <Plant key={plant?._id}>
-                    <span className='plant-num'>{plant?._id}</span>
+                    {/* <span className='plant-num'>{plant?._id}</span> */}
                     <InfoLink to={`/plant-profile/${plant?._id}`}>
                       {plant?.imageUrl ? (
                         <img src={plant.imageUrl} alt='' />
@@ -78,7 +78,8 @@ export const SimplePlantList = ({ username, list, title }) => {
 }
 
 const Wrapper = styled.div`
-  background: ${COLORS.lightest};
+  background: #f2f2f2;
+  width: 100%;
   display: flex;
   flex-direction: column;
   margin: 20px;

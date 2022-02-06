@@ -17,7 +17,6 @@ import temp from '../../assets/temp.svg'
 import humidity from '../../assets/humidity.svg'
 
 import { ActionBar } from '../ActionBar'
-import { FeaturedPlants } from '../FeaturedPlants'
 
 export const DetailedPlantList = ({ title }) => {
   const plants = useSelector(plantsArray)
@@ -66,7 +65,7 @@ export const DetailedPlantList = ({ title }) => {
           <Heading>
             {currentUser && user.username === currentUser.username ? (
               <>
-                your {title} - {user[title].length} plants
+                my {title} - {user[title].length} plants
               </>
             ) : (
               <>
@@ -150,10 +149,24 @@ export const DetailedPlantList = ({ title }) => {
             </Plants>
           ) : currentUser && user.username === currentUser.username ? (
             <Alert>
-              {title === 'collection' && <p className='msg'>Your collection is empty</p>}
-              {title === 'favorites' && <p className='msg'>You have no favorite plants</p>}
-              {title === 'wishlist' && <p className='msg'>Your wishlist is empty</p>}
-              <FeaturedPlants />
+              {title === 'collection' && (
+                <p className='msg'>
+                  Your collection is empty. <Link to='/browse'>Find plants</Link> you own and add
+                  them here!
+                </p>
+              )}
+              {title === 'favorites' && (
+                <p className='msg'>
+                  You have no favorite plants. <Link to='/browse'>Find plants</Link> you love and
+                  add them here!
+                </p>
+              )}
+              {title === 'wishlist' && (
+                <p className='msg'>
+                  Your wishlist is empty. <Link to='/browse'>Find plants</Link> you want and add
+                  them here!
+                </p>
+              )}
             </Alert>
           ) : (
             <Alert>
@@ -173,21 +186,23 @@ export const DetailedPlantList = ({ title }) => {
 }
 
 const Wrapper = styled.div`
+  background: #f2f2f2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   width: 100%;
-  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  margin: 20px;
+  border-radius: 20px;
+  overflow: hidden;
 `
 
-const Heading = styled.h1`
-  background: ${COLORS.medium};
-  color: #fff;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 3px solid ${COLORS.light};
+const Heading = styled.h2`
+  background: ${COLORS.light};
+  text-align: center;
+  font-size: 1.2rem;
+  @media only screen and (min-width: 500px) {
+    font-size: 1.5rem;
+  }
 `
 
 const Plants = styled.div`
@@ -195,7 +210,7 @@ const Plants = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  padding: 10px 0;
+  padding: 10px;
 `
 
 const Plant = styled.div`
@@ -288,12 +303,11 @@ const Indicator = styled.div`
 `
 
 const Alert = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   .msg {
     text-align: center;
     margin: 20px;
+    a {
+      text-decoration: underline;
+    }
   }
 `

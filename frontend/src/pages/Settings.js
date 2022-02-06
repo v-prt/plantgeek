@@ -103,7 +103,6 @@ export const Settings = () => {
 
   return (
     <Wrapper>
-      <Heading>account settings</Heading>
       <UserDetails>
         {currentUser && (
           <>
@@ -190,7 +189,7 @@ const Options = styled.ul`
   width: 80%;
   margin: 20px;
   border-radius: 20px;
-  @media (max-width: 800px) {
+  @media only screen and (max-width: 800px) {
     width: 100%;
     border-radius: 0px;
   }
@@ -203,17 +202,9 @@ const Option = styled.li`
   justify-content: space-between;
   border-bottom: ${(props) => (props.last ? 'none' : '1px dotted #ccc')};
   padding: 10px;
-  @media (max-width: 800px) {
+  @media only screen and (max-width: 800px) {
     flex-direction: column;
   }
-`
-
-const Heading = styled.h1`
-  background: ${COLORS.medium};
-  color: #fff;
-  width: 100%;
-  text-align: center;
-  border-bottom: 3px solid ${COLORS.light};
 `
 
 const Input = styled.input`

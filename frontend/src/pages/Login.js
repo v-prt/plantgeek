@@ -51,12 +51,12 @@ export const Login = () => {
                 <button type='submit' disabled={isSubmitting}>
                   {isSubmitting ? <Ellipsis /> : 'LOG IN'}
                 </button>
+                <p className='subtext'>
+                  Don't have an account yet? <Link to='/signup'>Sign up</Link>
+                </p>
               </Form>
             )}
           </Formik>
-          <p className='subtext'>
-            Don't have an account yet? <Link to='/signup'>Sign up</Link>
-          </p>
         </Card>
       </FadeIn>
     </Wrapper>

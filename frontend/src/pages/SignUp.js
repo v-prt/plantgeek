@@ -195,13 +195,13 @@ export const SignUp = () => {
                   {/* <button type='submit' disabled={isSubmitting}>
                     {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
                   </button> */}
+                  <p className='subtext'>
+                    Already have an account? <Link to='/login'>Log in</Link>
+                  </p>
                 </Form>
               )}
             </Formik>
           )}
-          <p className='subtext'>
-            Already have an account? <Link to='/login'>Log in</Link>
-          </p>
         </Card>
       </FadeIn>
     </Wrapper>
@@ -209,18 +209,18 @@ export const SignUp = () => {
 }
 
 export const Wrapper = styled.main`
-  background: ${COLORS.dark};
   flex: 1;
-  display: grid;
-  place-content: center;
+  @media only screen and (min-width: 500px) {
+    display: grid;
+    place-content: center;
+  }
 `
 
 export const Card = styled.div`
-  background: ${COLORS.lightest};
+  background: #f2f2f2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  width: 500px;
-  margin: 40px 20px;
   border-radius: 20px;
   overflow: hidden;
   .welcome-header {
@@ -231,17 +231,21 @@ export const Card = styled.div`
     padding: 20px;
     h1 {
       margin: 10px;
+      font-size: 1.2rem;
+    }
+    p {
+      font-size: 0.9rem;
     }
     li {
       display: flex;
-      font-size: 1.1rem;
+      font-size: 0.9rem;
       margin: 10px;
     }
   }
   form {
     display: flex;
     flex-direction: column;
-    padding: 0 30px;
+    padding: 0 10px;
     .status {
       background: rgba(255, 0, 0, 0.1);
       border: 1px solid #ff0000;
@@ -251,8 +255,14 @@ export const Card = styled.div`
       margin-top: 10px;
     }
     // TODO: error styling for labels & inputs (red border, red font color, smooth transitions)
+    .form-item {
+      .text-wrapper {
+        display: flex;
+        flex-direction: column;
+      }
+    }
     .text-label {
-      background: ${COLORS.lightest};
+      background: #f2f2f2;
       color: ${COLORS.dark};
       width: fit-content;
       position: relative;
@@ -263,7 +273,7 @@ export const Card = styled.div`
       border-radius: 10px;
     }
     .text-input {
-      background: ${COLORS.lightest};
+      background: #f2f2f2;
       border-radius: 15px;
       border: 2px solid ${COLORS.light};
       text-align: right;
@@ -278,11 +288,8 @@ export const Card = styled.div`
       display: flex;
       align-items: center;
       margin-top: 10px;
-      font-size: 0.8rem;
+      font-size: 0.6rem;
       white-space: pre;
-      a {
-        text-decoration: underline;
-      }
     }
     .checkbox-input {
       margin-right: 10px;
@@ -309,13 +316,37 @@ export const Card = styled.div`
       }
     }
   }
+  a {
+    text-decoration: underline;
+  }
   .subtext {
     margin: auto auto 30px auto;
-    a {
-      text-decoration: underline;
-      &:hover {
-        color: ${COLORS.medium};
+  }
+  @media only screen and (min-width: 500px) {
+    width: 400px;
+    margin: 40px 20px;
+    .welcome-header {
+      h1 {
+        font-size: 1.8rem;
       }
+      p {
+        font-size: 1.1rem;
+      }
+      li {
+        font-size: 1.1rem;
+      }
+    }
+    form {
+      padding: 0 20px;
+      .checkbox-label {
+        font-size: 0.8rem;
+      }
+    }
+  }
+  @media only screen and (min-width: 1000px) {
+    width: 500px;
+    form {
+      padding: 0 30px;
     }
   }
 `

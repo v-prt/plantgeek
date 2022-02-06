@@ -20,8 +20,6 @@ export const FeaturedPlants = () => {
 
   // SETS FEATURED PLANTS (random plants change each time you load)
   useEffect(() => {
-    // if (plants) {
-    //   console.log('setting featured plants')
     const getRandomPlant = () => {
       const randomIndex = Math.floor(Math.random() * plants.length)
       const randomPlant = plants[randomIndex]
@@ -40,7 +38,6 @@ export const FeaturedPlants = () => {
     } else {
       setFeaturedPlants(plants)
     }
-    // }
   }, [plants])
 
   return (
@@ -76,11 +73,11 @@ export const FeaturedPlants = () => {
               return <PlantCard key={plant._id} plant={plant} />
             })}
           </Plants>
-          <Link to='/browse'>
-            <BrowseLink>
+          <h3>
+            <Link to='/browse'>
               browse more <RiArrowRightSFill />
-            </BrowseLink>
-          </Link>
+            </Link>
+          </h3>
         </FadeIn>
       ) : (
         <BeatingHeart />
@@ -107,17 +104,18 @@ const Wrapper = styled.section`
     justify-content: space-around;
     margin: 20px 75px;
   }
+  h3 {
+    width: fit-content;
+    margin: 20px auto 0 auto;
+    a {
+      display: flex;
+      align-items: center;
+    }
+  }
 `
 
 const Heading = styled.h2`
   text-align: center;
-`
-
-const BrowseLink = styled.h3`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
 `
 
 const Plants = styled.div`
