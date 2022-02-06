@@ -153,7 +153,7 @@ export const Contribute = () => {
     <Wrapper>
       <FadeIn>
         <Heading>contribute</Heading>
-        <div className='content'>
+        <div className='content-wrapper'>
           {newPlant && (
             <section className='confirmation'>
               <div className='msg'>
@@ -307,11 +307,10 @@ export const Contribute = () => {
 }
 
 const Wrapper = styled.main`
-  .content {
+  .content-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
     section {
       background: #fff;
       width: 80%;
@@ -343,16 +342,19 @@ const Wrapper = styled.main`
       }
     }
   }
+  @media only screen and (min-width: 500px) {
+    .content-wrapper {
+      padding: 20px;
+    }
+  }
 `
 
 const Heading = styled.h1`
-  background: ${COLORS.medium};
-  color: #fff;
+  background: ${COLORS.light};
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 3px solid ${COLORS.light};
+  text-align: center;
+  border-radius: 20px;
+  padding: 20px;
 `
 
 const FormWrapper = styled.div`

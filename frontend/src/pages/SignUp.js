@@ -209,14 +209,14 @@ export const SignUp = () => {
 }
 
 export const Wrapper = styled.main`
-  background: ${COLORS.dark};
   flex: 1;
   display: grid;
   place-content: center;
 `
 
 export const Card = styled.div`
-  background: ${COLORS.lightest};
+  background: #f2f2f2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   width: 500px;
@@ -258,7 +258,7 @@ export const Card = styled.div`
       }
     }
     .text-label {
-      background: ${COLORS.lightest};
+      background: #f2f2f2;
       color: ${COLORS.dark};
       width: fit-content;
       position: relative;
@@ -269,7 +269,7 @@ export const Card = styled.div`
       border-radius: 10px;
     }
     .text-input {
-      background: ${COLORS.lightest};
+      background: #f2f2f2;
       border-radius: 15px;
       border: 2px solid ${COLORS.light};
       text-align: right;
@@ -286,9 +286,6 @@ export const Card = styled.div`
       margin-top: 10px;
       font-size: 0.8rem;
       white-space: pre;
-      a {
-        text-decoration: underline;
-      }
     }
     .checkbox-input {
       margin-right: 10px;
@@ -315,14 +312,11 @@ export const Card = styled.div`
       }
     }
   }
+  a {
+    text-decoration: underline;
+  }
   .subtext {
     margin: auto auto 30px auto;
-    a {
-      text-decoration: underline;
-      &:hover {
-        color: ${COLORS.medium};
-      }
-    }
   }
 `
 

@@ -186,11 +186,7 @@ export const Friends = () => {
     <Wrapper>
       <Card>
         <Heading>
-          {currentUser && currentUser.username === username ? (
-            <>your friends</>
-          ) : (
-            <>their friends</>
-          )}
+          {currentUser && currentUser.username === username ? <>my friends</> : <>their friends</>}
         </Heading>
         {user && (
           <>

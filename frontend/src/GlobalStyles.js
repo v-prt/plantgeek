@@ -1,7 +1,10 @@
 // STYLE GUIDELINES
-// - lowercase for all heading text
-// - proper sentence case for body text
-// - rounded corners for all sections/cards
+// lowercase for all heading text
+// proper sentence case for body text
+// rounded corners for all sections/cards
+// mobile first (up to 500px)
+// tablet breakpoint: 500px
+// desktop breakpoint: 1000px
 
 import { createGlobalStyle } from 'styled-components'
 import styled from 'styled-components/macro'
@@ -10,6 +13,7 @@ export const COLORS = {
   darkest: '#1A1A1A',
   dark: '#112211',
   medium: '#224422',
+  mediumLight: '#5d9e2e',
   light: '#92D265',
   lightest: '#E5EFDC',
 }
@@ -62,7 +66,7 @@ export default createGlobalStyle`
         color: ${COLORS.darkest};
         transition: 0.2s ease-in-out;
         &:hover {
-            color: ${COLORS.light};
+            color: ${COLORS.mediumLight};
         }
     }
     input {

@@ -8,8 +8,8 @@ import { FadeIn } from '../components/loaders/FadeIn.js'
 import placeholder from '../assets/avatar-placeholder.png'
 import moment from 'moment'
 
-import { SimplePlantList } from '../components/lists/SimplePlantList'
-import { Friends } from '../components/Friends'
+import { DetailedPlantList } from '../components/lists/DetailedPlantList'
+// import { Friends } from '../components/Friends'
 
 export const UserProfile = () => {
   const users = useSelector(usersArray)
@@ -34,17 +34,17 @@ export const UserProfile = () => {
             <h1>{user.username}</h1>
             <p>Member since {moment(user.joined).format('ll')}</p>
             <Lists>
-              {user.collection && user.collection.length > 0 && (
-                <SimplePlantList username={username} list={user.collection} title='collection' />
+              {user.collection && (
+                <DetailedPlantList username={username} list={user.collection} title='collection' />
               )}
-              {user.favorites && user.favorites.length > 0 && (
-                <SimplePlantList username={username} list={user.favorites} title='favorites' />
+              {user.favorites && (
+                <DetailedPlantList username={username} list={user.favorites} title='favorites' />
               )}
-              {user.wishlist && user.wishlist.length > 0 && (
-                <SimplePlantList username={username} list={user.wishlist} title='wishlist' />
+              {user.wishlist && (
+                <DetailedPlantList username={username} list={user.wishlist} title='wishlist' />
               )}
             </Lists>
-            <Friends />
+            {/* <Friends /> */}
           </Div>
         </FadeIn>
       )}
@@ -53,8 +53,6 @@ export const UserProfile = () => {
 }
 
 const Wrapper = styled.main`
-  background: ${COLORS.dark};
-  color: #f2f2f2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -79,7 +77,7 @@ const Avatar = styled.img`
 `
 
 const Lists = styled.section`
-  width: 85%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
