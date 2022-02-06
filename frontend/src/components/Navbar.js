@@ -77,6 +77,7 @@ const Wrapper = styled.nav`
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 100;
   @media only screen and (min-width: 500px) {
     width: 55px;
   }

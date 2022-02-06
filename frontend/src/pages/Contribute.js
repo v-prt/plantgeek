@@ -152,7 +152,6 @@ export const Contribute = () => {
   return (
     <Wrapper>
       <FadeIn>
-        <Heading>contribute</Heading>
         <div className='content-wrapper'>
           {newPlant && (
             <section className='confirmation'>
@@ -347,14 +346,6 @@ const Wrapper = styled.main`
       padding: 20px;
     }
   }
-`
-
-const Heading = styled.h1`
-  background: ${COLORS.light};
-  width: 100%;
-  text-align: center;
-  border-radius: 20px;
-  padding: 20px;
 `
 
 const FormWrapper = styled.div`

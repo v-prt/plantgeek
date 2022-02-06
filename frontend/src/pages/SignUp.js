@@ -195,13 +195,13 @@ export const SignUp = () => {
                   {/* <button type='submit' disabled={isSubmitting}>
                     {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
                   </button> */}
+                  <p className='subtext'>
+                    Already have an account? <Link to='/login'>Log in</Link>
+                  </p>
                 </Form>
               )}
             </Formik>
           )}
-          <p className='subtext'>
-            Already have an account? <Link to='/login'>Log in</Link>
-          </p>
         </Card>
       </FadeIn>
     </Wrapper>
@@ -210,8 +210,10 @@ export const SignUp = () => {
 
 export const Wrapper = styled.main`
   flex: 1;
-  display: grid;
-  place-content: center;
+  @media only screen and (min-width: 500px) {
+    display: grid;
+    place-content: center;
+  }
 `
 
 export const Card = styled.div`
@@ -219,8 +221,6 @@ export const Card = styled.div`
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  width: 500px;
-  margin: 40px 20px;
   border-radius: 20px;
   overflow: hidden;
   .welcome-header {
@@ -231,17 +231,21 @@ export const Card = styled.div`
     padding: 20px;
     h1 {
       margin: 10px;
+      font-size: 1.2rem;
+    }
+    p {
+      font-size: 0.9rem;
     }
     li {
       display: flex;
-      font-size: 1.1rem;
+      font-size: 0.9rem;
       margin: 10px;
     }
   }
   form {
     display: flex;
     flex-direction: column;
-    padding: 0 30px;
+    padding: 0 10px;
     .status {
       background: rgba(255, 0, 0, 0.1);
       border: 1px solid #ff0000;
@@ -284,7 +288,7 @@ export const Card = styled.div`
       display: flex;
       align-items: center;
       margin-top: 10px;
-      font-size: 0.8rem;
+      font-size: 0.6rem;
       white-space: pre;
     }
     .checkbox-input {
@@ -317,6 +321,33 @@ export const Card = styled.div`
   }
   .subtext {
     margin: auto auto 30px auto;
+  }
+  @media only screen and (min-width: 500px) {
+    width: 400px;
+    margin: 40px 20px;
+    .welcome-header {
+      h1 {
+        font-size: 1.8rem;
+      }
+      p {
+        font-size: 1.1rem;
+      }
+      li {
+        font-size: 1.1rem;
+      }
+    }
+    form {
+      padding: 0 20px;
+      .checkbox-label {
+        font-size: 0.8rem;
+      }
+    }
+  }
+  @media only screen and (min-width: 1000px) {
+    width: 500px;
+    form {
+      padding: 0 30px;
+    }
   }
 `
 

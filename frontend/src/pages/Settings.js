@@ -103,7 +103,6 @@ export const Settings = () => {
 
   return (
     <Wrapper>
-      <Heading>my account settings</Heading>
       <UserDetails>
         {currentUser && (
           <>
@@ -206,14 +205,6 @@ const Option = styled.li`
   @media only screen and (max-width: 800px) {
     flex-direction: column;
   }
-`
-
-const Heading = styled.h1`
-  background: ${COLORS.light};
-  width: 100%;
-  text-align: center;
-  border-radius: 20px;
-  padding: 20px;
 `
 
 const Input = styled.input`
