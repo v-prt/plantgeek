@@ -5,11 +5,9 @@ import { usersArray } from '../reducers/userReducer'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
+import { DetailedPlantList } from '../components/lists/DetailedPlantList'
 import placeholder from '../assets/avatar-placeholder.png'
 import moment from 'moment'
-
-import { DetailedPlantList } from '../components/lists/DetailedPlantList'
-// import { Friends } from '../components/Friends'
 
 export const UserProfile = () => {
   const users = useSelector(usersArray)
@@ -22,7 +20,7 @@ export const UserProfile = () => {
   }, [username])
 
   useEffect(() => {
-    setUser(users.find((user) => user.username === username))
+    setUser(users.find((user) => user?.username === username))
   }, [users, user, username])
 
   return (
@@ -30,21 +28,14 @@ export const UserProfile = () => {
       {user && (
         <FadeIn>
           <Div>
-            <Avatar src={user.image ? user.image[0] : placeholder} alt='' />
-            <h1>{user.username}</h1>
-            <p>Member since {moment(user.joined).format('ll')}</p>
+            <Avatar src={user?.image ? user?.image[0] : placeholder} alt='' />
+            <h1>{user?.username}</h1>
+            <p>Member since {moment(user?.joined).format('ll')}</p>
             <Lists>
-              {user.collection && (
-                <DetailedPlantList username={username} list={user.collection} title='collection' />
-              )}
-              {user.favorites && (
-                <DetailedPlantList username={username} list={user.favorites} title='favorites' />
-              )}
-              {user.wishlist && (
-                <DetailedPlantList username={username} list={user.wishlist} title='wishlist' />
-              )}
+              <DetailedPlantList username={username} list={user?.collection} title='collection' />
+              <DetailedPlantList username={username} list={user?.favorites} title='favorites' />
+              <DetailedPlantList username={username} list={user?.wishlist} title='wishlist' />
             </Lists>
-            {/* <Friends /> */}
           </Div>
         </FadeIn>
       )}
@@ -81,4 +72,5 @@ const Lists = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 40px;
 `

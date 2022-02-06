@@ -13,6 +13,11 @@ export const Settings = () => {
   // const history = useHistory();
   const { getUser, currentUser } = useContext(UserContext)
 
+  // makes window scroll to top between renders
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const [existingImage, setExistingImage] = useState(undefined)
   useEffect(() => {
     if (currentUser && currentUser.image) {

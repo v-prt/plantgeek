@@ -16,7 +16,6 @@ import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
 
 import { ActionBar } from '../components/ActionBar'
-import { Comments } from '../components/Comments'
 
 export const PlantProfile = () => {
   const plants = useSelector(plantsArray)
@@ -127,67 +126,64 @@ export const PlantProfile = () => {
                 )}
               </div>
             </div>
-            <ResponsiveDiv>
-              <Needs>
-                <h2>
-                  needs <span className='difficulty'>Difficulty: {difficulty}</span>
-                </h2>
-                <div className='row'>
-                  <img src={sun} alt='' />
-                  <div className='column'>
-                    <p>{plant.light} light</p>
-                    <Bar>
-                      {plant.light === 'low to bright indirect' && <Indicator level={'2'} />}
-                      {plant.light === 'medium indirect' && <Indicator level={'2'} />}
-                      {plant.light === 'medium to bright indirect' && <Indicator level={'2-3'} />}
-                      {plant.light === 'bright indirect' && <Indicator level={'3'} />}
-                    </Bar>
-                  </div>
+            <Needs>
+              <h2>
+                needs <span className='difficulty'>Difficulty: {difficulty}</span>
+              </h2>
+              <div className='row'>
+                <img src={sun} alt='' />
+                <div className='column'>
+                  <p>{plant.light} light</p>
+                  <Bar>
+                    {plant.light === 'low to bright indirect' && <Indicator level={'2'} />}
+                    {plant.light === 'medium indirect' && <Indicator level={'2'} />}
+                    {plant.light === 'medium to bright indirect' && <Indicator level={'2-3'} />}
+                    {plant.light === 'bright indirect' && <Indicator level={'3'} />}
+                  </Bar>
                 </div>
-                <div className='row'>
-                  <img src={water} alt='' />
-                  <div className='column'>
-                    <p>{plant.water} water</p>
-                    <Bar>
-                      {plant.water === 'low' && <Indicator level={'1'} />}
-                      {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
-                      {plant.water === 'medium' && <Indicator level={'2'} />}
-                      {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
-                      {plant.water === 'high' && <Indicator level={'3'} />}
-                    </Bar>
-                  </div>
+              </div>
+              <div className='row'>
+                <img src={water} alt='' />
+                <div className='column'>
+                  <p>{plant.water} water</p>
+                  <Bar>
+                    {plant.water === 'low' && <Indicator level={'1'} />}
+                    {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+                    {plant.water === 'medium' && <Indicator level={'2'} />}
+                    {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+                    {plant.water === 'high' && <Indicator level={'3'} />}
+                  </Bar>
                 </div>
-                <div className='row'>
-                  <img src={temp} alt='' />
-                  <div className='column'>
-                    <p>{plant.temperature} temperature</p>
-                    <Bar>
-                      {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                      {plant.temperature === 'above average' && <Indicator level={'2-3'} />}
-                    </Bar>
-                  </div>
+              </div>
+              <div className='row'>
+                <img src={temp} alt='' />
+                <div className='column'>
+                  <p>{plant.temperature} temperature</p>
+                  <Bar>
+                    {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+                    {plant.temperature === 'above average' && <Indicator level={'2-3'} />}
+                  </Bar>
                 </div>
-                <div className='row'>
-                  <img src={humidity} alt='' />
-                  <div className='column'>
-                    <p>{plant.humidity} humidity</p>
-                    <Bar>
-                      {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-                      {plant.humidity === 'above average' && <Indicator level={'2-3'} />}
-                    </Bar>
-                  </div>
+              </div>
+              <div className='row'>
+                <img src={humidity} alt='' />
+                <div className='column'>
+                  <p>{plant.humidity} humidity</p>
+                  <Bar>
+                    {plant.humidity === 'average' && <Indicator level={'1-2'} />}
+                    {plant.humidity === 'above average' && <Indicator level={'2-3'} />}
+                  </Bar>
                 </div>
-                <p className='sources'>
-                  Source(s): <a href={plant.sourceUrl}>[1]</a>
-                </p>
-                {currentUser && (
-                  <Sizer>
-                    <ActionBar id={plant._id} style={{ background: '#fff' }} />
-                  </Sizer>
-                )}
-              </Needs>
-              <Comments plant={plant} />
-            </ResponsiveDiv>
+              </div>
+              <p className='sources'>
+                Source(s): <a href={plant.sourceUrl}>[1]</a>
+              </p>
+              {currentUser && (
+                <Sizer>
+                  <ActionBar id={plant._id} style={{ background: '#fff' }} />
+                </Sizer>
+              )}
+            </Needs>
           </Div>
         </FadeIn>
         // TODO: similar plants section (genus)
@@ -244,13 +240,6 @@ const Image = styled.img`
   &.placeholder {
     height: 200px;
   }
-`
-
-const ResponsiveDiv = styled.div`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
 `
 
 const Needs = styled.section`

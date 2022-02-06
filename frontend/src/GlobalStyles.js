@@ -42,6 +42,44 @@ export const Button = styled.button`
   }
 `
 
+export const Switch = styled.label`
+  height: 20px;
+  width: 40px;
+  position: relative;
+  input {
+    display: none;
+  }
+  .slider {
+    background: #b5b5b5;
+    border-radius: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    &:before {
+      background: #fff;
+      border-radius: 50%;
+      content: '';
+      height: 16px;
+      width: 16px;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: 0.2s ease-in-out;
+    }
+  }
+  input:checked + .slider:before {
+    transform: translateX(20px);
+  }
+  input:checked + .slider {
+    background: ${COLORS.mediumLight};
+    box-shadow: 0 0 0 1px ${COLORS.light};
+  }
+`
+
 export default createGlobalStyle`
     * {
         font-family: 'Quicksand', sans-serif;
