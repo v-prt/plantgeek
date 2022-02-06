@@ -5,31 +5,65 @@ import { COLORS } from '../GlobalStyles'
 import { ActionBar } from './ActionBar'
 import { FaPaw } from 'react-icons/fa'
 import placeholder from '../assets/plant-placeholder.svg'
-import skull from '../assets/skull.svg'
+import sun from '../assets/sun.svg'
+import water from '../assets/water.svg'
+import temp from '../assets/temp.svg'
+import humidity from '../assets/humidity.svg'
 
-export const PlantCard = ({ plant }) => {
+export const PlantCard = ({ plant, viewNeeds }) => {
   return (
-    <Wrapper>
+    <Wrapper key={plant?._id}>
       <Div>
-        {plant.toxic ? (
-          <Toxicity toxic={true}>
-            <img src={skull} alt='toxic' />
-          </Toxicity>
-        ) : (
-          <Toxicity toxic={false}>
+        {!plant?.toxic && (
+          <Stamp>
             <FaPaw />
-          </Toxicity>
+          </Stamp>
         )}
-        <InfoLink to={`/plant-profile/${plant._id}`}>
-          {plant.imageUrl ? (
-            <img src={plant.imageUrl} alt='' />
+        <InfoLink to={`/plant-profile/${plant?._id}`}>
+          {plant?.imageUrl ? (
+            <img src={plant?.imageUrl} alt='' />
           ) : (
             <img className='placeholder' src={placeholder} alt='' />
           )}
-          <Name>{plant.species}</Name>
+          <Name>{plant?.species}</Name>
         </InfoLink>
       </Div>
-      <ActionBar id={plant._id} />
+      <Needs expanded={viewNeeds}>
+        <Row>
+          <img src={sun} alt='light' />
+          <Bar>
+            {plant?.light === 'low to bright indirect' && <Indicator level={'2'} />}
+            {plant?.light === 'medium indirect' && <Indicator level={'2'} />}
+            {plant?.light === 'medium to bright indirect' && <Indicator level={'2-3'} />}
+            {plant?.light === 'bright indirect' && <Indicator level={'3'} />}
+          </Bar>
+        </Row>
+        <Row>
+          <img src={water} alt='water' />
+          <Bar>
+            {plant?.water === 'low' && <Indicator level={'1'} />}
+            {plant?.water === 'low to medium' && <Indicator level={'1-2'} />}
+            {plant?.water === 'medium' && <Indicator level={'2'} />}
+            {plant?.water === 'medium to high' && <Indicator level={'2-3'} />}
+            {plant?.water === 'high' && <Indicator level={'3'} />}
+          </Bar>
+        </Row>
+        <Row>
+          <img src={temp} alt='temperature' />
+          <Bar>
+            {plant?.temperature === 'average' && <Indicator level={'1-2'} />}
+            {plant?.temperature === 'above average' && <Indicator level={'2-3'} />}
+          </Bar>
+        </Row>
+        <Row>
+          <img src={humidity} alt='humidity' />
+          <Bar>
+            {plant?.humidity === 'average' && <Indicator level={'1-2'} />}
+            {plant?.humidity === 'above average' && <Indicator level={'2-3'} />}
+          </Bar>
+        </Row>
+      </Needs>
+      <ActionBar id={plant?._id} />
     </Wrapper>
   )
 }
@@ -56,6 +90,19 @@ const Wrapper = styled.div`
 const Div = styled.div`
   display: flex;
   flex-direction: column;
+`
+
+const Stamp = styled.div`
+  background: ${COLORS.light};
+  color: #fff;
+  position: absolute;
+  border-radius: 50%;
+  display: grid;
+  padding: 5px;
+  img {
+    height: 15px;
+    width: 15px;
+  }
 `
 
 const InfoLink = styled(Link)`
@@ -85,16 +132,39 @@ const Name = styled.p`
   margin: 5px;
 `
 
-const Toxicity = styled.div`
-  color: ${COLORS.light};
-  position: absolute;
-  border-radius: 50%;
-  height: 30px;
-  width: 30px;
-  display: grid;
-  place-items: center;
+const Needs = styled.div`
+  padding: 0 10px 10px 10px;
+  visibility: ${(props) => (props.expanded ? 'visible' : 'hidden')};
+  opacity: ${(props) => (props.expanded ? '1' : '0')};
+  max-height: ${(props) => (props.expanded ? '1000px' : '0')};
+  transition: 0.3s ease-in-out;
+`
+
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
   img {
-    height: 20px;
-    width: 20px;
+    height: 25px;
   }
+`
+
+const Bar = styled.div`
+  background: #f2f2f2;
+  height: 20px;
+  flex: 1;
+  margin-left: 5px;
+  border-radius: 10px;
+`
+
+const Indicator = styled.div`
+  background: linear-gradient(to right, ${COLORS.lightest}, ${COLORS.light});
+  height: 100%;
+  border-radius: 10px;
+  width: ${(props) => props.level === '1' && '20%'};
+  width: ${(props) => props.level === '1-2' && '50%'};
+  width: ${(props) => props.level === '1-3' && '100%'};
+  width: ${(props) => props.level === '2' && '50%'};
+  width: ${(props) => props.level === '2-3' && '80%'};
+  width: ${(props) => props.level === '3' && '100%'};
 `

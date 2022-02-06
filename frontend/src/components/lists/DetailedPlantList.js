@@ -2,21 +2,14 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { usersArray } from '../../reducers/userReducer'
-import { plantsArray } from '../../reducers/plantReducer.js'
+import { plantsArray } from '../../reducers/plantReducer'
 import { UserContext } from '../../contexts/UserContext'
 
 import styled from 'styled-components/macro'
-import { COLORS } from '../../GlobalStyles'
-import { FadeIn } from '../loaders/FadeIn.js'
-import { FaPaw } from 'react-icons/fa'
-import placeholder from '../../assets/plant-placeholder.svg'
-import skull from '../../assets/skull.svg'
-import sun from '../../assets/sun.svg'
-import water from '../../assets/water.svg'
-import temp from '../../assets/temp.svg'
-import humidity from '../../assets/humidity.svg'
-
-import { ActionBar } from '../ActionBar'
+import { COLORS, Switch } from '../../GlobalStyles'
+import { FadeIn } from '../loaders/FadeIn'
+import { PlantCard } from '../PlantCard'
+import { MdOutlineArrowDropDownCircle } from 'react-icons/md'
 
 export const DetailedPlantList = ({ title }) => {
   const plants = useSelector(plantsArray)
@@ -25,6 +18,8 @@ export const DetailedPlantList = ({ title }) => {
   const [list, setList] = useState(undefined)
   const { username } = useParams()
   const { currentUser } = useContext(UserContext)
+  const [viewContent, setViewContent] = useState(false)
+  const [viewNeeds, setViewNeeds] = useState(false)
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -62,123 +57,74 @@ export const DetailedPlantList = ({ title }) => {
     <Wrapper>
       {user && (
         <FadeIn>
-          <Heading>
-            {currentUser && user.username === currentUser.username ? (
-              <>
-                my {title} - {user[title].length} plants
-              </>
-            ) : (
-              <>
-                {user.username}'s {title}
-              </>
-            )}
+          <Heading onClick={() => setViewContent(!viewContent)}>
+            <h2 className='title'>
+              <DropDownArrow rotated={viewContent}>
+                <MdOutlineArrowDropDownCircle />
+              </DropDownArrow>
+              {title}
+            </h2>
+            <span className='num-plants'>
+              {user[title].length} plant{user[title].length === 1 ? '' : 's'}
+            </span>
           </Heading>
-          {user[title] && user[title].length > 0 ? (
-            <Plants>
-              {user &&
-                userPlants &&
-                userPlants.length > 0 &&
-                userPlants.map((plant) => {
-                  /* FIXME: 50/50 chance of warning "reading _id of undefined" */
-                  return (
-                    <Plant key={plant?._id}>
-                      <Div>
-                        {plant?.toxic ? (
-                          <Toxicity toxic={true}>
-                            <img src={skull} alt='toxic' />
-                          </Toxicity>
-                        ) : (
-                          <Toxicity toxic={false}>
-                            <FaPaw />
-                          </Toxicity>
-                        )}
-                        <InfoLink to={`/plant-profile/${plant?._id}`}>
-                          {plant?.imageUrl ? (
-                            <img src={plant.imageUrl} alt='' />
-                          ) : (
-                            <img className='placeholder' src={placeholder} alt='' />
-                          )}
-                        </InfoLink>
-                        <Name>{plant?.species}</Name>
-                      </Div>
-                      <Needs>
-                        <Row>
-                          {/* <FaSun /> */}
-                          <img src={sun} alt='light' />
-                          <Bar>
-                            {plant?.light === 'low to bright indirect' && <Indicator level={'2'} />}
-                            {plant?.light === 'medium indirect' && <Indicator level={'2'} />}
-                            {plant?.light === 'medium to bright indirect' && (
-                              <Indicator level={'2-3'} />
-                            )}
-                            {plant?.light === 'bright indirect' && <Indicator level={'3'} />}
-                          </Bar>
-                        </Row>
-                        <Row>
-                          {/* <ImDroplet /> */}
-                          <img src={water} alt='water' />
-                          <Bar>
-                            {plant?.water === 'low' && <Indicator level={'1'} />}
-                            {plant?.water === 'low to medium' && <Indicator level={'1-2'} />}
-                            {plant?.water === 'medium' && <Indicator level={'2'} />}
-                            {plant?.water === 'medium to high' && <Indicator level={'2-3'} />}
-                            {plant?.water === 'high' && <Indicator level={'3'} />}
-                          </Bar>
-                        </Row>
-                        <Row>
-                          {/* <RiTempColdFill /> */}
-                          <img src={temp} alt='temperature' />
-                          <Bar>
-                            {plant?.temperature === 'average' && <Indicator level={'1-2'} />}
-                            {plant?.temperature === 'above average' && <Indicator level={'2-3'} />}
-                          </Bar>
-                        </Row>
-                        <Row>
-                          {/* <RiCloudWindyLine /> */}
-                          <img src={humidity} alt='humidity' />
-                          <Bar>
-                            {plant?.humidity === 'average' && <Indicator level={'1-2'} />}
-                            {plant?.humidity === 'above average' && <Indicator level={'2-3'} />}
-                          </Bar>
-                        </Row>
-                      </Needs>
-                      <ActionBar id={plant?._id} />
-                    </Plant>
-                  )
-                })}
-            </Plants>
-          ) : currentUser && user.username === currentUser.username ? (
-            <Alert>
-              {title === 'collection' && (
-                <p className='msg'>
-                  Your collection is empty. <Link to='/browse'>Find plants</Link> you own and add
-                  them here!
-                </p>
-              )}
-              {title === 'favorites' && (
-                <p className='msg'>
-                  You have no favorite plants. <Link to='/browse'>Find plants</Link> you love and
-                  add them here!
-                </p>
-              )}
-              {title === 'wishlist' && (
-                <p className='msg'>
-                  Your wishlist is empty. <Link to='/browse'>Find plants</Link> you want and add
-                  them here!
-                </p>
-              )}
-            </Alert>
-          ) : (
-            <Alert>
-              {title === 'collection' && (
-                <p className='msg'>{user.username}'s collection is empty</p>
-              )}
-              {title === 'favorites' && (
-                <p className='msg'>{user.username} has no favorite plants</p>
-              )}
-              {title === 'wishlist' && <p className='msg'>{user.username}'s wishlist is empty</p>}
-            </Alert>
-          )}
+          <Content expanded={viewContent}>
+            {user[title] && user[title].length > 0 ? (
+              <>
+                <div className='filter-bar'>
+                  <div className='toggle-wrapper'>
+                    <span className='toggle-option'>Detailed view</span>
+                    <Switch>
+                      <input
+                        id='needs-toggle'
+                        type='checkbox'
+                        onChange={(ev) => setViewNeeds(ev.target.checked)}
+                      />
+                      <span className='slider'></span>
+                    </Switch>
+                  </div>
+                </div>
+                <Plants>
+                  {user &&
+                    userPlants?.length > 0 &&
+                    userPlants.map((plant) => {
+                      return <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
+                    })}
+                </Plants>
+              </>
+            ) : currentUser && user.username === currentUser.username ? (
+              <Alert>
+                {title === 'collection' && (
+                  <p className='msg'>
+                    Your collection is empty. <Link to='/browse'>Find plants</Link> you own and add
+                    them here!
+                  </p>
+                )}
+                {title === 'favorites' && (
+                  <p className='msg'>
+                    You have no favorite plants. <Link to='/browse'>Find plants</Link> you love and
+                    add them here!
+                  </p>
+                )}
+                {title === 'wishlist' && (
+                  <p className='msg'>
+                    Your wishlist is empty. <Link to='/browse'>Find plants</Link> you want and add
+                    them here!
+                  </p>
+                )}
+              </Alert>
+            ) : (
+              <Alert>
+                {title === 'collection' && (
+                  <p className='msg'>{user.username}'s collection is empty</p>
+                )}
+                {title === 'favorites' && (
+                  <p className='msg'>{user.username} has no favorite plants</p>
+                )}
+                {title === 'wishlist' && <p className='msg'>{user.username}'s wishlist is empty</p>}
+              </Alert>
+            )}
+          </Content>
         </FadeIn>
       )}
     </Wrapper>
@@ -196,13 +142,62 @@ const Wrapper = styled.div`
   overflow: hidden;
 `
 
-const Heading = styled.h2`
+const Heading = styled.div`
   background: ${COLORS.light};
-  text-align: center;
-  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+  &:hover {
+    background: ${COLORS.mediumLight};
+  }
+  .title {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    margin-right: 10px;
+  }
+  .num-plants {
+    font-size: 1rem;
+    margin-left: 10px;
+  }
   @media only screen and (min-width: 500px) {
     font-size: 1.5rem;
   }
+`
+
+const Content = styled.div`
+  visibility: ${(props) => (props.expanded ? 'visible' : 'hidden')};
+  opacity: ${(props) => (props.expanded ? '1' : '0')};
+  max-height: ${(props) => (props.expanded ? '1000px' : '0')};
+  padding: ${(props) => (props.expanded ? '10px' : '')};
+  overflow: hidden;
+  transition: 0.3s ease-in-out;
+  .filter-bar {
+    box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
+    padding: 0 20px 10px 20px;
+    margin-bottom: 10px;
+    .toggle-wrapper {
+      background: #fff;
+      width: fit-content;
+      display: flex;
+      align-items: center;
+      border-radius: 20px;
+      padding: 5px 10px;
+      .toggle-option {
+        margin-right: 20px;
+        line-height: 1;
+      }
+    }
+  }
+`
+
+const DropDownArrow = styled.span`
+  display: grid;
+  margin-right: 10px;
+  transform: ${(props) => (props.rotated ? '' : 'rotate(-90deg)')};
+  transition: 0.2s ease-in-out;
 `
 
 const Plants = styled.div`
@@ -210,102 +205,11 @@ const Plants = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  padding: 10px;
-`
-
-const Plant = styled.div`
-  background: #fff;
-  width: 250px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-  border-radius: 20px;
-  padding: 10px;
-  transition: 0.2s ease-in-out;
-  &:hover {
-    color: ${COLORS.darkest};
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  }
-`
-
-const Div = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
-const InfoLink = styled(Link)`
-  height: 200px;
-  width: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-  img {
-    max-height: 100%;
-    max-width: 100%;
-    &.placeholder {
-      height: 150px;
-    }
-  }
-`
-
-const Name = styled.p`
-  font-size: 1.1rem;
-  align-self: center;
-  margin: 5px 0;
-`
-
-const Toxicity = styled.div`
-  color: ${COLORS.light};
-  position: absolute;
-  border-radius: 50%;
-  height: 30px;
-  width: 30px;
-  display: grid;
-  place-items: center;
-  img {
-    width: 20px;
-  }
-`
-
-const Needs = styled.div`
-  padding: 0 10px 10px 10px;
-`
-
-const Row = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 10px 0;
-  img {
-    height: 25px;
-  }
-`
-
-const Bar = styled.div`
-  background: #f2f2f2;
-  height: 20px;
-  flex: 1;
-  margin-left: 5px;
-  border-radius: 10px;
-`
-
-const Indicator = styled.div`
-  background: linear-gradient(to right, ${COLORS.lightest}, ${COLORS.light});
-  height: 100%;
-  border-radius: 10px;
-  width: ${(props) => props.level === '1' && '20%'};
-  width: ${(props) => props.level === '1-2' && '50%'};
-  width: ${(props) => props.level === '1-3' && '100%'};
-  width: ${(props) => props.level === '2' && '50%'};
-  width: ${(props) => props.level === '2-3' && '80%'};
-  width: ${(props) => props.level === '3' && '100%'};
 `
 
 const Alert = styled.div`
   .msg {
     text-align: center;
-    margin: 20px;
     a {
       text-decoration: underline;
     }

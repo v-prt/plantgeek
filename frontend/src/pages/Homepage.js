@@ -5,7 +5,7 @@ import { UserContext } from '../contexts/UserContext'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
-import { RiArrowRightSFill } from 'react-icons/ri'
+import { BsArrowRightCircle } from 'react-icons/bs'
 import placeholder from '../assets/avatar-placeholder.png'
 
 import { FeaturedPlants } from '../components/FeaturedPlants'
@@ -38,29 +38,39 @@ export const Homepage = () => {
         <InfoCard>
           <h2>
             <Link to='/browse'>
-              browse houseplants <RiArrowRightSFill />
+              browse houseplants{' '}
+              <span className='icon'>
+                <BsArrowRightCircle />
+              </span>
             </Link>
           </h2>
           <ul>
-            <li>View your plant's profile to learn how to care for it</li>
+            <li>Learn how to care for a variety of houseplants</li>
             <li>Find out if your plant is toxic (if so, keep away from pets & children)</li>
+            <li>Search & filter plants by name or genus</li>
           </ul>
           {currentUser ? (
             <>
               <h2>
                 <Link to={`/user-profile/${currentUser.username}`}>
-                  view your profile <RiArrowRightSFill />
+                  view your profile{' '}
+                  <span className='icon'>
+                    <BsArrowRightCircle />
+                  </span>
                 </Link>
               </h2>
               <ul>
-                <li>Manage your personal collection and quickly refer to your plants' needs</li>
+                <li>Manage your personal collection</li>
                 <li>Keep a list of your favorite plants</li>
                 <li>Add plants you would like to own to your wishlist</li>
-                <li>View your friends</li>
+                <li>Use the detailed view to quickly refer to your plants' needs</li>
               </ul>
               <h2>
                 <Link to='/contribute'>
-                  contribute <RiArrowRightSFill />
+                  contribute{' '}
+                  <span className='icon'>
+                    <BsArrowRightCircle />
+                  </span>
                 </Link>
               </h2>
               <ul>
@@ -73,16 +83,18 @@ export const Homepage = () => {
             <>
               <h2>
                 <Link to='/signup'>
-                  create an account <RiArrowRightSFill />
+                  create an account{' '}
+                  <span className='icon'>
+                    <BsArrowRightCircle />
+                  </span>
                 </Link>
               </h2>
               <ul>
                 <li>Keep a list of your own houseplant collection</li>
-                <li>Quickly view your plant's needs</li>
+                <li>Quickly view the care requirements for your plants via your profile</li>
                 <li>Save your favorite plants</li>
                 <li>Create a wishlist</li>
-                <li>Add your friends</li>
-                <li>Chat with other users about plants and share tips with each other</li>
+                <li>Help contribute to our database of houseplants</li>
               </ul>
             </>
           )}
@@ -115,7 +127,10 @@ export const Homepage = () => {
           </p>
           <h3>
             <Link to='/browse'>
-              learn more about houseplants <RiArrowRightSFill />
+              learn more about houseplants{' '}
+              <span className='icon'>
+                <BsArrowRightCircle />
+              </span>
             </Link>
           </h3>
         </InfoCard>
@@ -155,7 +170,11 @@ const Wrapper = styled.main`
       margin-left: 20px;
     }
   }
-
+  .icon {
+    font-size: 1.1rem;
+    margin-left: 10px;
+    display: grid;
+  }
   @media only screen and (min-width: 500px) {
     section {
       margin: 20px;

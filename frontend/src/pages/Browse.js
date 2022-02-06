@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer'
 
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
+import { COLORS, Switch } from '../GlobalStyles'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
@@ -11,10 +11,17 @@ import { BiSearch } from 'react-icons/bi'
 
 export const Browse = () => {
   const plants = useSelector(plantsArray)
+  const [viewNeeds, setViewNeeds] = useState(false)
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
+    if (document.getElementById('needs-toggle').checked) {
+      setViewNeeds(true)
+    } else setViewNeeds(false)
   }, [])
 
   // SORTS ALL PLANTS ALPHABETICALLY BY NAME
@@ -100,6 +107,17 @@ export const Browse = () => {
                   <BiSearch />
                 </button>
               </Search>
+              <div className='toggle-wrapper'>
+                <span className='toggle-option'>Detailed view</span>
+                <Switch>
+                  <input
+                    id='needs-toggle'
+                    type='checkbox'
+                    onChange={(ev) => setViewNeeds(ev.target.checked)}
+                  />
+                  <span className='slider'></span>
+                </Switch>
+              </div>
               <Filter>
                 <h2>filters</h2>
                 <Types>
@@ -133,7 +151,7 @@ export const Browse = () => {
             <Results>
               {plants.length > 0 && filteredPlants ? (
                 filteredPlants.map((plant) => {
-                  return <PlantCard key={plant._id} plant={plant} />
+                  return <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
                 })
               ) : (
                 <BeatingHeart />
@@ -167,6 +185,17 @@ const Actions = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  .toggle-wrapper {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    padding: 5px 10px;
+    border-radius: 20px;
+    .toggle-option {
+      margin-right: 20px;
+    }
+  }
   @media only screen and (min-width: 500px) {
     padding: 20px;
   }
