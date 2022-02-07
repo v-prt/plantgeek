@@ -19,24 +19,20 @@ export const COLORS = {
 }
 
 export const Button = styled.button`
-  line-height: 1;
   background: ${COLORS.medium};
   color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5px;
-  padding: 10px 20px;
+  display: grid;
+  place-content: center;
+  line-height: 1;
+  padding: 0 20px;
   border-radius: 10px;
   h2 {
     margin-right: 10px;
   }
   &:hover {
-    background: ${COLORS.light};
-    color: #000;
+    background: ${COLORS.mediumLight};
   }
   &:disabled {
-    pointer-events: none;
     background: #ccc;
     color: #000;
   }
@@ -108,14 +104,14 @@ export default createGlobalStyle`
         }
     }
     input {
-        padding: 10px;
-        font-size: 1.1rem;
+      padding: 10px;
+      font-size: 1rem;
     }
     button {
         background: none;
         border: none;
-        font-size: 1.1rem;
         transition: 0.2s ease-in-out;
+        font-size: 1rem;
         &:hover {
             cursor: pointer;
         }
@@ -124,7 +120,7 @@ export default createGlobalStyle`
         }
         &:disabled {
             opacity: 50%;
-            cursor: auto;
+            pointer-events: none;
         }
     }
 `

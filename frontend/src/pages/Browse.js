@@ -220,7 +220,7 @@ const Search = styled.form`
   button {
     margin-right: 10px;
     padding-top: 5px;
-    font-size: 1.7rem;
+    font-size: 1.3rem;
     &:hover {
       color: ${COLORS.light};
     }

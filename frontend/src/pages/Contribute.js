@@ -158,7 +158,7 @@ export const Contribute = () => {
               <div className='msg'>
                 <h2>
                   <img className='checkmark' src={checkmark} alt='' />
-                  New plant submitted
+                  new plant submitted
                 </h2>
                 <p>
                   Thank you! Your submission will be reviewed shortly and, if approved, you will see
@@ -170,7 +170,7 @@ export const Contribute = () => {
             </section>
           )}
           <section className='introduction'>
-            <h2>Help us grow</h2>
+            <h2>help us grow</h2>
             <p>
               Submit new data through the form below so we can all take better care of our beloved
               houseplants! Please include a link to a reliable source to help verify the information
@@ -179,7 +179,7 @@ export const Contribute = () => {
             </p>
           </section>
           <FormWrapper>
-            <h2>Houseplant Info</h2>
+            <h2>houseplant info</h2>
             <Formik
               initialValues={{
                 species: '',

@@ -145,6 +145,7 @@ const Wrapper = styled.div`
 const Heading = styled.div`
   background: ${COLORS.light};
   display: flex;
+  align-items: center;
   justify-content: space-between;
   padding: 0 20px;
   transition: 0.2s ease-in-out;
@@ -155,15 +156,10 @@ const Heading = styled.div`
   .title {
     display: flex;
     align-items: center;
-    font-size: 1.2rem;
     margin-right: 10px;
   }
   .num-plants {
-    font-size: 1rem;
     margin-left: 10px;
-  }
-  @media only screen and (min-width: 500px) {
-    font-size: 1.5rem;
   }
 `
 
