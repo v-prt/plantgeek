@@ -288,7 +288,7 @@ export const Card = styled.div`
       display: flex;
       align-items: center;
       margin-top: 10px;
-      font-size: 0.6rem;
+      font-size: 0.7rem;
       white-space: pre;
     }
     .checkbox-input {

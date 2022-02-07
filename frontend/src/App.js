@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { usePlantsFetcher, useUsersFetcher } from './utilities/fetch'
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import background from './assets/monstera-banner.webp'
+import background from './assets/banner1.jpg'
 import { Navbar } from './components/Navbar'
 import { Homepage } from './pages/Homepage'
 import { Browse } from './pages/Browse'
@@ -80,25 +80,40 @@ const Body = styled.div`
   margin-right: 45px;
   main {
     width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin: auto;
     padding: 20px 0;
+    section {
+      margin: 10px 0;
+      padding: 20px;
+      border-radius: 20px;
+    }
   }
   @media only screen and (min-width: 500px) {
     margin-right: 55px;
     main {
       width: 80%;
+      section {
+        margin: 20px 0;
+        padding: 30px;
+      }
     }
   }
   @media only screen and (min-width: 1000px) {
     margin-right: 240px;
     main {
       max-width: 1200px;
+      section {
+        padding: 40px;
+      }
     }
   }
 `
 
 const Banner = styled.div`
   background: url(${background}) center center / cover;
-  height: 120px;
+  height: 150px;
   width: 100%;
 `

@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'
-import { requestUsers, receiveUsers } from '../actions.js'
+import { requestUsers, receiveUsers } from '../actions'
 import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
-import { COLORS, Button } from '../GlobalStyles'
+import { Button } from '../GlobalStyles'
 import placeholder from '../assets/avatar-placeholder.png'
-import { FadeIn } from '../components/loaders/FadeIn.js'
+import { FadeIn } from '../components/loaders/FadeIn'
+import { Avatar } from './UserProfile'
 import moment from 'moment'
 
 export const Settings = () => {
@@ -112,54 +113,56 @@ export const Settings = () => {
     <Wrapper>
       {currentUser && (
         <FadeIn>
-          <Div>
+          <div className='user-info'>
             <Avatar src={currentUser?.image ? currentUser?.image[0] : placeholder} alt='' />
-            <h1>{currentUser?.username}</h1>
-            <p>Member since {moment(currentUser?.joined).format('ll')}</p>
-            <Options>
-              <Heading>account settings</Heading>
-              <Option key='upload-image'>
-                {currentUser && currentUser.image ? (
-                  <p>Change your profile image</p>
-                ) : (
-                  <p>Upload a profile image</p>
-                )}
-                <form>
-                  <input type='text' placeholder='Image URL' onChange={handleUrl} />
-                  <Button type='submit' onClick={handleUpload}>
-                    Upload
-                  </Button>
-                </form>
-              </Option>
-              <Option key='change-username'>
-                {currentUser && currentUser.username && <p>Change your username</p>}
-                <form>
-                  <input type='text' placeholder='New username' onChange={handleUsername} />
-                  <Button type='submit' onClick={changeUsername} disabled={true}>
-                    Change
-                  </Button>
-                </form>
-              </Option>
-              <Option key='change-password'>
-                {currentUser && currentUser.password && <p>Change your password</p>}
-                <form>
-                  <input type='text' placeholder='New password' onChange={handlePassword} />
-                  <Button type='submit' onClick={changePassword} disabled={true}>
-                    Change
-                  </Button>
-                </form>
-              </Option>
-              <Option last={true}>
-                <p>Delete your account</p>
-                <form>
-                  <input className='hidden' type='text' />
-                  <Button onClick={deleteAccount} disabled={true}>
-                    Delete
-                  </Button>
-                </form>
-              </Option>
-            </Options>
-          </Div>
+            <div className='text'>
+              <h1>{currentUser?.username}</h1>
+              <p>Member since {moment(currentUser?.joined).format('ll')}</p>
+            </div>
+          </div>
+          <section>
+            <Heading>account settings</Heading>
+            <Option key='upload-image'>
+              {currentUser && currentUser.image ? (
+                <p>Change your profile image</p>
+              ) : (
+                <p>Upload a profile image</p>
+              )}
+              <form>
+                <input type='text' placeholder='Image URL' onChange={handleUrl} />
+                <Button type='submit' onClick={handleUpload}>
+                  Upload
+                </Button>
+              </form>
+            </Option>
+            <Option key='change-username'>
+              {currentUser && currentUser.username && <p>Change your username</p>}
+              <form>
+                <input type='text' placeholder='New username' onChange={handleUsername} />
+                <Button type='submit' onClick={changeUsername} disabled={true}>
+                  Change
+                </Button>
+              </form>
+            </Option>
+            <Option key='change-password'>
+              {currentUser && currentUser.password && <p>Change your password</p>}
+              <form>
+                <input type='text' placeholder='New password' onChange={handlePassword} />
+                <Button type='submit' onClick={changePassword} disabled={true}>
+                  Change
+                </Button>
+              </form>
+            </Option>
+            <Option last={true}>
+              <p>Delete your account</p>
+              <form>
+                <input className='hidden' type='text' />
+                <Button onClick={deleteAccount} disabled={true}>
+                  Delete
+                </Button>
+              </form>
+            </Option>
+          </section>
         </FadeIn>
       )}
     </Wrapper>
@@ -167,11 +170,23 @@ export const Settings = () => {
 }
 
 const Wrapper = styled.main`
-  background: ${COLORS.lightest};
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 190px);
+  .user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 50px;
+    .text {
+      margin-left: 30px;
+    }
+  }
+  section {
+    background: #f2f2f2;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+  }
   form {
     display: flex;
     justify-content: space-between;
@@ -181,25 +196,12 @@ const Wrapper = styled.main`
       border: none;
       border-radius: 10px;
       margin-right: 10px;
-      font-size: 0.8rem;
       &.hidden {
         visibility: hidden;
       }
     }
     button {
       flex: 1;
-      font-size: 0.8rem;
-    }
-  }
-  @media only screen and (min-width: 500px) {
-    font-size: 1rem;
-    form {
-      input {
-        font-size: 1rem;
-      }
-      button {
-        font-size: 1rem;
-      }
     }
   }
   @media only screen and (min-width: 1000px) {
@@ -210,35 +212,6 @@ const Wrapper = styled.main`
   }
 `
 
-const Div = styled.div`
-  width: 100%;
-  position: relative;
-  top: -70px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`
-
-const Avatar = styled.img`
-  height: 200px;
-  width: 200px;
-  border-radius: 50%;
-  border: 5px solid ${COLORS.light};
-  padding: 5px;
-`
-
-const Options = styled.ul`
-  background: #f2f2f2;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  margin: 60px 20px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  @media only screen and (min-width: 500px) {
-    font-size: 1rem;
-  }
-`
-
 const Heading = styled.h2`
   box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
   padding: 10px 20px;
@@ -246,13 +219,12 @@ const Heading = styled.h2`
   text-align: center;
 `
 
-const Option = styled.li`
+const Option = styled.div`
   color: ${(props) => (props.last ? '#cc0000' : '')};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border-bottom: ${(props) => (props.last ? 'none' : '1px dotted #ccc')};
-  padding: 10px 20px;
   @media only screen and (min-width: 1000px) {
     flex-direction: row;
     align-items: center;

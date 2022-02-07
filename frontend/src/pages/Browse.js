@@ -168,10 +168,6 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-size: 0.8rem;
-  @media only screen and (min-width: 500px) {
-    font-size: 1rem;
-  }
 `
 
 const Div = styled.div`

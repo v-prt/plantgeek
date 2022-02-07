@@ -86,6 +86,10 @@ export default createGlobalStyle`
     html, body {
         background: ${COLORS.lightest};
         overscroll-behavior: none;
+        font-size: 0.9rem;
+        @media only screen and (min-width: 500px) {
+          font-size: 1rem;
+        }
     }
     h1, h2, h3 {
         font-family: 'Quicksand', sans-serif;
@@ -105,13 +109,11 @@ export default createGlobalStyle`
     }
     input {
       padding: 10px;
-      font-size: 1rem;
     }
     button {
         background: none;
         border: none;
         transition: 0.2s ease-in-out;
-        font-size: 1rem;
         &:hover {
             cursor: pointer;
         }

@@ -137,7 +137,7 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin: 20px;
+  margin: 20px 0;
   border-radius: 20px;
   overflow: hidden;
 `
