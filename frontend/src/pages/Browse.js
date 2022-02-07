@@ -168,10 +168,6 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-size: 0.8rem;
-  @media only screen and (min-width: 500px) {
-    font-size: 1rem;
-  }
 `
 
 const Div = styled.div`
@@ -220,7 +216,7 @@ const Search = styled.form`
   button {
     margin-right: 10px;
     padding-top: 5px;
-    font-size: 1.7rem;
+    font-size: 1.3rem;
     &:hover {
       color: ${COLORS.light};
     }

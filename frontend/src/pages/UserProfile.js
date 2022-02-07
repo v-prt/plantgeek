@@ -27,16 +27,18 @@ export const UserProfile = () => {
     <Wrapper>
       {user && (
         <FadeIn>
-          <Div>
+          <div className='user-info'>
             <Avatar src={user?.image ? user?.image[0] : placeholder} alt='' />
-            <h1>{user?.username}</h1>
-            <p>Member since {moment(user?.joined).format('ll')}</p>
-            <Lists>
-              <DetailedPlantList username={username} list={user?.collection} title='collection' />
-              <DetailedPlantList username={username} list={user?.favorites} title='favorites' />
-              <DetailedPlantList username={username} list={user?.wishlist} title='wishlist' />
-            </Lists>
-          </Div>
+            <div className='text'>
+              <h1>{user?.username}</h1>
+              <p>Member since {moment(user?.joined).format('ll')}</p>
+            </div>
+          </div>
+          <Lists>
+            <DetailedPlantList username={username} list={user?.collection} title='collection' />
+            <DetailedPlantList username={username} list={user?.favorites} title='favorites' />
+            <DetailedPlantList username={username} list={user?.wishlist} title='wishlist' />
+          </Lists>
         </FadeIn>
       )}
     </Wrapper>
@@ -47,30 +49,38 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 190px);
+  .user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    .text {
+      margin-left: 30px;
+    }
+  }
 `
 
-const Div = styled.div`
-  width: 100%;
-  position: relative;
-  top: -70px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`
-
-const Avatar = styled.img`
-  height: 200px;
-  width: 200px;
+export const Avatar = styled.img`
+  background: linear-gradient(
+    -45deg,
+    ${COLORS.medium} 0%,
+    ${COLORS.mediumLight} 25%,
+    ${COLORS.mediumLight} 50%,
+    ${COLORS.light} 75%,
+    ${COLORS.lightest} 100%
+  );
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  height: 150px;
+  width: 150px;
   border-radius: 50%;
-  border: 5px solid ${COLORS.light};
   padding: 5px;
+  @media only screen and (min-width: 500px) {
+    height: 200px;
+    width: 200px;
+  }
 `
 
-const Lists = styled.section`
-  width: 100%;
+const Lists = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top: 40px;
 `

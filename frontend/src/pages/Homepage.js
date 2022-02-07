@@ -147,7 +147,6 @@ const Wrapper = styled.main`
     margin: 10px 0;
     padding: 20px;
     border-radius: 20px;
-    font-size: 0.8rem;
   }
   .heading {
     background: ${COLORS.light};
@@ -160,14 +159,16 @@ const Wrapper = styled.main`
       justify-content: flex-end;
     }
     h1 {
-      font-size: 1.2rem;
       text-align: right;
     }
     img {
+      background: ${COLORS.lightest};
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
       height: 80px;
       width: 80px;
       border-radius: 50%;
       margin-left: 20px;
+      padding: 3px;
     }
   }
   .icon {
@@ -179,12 +180,6 @@ const Wrapper = styled.main`
     section {
       margin: 20px;
       padding: 40px;
-      font-size: 1rem;
-    }
-    .heading {
-      h1 {
-        font-size: 1.8rem;
-      }
     }
   }
 `

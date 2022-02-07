@@ -4,11 +4,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
 import { UserContext } from '../contexts/UserContext'
 import { plantsArray } from '../reducers/plantReducer'
-import { requestPlants, receivePlants } from '../actions.js'
+import { requestPlants, receivePlants } from '../actions'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-import { Text, Select, Checkbox } from '../components/forms/FormItems.js'
+import { Text, Select, Checkbox } from '../components/forms/FormItems'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
@@ -18,7 +18,7 @@ import checkmark from '../assets/checkmark.svg'
 import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
 import { ImCross } from 'react-icons/im'
 import monstera from '../assets/monstera.jpeg'
-
+import placeholder from '../assets/plant-placeholder.svg'
 import { PlantCard } from '../components/PlantCard'
 
 export const Contribute = () => {
@@ -152,211 +152,223 @@ export const Contribute = () => {
   return (
     <Wrapper>
       <FadeIn>
-        <div className='content-wrapper'>
-          {newPlant && (
-            <section className='confirmation'>
-              <div className='msg'>
-                <h2>
-                  <img className='checkmark' src={checkmark} alt='' />
-                  New plant submitted
-                </h2>
-                <p>
-                  Thank you! Your submission will be reviewed shortly and, if approved, you will see
-                  the new plant on site soon. In the meantime, you may submit additional plant
-                  information below.
-                </p>
-              </div>
-              <PlantCard key={newPlant._id} plant={newPlant} />
-            </section>
-          )}
-          <section className='introduction'>
-            <h2>Help us grow</h2>
+        {newPlant && (
+          <section className='confirmation'>
+            <div className='msg'>
+              <h2>
+                <img className='checkmark' src={checkmark} alt='' />
+                new plant submitted
+              </h2>
+              <p>
+                Thank you! Your submission will be reviewed shortly and, if approved, you will see
+                the new plant on site soon. In the meantime, you may submit additional plant
+                information below.
+              </p>
+            </div>
+            <PlantCard key={newPlant._id} plant={newPlant} />
+          </section>
+        )}
+      </FadeIn>
+      <FadeIn>
+        <section className='introduction'>
+          <div>
+            <h2>help us grow</h2>
             <p>
               Submit new data through the form below so we can all take better care of our beloved
               houseplants! Please include a link to a reliable source to help verify the information
               you provide. We review all submissions prior to uploading in order to maintain the
               integrity of our database.
             </p>
-          </section>
-          <FormWrapper>
-            <h2>Houseplant Info</h2>
-            <Formik
-              initialValues={{
-                species: '',
-                genus: '',
-                light: '',
-                water: '',
-                temperature: '',
-                humidity: '',
-                toxic: '',
-                imageUrl: '',
-                sourceUrl: '',
-              }}
-              validationSchema={PlantSchema}
-              // validateOnChange={false}
-              // validateOnBlur={false}
-              onSubmit={handleSubmit}>
-              {({ isSubmitting }) => (
-                <Form>
-                  {status && <div className='status'>{status}</div>}
-                  <Text
-                    label='Species'
-                    name='species'
-                    type='text'
-                    placeholder='e.g. Monstera deliciosa'
-                    autoFocus
-                  />
-                  {/* TODO: choose from existing genus or input new? */}
-                  <Text label='Genus' name='genus' type='text' placeholder='e.g. Monstera' />
-                  {/* TODO: common name
+          </div>
+          <img src={placeholder} alt='' />
+        </section>
+      </FadeIn>
+      <FadeIn delay={200}>
+        <FormWrapper>
+          <Heading>houseplant info</Heading>
+          <Formik
+            initialValues={{
+              species: '',
+              genus: '',
+              light: '',
+              water: '',
+              temperature: '',
+              humidity: '',
+              toxic: '',
+              imageUrl: '',
+              sourceUrl: '',
+            }}
+            validationSchema={PlantSchema}
+            // validateOnChange={false}
+            // validateOnBlur={false}
+            onSubmit={handleSubmit}>
+            {({ isSubmitting }) => (
+              <Form>
+                {status && <div className='status'>{status}</div>}
+                <Text
+                  label='Species'
+                  name='species'
+                  type='text'
+                  placeholder='e.g. Monstera deliciosa'
+                  autoFocus
+                />
+                {/* TODO: choose from existing genus or input new? */}
+                <Text label='Genus' name='genus' type='text' placeholder='e.g. Monstera' />
+                {/* TODO: common name
                   <Text label='Common name' name='common-name' type='text' placeholder='e.g. Swiss cheese plant' /> */}
-                  <Select
-                    label='Light'
-                    name='light'
-                    type='select'
-                    options={[
-                      'low to bright indirect',
-                      'medium indirect',
-                      'medium to bright indirect',
-                      'bright indirect',
-                    ]}
-                  />
-                  <Select
-                    label='Water'
-                    name='water'
-                    type='select'
-                    options={['low', 'low to medium', 'medium', 'medium to high', 'high']}
-                  />
-                  <Select
-                    label='Temperature'
-                    name='temperature'
-                    type='select'
-                    options={['average', 'above average']}
-                  />
-                  <Select
-                    label='Humidity'
-                    name='humidity'
-                    type='select'
-                    options={['average', 'above average']}
-                  />
-                  {/* FIXME: radio instead of checkbox? */}
-                  <Checkbox name='toxic'>This plant is toxic</Checkbox>
-                  <DropZone>
-                    {/* TODO:
+                <Select
+                  label='Light'
+                  name='light'
+                  type='select'
+                  options={[
+                    'low to bright indirect',
+                    'medium indirect',
+                    'medium to bright indirect',
+                    'bright indirect',
+                  ]}
+                />
+                <Select
+                  label='Water'
+                  name='water'
+                  type='select'
+                  options={['low', 'low to medium', 'medium', 'medium to high', 'high']}
+                />
+                <Select
+                  label='Temperature'
+                  name='temperature'
+                  type='select'
+                  options={['average', 'above average']}
+                />
+                <Select
+                  label='Humidity'
+                  name='humidity'
+                  type='select'
+                  options={['average', 'above average']}
+                />
+                {/* FIXME: radio instead of checkbox? */}
+                <Checkbox name='toxic'>This plant is toxic</Checkbox>
+                <DropZone>
+                  {/* TODO:
                     - make this work with formik
               - set up signed uploads with cloudinary
               - set up a way to approve images before saving to db (cloudinary analysis using amazon rekognition, must be plant and pass guidelines, no offensive content) */}
-                    <div className='guidelines-wrapper'>
-                      <div className='guidelines'>
-                        <p>
-                          Upload image{' '}
-                          <span className='info-text'>(please follow our guidelines)</span>
-                        </p>
-                        <ul>
-                          <li key={1}>houseplants only</li>
-                          <li key={2}>1:1 aspect ratio (square)</li>
-                          <li key={3}>display the whole plant in a plain pot</li>
-                          <li key={4}>white background</li>
-                          <li>well lit & in focus (no blurry images)</li>
-                          <li>full color (no filters)</li>
-                          <li>max 1 image (up to 1mb)</li>
-                        </ul>
-                      </div>
-                      <div className='example'>
-                        <p className='info-text'>Example:</p>
-                        <img style={{ height: '200px' }} src={monstera} alt='' />
-                      </div>
+                  <div className='guidelines-wrapper'>
+                    <div className='guidelines'>
+                      <p>
+                        Upload image{' '}
+                        <span className='info-text'>(please follow our guidelines)</span>
+                      </p>
+                      <ul>
+                        <li key={1}>houseplants only</li>
+                        <li key={2}>1:1 aspect ratio (square)</li>
+                        <li key={3}>display the whole plant in a plain pot</li>
+                        <li key={4}>white background</li>
+                        <li>well lit & in focus (no blurry images)</li>
+                        <li>full color (no filters)</li>
+                        <li>max 1 image (up to 1mb)</li>
+                      </ul>
                     </div>
-                    <DropBox
-                      {...getRootProps()}
-                      isDragAccept={isDragAccept}
-                      isDragReject={isDragReject}>
-                      <input {...getInputProps()} name='images' />
-                      <div className='icon'>
-                        {isDragAccept && <RiImageAddFill />}
-                        {isDragReject && <ImCross />}
-                        {!isDragActive && <RiImageAddLine />}
-                      </div>
-                    </DropBox>
-                    <div className='preview-container'>
-                      {images &&
-                        images.map((image) => (
-                          <div className='thumbnail' key={image.name}>
-                            <div className='thumbnail-inner'>
-                              <img src={image.preview} alt={image.name} />
-                            </div>
+                    <div className='example'>
+                      <p className='info-text'>Example:</p>
+                      <img style={{ height: '200px' }} src={monstera} alt='' />
+                    </div>
+                  </div>
+                  <DropBox
+                    {...getRootProps()}
+                    isDragAccept={isDragAccept}
+                    isDragReject={isDragReject}>
+                    <input {...getInputProps()} name='images' />
+                    <div className='icon'>
+                      {isDragAccept && <RiImageAddFill />}
+                      {isDragReject && <ImCross />}
+                      {!isDragActive && <RiImageAddLine />}
+                    </div>
+                  </DropBox>
+                  <div className='preview-container'>
+                    {images &&
+                      images.map((image) => (
+                        <div className='thumbnail' key={image.name}>
+                          <div className='thumbnail-inner'>
+                            <img src={image.preview} alt={image.name} />
                           </div>
-                        ))}
-                    </div>
-                  </DropZone>
-                  {/* TODO: accept multiple source links? */}
-                  <Text label='Source' name='sourceUrl' type='text' placeholder='Insert URL' />
-                  <button type='submit' disabled={isSubmitting}>
-                    {isSubmitting ? <Ellipsis /> : 'SUBMIT'}
-                  </button>
-                </Form>
-              )}
-            </Formik>
-          </FormWrapper>
-          {/* TODO: background/decorative image? */}
-        </div>
+                        </div>
+                      ))}
+                  </div>
+                </DropZone>
+                {/* TODO: accept multiple source links? */}
+                <Text label='Source' name='sourceUrl' type='text' placeholder='Insert URL' />
+                <button type='submit' disabled={isSubmitting}>
+                  {isSubmitting ? <Ellipsis /> : 'SUBMIT'}
+                </button>
+              </Form>
+            )}
+          </Formik>
+        </FormWrapper>
       </FadeIn>
     </Wrapper>
   )
 }
 
 const Wrapper = styled.main`
-  .content-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  section {
+    margin: 10px 0;
+    padding: 20px;
+    border-radius: 20px;
+    &.introduction {
       background: #fff;
-      width: 80%;
-      margin-top: 30px;
-      border-radius: 20px;
-      padding: 30px;
-      &.confirmation {
-        background: ${COLORS.light};
-        display: flex;
-        align-items: center;
-        justify-content: space-evenly;
-        .msg {
-          h2 {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            .checkmark {
-              background: ${COLORS.lightest};
-              padding: 2px;
-              border-radius: 50%;
-              height: 40px;
-              margin-right: 10px;
-            }
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      p {
+        max-width: 600px;
+        margin-bottom: 50px;
+      }
+      img {
+        width: 100px;
+        align-self: flex-end;
+        margin-left: auto;
+      }
+    }
+    &.confirmation {
+      background: ${COLORS.light};
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      .msg {
+        h2 {
+          display: flex;
+          align-items: center;
+          margin-bottom: 20px;
+          .checkmark {
+            background: ${COLORS.lightest};
+            padding: 2px;
+            border-radius: 50%;
+            height: 40px;
+            margin-right: 10px;
           }
-          p {
-            max-width: 400px;
-          }
+        }
+        p {
+          max-width: 400px;
         }
       }
     }
   }
   @media only screen and (min-width: 500px) {
-    .content-wrapper {
-      padding: 20px;
+    section {
+      margin: 20px;
+      padding: 40px;
     }
   }
 `
 
-const FormWrapper = styled.div`
+const FormWrapper = styled.section`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 80%;
   margin: 30px 0;
-  padding: 30px;
+  padding: 20px;
   border-radius: 20px;
   form {
     .form-item {
@@ -402,7 +414,6 @@ const FormWrapper = styled.div`
         font-style: italic;
       }
     }
-
     .info-text {
       color: #666;
       font-style: italic;
@@ -430,6 +441,13 @@ const FormWrapper = styled.div`
       }
     }
   }
+`
+
+const Heading = styled.h2`
+  box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
+  padding: 0 20px 10px 20px;
+  margin-bottom: 10px;
+  text-align: center;
 `
 
 const DropZone = styled.div`

@@ -20,7 +20,7 @@ export const Footer = () => {
 const Wrapper = styled.footer`
   background: ${COLORS.light};
   color: ${COLORS.dark};
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   padding: 10px;
   .inner {
     margin: auto;
