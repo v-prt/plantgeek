@@ -86,10 +86,10 @@ export default createGlobalStyle`
     html, body {
         background: ${COLORS.lightest};
         overscroll-behavior: none;
-        font-size: 0.9rem;
+        /* font-size: 0.9rem;
         @media only screen and (min-width: 500px) {
           font-size: 1rem;
-        }
+        } */
     }
     h1, h2, h3 {
         font-family: 'Quicksand', sans-serif;

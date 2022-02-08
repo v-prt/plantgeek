@@ -15,143 +15,156 @@ export const Navbar = () => {
 
   return (
     <Wrapper>
-      <Div>
-        <Link to='/'>
-          <Title>plantgeek</Title>
-          <Logo src={plantgeekLogo} alt='' />
-        </Link>
-      </Div>
-      <Link to='/browse'>
-        <Label>browse</Label>
-        <Icon>
-          <BiSearch />
-        </Icon>
-      </Link>
-      {currentUser ? (
-        <>
-          <Link to={`/user-profile/${currentUser.username}`}>
-            <Label>profile</Label>
-            <Icon>
-              <CgProfile />
-            </Icon>
-          </Link>
-          <Link to='/settings'>
-            <Label>settings</Label>
-            <Icon>
-              <BiCog />
-            </Icon>
-          </Link>
-          <Link to='/contribute'>
-            <Label>contribute</Label>
-            <Icon>
-              <AiOutlinePlusCircle />
-            </Icon>
-          </Link>
-          <LogoutBtn onClick={handleLogout}>
-            <Label>log out</Label>
-            <Icon>
-              <BiLogOutCircle />
-            </Icon>
-          </LogoutBtn>
-        </>
-      ) : (
-        <>
-          <Link to='/login'>
-            <Label>log in</Label>
-            <Icon>
-              <BiLogInCircle />
-            </Icon>
-          </Link>
-        </>
-      )}
+      <div className='inner'>
+        <div className='logo'>
+          <NavLink to='/'>
+            <img src={plantgeekLogo} alt='' />
+            <span className='label'>plantgeek</span>
+          </NavLink>
+        </div>
+        <div className='nav-links'>
+          <NavLink to='/browse'>
+            <div className='icon'>
+              <BiSearch />
+            </div>
+            <span className='label'>browse</span>
+          </NavLink>
+          {currentUser ? (
+            <>
+              <NavLink to={`/user-profile/${currentUser.username}`}>
+                <div className='icon'>
+                  <CgProfile />
+                </div>
+                <span className='label'>profile</span>
+              </NavLink>
+              <NavLink to='/settings'>
+                <div className='icon'>
+                  <BiCog />
+                </div>
+                <span className='label'>settings</span>
+              </NavLink>
+              <NavLink to='/contribute'>
+                <div className='icon'>
+                  <AiOutlinePlusCircle />
+                </div>
+                <span className='label'>contribute</span>
+              </NavLink>
+              <button className='logout-btn' onClick={handleLogout}>
+                <div className='icon'>
+                  <BiLogOutCircle />
+                </div>
+                <span className='label'>log out</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to='/login'>
+                <div className='icon'>
+                  <BiLogInCircle />
+                </div>
+                <span className='label'>log in</span>
+              </NavLink>
+            </>
+          )}
+        </div>
+      </div>
     </Wrapper>
   )
 }
 
 const Wrapper = styled.nav`
   background: ${COLORS.darkest};
-  height: 100vh;
-  width: 45px;
+  width: 100%;
   position: fixed;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 100;
+  top: 0;
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    a,
+    .logout-btn {
+      color: #fff;
+      display: flex;
+      align-items: center;
+      margin: 10px;
+      &:hover {
+        color: ${COLORS.mediumLight};
+      }
+      &.active {
+        color: ${COLORS.light};
+      }
+    }
+    .label {
+      display: none;
+    }
+    .logo {
+      img {
+        height: 30px;
+        filter: invert(1);
+      }
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+    }
+    .icon {
+      display: grid;
+      font-size: 1.5rem;
+    }
+  }
   @media only screen and (min-width: 500px) {
+    right: 0;
+    height: 100%;
     width: 55px;
+    .inner {
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 20px;
+      a,
+      .logout-btn {
+        margin: 20px 0;
+      }
+      .logo {
+        margin-bottom: 30px;
+      }
+      .nav-links {
+        flex-direction: column;
+      }
+    }
   }
   @media only screen and (min-width: 1000px) {
-    padding: 20px;
-    width: 200px;
-    align-items: flex-end;
-  }
-`
-
-const Div = styled.div`
-  display: flex;
-  margin: 20px 0;
-`
-
-const Logo = styled.img`
-  filter: invert(1);
-  width: 30px;
-  margin: 10px 5px;
-  @media only screen and (min-width: 500px) {
-    width: 40px;
-  }
-  @media only screen and (min-width: 1000px) {
-    margin-right: 6px;
-  }
-`
-
-const Link = styled(NavLink)`
-  color: #fff;
-  display: flex;
-  align-items: center;
-  &.active {
-    color: ${COLORS.light};
-  }
-`
-
-const LogoutBtn = styled.button`
-  color: #fff;
-  display: flex;
-  align-items: center;
-  span {
-    font-size: 1rem;
-  }
-  &:hover {
-    color: ${COLORS.light};
-  }
-  &:focus {
-    color: ${COLORS.light};
-  }
-`
-
-const Title = styled.span`
-  display: none;
-  font-family: 'Comfortaa', cursive;
-  color: #fff;
-  font-size: 1.5rem;
-  margin-right: 15px;
-  @media only screen and (min-width: 1000px) {
-    display: block;
-  }
-`
-
-const Label = styled.span`
-  display: none;
-  margin-right: 15px;
-  @media only screen and (min-width: 1000px) {
-    display: block;
-  }
-`
-
-const Icon = styled.div`
-  font-size: 1.5rem;
-  margin: 10px 10px 0 10px;
-  @media only screen and (min-width: 500px) {
-    font-size: 2rem;
+    width: 240px;
+    .inner {
+      padding: 20px 40px;
+      .label {
+        display: block;
+      }
+      .logo {
+        width: 100%;
+        img {
+          height: 40px;
+          margin-right: 10px;
+        }
+        .label {
+          color: #fff;
+          font-size: 1.5rem;
+        }
+      }
+      .nav-links {
+        width: 100%;
+        a,
+        .logout-btn {
+          width: 100%;
+          .icon {
+            margin: 0 15px 0 7px;
+            font-size: 1.6rem;
+          }
+          .label {
+            font-size: 1.1rem;
+          }
+        }
+      }
+    }
   }
 `

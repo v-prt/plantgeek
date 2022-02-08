@@ -5,7 +5,7 @@ import { UserContext } from '../contexts/UserContext'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
-import { BsArrowRightCircle } from 'react-icons/bs'
+import { FaArrowAltCircleRight } from 'react-icons/fa'
 import placeholder from '../assets/avatar-placeholder.png'
 
 import { FeaturedPlants } from '../components/FeaturedPlants'
@@ -38,10 +38,10 @@ export const Homepage = () => {
         <InfoCard>
           <h2>
             <Link to='/browse'>
-              browse houseplants{' '}
               <span className='icon'>
-                <BsArrowRightCircle />
+                <FaArrowAltCircleRight />
               </span>
+              browse houseplants
             </Link>
           </h2>
           <ul>
@@ -53,10 +53,10 @@ export const Homepage = () => {
             <>
               <h2>
                 <Link to={`/user-profile/${currentUser.username}`}>
-                  view your profile{' '}
                   <span className='icon'>
-                    <BsArrowRightCircle />
+                    <FaArrowAltCircleRight />
                   </span>
+                  view your profile
                 </Link>
               </h2>
               <ul>
@@ -67,10 +67,10 @@ export const Homepage = () => {
               </ul>
               <h2>
                 <Link to='/contribute'>
-                  contribute{' '}
                   <span className='icon'>
-                    <BsArrowRightCircle />
+                    <FaArrowAltCircleRight />
                   </span>
+                  contribute
                 </Link>
               </h2>
               <ul>
@@ -83,10 +83,10 @@ export const Homepage = () => {
             <>
               <h2>
                 <Link to='/signup'>
-                  create an account{' '}
                   <span className='icon'>
-                    <BsArrowRightCircle />
+                    <FaArrowAltCircleRight />
                   </span>
+                  create an account
                 </Link>
               </h2>
               <ul>
@@ -127,10 +127,10 @@ export const Homepage = () => {
           </p>
           <h3>
             <Link to='/browse'>
-              learn more about houseplants{' '}
               <span className='icon'>
-                <BsArrowRightCircle />
+                <FaArrowAltCircleRight />
               </span>
+              learn more
             </Link>
           </h3>
         </InfoCard>
@@ -173,7 +173,7 @@ const Wrapper = styled.main`
   }
   .icon {
     font-size: 1.1rem;
-    margin-left: 10px;
+    margin-right: 10px;
     display: grid;
   }
   @media only screen and (min-width: 500px) {
@@ -200,6 +200,7 @@ const InfoCard = styled.section`
   ul {
     list-style: disc;
     margin-bottom: 20px;
+    margin-left: 3px;
     li {
       margin-left: 20px;
     }

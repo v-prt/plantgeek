@@ -77,7 +77,7 @@ const Body = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  margin-right: 45px;
+  /* margin-right: 45px; */
   main {
     width: 90%;
     display: flex;
@@ -114,6 +114,6 @@ const Body = styled.div`
 
 const Banner = styled.div`
   background: url(${background}) center center / cover;
-  height: 150px;
+  height: 110px;
   width: 100%;
 `

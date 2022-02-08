@@ -7,7 +7,7 @@ import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { BeatingHeart } from './loaders/BeatingHeart'
 import { FadeIn } from './loaders/FadeIn.js'
-import { BsArrowRightCircle } from 'react-icons/bs'
+import { FaArrowAltCircleRight } from 'react-icons/fa'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import { RiPlantLine } from 'react-icons/ri'
@@ -75,10 +75,10 @@ export const FeaturedPlants = () => {
           </Plants>
           <h3>
             <Link to='/browse'>
-              browse more{' '}
               <span className='icon'>
-                <BsArrowRightCircle />
+                <FaArrowAltCircleRight />
               </span>
+              browse more
             </Link>
           </h3>
         </FadeIn>
