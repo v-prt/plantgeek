@@ -522,6 +522,7 @@ const DropBox = styled.div`
   text-align: center;
   height: 150px;
   cursor: pointer;
+  transition: 0.2s ease-in-out;
   .icon {
     font-size: 4rem;
   }

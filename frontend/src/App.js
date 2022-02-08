@@ -82,7 +82,7 @@ const Body = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: auto;
+    margin: 50px auto 0 auto;
     padding: 20px 0;
     section {
       margin: 10px auto;
@@ -94,6 +94,7 @@ const Body = styled.div`
     margin-right: 55px;
     main {
       width: 80%;
+      margin: auto;
       section {
         margin: 20px auto;
         padding: 30px;
@@ -115,4 +116,8 @@ const Banner = styled.div`
   background: url(${background}) center center / cover;
   height: 110px;
   width: 100%;
+  display: none;
+  @media only screen and (min-width: 500px) {
+    display: block;
+  }
 `

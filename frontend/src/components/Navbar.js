@@ -74,6 +74,7 @@ export const Navbar = () => {
 
 const Wrapper = styled.nav`
   background: ${COLORS.darkest};
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   width: 100%;
   position: fixed;
   top: 0;
