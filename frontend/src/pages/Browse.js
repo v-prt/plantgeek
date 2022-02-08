@@ -101,24 +101,26 @@ export const Browse = () => {
         <FadeIn>
           <Div>
             <Actions>
-              <Search>
-                <input type='text' placeholder='Search houseplants' onChange={handleQuery} />
-                <button type='submit' onClick={handleSearch}>
-                  <BiSearch />
-                </button>
-              </Search>
-              <div className='toggle-wrapper'>
-                <span className='toggle-option'>Detailed view</span>
-                <Switch>
-                  <input
-                    id='needs-toggle'
-                    type='checkbox'
-                    onChange={(ev) => setViewNeeds(ev.target.checked)}
-                  />
-                  <span className='slider'></span>
-                </Switch>
+              <div className='search-toggle-wrapper'>
+                <Search>
+                  <input type='text' placeholder='Search houseplants' onChange={handleQuery} />
+                  <button type='submit' onClick={handleSearch}>
+                    <BiSearch />
+                  </button>
+                </Search>
+                <div className='toggle-wrapper'>
+                  <span className='toggle-option'>Detailed view</span>
+                  <Switch>
+                    <input
+                      id='needs-toggle'
+                      type='checkbox'
+                      onChange={(ev) => setViewNeeds(ev.target.checked)}
+                    />
+                    <span className='slider'></span>
+                  </Switch>
+                </div>
               </div>
-              <Filter>
+              <Filter className='filters'>
                 <h2>filters</h2>
                 <Types>
                   <div>
@@ -178,13 +180,14 @@ const Div = styled.div`
 `
 
 const Actions = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   .toggle-wrapper {
     background: #fff;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin: 10px 0;
     padding: 5px 10px;
     border-radius: 20px;
@@ -193,7 +196,28 @@ const Actions = styled.div`
     }
   }
   @media only screen and (min-width: 500px) {
+    flex-direction: row;
+    .search-toggle-wrapper {
+      flex: 1;
+      margin: 0 20px 0 0;
+    }
+    .filters {
+      flex: 1;
+      margin: 0 0 0 20px;
+    }
+  }
+  @media only screen and (min-width: 1000px) {
+    width: 250px;
+    flex-direction: column;
     padding: 20px;
+    .search-toggle-wrapper {
+      flex: inherit;
+      margin: 0 0 20px 0;
+    }
+    .filters {
+      flex: inherit;
+      margin: 0;
+    }
   }
 `
 
@@ -250,7 +274,7 @@ const Types = styled.ul`
 const Type = styled.li`
   background: ${(props) => (props.active ? `${COLORS.light}` : '#f2f2f2')};
   border-radius: 20px;
-  margin: 2px;
+  margin: 5px;
   padding: 0 10px;
   font-weight: ${(props) => (props.active ? '700' : '')};
   transition: 0.2s ease-in-out;

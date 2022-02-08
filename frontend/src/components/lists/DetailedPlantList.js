@@ -181,6 +181,7 @@ const Content = styled.div`
       align-items: center;
       border-radius: 20px;
       padding: 5px 10px;
+      margin: auto;
       .toggle-option {
         margin-right: 20px;
         line-height: 1;

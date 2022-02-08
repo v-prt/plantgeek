@@ -173,7 +173,7 @@ export const SignUp = () => {
                 <Form>
                   {/* TODO: improve error status message (show beside specific input - email/username) */}
                   {status && <div className='status'>{status}</div>}
-                  <Text label='First name' name='firstName' type='text' autoFocus />
+                  <Text label='First name' name='firstName' type='text' />
                   <Text label='Last name' name='lastName' type='text' />
                   <Text label='Email' name='email' type='email' />
                   <Text label='Username' name='username' type='text' />

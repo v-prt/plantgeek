@@ -77,7 +77,6 @@ const Body = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  /* margin-right: 45px; */
   main {
     width: 90%;
     display: flex;
@@ -86,7 +85,7 @@ const Body = styled.div`
     margin: auto;
     padding: 20px 0;
     section {
-      margin: 10px 0;
+      margin: 10px auto;
       padding: 20px;
       border-radius: 20px;
     }
@@ -96,7 +95,7 @@ const Body = styled.div`
     main {
       width: 80%;
       section {
-        margin: 20px 0;
+        margin: 20px auto;
         padding: 30px;
       }
     }

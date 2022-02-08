@@ -210,7 +210,6 @@ export const Contribute = () => {
                   name='species'
                   type='text'
                   placeholder='e.g. Monstera deliciosa'
-                  autoFocus
                 />
                 {/* TODO: choose from existing genus or input new? */}
                 <Text label='Genus' name='genus' type='text' placeholder='e.g. Monstera' />
@@ -297,9 +296,14 @@ export const Contribute = () => {
                 </DropZone>
                 {/* TODO: accept multiple source links? */}
                 <Text label='Source' name='sourceUrl' type='text' placeholder='Insert URL' />
-                <button type='submit' disabled={isSubmitting}>
-                  {isSubmitting ? <Ellipsis /> : 'SUBMIT'}
-                </button>
+                <div className='buttons'>
+                  <button className='secondary' disabled onClick={() => console.log('clear form')}>
+                    CLEAR
+                  </button>
+                  <button type='submit' disabled={isSubmitting}>
+                    {isSubmitting ? <Ellipsis /> : 'SUBMIT'}
+                  </button>
+                </div>
               </Form>
             )}
           </Formik>
@@ -367,10 +371,10 @@ const Wrapper = styled.main`
 const FormWrapper = styled.section`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  margin: 30px 0;
-  padding: 20px;
-  border-radius: 20px;
+  max-width: 600px;
   form {
+    display: flex;
+    flex-direction: column;
     .form-item {
       padding: 15px 0;
       border-bottom: 1px solid #fff;
@@ -423,13 +427,17 @@ const FormWrapper = styled.section`
       color: #ff0000;
       font-size: 0.8rem;
     }
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+    }
     button {
       background: ${COLORS.darkest};
       color: ${COLORS.lightest};
       height: 50px;
-      margin: 30px 0;
+      margin: 20px 0;
       border-radius: 15px;
-      padding: 10px;
+      padding: 10px 20px;
       &:hover {
         background: ${COLORS.medium};
       }
@@ -438,6 +446,11 @@ const FormWrapper = styled.section`
       }
       &:disabled:hover {
         background: ${COLORS.darkest};
+      }
+      &.secondary {
+        background: transparent;
+        border: 2px solid ${COLORS.darkest};
+        color: ${COLORS.darkest};
       }
     }
   }
@@ -455,6 +468,7 @@ const DropZone = styled.div`
   border-bottom: 1px solid #fff;
   .guidelines-wrapper {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     .guidelines {
       margin-right: 50px;
@@ -462,6 +476,9 @@ const DropZone = styled.div`
         font-size: 0.9rem;
         list-style: disc inside;
       }
+    }
+    @media only screen and (min-width: 1000px) {
+      flex-direction: row;
     }
   }
   .preview-container {
