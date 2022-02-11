@@ -324,7 +324,7 @@ export const Card = styled.div`
   }
   @media only screen and (min-width: 500px) {
     width: 400px;
-    margin: 40px 20px;
+    margin: auto;
     .welcome-header {
       h1 {
         font-size: 1.8rem;
@@ -364,7 +364,7 @@ const Icon = styled.div`
 `
 
 const Confirmation = styled.div`
-  background: ${COLORS.lightest};
+  background: #f2f2f2;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -26,8 +26,8 @@ export const Browse = () => {
 
   // SORTS ALL PLANTS ALPHABETICALLY BY NAME
   const compare = (a, b) => {
-    const plantA = a.species.toLowerCase()
-    const plantB = b.species.toLowerCase()
+    const plantA = a.primaryName.toLowerCase()
+    const plantB = b.primaryName.toLowerCase()
     let comparison = 0
     if (plantA > plantB) {
       comparison = 1
@@ -44,8 +44,8 @@ export const Browse = () => {
     let genera = []
     plants.forEach((plant) => {
       // skip genus/type if already added to array
-      if (!genera.includes(plant.genus)) {
-        genera.push(plant.genus)
+      if (!genera.includes(plant.secondaryName)) {
+        genera.push(plant.secondaryName)
       }
     })
     setTypes(genera)
@@ -68,7 +68,7 @@ export const Browse = () => {
     } else {
       let foundPlants = []
       plants.forEach((plant) => {
-        if (plant.genus === type) {
+        if (plant.secondaryName === type) {
           foundPlants.push(plant)
         }
       })
@@ -90,7 +90,11 @@ export const Browse = () => {
   const handleSearch = (ev) => {
     ev.preventDefault()
     setFilteredPlants(
-      plants.filter((plant) => plant.species.includes(query) || plant.genus.includes(query))
+      plants.filter(
+        (plant) =>
+          plant.primaryName.toLowerCase().includes(query) ||
+          plant.secondaryName.toLowerCase().includes(query)
+      )
     )
     setSelectedType('all')
   }
@@ -120,7 +124,7 @@ export const Browse = () => {
                   </Switch>
                 </div>
               </div>
-              <Filter className='filters'>
+              {/* <Filter className='filters'>
                 <h2>filters</h2>
                 <Types>
                   <div>
@@ -148,7 +152,7 @@ export const Browse = () => {
                     })}
                   </div>
                 </Types>
-              </Filter>
+              </Filter> */}
             </Actions>
             <Results>
               {plants.length > 0 && filteredPlants ? (

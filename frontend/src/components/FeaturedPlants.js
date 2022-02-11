@@ -30,7 +30,7 @@ export const FeaturedPlants = () => {
     if (randomPlants) {
       while (randomPlants.length < 6) {
         let randomPlant = getRandomPlant(plants)
-        if (!randomPlants.find((plant) => plant.species === randomPlant.species)) {
+        if (!randomPlants.find((plant) => plant.primaryName === randomPlant.primaryName)) {
           randomPlants.push(randomPlant)
         }
       }

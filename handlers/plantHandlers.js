@@ -15,8 +15,8 @@ const createPlant = async (req, res) => {
     await client.connect()
     const db = client.db('plantgeekdb')
     const plant = await db.collection('plants').insertOne({
-      species: req.body.species,
-      genus: req.body.genus,
+      primaryName: req.body.primaryName,
+      secondaryName: req.body.secondaryName,
       light: req.body.light,
       water: req.body.water,
       temperature: req.body.temperature,

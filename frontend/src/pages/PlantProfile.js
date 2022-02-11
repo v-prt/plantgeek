@@ -47,6 +47,8 @@ export const PlantProfile = () => {
         lightLevel = 2
       } else if (plant.light === 'bright indirect') {
         lightLevel = 3
+      } else if (plant.light === 'bright') {
+        lightLevel = 4
       }
       if (plant.water === 'low') {
         waterLevel = 0
@@ -61,22 +63,22 @@ export const PlantProfile = () => {
       }
       if (plant.temperature === 'average') {
         temperatureLevel = 0
-      } else if (plant.temperature === 'above average') {
+      } else if (plant.temperature === 'warm') {
         temperatureLevel = 2
       }
       if (plant.humidity === 'average') {
         humidityLevel = 0
-      } else if (plant.humidity === 'above average') {
+      } else if (plant.humidity === 'high') {
         humidityLevel = 2
       }
       let total = lightLevel + waterLevel + temperatureLevel + humidityLevel
       // lowest = 0
-      // highest = 9
+      // highest = 12
       if (total <= 3) {
         setDifficulty('Easy')
       } else if (total <= 6) {
         setDifficulty('Medium')
-      } else if (total <= 9) {
+      } else if (total <= 12) {
         setDifficulty('Hard')
       }
     }
@@ -96,8 +98,8 @@ export const PlantProfile = () => {
                 )}
               </div>
               <div className='details'>
-                <h1>{plant.species}</h1>
-                {/* <p className='latin-name'>latin name</p> */}
+                <h1>{plant?.primaryName?.toLowerCase()}</h1>
+                <p className='secondary-name'>{plant?.secondaryName}</p>
                 {/* <p className='region'>region</p> */}
                 {/* <p className='type'>type (desert/tropical/etc)</p> */}
                 {plant.toxic ? (
@@ -135,10 +137,11 @@ export const PlantProfile = () => {
                 <div className='column'>
                   <p>{plant.light} light</p>
                   <Bar>
-                    {plant.light === 'low to bright indirect' && <Indicator level={'2'} />}
-                    {plant.light === 'medium indirect' && <Indicator level={'2'} />}
-                    {plant.light === 'medium to bright indirect' && <Indicator level={'2-3'} />}
-                    {plant.light === 'bright indirect' && <Indicator level={'3'} />}
+                    {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
+                    {plant.light === 'medium indirect' && <Indicator level={'1-2'} />}
+                    {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
+                    {plant.light === 'bright indirect' && <Indicator level={'2-3'} />}
+                    {plant.light === 'bright' && <Indicator level={'3'} />}
                   </Bar>
                 </div>
               </div>
@@ -161,7 +164,7 @@ export const PlantProfile = () => {
                   <p>{plant.temperature} temperature</p>
                   <Bar>
                     {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                    {plant.temperature === 'above average' && <Indicator level={'2-3'} />}
+                    {plant.temperature === 'warm' && <Indicator level={'3'} />}
                   </Bar>
                 </div>
               </div>
@@ -171,13 +174,18 @@ export const PlantProfile = () => {
                   <p>{plant.humidity} humidity</p>
                   <Bar>
                     {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-                    {plant.humidity === 'above average' && <Indicator level={'2-3'} />}
+                    {plant.humidity === 'high' && <Indicator level={'3'} />}
                   </Bar>
                 </div>
               </div>
-              <p className='sources'>
-                Source(s): <a href={plant.sourceUrl}>[1]</a>
-              </p>
+              {plant.sourceUrl && (
+                <p className='sources'>
+                  Source(s):{' '}
+                  <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
+                    [1]
+                  </a>
+                </p>
+              )}
               {currentUser && (
                 <Sizer>
                   <ActionBar id={plant._id} style={{ background: '#fff' }} />
@@ -278,6 +286,9 @@ const Needs = styled.section`
     color: #999;
     font-size: 0.8rem;
     margin: 10px 0;
+  }
+  @media only screen and (min-width: 500px) {
+    min-width: 400px;
   }
 `
 

@@ -34,8 +34,8 @@ export const Contribute = () => {
   }, [])
 
   const PlantSchema = Yup.object().shape({
-    species: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Required'),
-    genus: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Required'),
+    primaryName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Required'),
+    secondaryName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Required'),
     light: Yup.string().required('Required'),
     water: Yup.string().required('Required'),
     temperature: Yup.string().required('Required'),
@@ -101,8 +101,8 @@ export const Contribute = () => {
     //     await fetch('/plants', {
     //       method: 'POST',
     //       body: JSON.stringify({
-    //         species: species,
-    //         genus: genus,
+    //         primaryName: primaryName,
+    //         secondaryName: secondaryName,
     //         light: light,
     //         water: water,
     //         temperature: temperature,
@@ -129,8 +129,8 @@ export const Contribute = () => {
     //           console.log('New plant successfully added to database.')
     //           setNewPlant(data.data.ops[0])
     //           // reset form and clear state
-    //           setSpecies('')
-    //           setGenus('')
+    //           setPrimaryName('')
+    //           setSecondaryName('')
     //           setLight('')
     //           setWater('')
     //           setTemperature('')
@@ -188,8 +188,8 @@ export const Contribute = () => {
           <Heading>houseplant info</Heading>
           <Formik
             initialValues={{
-              species: '',
-              genus: '',
+              primaryName: '',
+              secondaryName: '',
               light: '',
               water: '',
               temperature: '',
@@ -206,13 +206,18 @@ export const Contribute = () => {
               <Form>
                 {status && <div className='status'>{status}</div>}
                 <Text
-                  label='Species'
-                  name='species'
+                  label='primaryName'
+                  name='primaryName'
                   type='text'
                   placeholder='e.g. Monstera deliciosa'
                 />
-                {/* TODO: choose from existing genus or input new? */}
-                <Text label='Genus' name='genus' type='text' placeholder='e.g. Monstera' />
+                {/* TODO: choose from existing secondaryName or input new? */}
+                <Text
+                  label='secondaryName'
+                  name='secondaryName'
+                  type='text'
+                  placeholder='e.g. Monstera'
+                />
                 {/* TODO: common name
                   <Text label='Common name' name='common-name' type='text' placeholder='e.g. Swiss cheese plant' /> */}
                 <Select

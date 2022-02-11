@@ -73,7 +73,7 @@ export const ActionBar = ({ id }) => {
         },
       }).then((res) => {
         if (res.status === 200) {
-          console.log(`Removed ${plant.species} from user's list!`)
+          console.log(`Removed ${plant.primaryName} from user's list!`)
           // FIXME: updating store causes plants to reload (use react query instead?)
           dispatch(requestUsers())
           axios
@@ -97,7 +97,7 @@ export const ActionBar = ({ id }) => {
         },
       }).then((res) => {
         if (res.status === 200) {
-          console.log(`Added ${plant.species} to user's list!`)
+          console.log(`Added ${plant.primaryName} to user's list!`)
           // FIXME: updating store causes plants to reload (use react query instead?)
           dispatch(requestUsers())
           axios
