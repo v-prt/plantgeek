@@ -26,9 +26,9 @@ export const FeaturedPlants = () => {
       return randomPlant
     }
     // only run function if there are more than 6 plants in db
-    let randomPlants = plants.length > 6 ? [] : undefined
+    let randomPlants = plants.length > 12 ? [] : undefined
     if (randomPlants) {
-      while (randomPlants.length < 6) {
+      while (randomPlants.length < 12) {
         let randomPlant = getRandomPlant(plants)
         if (!randomPlants.find((plant) => plant.primaryName === randomPlant.primaryName)) {
           randomPlants.push(randomPlant)
