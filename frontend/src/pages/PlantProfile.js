@@ -186,6 +186,7 @@ export const PlantProfile = () => {
                   </a>
                 </p>
               )}
+              {/* TODO: move action bar out of needs section, make more detailed */}
               {currentUser && (
                 <Sizer>
                   <ActionBar id={plant._id} style={{ background: '#fff' }} />
