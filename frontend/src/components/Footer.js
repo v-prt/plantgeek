@@ -41,7 +41,7 @@ const Wrapper = styled.footer`
   }
   @media only screen and (min-width: 500px) {
     font-size: 0.8rem;
-    padding: 20px;
+    padding: 10px 20px;
     .inner {
       max-width: 1200px;
       a {

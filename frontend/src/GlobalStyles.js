@@ -16,6 +16,7 @@ export const COLORS = {
   mediumLight: '#5d9e2e',
   light: '#92D265',
   lightest: '#E5EFDC',
+  accent: '#966FD1',
 }
 
 export const Button = styled.button`
@@ -102,7 +103,7 @@ export default createGlobalStyle`
         color: ${COLORS.darkest};
         transition: 0.2s ease-in-out;
         &:hover {
-            color: ${COLORS.mediumLight};
+            color: ${COLORS.accent};
         }
     }
     input {

@@ -30,7 +30,7 @@ export const PlantProfile = () => {
   }, [])
 
   useEffect(() => {
-    setPlant(plants.find((plant) => plant._id === id))
+    setPlant(plants.find(plant => plant._id === id))
   }, [plants, plant, id])
 
   useEffect(() => {
@@ -88,112 +88,98 @@ export const PlantProfile = () => {
     <Wrapper>
       {plant && (
         <FadeIn>
-          <Div>
-            <div className='plant-details-wrapper'>
-              <div className='image-wrapper'>
-                {plant.imageUrl ? (
-                  <Image src={plant.imageUrl} alt='' />
-                ) : (
-                  <Image className='placeholder' src={placeholder} alt='' />
-                )}
-              </div>
-              <div className='details'>
-                <h1>{plant?.primaryName?.toLowerCase()}</h1>
-                <p className='secondary-name'>{plant?.secondaryName}</p>
-                {/* <p className='region'>region</p> */}
-                {/* <p className='type'>type (desert/tropical/etc)</p> */}
-                {plant.toxic ? (
-                  <>
-                    <Toxicity toxic='true'>
-                      <img src={skull} alt='' /> <p>toxic</p>
-                      <span className='tooltip' toxic='true'>
-                        Don't let the skull scare you! Though this plant may be toxic if ingested,
-                        it can still make a great addition to your home. Simply keep it out of reach
-                        of pets and children, and wear gloves during pruning to prevent skin
-                        irritation.
-                      </span>
-                    </Toxicity>
-                  </>
-                ) : (
-                  <>
-                    <Toxicity toxic='false'>
-                      <FaPaw /> <p>nontoxic</p>
-                      <span className='tooltip'>
-                        This plant is nontoxic and considered to be pet-friendly and child-safe.
-                        However, anything can be dangerous when consumed in large quantities. Please
-                        use your judgment and seek emergency care when necessary.
-                      </span>
-                    </Toxicity>
-                  </>
-                )}
+          <section className='heading'>
+            <h1>{plant?.primaryName?.toLowerCase()}</h1>
+            <div className='secondary-name-wrapper'>
+              <b className='aka'>Also known as: </b>
+              <span className='secondary-name'>
+                {plant?.secondaryName ? plant?.secondaryName : 'N/A'}
+              </span>
+            </div>
+          </section>
+          <section className='plant-info'>
+            {/* TODO: improve for desktop, too much white space */}
+            <Image src={plant?.imageUrl ? plant?.imageUrl : placeholder} alt='' />
+            <div className='text'>
+              {/* TODO: keep this subtle, style as tags */}
+              {/* {plant?.toxic ? (
+                <span className='toxic'>
+                  <img src={skull} alt='' />
+                  Toxic
+                </span>
+              ) : (
+                <span className='nontoxic'>
+                  <FaPaw />
+                  Nontoxic
+                </span>
+              )} */}
+            </div>
+          </section>
+          <Needs>
+            <h2>
+              needs <span className='difficulty'>Difficulty: {difficulty}</span>
+            </h2>
+            <div className='row'>
+              <img src={sun} alt='' />
+              <div className='column'>
+                <p>{plant.light} light</p>
+                <Bar>
+                  {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
+                  {plant.light === 'medium indirect' && <Indicator level={'1-2'} />}
+                  {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
+                  {plant.light === 'bright indirect' && <Indicator level={'2-3'} />}
+                  {plant.light === 'bright' && <Indicator level={'3'} />}
+                </Bar>
               </div>
             </div>
-            <Needs>
-              <h2>
-                needs <span className='difficulty'>Difficulty: {difficulty}</span>
-              </h2>
-              <div className='row'>
-                <img src={sun} alt='' />
-                <div className='column'>
-                  <p>{plant.light} light</p>
-                  <Bar>
-                    {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
-                    {plant.light === 'medium indirect' && <Indicator level={'1-2'} />}
-                    {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
-                    {plant.light === 'bright indirect' && <Indicator level={'2-3'} />}
-                    {plant.light === 'bright' && <Indicator level={'3'} />}
-                  </Bar>
-                </div>
+            <div className='row'>
+              <img src={water} alt='' />
+              <div className='column'>
+                <p>{plant.water} water</p>
+                <Bar>
+                  {plant.water === 'low' && <Indicator level={'1'} />}
+                  {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+                  {plant.water === 'medium' && <Indicator level={'2'} />}
+                  {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+                  {plant.water === 'high' && <Indicator level={'3'} />}
+                </Bar>
               </div>
-              <div className='row'>
-                <img src={water} alt='' />
-                <div className='column'>
-                  <p>{plant.water} water</p>
-                  <Bar>
-                    {plant.water === 'low' && <Indicator level={'1'} />}
-                    {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
-                    {plant.water === 'medium' && <Indicator level={'2'} />}
-                    {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
-                    {plant.water === 'high' && <Indicator level={'3'} />}
-                  </Bar>
-                </div>
+            </div>
+            <div className='row'>
+              <img src={temp} alt='' />
+              <div className='column'>
+                <p>{plant.temperature} temperature</p>
+                <Bar>
+                  {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+                  {plant.temperature === 'warm' && <Indicator level={'3'} />}
+                </Bar>
               </div>
-              <div className='row'>
-                <img src={temp} alt='' />
-                <div className='column'>
-                  <p>{plant.temperature} temperature</p>
-                  <Bar>
-                    {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                    {plant.temperature === 'warm' && <Indicator level={'3'} />}
-                  </Bar>
-                </div>
+            </div>
+            <div className='row'>
+              <img src={humidity} alt='' />
+              <div className='column'>
+                <p>{plant.humidity} humidity</p>
+                <Bar>
+                  {plant.humidity === 'average' && <Indicator level={'1-2'} />}
+                  {plant.humidity === 'high' && <Indicator level={'3'} />}
+                </Bar>
               </div>
-              <div className='row'>
-                <img src={humidity} alt='' />
-                <div className='column'>
-                  <p>{plant.humidity} humidity</p>
-                  <Bar>
-                    {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-                    {plant.humidity === 'high' && <Indicator level={'3'} />}
-                  </Bar>
-                </div>
-              </div>
-              {plant.sourceUrl && (
-                <p className='sources'>
-                  Source(s):{' '}
-                  <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
-                    [1]
-                  </a>
-                </p>
-              )}
-              {/* TODO: move action bar out of needs section, make more detailed */}
-              {currentUser && (
-                <Sizer>
-                  <ActionBar id={plant._id} style={{ background: '#fff' }} />
-                </Sizer>
-              )}
-            </Needs>
-          </Div>
+            </div>
+            {plant.sourceUrl && (
+              <p className='sources'>
+                Source(s):{' '}
+                <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
+                  [1]
+                </a>
+              </p>
+            )}
+            {/* TODO: move action bar out of needs section, make more detailed */}
+            {currentUser && (
+              <Sizer>
+                <ActionBar id={plant._id} style={{ background: '#fff' }} />
+              </Sizer>
+            )}
+          </Needs>
         </FadeIn>
         // TODO: similar plants section (genus)
       )}
@@ -205,49 +191,48 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-`
-
-const Div = styled.div`
-  width: 80%;
-  position: relative;
-  top: -70px;
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  .plant-details-wrapper {
-    display: flex;
-    margin-bottom: 50px;
-    .image-wrapper {
-      height: 500px;
-      width: 500px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: white;
-      overflow: hidden;
-      margin-right: 30px;
+  .heading {
+    background: ${COLORS.light};
+    h1 {
+      line-height: 1;
+      font-size: 2rem;
+      margin-bottom: 10px;
     }
-    .details {
-      max-width: 500px;
-      h1 {
-        line-height: 1.5;
-        margin-top: 100px;
-      }
-      .latin-name {
-        color: #666;
-        font-style: italic;
-        font-size: 0.9rem;
+  }
+  .plant-info {
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  @media only screen and (min-width: 500px) {
+    .heading {
+      text-align: right;
+    }
+    .plant-info {
+      flex-direction: row;
+      .text {
+        margin-left: 30px;
+        text-align: left;
       }
     }
   }
 `
 
 const Image = styled.img`
-  max-height: 100%;
-  max-width: 100%;
+  height: 200px;
+  width: 200px;
   &.placeholder {
     height: 200px;
+  }
+  @media only screen and (min-width: 500px) {
+    height: 400px;
+    width: 400px;
+    &.placeholder {
+      height: 200px;
+    }
   }
 `
 
@@ -290,11 +275,14 @@ const Needs = styled.section`
   }
   @media only screen and (min-width: 500px) {
     min-width: 400px;
+    max-width: 600px;
   }
 `
 
+const Actions = styled.div``
+
 const Toxicity = styled.div`
-  color: ${(props) => (props.toxic === 'true' ? `${COLORS.medium}` : '#68b234}')};
+  color: ${props => (props.toxic === 'true' ? `${COLORS.medium}` : '#68b234}')};
   display: flex;
   align-items: center;
   width: fit-content;
@@ -309,7 +297,7 @@ const Toxicity = styled.div`
     font-weight: 700;
   }
   .tooltip {
-    background: ${(props) => (props.toxic === 'true' ? `${COLORS.medium}` : `${COLORS.light}`)};
+    background: ${props => (props.toxic === 'true' ? `${COLORS.medium}` : `${COLORS.light}`)};
     color: #fff;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     width: 300px;
@@ -353,10 +341,10 @@ const Indicator = styled.div`
   background: linear-gradient(to right, ${COLORS.lightest}, ${COLORS.light});
   height: 100%;
   border-radius: 10px;
-  width: ${(props) => props.level === '1' && '25%'};
-  width: ${(props) => props.level === '1-2' && '50%'};
-  width: ${(props) => props.level === '1-3' && '100%'};
-  width: ${(props) => props.level === '2' && '50%'};
-  width: ${(props) => props.level === '2-3' && '75%'};
-  width: ${(props) => props.level === '3' && '100%'};
+  width: ${props => props.level === '1' && '25%'};
+  width: ${props => props.level === '1-2' && '50%'};
+  width: ${props => props.level === '1-3' && '100%'};
+  width: ${props => props.level === '2' && '50%'};
+  width: ${props => props.level === '2-3' && '75%'};
+  width: ${props => props.level === '3' && '100%'};
 `

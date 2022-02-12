@@ -27,7 +27,7 @@ export const DetailedPlantList = ({ title }) => {
   }, [])
 
   useEffect(() => {
-    setUser(users.find((user) => user.username === username))
+    setUser(users.find(user => user.username === username))
   }, [users, user, username])
 
   useEffect(() => {
@@ -41,10 +41,10 @@ export const DetailedPlantList = ({ title }) => {
   useEffect(() => {
     if (plants && list && list.length > 0) {
       let foundPlants = []
-      list.forEach((id) => {
+      list.forEach(id => {
         // don't include IDs that aren't found in plant db
-        if (plants.find((plant) => plant._id === id)) {
-          foundPlants.push(plants.find((plant) => plant._id === id))
+        if (plants.find(plant => plant._id === id)) {
+          foundPlants.push(plants.find(plant => plant._id === id))
         } else return
       })
       setUserPlants(foundPlants)
@@ -62,7 +62,7 @@ export const DetailedPlantList = ({ title }) => {
               <DropDownArrow rotated={viewContent}>
                 <MdOutlineArrowDropDownCircle />
               </DropDownArrow>
-              {title}
+              my {title}
             </h2>
             <span className='num-plants'>
               {user[title].length} plant{user[title].length === 1 ? '' : 's'}
@@ -78,7 +78,7 @@ export const DetailedPlantList = ({ title }) => {
                       <input
                         id='needs-toggle'
                         type='checkbox'
-                        onChange={(ev) => setViewNeeds(ev.target.checked)}
+                        onChange={ev => setViewNeeds(ev.target.checked)}
                       />
                       <span className='slider'></span>
                     </Switch>
@@ -87,7 +87,7 @@ export const DetailedPlantList = ({ title }) => {
                 <Plants>
                   {user &&
                     userPlants?.length > 0 &&
-                    userPlants.map((plant) => {
+                    userPlants.map(plant => {
                       return <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
                     })}
                 </Plants>
@@ -164,10 +164,10 @@ const Heading = styled.div`
 `
 
 const Content = styled.div`
-  visibility: ${(props) => (props.expanded ? 'visible' : 'hidden')};
-  opacity: ${(props) => (props.expanded ? '1' : '0')};
-  max-height: ${(props) => (props.expanded ? '1000px' : '0')};
-  padding: ${(props) => (props.expanded ? '10px' : '')};
+  visibility: ${props => (props.expanded ? 'visible' : 'hidden')};
+  opacity: ${props => (props.expanded ? '1' : '0')};
+  height: ${props => (props.expanded ? 'auto' : '0')};
+  padding: ${props => (props.expanded ? '10px' : '')};
   overflow: hidden;
   transition: 0.3s ease-in-out;
   .filter-bar {
@@ -193,7 +193,7 @@ const Content = styled.div`
 const DropDownArrow = styled.span`
   display: grid;
   margin-right: 10px;
-  transform: ${(props) => (props.rotated ? '' : 'rotate(-90deg)')};
+  transform: ${props => (props.rotated ? '' : 'rotate(-90deg)')};
   transition: 0.2s ease-in-out;
 `
 

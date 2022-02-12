@@ -25,7 +25,11 @@ export const PlantCard = ({ plant, viewNeeds }) => {
           ) : (
             <img className='placeholder' src={placeholder} alt='' />
           )}
-          <Name>{plant?.primaryName.toLowerCase()}</Name>
+          <Name>
+            {plant?.primaryName.length > 25
+              ? plant?.primaryName.toLowerCase().substring(0, 25) + '...'
+              : plant?.primaryName.toLowerCase()}
+          </Name>
         </InfoLink>
       </Div>
       <Needs expanded={viewNeeds}>
@@ -100,6 +104,7 @@ const Stamp = styled.div`
   border-radius: 50%;
   display: grid;
   padding: 5px;
+  z-index: 0;
   img {
     height: 15px;
     width: 15px;
@@ -125,7 +130,6 @@ const InfoLink = styled(Link)`
 `
 
 const Name = styled.p`
-  // FIXME: adjust for longer names
   color: ${COLORS.darkest};
   font-size: 1.1rem;
   align-self: center;
@@ -136,9 +140,9 @@ const Name = styled.p`
 
 const Needs = styled.div`
   padding: 0 10px 10px 10px;
-  visibility: ${(props) => (props.expanded ? 'visible' : 'hidden')};
-  opacity: ${(props) => (props.expanded ? '1' : '0')};
-  max-height: ${(props) => (props.expanded ? '1000px' : '0')};
+  visibility: ${props => (props.expanded ? 'visible' : 'hidden')};
+  opacity: ${props => (props.expanded ? '1' : '0')};
+  max-height: ${props => (props.expanded ? '1000px' : '0')};
   transition: 0.3s ease-in-out;
 `
 
@@ -163,10 +167,10 @@ const Indicator = styled.div`
   background: linear-gradient(to right, ${COLORS.lightest}, ${COLORS.light});
   height: 100%;
   border-radius: 10px;
-  width: ${(props) => props.level === '1' && '20%'};
-  width: ${(props) => props.level === '1-2' && '50%'};
-  width: ${(props) => props.level === '1-3' && '100%'};
-  width: ${(props) => props.level === '2' && '50%'};
-  width: ${(props) => props.level === '2-3' && '80%'};
-  width: ${(props) => props.level === '3' && '100%'};
+  width: ${props => props.level === '1' && '20%'};
+  width: ${props => props.level === '1-2' && '50%'};
+  width: ${props => props.level === '1-3' && '100%'};
+  width: ${props => props.level === '2' && '50%'};
+  width: ${props => props.level === '2-3' && '80%'};
+  width: ${props => props.level === '3' && '100%'};
 `

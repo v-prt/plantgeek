@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { usersArray } from '../reducers/userReducer'
 import styled from 'styled-components/macro'
@@ -20,25 +20,39 @@ export const UserProfile = () => {
   }, [username])
 
   useEffect(() => {
-    setUser(users.find((user) => user?.username === username))
+    setUser(users.find(user => user?.username === username))
   }, [users, user, username])
 
   return (
     <Wrapper>
       {user && (
         <FadeIn>
-          <div className='user-info'>
-            <Avatar src={user?.image ? user?.image[0] : placeholder} alt='' />
+          <section className='user-info'>
+            <Image src={user?.image ? user?.image[0] : placeholder} alt='' />
             <div className='text'>
               <h1>{user?.username}</h1>
               <p>Member since {moment(user?.joined).format('ll')}</p>
             </div>
-          </div>
+          </section>
           <Lists>
             <DetailedPlantList username={username} list={user?.collection} title='collection' />
             <DetailedPlantList username={username} list={user?.favorites} title='favorites' />
             <DetailedPlantList username={username} list={user?.wishlist} title='wishlist' />
           </Lists>
+          <section className='contributions'>
+            <h2>my contributions</h2>
+            {user?.contributions?.length > 0 ? (
+              <p>
+                You've made ${user.contributions.length} contributions! Thanks for your help in
+                growing our database.
+              </p>
+            ) : (
+              <p>
+                You haven't made any contributions yet.{' '}
+                <Link to='/contributions'>Help us grow our database.</Link>
+              </p>
+            )}
+          </section>
         </FadeIn>
       )}
     </Wrapper>
@@ -49,18 +63,35 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: calc(100vh - 190px);
   .user-info {
+    background: #fff;
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 30px;
     .text {
-      margin-left: 30px;
+      text-align: center;
+    }
+  }
+  .contributions {
+    background: #f2f2f2;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    a {
+      text-decoration: underline;
+    }
+  }
+  @media only screen and (min-width: 500px) {
+    .user-info {
+      flex-direction: row;
+      .text {
+        margin-left: 30px;
+        text-align: left;
+      }
     }
   }
 `
 
-export const Avatar = styled.img`
+export const Image = styled.img`
   background: linear-gradient(
     -45deg,
     ${COLORS.medium} 0%,
@@ -69,15 +100,10 @@ export const Avatar = styled.img`
     ${COLORS.light} 75%,
     ${COLORS.lightest} 100%
   );
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  height: 150px;
-  width: 150px;
+  height: 200px;
+  width: 200px;
   border-radius: 50%;
   padding: 5px;
-  @media only screen and (min-width: 500px) {
-    height: 200px;
-    width: 200px;
-  }
 `
 
 const Lists = styled.div`

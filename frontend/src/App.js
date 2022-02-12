@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { usePlantsFetcher, useUsersFetcher } from './utilities/fetch'
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import background from './assets/banner1.jpg'
+import background from './assets/banner2.webp'
 import { Navbar } from './components/Navbar'
 import { Homepage } from './pages/Homepage'
 import { Browse } from './pages/Browse'
@@ -78,6 +78,7 @@ const Body = styled.div`
   display: flex;
   flex-direction: column;
   main {
+    min-height: calc(100vh - 150px);
     width: 90%;
     display: flex;
     flex-direction: column;

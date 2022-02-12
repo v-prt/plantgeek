@@ -2871,61 +2871,6 @@
     "toxic": false
   },
   {
-    "sourceUrl": "https://planterina.com/products/pothos-golden-pole?variant=33214956634157",
-    "primaryName": "Staked Golden Pothos",
-    "secondaryName": "Epipremnum auruem with Support Pole",
-    "imageUrl": "//cdn.shopify.com/s/files/1/0253/6701/9565/products/Pothos-Golden-Grow-Pot-Staked-Large_1000x1000.jpg?v=1644256758",
-    "light": "low to bright indirect",
-    "water": "medium",
-    "temperature": "average",
-    "humidity": "average",
-    "toxic": true
-  },
-  {
-    "sourceUrl": "https://planterina.com/products/staked-monstera-adansonii",
-    "primaryName": "Staked Monstera adansonii",
-    "secondaryName": "Swiss Cheese Vine",
-    "imageUrl": "//cdn.shopify.com/s/files/1/0253/6701/9565/products/Staked-Monstera-Adansanii-Grow-Pot-Large_1000x1000.jpg?v=1628715857",
-    "light": "low to bright indirect",
-    "water": "medium",
-    "temperature": "average",
-    "humidity": "high",
-    "toxic": true
-  },
-  {
-    "sourceUrl": "https://planterina.com/products/staked-rhaphidophora-tetrasperma?variant=41599084462247",
-    "primaryName": "Staked Rhaphidophora tetrasperma",
-    "secondaryName": "Mini Monstera",
-    "imageUrl": "//cdn.shopify.com/s/files/1/0253/6701/9565/products/Staked-Rhaphidophora-Tetrasperma-Grow-Pot-Extra-Large_1000x1000.jpg?v=1634905082",
-    "light": "low to bright indirect",
-    "water": "medium",
-    "temperature": "average",
-    "humidity": "high",
-    "toxic": true
-  },
-  {
-    "sourceUrl": "https://planterina.com/products/staked-syngonium-berry",
-    "primaryName": "Staked Syngonium Berry",
-    "secondaryName": "Arrowhead Vine with Support Pole",
-    "imageUrl": "//cdn.shopify.com/s/files/1/0253/6701/9565/products/Syngonium-Berry-Pole-Grow-Pot-Large_1000x1000.jpg?v=1625343441",
-    "light": "low to bright indirect",
-    "water": "medium",
-    "temperature": "average",
-    "humidity": "average",
-    "toxic": true
-  },
-  {
-    "sourceUrl": "https://planterina.com/products/staked-syngonium-white-butterfly?variant=33711415590957",
-    "primaryName": "Staked Syngonium White Butterfly",
-    "secondaryName": "Arrowhead Vine with Support Pole",
-    "imageUrl": "//cdn.shopify.com/s/files/1/0253/6701/9565/products/Syngonium-Arrowhead-Vine-White-Butterfly-Grow-Pot-Pole-Large_598b1cf6-fde8-4f21-b475-9d0a5ba5ecf6_1000x1000.jpg?v=1626177479",
-    "light": "low to bright indirect",
-    "water": "medium",
-    "temperature": "average",
-    "humidity": "average",
-    "toxic": true
-  },
-  {
     "sourceUrl": "https://planterina.com/products/string-of-pearls?variant=40012959482023",
     "primaryName": "String of Pearls",
     "secondaryName": "Senecio rowleyanus",

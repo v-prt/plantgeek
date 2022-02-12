@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 import { Button } from '../GlobalStyles'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
-import { Avatar } from './UserProfile'
+import { Image } from './UserProfile'
 import moment from 'moment'
 
 export const Settings = () => {
@@ -29,11 +29,11 @@ export const Settings = () => {
   }, [currentUser])
 
   const [url, setUrl] = useState('')
-  const handleUrl = (ev) => {
+  const handleUrl = ev => {
     setUrl(ev.target.value)
   }
 
-  const handleUpload = (ev) => {
+  const handleUpload = ev => {
     ev.preventDefault()
     // REMOVES EXISTING IMAGE
     if (existingImage) {
@@ -45,13 +45,13 @@ export const Settings = () => {
           Accept: 'application/json',
           'Content-type': 'application/json',
         },
-      }).then((res) => {
+      }).then(res => {
         if (res.status === 200) {
           dispatch(requestUsers())
           axios
             .get('/users')
-            .then((res) => dispatch(receiveUsers(res.data.data)))
-            .catch((err) => console.log(err))
+            .then(res => dispatch(receiveUsers(res.data.data)))
+            .catch(err => console.log(err))
           getUser(currentUser._id)
         } else if (res.status === 404) {
           console.log('Something went wrong')
@@ -67,13 +67,13 @@ export const Settings = () => {
         Accept: 'application/json',
         'Content-type': 'application/json',
       },
-    }).then((res) => {
+    }).then(res => {
       if (res.status === 200) {
         dispatch(requestUsers())
         axios
           .get('/users')
-          .then((res) => dispatch(receiveUsers(res.data.data)))
-          .catch((err) => console.log(err))
+          .then(res => dispatch(receiveUsers(res.data.data)))
+          .catch(err => console.log(err))
         getUser(currentUser._id)
       } else if (res.status === 404) {
         console.log('Something went wrong')
@@ -82,7 +82,7 @@ export const Settings = () => {
   }
 
   const [username, setUsername] = useState('')
-  const handleUsername = (ev) => {
+  const handleUsername = ev => {
     setUsername(ev.target.value)
     console.log(username)
   }
@@ -94,7 +94,7 @@ export const Settings = () => {
   }
 
   const [password, setPassword] = useState('')
-  const handlePassword = (ev) => {
+  const handlePassword = ev => {
     setPassword(ev.target.value)
     console.log(password)
   }
@@ -114,7 +114,7 @@ export const Settings = () => {
       {currentUser && (
         <FadeIn>
           <div className='user-info'>
-            <Avatar src={currentUser?.image ? currentUser?.image[0] : placeholder} alt='' />
+            <Image src={currentUser?.image ? currentUser?.image[0] : placeholder} alt='' />
             <div className='text'>
               <h1>{currentUser?.username}</h1>
               <p>Member since {moment(currentUser?.joined).format('ll')}</p>
@@ -220,11 +220,11 @@ const Heading = styled.h2`
 `
 
 const Option = styled.div`
-  color: ${(props) => (props.last ? '#cc0000' : '')};
+  color: ${props => (props.last ? '#cc0000' : '')};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-bottom: ${(props) => (props.last ? 'none' : '1px dotted #ccc')};
+  border-bottom: ${props => (props.last ? 'none' : '1px dotted #ccc')};
   @media only screen and (min-width: 1000px) {
     flex-direction: row;
     align-items: center;
