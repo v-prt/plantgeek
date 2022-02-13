@@ -27,7 +27,7 @@ export const PlantCard = ({ plant, viewNeeds }) => {
           )}
           <Name>
             {plant?.primaryName.length > 25
-              ? plant?.primaryName.toLowerCase().substring(0, 25) + '...'
+              ? plant?.primaryName.toLowerCase().substring(0, 23) + '...'
               : plant?.primaryName.toLowerCase()}
           </Name>
         </InfoLink>
@@ -98,7 +98,7 @@ const Div = styled.div`
 `
 
 const Stamp = styled.div`
-  background: ${COLORS.light};
+  background: #c4c4c4;
   color: #fff;
   position: absolute;
   border-radius: 50%;

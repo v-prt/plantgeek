@@ -45,9 +45,9 @@ export const Homepage = () => {
             </Link>
           </h2>
           <ul>
-            <li>Learn how to care for a variety of houseplants</li>
+            <li>Search & filter hundreds of plants by name or genus</li>
+            <li>Learn how to care for your plants</li>
             <li>Find out if your plant is toxic (if so, keep away from pets & children)</li>
-            <li>Search & filter plants by name or genus</li>
           </ul>
           {currentUser ? (
             <>
@@ -61,8 +61,8 @@ export const Homepage = () => {
               </h2>
               <ul>
                 <li>Manage your personal collection</li>
-                <li>Keep a list of your favorite plants</li>
                 <li>Add plants you would like to own to your wishlist</li>
+                <li>Upvote and keep a list of your favorite plants</li>
                 <li>Use the detailed view to quickly refer to your plants' needs</li>
               </ul>
               <h2>
@@ -92,8 +92,8 @@ export const Homepage = () => {
               <ul>
                 <li>Keep a list of your own houseplant collection</li>
                 <li>Quickly view the care requirements for your plants via your profile</li>
-                <li>Save your favorite plants</li>
                 <li>Create a wishlist</li>
+                <li>Upvote and save your favorite plants</li>
                 <li>Help contribute to our database of houseplants</li>
               </ul>
             </>

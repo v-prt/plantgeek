@@ -30,7 +30,7 @@ export const FeaturedPlants = () => {
     if (randomPlants) {
       while (randomPlants.length < 12) {
         let randomPlant = getRandomPlant(plants)
-        if (!randomPlants.find((plant) => plant.primaryName === randomPlant.primaryName)) {
+        if (!randomPlants.find(plant => plant.primaryName === randomPlant.primaryName)) {
           randomPlants.push(randomPlant)
         }
       }
@@ -47,29 +47,29 @@ export const FeaturedPlants = () => {
           <Heading>featured houseplants</Heading>
           <div className='info-box'>
             <Info>
-              <Icon>
+              <Icon className='collection'>
                 <RiPlantLine />
               </Icon>
               <p>Have a plant?</p>
               <p>Add it to your collection</p>
             </Info>
             <Info>
-              <Icon>
-                <TiHeartOutline />
-              </Icon>
-              <p>Love a plant?</p>
-              <p>Add it to your favorites</p>
-            </Info>
-            <Info>
-              <Icon>
+              <Icon className='wishlist'>
                 <AiOutlineStar />
               </Icon>
               <p>Want a plant?</p>
               <p>Add it to your wishlist</p>
             </Info>
+            <Info>
+              <Icon className='favorite'>
+                <TiHeartOutline />
+              </Icon>
+              <p>Love a plant?</p>
+              <p>Add it to your favorites</p>
+            </Info>
           </div>
           <Plants>
-            {featuredPlants.map((plant) => {
+            {featuredPlants.map(plant => {
               return <PlantCard key={plant._id} plant={plant} />
             })}
           </Plants>
@@ -138,11 +138,19 @@ const Info = styled.div`
 `
 
 const Icon = styled.div`
-  background: ${COLORS.light};
   display: flex;
   align-items: center;
   font-size: 2rem;
   margin: 0 10px;
   border-radius: 50%;
   padding: 10px;
+  &.collection {
+    background: ${COLORS.light};
+  }
+  &.wishlist {
+    background: #ffd24d;
+  }
+  &.favorite {
+    background: #b493e6;
+  }
 `

@@ -143,7 +143,7 @@ const Wrapper = styled.div`
 `
 
 const Heading = styled.div`
-  background: ${COLORS.light};
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -151,7 +151,7 @@ const Heading = styled.div`
   transition: 0.2s ease-in-out;
   cursor: pointer;
   &:hover {
-    background: ${COLORS.mediumLight};
+    background: #e6e6e6;
   }
   .title {
     display: flex;

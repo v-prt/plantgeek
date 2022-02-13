@@ -94,7 +94,6 @@ const Body = styled.div`
   @media only screen and (min-width: 500px) {
     margin-right: 55px;
     main {
-      width: 80%;
       margin: auto;
       section {
         margin: 20px auto;

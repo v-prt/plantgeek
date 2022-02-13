@@ -36,8 +36,8 @@ export const UserProfile = () => {
           </section>
           <Lists>
             <DetailedPlantList username={username} list={user?.collection} title='collection' />
-            <DetailedPlantList username={username} list={user?.favorites} title='favorites' />
             <DetailedPlantList username={username} list={user?.wishlist} title='wishlist' />
+            <DetailedPlantList username={username} list={user?.favorites} title='favorites' />
           </Lists>
           <section className='contributions'>
             <h2>my contributions</h2>
@@ -64,7 +64,7 @@ const Wrapper = styled.main`
   flex-direction: column;
   align-items: center;
   .user-info {
-    background: #fff;
+    background: ${COLORS.light};
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -92,14 +92,7 @@ const Wrapper = styled.main`
 `
 
 export const Image = styled.img`
-  background: linear-gradient(
-    -45deg,
-    ${COLORS.medium} 0%,
-    ${COLORS.mediumLight} 25%,
-    ${COLORS.mediumLight} 50%,
-    ${COLORS.light} 75%,
-    ${COLORS.lightest} 100%
-  );
+  border: 5px solid #fff;
   height: 200px;
   width: 200px;
   border-radius: 50%;

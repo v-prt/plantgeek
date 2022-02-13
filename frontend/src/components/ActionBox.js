@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
 import { plantsArray } from '../reducers/plantReducer'
@@ -11,7 +12,7 @@ import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 
-export const ActionBar = ({ id }) => {
+export const ActionBox = ({ id }) => {
   const dispatch = useDispatch()
   const { getUser, currentUser } = useContext(UserContext)
   const plants = useSelector(plantsArray)
@@ -113,60 +114,108 @@ export const ActionBar = ({ id }) => {
   }
 
   return (
-    <>
-      {currentUser && plant && (
-        <Wrapper>
-          <Action
-            aria-label='collect'
-            onClick={() => handleList(currentUser.collection)}
-            disabled={clicked1}
-            added={inCollection}>
-            <RiPlantLine />
-          </Action>
-          <Action
-            className='wishlist'
-            aria-label='wishlist'
-            onClick={() => handleList(currentUser.wishlist)}
-            disabled={clicked3}
-            added={inWishlist}>
-            <AiOutlineStar />
-          </Action>
-          <Action
-            className='favorite'
-            aria-label='favorite'
-            onClick={() => handleList(currentUser.favorites)}
-            disabled={clicked2}
-            added={inFavorites}>
-            <TiHeartOutline />
-          </Action>
-        </Wrapper>
-      )}
-    </>
+    <Wrapper>
+      <div className='action-wrapper'>
+        <Action
+          aria-label='collect'
+          disabled={clicked1}
+          added={inCollection}
+          onClick={() => handleList(currentUser.collection)}>
+          <RiPlantLine />
+          <span>Have it</span>
+        </Action>
+        <p>Do you own this plant?</p>
+        <p>
+          Keep track of your personal houseplant collection and see an overview of their needs via
+          your profile.
+        </p>
+      </div>
+      <div className='action-wrapper'>
+        <Action
+          className='wishlist'
+          aria-label='wishlist'
+          onClick={() => handleList(currentUser.wishlist)}
+          disabled={clicked3}
+          added={inWishlist}>
+          <AiOutlineStar />
+          <span>Want it</span>
+        </Action>
+        <p>Found an awesome new plant?</p>
+        <p>Add it to your wishlist and look out for it next time you go plant shopping!</p>
+        <p className='disclaimer'>
+          *Disclaimer: we are not responsible for any debts that may incur from excessive plant
+          shopping
+        </p>
+      </div>
+      <div className='action-wrapper'>
+        <Action
+          className='favorite'
+          aria-label='favorite'
+          onClick={() => handleList(currentUser.favorites)}
+          disabled={clicked2}
+          added={inFavorites}>
+          <TiHeartOutline />
+          <span>Love it</span>
+        </Action>
+        <p>Is this one of your favorite plants?</p>
+        <p>
+          Upvote it and save it to your favorites!{' '}
+          <Link to='/browse'>Browse most popular plants</Link>
+        </p>
+      </div>
+    </Wrapper>
   )
 }
 
 const Wrapper = styled.div`
-  background: #f2f2f2;
-  width: 90%;
   display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  align-self: center;
-  margin: 5px 0;
-  border-radius: 20px;
-  padding: 5px;
+  flex-wrap: wrap;
+  place-content: center;
+  grid-gap: 20px;
+  margin: 20px;
+  .action-wrapper {
+    min-width: 200px;
+    max-width: 300px;
+    background: #fff;
+    flex: 1;
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px dotted #ccc;
+    p {
+      margin: 10px 0;
+    }
+    a {
+      text-decoration: underline;
+    }
+    .disclaimer {
+      font-size: 0.8rem;
+      color: #666;
+    }
+  }
+  @media only screen and (min-width: 500px) {
+    grid-gap: 30px;
+  }
+  @media only screen and (min-width: 1200px) {
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 `
 
 const Action = styled.button`
-  background: ${props => (props.added ? `${COLORS.light}` : '')};
+  width: 100%;
+  background: ${props => (props.added ? `${COLORS.light}` : '#d9d9d9')};
   color: #000;
   opacity: ${props => (props.added ? '1' : '0.5')};
-  border-radius: 50%;
-  height: 30px;
-  width: 30px;
-  display: grid;
-  place-content: center;
-  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  padding: 0 20px;
+  border-radius: 20px;
+  span {
+    margin-left: 10px;
+  }
   &:hover,
   &:focus,
   &:disabled {
@@ -178,7 +227,7 @@ const Action = styled.button`
     pointer-events: none;
   }
   &.wishlist {
-    background: ${props => (props.added ? '#ffd24d' : '')};
+    background: ${props => (props.added ? '#ffd24d' : '#d9d9d9')};
     &:hover,
     &:focus,
     &:disabled {
@@ -186,7 +235,7 @@ const Action = styled.button`
     }
   }
   &.favorite {
-    background: ${props => (props.added ? '#b493e6' : '')};
+    background: ${props => (props.added ? '#b493e6' : '#d9d9d9')};
     &:hover,
     &:focus,
     &:disabled {

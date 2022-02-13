@@ -5,7 +5,7 @@ import { requestUsers, receiveUsers } from '../actions'
 import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
-import { Button } from '../GlobalStyles'
+import { COLORS, Button } from '../GlobalStyles'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Image } from './UserProfile'
@@ -112,58 +112,62 @@ export const Settings = () => {
   return (
     <Wrapper>
       {currentUser && (
-        <FadeIn>
-          <div className='user-info'>
-            <Image src={currentUser?.image ? currentUser?.image[0] : placeholder} alt='' />
-            <div className='text'>
-              <h1>{currentUser?.username}</h1>
-              <p>Member since {moment(currentUser?.joined).format('ll')}</p>
-            </div>
-          </div>
-          <section>
-            <Heading>account settings</Heading>
-            <Option key='upload-image'>
-              {currentUser && currentUser.image ? (
-                <p>Change your profile image</p>
-              ) : (
-                <p>Upload a profile image</p>
-              )}
-              <form>
-                <input type='text' placeholder='Image URL' onChange={handleUrl} />
-                <Button type='submit' onClick={handleUpload}>
-                  Upload
-                </Button>
-              </form>
-            </Option>
-            <Option key='change-username'>
-              {currentUser && currentUser.username && <p>Change your username</p>}
-              <form>
-                <input type='text' placeholder='New username' onChange={handleUsername} />
-                <Button type='submit' onClick={changeUsername} disabled={true}>
-                  Change
-                </Button>
-              </form>
-            </Option>
-            <Option key='change-password'>
-              {currentUser && currentUser.password && <p>Change your password</p>}
-              <form>
-                <input type='text' placeholder='New password' onChange={handlePassword} />
-                <Button type='submit' onClick={changePassword} disabled={true}>
-                  Change
-                </Button>
-              </form>
-            </Option>
-            <Option last={true}>
-              <p>Delete your account</p>
-              <form>
-                <input className='hidden' type='text' />
-                <Button onClick={deleteAccount} disabled={true}>
-                  Delete
-                </Button>
-              </form>
-            </Option>
-          </section>
-        </FadeIn>
+        <>
+          <FadeIn>
+            <section className='user-info'>
+              <Image src={currentUser?.image ? currentUser?.image[0] : placeholder} alt='' />
+              <div className='text'>
+                <h1>{currentUser?.username}</h1>
+                <p>Member since {moment(currentUser?.joined).format('ll')}</p>
+              </div>
+            </section>
+          </FadeIn>
+          <FadeIn>
+            <section>
+              <Heading>account settings</Heading>
+              <Option key='upload-image'>
+                {currentUser && currentUser.image ? (
+                  <p>Change your profile image</p>
+                ) : (
+                  <p>Upload a profile image</p>
+                )}
+                <form>
+                  <input type='text' placeholder='Image URL' onChange={handleUrl} />
+                  <Button type='submit' onClick={handleUpload}>
+                    Upload
+                  </Button>
+                </form>
+              </Option>
+              <Option key='change-username'>
+                {currentUser && currentUser.username && <p>Change your username</p>}
+                <form>
+                  <input type='text' placeholder='New username' onChange={handleUsername} />
+                  <Button type='submit' onClick={changeUsername} disabled={true}>
+                    Change
+                  </Button>
+                </form>
+              </Option>
+              <Option key='change-password'>
+                {currentUser && currentUser.password && <p>Change your password</p>}
+                <form>
+                  <input type='text' placeholder='New password' onChange={handlePassword} />
+                  <Button type='submit' onClick={changePassword} disabled={true}>
+                    Change
+                  </Button>
+                </form>
+              </Option>
+              <Option last={true}>
+                <p>Delete your account</p>
+                <form>
+                  <input className='hidden' type='text' />
+                  <Button onClick={deleteAccount} disabled={true}>
+                    Delete
+                  </Button>
+                </form>
+              </Option>
+            </section>
+          </FadeIn>
+        </>
       )}
     </Wrapper>
   )
@@ -175,11 +179,13 @@ const Wrapper = styled.main`
   align-items: center;
   min-height: calc(100vh - 190px);
   .user-info {
+    background: ${COLORS.light};
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 50px;
     .text {
-      margin-left: 30px;
+      text-align: center;
     }
   }
   section {
@@ -202,6 +208,15 @@ const Wrapper = styled.main`
     }
     button {
       flex: 1;
+    }
+  }
+  @media only screen and (min-width: 500px) {
+    .user-info {
+      flex-direction: row;
+      .text {
+        margin-left: 30px;
+        text-align: left;
+      }
     }
   }
   @media only screen and (min-width: 1000px) {

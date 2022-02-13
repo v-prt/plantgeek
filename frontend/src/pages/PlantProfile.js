@@ -8,14 +8,14 @@ import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { FaPaw } from 'react-icons/fa'
-import placeholder from '../assets/plant-placeholder.svg'
 import skull from '../assets/skull.svg'
+import placeholder from '../assets/plant-placeholder.svg'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
 
-import { ActionBar } from '../components/ActionBar'
+import { ActionBox } from '../components/ActionBox'
 
 export const PlantProfile = () => {
   const plants = useSelector(plantsArray)
@@ -87,20 +87,16 @@ export const PlantProfile = () => {
   return (
     <Wrapper>
       {plant && (
-        <FadeIn>
-          <section className='heading'>
-            <h1>{plant?.primaryName?.toLowerCase()}</h1>
-            <div className='secondary-name-wrapper'>
-              <b className='aka'>Also known as: </b>
-              <span className='secondary-name'>
-                {plant?.secondaryName ? plant?.secondaryName : 'N/A'}
-              </span>
-            </div>
-          </section>
-          <section className='plant-info'>
-            {/* TODO: improve for desktop, too much white space */}
-            <Image src={plant?.imageUrl ? plant?.imageUrl : placeholder} alt='' />
-            <div className='text'>
+        <>
+          <FadeIn>
+            <section className='heading'>
+              <h1>{plant?.primaryName?.toLowerCase()}</h1>
+              <div className='secondary-name-wrapper'>
+                <b className='aka'>Also known as: </b>
+                <span className='secondary-name'>
+                  {plant?.secondaryName ? plant?.secondaryName : 'N/A'}
+                </span>
+              </div>
               {/* TODO: keep this subtle, style as tags */}
               {/* {plant?.toxic ? (
                 <span className='toxic'>
@@ -113,75 +109,97 @@ export const PlantProfile = () => {
                   Nontoxic
                 </span>
               )} */}
-            </div>
-          </section>
-          <Needs>
-            <h2>
-              needs <span className='difficulty'>Difficulty: {difficulty}</span>
-            </h2>
-            <div className='row'>
-              <img src={sun} alt='' />
-              <div className='column'>
-                <p>{plant.light} light</p>
-                <Bar>
-                  {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
-                  {plant.light === 'medium indirect' && <Indicator level={'1-2'} />}
-                  {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
-                  {plant.light === 'bright indirect' && <Indicator level={'2-3'} />}
-                  {plant.light === 'bright' && <Indicator level={'3'} />}
-                </Bar>
+            </section>
+          </FadeIn>
+          <FadeIn>
+            <section className='plant-info'>
+              <div className='primary-image'>
+                <Image src={plant?.imageUrl ? plant?.imageUrl : placeholder} alt='' />
               </div>
-            </div>
-            <div className='row'>
-              <img src={water} alt='' />
-              <div className='column'>
-                <p>{plant.water} water</p>
-                <Bar>
-                  {plant.water === 'low' && <Indicator level={'1'} />}
-                  {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
-                  {plant.water === 'medium' && <Indicator level={'2'} />}
-                  {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
-                  {plant.water === 'high' && <Indicator level={'3'} />}
-                </Bar>
-              </div>
-            </div>
-            <div className='row'>
-              <img src={temp} alt='' />
-              <div className='column'>
-                <p>{plant.temperature} temperature</p>
-                <Bar>
-                  {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                  {plant.temperature === 'warm' && <Indicator level={'3'} />}
-                </Bar>
-              </div>
-            </div>
-            <div className='row'>
-              <img src={humidity} alt='' />
-              <div className='column'>
-                <p>{plant.humidity} humidity</p>
-                <Bar>
-                  {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-                  {plant.humidity === 'high' && <Indicator level={'3'} />}
-                </Bar>
-              </div>
-            </div>
-            {plant.sourceUrl && (
-              <p className='sources'>
-                Source(s):{' '}
-                <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
-                  [1]
-                </a>
-              </p>
-            )}
-            {/* TODO: move action bar out of needs section, make more detailed */}
-            {currentUser && (
-              <Sizer>
-                <ActionBar id={plant._id} style={{ background: '#fff' }} />
-              </Sizer>
-            )}
-          </Needs>
-        </FadeIn>
-        // TODO: similar plants section (genus)
+              <Needs>
+                <h2>
+                  needs <span className='difficulty'>Difficulty: {difficulty}</span>
+                </h2>
+                <div className='row'>
+                  <img src={sun} alt='' />
+                  <div className='column'>
+                    <p>{plant.light} light</p>
+                    <Bar>
+                      {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
+                      {plant.light === 'medium indirect' && <Indicator level={'1-2'} />}
+                      {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
+                      {plant.light === 'bright indirect' && <Indicator level={'2-3'} />}
+                      {plant.light === 'bright' && <Indicator level={'3'} />}
+                    </Bar>
+                  </div>
+                </div>
+                <div className='row'>
+                  <img src={water} alt='' />
+                  <div className='column'>
+                    <p>{plant.water} water</p>
+                    <Bar>
+                      {plant.water === 'low' && <Indicator level={'1'} />}
+                      {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+                      {plant.water === 'medium' && <Indicator level={'2'} />}
+                      {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+                      {plant.water === 'high' && <Indicator level={'3'} />}
+                    </Bar>
+                  </div>
+                </div>
+                <div className='row'>
+                  <img src={temp} alt='' />
+                  <div className='column'>
+                    <p>{plant.temperature} temperature</p>
+                    <Bar>
+                      {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+                      {plant.temperature === 'warm' && <Indicator level={'3'} />}
+                    </Bar>
+                  </div>
+                </div>
+                <div className='row'>
+                  <img src={humidity} alt='' />
+                  <div className='column'>
+                    <p>{plant.humidity} humidity</p>
+                    <Bar>
+                      {plant.humidity === 'average' && <Indicator level={'1-2'} />}
+                      {plant.humidity === 'high' && <Indicator level={'3'} />}
+                    </Bar>
+                  </div>
+                </div>
+                {plant.sourceUrl && (
+                  <p className='sources'>
+                    Source(s):{' '}
+                    <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
+                      [1]
+                    </a>
+                  </p>
+                )}
+              </Needs>
+            </section>
+          </FadeIn>
+          {currentUser && (
+            <FadeIn>
+              <ActionBox id={plant._id} />
+            </FadeIn>
+          )}
+
+          {/* TODO: gallery section */}
+          {/* <FadeIn>
+            <section className='gallery'>
+              <h2>gallery</h2>
+              {plant?.gallery?.length > 0
+                ? plant.gallery.map(image => <img className='gallery-image' src={image} alt='' />)
+                : 'This plant has no additional images yet. Upload new images of this plant to add to our gallery!'}
+            </section>
+          </FadeIn> */}
+
+          {/* TODO: similar plants section (genus) */}
+          {/* <FadeIn>
+            <section className='similar-plants'>
+              <h2>similar plants</h2>
+            </section>
+          </FadeIn> */}
+        </>
       )}
     </Wrapper>
   )
@@ -200,52 +218,49 @@ const Wrapper = styled.main`
     }
   }
   .plant-info {
-    background: #fff;
+    background: #f2f2f2;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 30px;
+    .primary-image {
+      display: flex;
+      flex: 1;
+      img {
+        margin: auto;
+      }
+    }
   }
   @media only screen and (min-width: 500px) {
     .heading {
       text-align: right;
     }
+  }
+  @media only screen and (min-width: 1200px) {
     .plant-info {
       flex-direction: row;
-      .text {
-        margin-left: 30px;
-        text-align: left;
-      }
     }
   }
 `
 
 const Image = styled.img`
-  height: 200px;
-  width: 200px;
-  &.placeholder {
-    height: 200px;
-  }
+  width: 100%;
+  border-radius: 50%;
   @media only screen and (min-width: 500px) {
-    height: 400px;
     width: 400px;
     &.placeholder {
-      height: 200px;
+      width: 200px;
     }
   }
 `
 
-const Needs = styled.section`
-  background: #f2f2f2;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  height: fit-content;
+const Needs = styled.div`
+  /* background: #f2f2f2;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); */
   display: flex;
   flex-direction: column;
-  padding: 10px 20px;
-  margin: 15px;
+  margin-top: 20px;
+  padding: 20px 30px;
   border-radius: 20px;
-  overflow: hidden;
   flex: 1;
   h2 {
     display: flex;
@@ -273,61 +288,9 @@ const Needs = styled.section`
     font-size: 0.8rem;
     margin: 10px 0;
   }
-  @media only screen and (min-width: 500px) {
-    min-width: 400px;
-    max-width: 600px;
+  @media only screen and (min-width: 1200px) {
+    margin-top: 0;
   }
-`
-
-const Actions = styled.div``
-
-const Toxicity = styled.div`
-  color: ${props => (props.toxic === 'true' ? `${COLORS.medium}` : '#68b234}')};
-  display: flex;
-  align-items: center;
-  width: fit-content;
-  position: relative;
-  margin-top: 20px;
-  cursor: default;
-  img {
-    width: 20px;
-  }
-  p {
-    margin-left: 10px;
-    font-weight: 700;
-  }
-  .tooltip {
-    background: ${props => (props.toxic === 'true' ? `${COLORS.medium}` : `${COLORS.light}`)};
-    color: #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    width: 300px;
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    top: 40px;
-    left: 0;
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    z-index: 1;
-    transition: 0.2s ease-in-out;
-    transition-delay: 0.2s;
-  }
-  &:hover {
-    .tooltip {
-      visibility: visible;
-      opacity: 1;
-    }
-  }
-`
-
-const Sizer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  border-top: 1px solid #fff;
-  margin-top: 10px;
-  padding-top: 10px;
 `
 
 const Bar = styled.div`
