@@ -209,8 +209,9 @@ export const SignUp = () => {
 }
 
 export const Wrapper = styled.main`
-  display: grid;
-  place-content: center;
+  @media only screen and (min-width: 500px) {
+    place-content: center;
+  }
 `
 
 export const Card = styled.div`
