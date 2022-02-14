@@ -25,7 +25,7 @@ export const Homepage = () => {
       <FadeIn>
         <section className='heading'>
           {currentUser ? (
-            <div className='row'>
+            <div className='inner'>
               <h1>welcome back, {currentUser.username}</h1>
               <img src={currentUser.image ? currentUser.image[0] : placeholder} alt='' />
             </div>
@@ -152,14 +152,16 @@ const Wrapper = styled.main`
     background: ${COLORS.light};
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    .row {
+    justify-content: center;
+    .inner {
       display: flex;
+      flex-direction: column-reverse;
       align-items: center;
       justify-content: flex-end;
     }
     h1 {
-      text-align: right;
+      font-size: 1.8rem;
+      text-align: center;
     }
     img {
       background: ${COLORS.lightest};
@@ -180,6 +182,16 @@ const Wrapper = styled.main`
     section {
       margin: 20px;
       padding: 40px;
+    }
+    .heading {
+      justify-content: flex-end;
+      .inner {
+        flex-direction: row;
+      }
+      h1 {
+        text-align: right;
+        font-size: 2rem;
+      }
     }
   }
 `

@@ -215,6 +215,7 @@ const Action = styled.button`
   border-radius: 20px;
   span {
     margin-left: 10px;
+    font-weight: bold;
   }
   &:hover,
   &:focus,

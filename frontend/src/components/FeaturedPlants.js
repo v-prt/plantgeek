@@ -50,21 +50,21 @@ export const FeaturedPlants = () => {
               <Icon className='collection'>
                 <RiPlantLine />
               </Icon>
-              <p>Have a plant?</p>
+              <b>Have a plant?</b>
               <p>Add it to your collection</p>
             </Info>
             <Info>
               <Icon className='wishlist'>
                 <AiOutlineStar />
               </Icon>
-              <p>Want a plant?</p>
+              <b>Want a plant?</b>
               <p>Add it to your wishlist</p>
             </Info>
             <Info>
               <Icon className='favorite'>
                 <TiHeartOutline />
               </Icon>
-              <p>Love a plant?</p>
+              <b>Love a plant?</b>
               <p>Add it to your favorites</p>
             </Info>
           </div>
