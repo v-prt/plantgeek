@@ -51,9 +51,9 @@ export const Contribute = () => {
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
     accept: 'image/*',
     multiple: false, // accepts only 1 image
-    onDrop: (acceptedFiles) => {
+    onDrop: acceptedFiles => {
       setImages(
-        acceptedFiles.map((image) =>
+        acceptedFiles.map(image =>
           Object.assign(image, {
             preview: URL.createObjectURL(image),
           })
@@ -64,7 +64,7 @@ export const Contribute = () => {
   useEffect(() => {
     if (images) {
       // revokes the data uris to avoid memory leaks
-      images.forEach((image) => URL.revokeObjectURL(image.preview))
+      images.forEach(image => URL.revokeObjectURL(image.preview))
     }
   }, [images])
 
@@ -75,8 +75,8 @@ export const Contribute = () => {
       dispatch(requestPlants())
       axios
         .get('/plants')
-        .then((res) => dispatch(receivePlants(res.data.data)))
-        .catch((err) => console.log(err))
+        .then(res => dispatch(receivePlants(res.data.data)))
+        .catch(err => console.log(err))
     }
   }, [dispatch, newPlant])
 
@@ -206,20 +206,17 @@ export const Contribute = () => {
               <Form>
                 {status && <div className='status'>{status}</div>}
                 <Text
-                  label='primaryName'
+                  label='Primary name'
                   name='primaryName'
                   type='text'
                   placeholder='e.g. Monstera deliciosa'
                 />
-                {/* TODO: choose from existing secondaryName or input new? */}
                 <Text
-                  label='secondaryName'
+                  label='Secondary name'
                   name='secondaryName'
                   type='text'
-                  placeholder='e.g. Monstera'
+                  placeholder='e.g. Swiss cheese plant'
                 />
-                {/* TODO: common name
-                  <Text label='Common name' name='common-name' type='text' placeholder='e.g. Swiss cheese plant' /> */}
                 <Select
                   label='Light'
                   name='light'
@@ -290,7 +287,7 @@ export const Contribute = () => {
                   </DropBox>
                   <div className='preview-container'>
                     {images &&
-                      images.map((image) => (
+                      images.map(image => (
                         <div className='thumbnail' key={image.name}>
                           <div className='thumbnail-inner'>
                             <img src={image.preview} alt={image.name} />
@@ -373,7 +370,7 @@ const Wrapper = styled.main`
   }
 `
 
-const FormWrapper = styled.section`
+export const FormWrapper = styled.section`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   max-width: 600px;
@@ -410,8 +407,7 @@ const FormWrapper = styled.section`
     select {
       border: 2px solid transparent;
       border-radius: 10px;
-      padding: 5px;
-      font-size: 0.9rem;
+      padding: 10px;
       transition: 0.2s ease-in-out;
       &:focus {
         border: 2px solid ${COLORS.light};
@@ -441,7 +437,7 @@ const FormWrapper = styled.section`
       color: ${COLORS.lightest};
       height: 50px;
       margin: 20px 0;
-      border-radius: 15px;
+      border-radius: 10px;
       padding: 10px 20px;
       &:hover {
         background: ${COLORS.medium};
@@ -449,8 +445,8 @@ const FormWrapper = styled.section`
       &:focus {
         background: ${COLORS.medium};
       }
-      &:disabled:hover {
-        background: ${COLORS.darkest};
+      &:disabled {
+        pointer-events: none;
       }
       &.secondary {
         background: transparent;
@@ -515,10 +511,9 @@ const DropZone = styled.div`
 `
 
 const DropBox = styled.div`
-  background: ${(props) =>
-    props.isDragAccept ? `rgba(255,255,255,0.8)` : `rgba(255,255,255,0.4)`};
-  border: ${(props) => (props.isDragAccept ? `2px solid ${COLORS.light}` : `2px dotted #ccc`)};
-  color: ${(props) => (props.isDragAccept ? `${COLORS.light}` : '#ccc')};
+  background: ${props => (props.isDragAccept ? `rgba(255,255,255,0.8)` : `rgba(255,255,255,0.4)`)};
+  border: ${props => (props.isDragAccept ? `2px solid ${COLORS.light}` : `2px dotted #ccc`)};
+  color: ${props => (props.isDragAccept ? `${COLORS.light}` : '#ccc')};
   margin: 10px 0;
   padding: 20px;
   display: flex;

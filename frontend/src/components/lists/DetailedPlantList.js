@@ -6,7 +6,7 @@ import { plantsArray } from '../../reducers/plantReducer'
 import { UserContext } from '../../contexts/UserContext'
 
 import styled from 'styled-components/macro'
-import { COLORS, Switch } from '../../GlobalStyles'
+import { Switch } from '../../GlobalStyles'
 import { FadeIn } from '../loaders/FadeIn'
 import { PlantCard } from '../PlantCard'
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md'

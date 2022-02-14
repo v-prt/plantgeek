@@ -42,7 +42,7 @@ export const Browse = () => {
   const [types, setTypes] = useState([])
   useEffect(() => {
     let genera = []
-    plants.forEach((plant) => {
+    plants.forEach(plant => {
       // skip genus/type if already added to array
       if (!genera.includes(plant.secondaryName)) {
         genera.push(plant.secondaryName)
@@ -61,13 +61,13 @@ export const Browse = () => {
   useEffect(() => {
     setFilteredPlants(plants)
   }, [plants])
-  const handleFilter = (type) => {
+  const handleFilter = type => {
     if (type === 'nontoxic') {
-      setFilteredPlants(plants.filter((plant) => plant.toxic === false))
+      setFilteredPlants(plants.filter(plant => plant.toxic === false))
       setSelectedType('nontoxic')
     } else {
       let foundPlants = []
-      plants.forEach((plant) => {
+      plants.forEach(plant => {
         if (plant.secondaryName === type) {
           foundPlants.push(plant)
         }
@@ -83,15 +83,15 @@ export const Browse = () => {
 
   // SETS THE SEARCH VALUE
   const [query, setQuery] = useState('')
-  const handleQuery = (ev) => {
+  const handleQuery = ev => {
     setQuery(ev.target.value)
   }
 
-  const handleSearch = (ev) => {
+  const handleSearch = ev => {
     ev.preventDefault()
     setFilteredPlants(
       plants.filter(
-        (plant) =>
+        plant =>
           plant.primaryName.toLowerCase().includes(query) ||
           plant.secondaryName.toLowerCase().includes(query)
       )
@@ -118,7 +118,7 @@ export const Browse = () => {
                     <input
                       id='needs-toggle'
                       type='checkbox'
-                      onChange={(ev) => setViewNeeds(ev.target.checked)}
+                      onChange={ev => setViewNeeds(ev.target.checked)}
                     />
                     <span className='slider'></span>
                   </Switch>
@@ -156,7 +156,7 @@ export const Browse = () => {
             </Actions>
             <Results>
               {plants.length > 0 && filteredPlants ? (
-                filteredPlants.map((plant) => {
+                filteredPlants.map(plant => {
                   return <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
                 })
               ) : (
@@ -173,7 +173,6 @@ export const Browse = () => {
 const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 `
 
 const Div = styled.div`
@@ -276,11 +275,11 @@ const Types = styled.ul`
 `
 
 const Type = styled.li`
-  background: ${(props) => (props.active ? `${COLORS.light}` : '#f2f2f2')};
+  background: ${props => (props.active ? `${COLORS.light}` : '#f2f2f2')};
   border-radius: 20px;
   margin: 5px;
   padding: 0 10px;
-  font-weight: ${(props) => (props.active ? '700' : '')};
+  font-weight: ${props => (props.active ? '700' : '')};
   transition: 0.2s ease-in-out;
   &:hover {
     background: ${COLORS.light};

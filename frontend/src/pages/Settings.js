@@ -33,7 +33,7 @@ export const Settings = () => {
     setUrl(ev.target.value)
   }
 
-  const handleUpload = ev => {
+  const changeImage = ev => {
     ev.preventDefault()
     // REMOVES EXISTING IMAGE
     if (existingImage) {
@@ -123,47 +123,32 @@ export const Settings = () => {
             </section>
           </FadeIn>
           <FadeIn>
-            <section>
+            <section className='settings'>
               <Heading>account settings</Heading>
               <Option key='upload-image'>
-                {currentUser && currentUser.image ? (
-                  <p>Change your profile image</p>
-                ) : (
-                  <p>Upload a profile image</p>
-                )}
-                <form>
-                  <input type='text' placeholder='Image URL' onChange={handleUrl} />
-                  <Button type='submit' onClick={handleUpload}>
-                    Upload
-                  </Button>
-                </form>
+                <input
+                  type='text'
+                  placeholder={`${
+                    currentUser && currentUser.image
+                      ? 'Change profile image'
+                      : 'Upload profile image'
+                  }`}
+                  onChange={handleUrl}
+                />
+                <Button onClick={changeImage}>Submit</Button>
               </Option>
               <Option key='change-username'>
-                {currentUser && currentUser.username && <p>Change your username</p>}
-                <form>
-                  <input type='text' placeholder='New username' onChange={handleUsername} />
-                  <Button type='submit' onClick={changeUsername} disabled={true}>
-                    Change
-                  </Button>
-                </form>
+                <input type='text' placeholder='Change username' onChange={handleUsername} />
+                <Button onClick={changeUsername}>Submit</Button>
               </Option>
               <Option key='change-password'>
-                {currentUser && currentUser.password && <p>Change your password</p>}
-                <form>
-                  <input type='text' placeholder='New password' onChange={handlePassword} />
-                  <Button type='submit' onClick={changePassword} disabled={true}>
-                    Change
-                  </Button>
-                </form>
+                <input type='text' placeholder='Change password' onChange={handlePassword} />
+                <Button onClick={changePassword}>Submit</Button>
               </Option>
               <Option last={true}>
-                <p>Delete your account</p>
-                <form>
-                  <input className='hidden' type='text' />
-                  <Button onClick={deleteAccount} disabled={true}>
-                    Delete
-                  </Button>
-                </form>
+                <Button className='delete-acc' onClick={deleteAccount}>
+                  DELETE ACCOUNT
+                </Button>
               </Option>
             </section>
           </FadeIn>
@@ -177,7 +162,6 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: calc(100vh - 190px);
   .user-info {
     background: ${COLORS.light};
     display: flex;
@@ -188,42 +172,11 @@ const Wrapper = styled.main`
       text-align: center;
     }
   }
-  section {
+  .settings {
     background: #f2f2f2;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
-  }
-  form {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
-    input {
-      flex: 3;
-      border: none;
-      border-radius: 10px;
-      margin-right: 10px;
-      &.hidden {
-        visibility: hidden;
-      }
-    }
-    button {
-      flex: 1;
-    }
-  }
-  @media only screen and (min-width: 500px) {
-    .user-info {
-      flex-direction: row;
-      .text {
-        margin-left: 30px;
-        text-align: left;
-      }
-    }
-  }
-  @media only screen and (min-width: 1000px) {
-    form input {
-      margin-left: 20px;
-      min-width: 300px;
-    }
+    max-width: 600px;
   }
 `
 
@@ -235,13 +188,40 @@ const Heading = styled.h2`
 `
 
 const Option = styled.div`
-  color: ${props => (props.last ? '#cc0000' : '')};
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   border-bottom: ${props => (props.last ? 'none' : '1px dotted #ccc')};
-  @media only screen and (min-width: 1000px) {
-    flex-direction: row;
-    align-items: center;
+  padding: 10px 0;
+  input {
+    border: 2px solid transparent;
+    border-radius: 10px;
+    margin-right: 10px;
+    flex: 3;
+    transition: 0.2s ease-in-out;
+    &:focus {
+      border: 2px solid ${COLORS.light};
+      outline: none;
+    }
+  }
+  button {
+    background: ${COLORS.darkest};
+    color: ${COLORS.lightest};
+    flex: 1;
+    border-radius: 10px;
+    padding: 10px 20px;
+    &:hover {
+      background: ${COLORS.medium};
+    }
+    &:focus {
+      background: ${COLORS.medium};
+    }
+    &:disabled {
+      pointer-events: none;
+    }
+    &.delete-acc {
+      background: #cc0000;
+      height: 50px;
+      max-width: 200px;
+      margin: 20px auto auto auto;
+    }
   }
 `

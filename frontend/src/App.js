@@ -74,11 +74,10 @@ export const App = () => {
 
 const Body = styled.div`
   overscroll-behavior: none;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   main {
-    min-height: calc(100vh - 150px);
+    min-height: calc(100vh - 90px);
     width: 90%;
     display: flex;
     flex-direction: column;
@@ -94,6 +93,7 @@ const Body = styled.div`
   @media only screen and (min-width: 500px) {
     margin-right: 55px;
     main {
+      min-height: calc(100vh - 150px);
       margin: auto;
       section {
         margin: 20px auto;

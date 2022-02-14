@@ -61,8 +61,8 @@ export const SignUp = () => {
       dispatch(requestUsers())
       axios
         .get('/users')
-        .then((res) => dispatch(receiveUsers(res.data.data)))
-        .catch((err) => console.log(err))
+        .then(res => dispatch(receiveUsers(res.data.data)))
+        .catch(err => console.log(err))
     }
   }, [dispatch, username])
 
@@ -82,8 +82,8 @@ export const SignUp = () => {
         'Content-Type': 'application/json',
       },
     })
-      .then((res) => res.json())
-      .then((json) => {
+      .then(res => res.json())
+      .then(json => {
         if (json.status === 201) {
           console.log('Signup successful!')
           setSubmitting(false)
@@ -209,11 +209,8 @@ export const SignUp = () => {
 }
 
 export const Wrapper = styled.main`
-  flex: 1;
-  @media only screen and (min-width: 500px) {
-    display: grid;
-    place-content: center;
-  }
+  display: grid;
+  place-content: center;
 `
 
 export const Card = styled.div`

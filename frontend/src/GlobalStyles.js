@@ -108,6 +108,7 @@ export default createGlobalStyle`
     }
     input {
       padding: 10px;
+      font-size: 1rem;
     }
     button {
         background: none;
