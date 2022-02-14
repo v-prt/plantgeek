@@ -84,7 +84,7 @@ export const Browse = () => {
   // SETS THE SEARCH VALUE
   const [query, setQuery] = useState('')
   const handleQuery = ev => {
-    setQuery(ev.target.value)
+    setQuery(ev.target.value.toLowerCase())
   }
 
   const handleSearch = ev => {
