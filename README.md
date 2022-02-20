@@ -39,7 +39,7 @@
 
 ## Plant Profile
 - [x] view detailed care information
-<img width="800" alt="Screen Shot 2021-04-22 at 8 57 07 PM" src="https://user-images.githubusercontent.com/73324816/115816251-61c67d80-a3ad-11eb-991a-777bb115131a.png">
+<img width="800" alt="Screen Shot 2022-02-20 at 1 51 42 PM" src="https://user-images.githubusercontent.com/73324816/154865932-85290c7f-4b43-48b6-b683-1e98186122fe.png">
 
 ## User Profile
 - [x] manage your plant lists
