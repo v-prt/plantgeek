@@ -67,7 +67,6 @@ export const SignUp = () => {
   }, [dispatch, username])
 
   const handleSignup = async (values, { setSubmitting }) => {
-    // FIXME: use axios
     await fetch('/users', {
       method: 'POST',
       body: JSON.stringify({

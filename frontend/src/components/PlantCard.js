@@ -83,7 +83,6 @@ const Wrapper = styled.div`
   border-radius: 20px;
   padding: 10px;
   transition: 0.2s ease-in-out;
-  // FIXME: inconsistent size based on plant name length
   min-height: 250px;
   width: 250px;
   &:hover {

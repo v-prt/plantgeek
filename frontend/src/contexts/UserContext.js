@@ -14,7 +14,6 @@ export const UserProvider = ({ children }) => {
     setIncorrectUsername(false)
     setIncorrectPassword(false)
     try {
-      // FIXME: use axios
       await fetch('/login', {
         method: 'POST',
         body: JSON.stringify({
