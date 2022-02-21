@@ -8,7 +8,7 @@ import { requestPlants, receivePlants } from '../actions'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-import { Text, Select, Checkbox } from '../components/forms/FormItems'
+import { Text, Select } from '../components/forms/FormItems'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
@@ -26,7 +26,7 @@ export const Contribute = () => {
   // TODO: reward users with badges for approved submissions? (display # of submissions)
   const { currentUser } = useContext(UserContext)
   const plants = useSelector(plantsArray)
-  const [status, setStatus] = useState()
+  const [status, setStatus] = useState(undefined)
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -34,15 +34,14 @@ export const Contribute = () => {
   }, [])
 
   const PlantSchema = Yup.object().shape({
-    primaryName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Required'),
-    secondaryName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Required'),
-    light: Yup.string().required('Required'),
-    water: Yup.string().required('Required'),
-    temperature: Yup.string().required('Required'),
-    humidity: Yup.string().required('Required'),
-    toxic: Yup.boolean(),
-    // TODO: imageUrl: Yup.string().required('Required'),
-    sourceUrl: Yup.string().required('Required'),
+    primaryName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('*required'),
+    // secondaryName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('*required'),
+    light: Yup.string().required('*required'),
+    water: Yup.string().required('*required'),
+    temperature: Yup.string().required('*required'),
+    humidity: Yup.string().required('*required'),
+    toxic: Yup.string().required('*required'),
+    sourceUrl: Yup.string().required('*required'),
   })
 
   // DROPZONE
@@ -80,76 +79,74 @@ export const Contribute = () => {
     }
   }, [dispatch, newPlant])
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log(values)
-    // if (currentUser.role === 'admin') {
-    //   // upload image to cloudinary via dropzone
-    //   images.forEach(async (image) => {
-    //     const formData = new FormData()
-    //     formData.append('file', image)
-    //     formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
-    //     // FIXME: Moderation parameter is not allowed when using unsigned upload
-    //     // formData.append('moderation', 'manual')
-    //     const response = await fetch(cloudinaryUrl, {
-    //       method: 'POST',
-    //       body: formData,
-    //     })
-    //     const cloudinaryResponse = await response.json()
-    //     // submit data to mongodb
-    //     await fetch('/plants', {
-    //       method: 'POST',
-    //       body: JSON.stringify({
-    //         primaryName: primaryName,
-    //         secondaryName: secondaryName,
-    //         light: light,
-    //         water: water,
-    //         temperature: temperature,
-    //         humidity: humidity,
-    //         toxic: toxic === 'true' ? true : false,
-    //         imageUrl: cloudinaryResponse.url,
-    //         sourceUrl: sourceUrl,
-    //       }),
-    //       headers: {
-    //         Accept: 'application/json',
-    //         'Content-Type': 'application/json',
-    //       },
-    //     })
-    //       .then((res) => {
-    //         if (res.status === 500) {
-    //           // TODO: display error to user?
-    //           console.error('An error occured when submitting plant data.')
-    //         }
-    //         return res.json()
-    //       })
-    //       .then((data) => {
-    //         if (data) {
-    //           // console.log(data.data.ops[0])
-    //           console.log('New plant successfully added to database.')
-    //           setNewPlant(data.data.ops[0])
-    //           // reset form and clear state
-    //           setPrimaryName('')
-    //           setSecondaryName('')
-    //           setLight('')
-    //           setWater('')
-    //           setTemperature('')
-    //           setHumidity('')
-    //           setToxic('')
-    //           setImages()
-    //           setSourceUrl('')
-    //           // scroll to top
-    //           window.scrollTo(0, 0)
-    //         }
-    //       })
-    //   })
-    // } else {
-    //   // TODO:
-    //   console.log('not admin')
-    // }
+  const handleSubmit = (values, { setSubmitting, resetForm }) => {
+    setStatus(undefined)
+    const existingPlant = plants.find(
+      plant => plant.primaryName.toLowerCase() === values.primaryName.toLowerCase()
+    )
+    if (existingPlant) {
+      setStatus('Oops, this plant already exists.')
+      setSubmitting(false)
+    } else if (!images) {
+      setStatus('You must upload an image.')
+      setSubmitting(false)
+    } else if (currentUser.role === 'admin') {
+      // upload image to cloudinary via dropzone
+      images.forEach(async image => {
+        const formData = new FormData()
+        formData.append('file', image)
+        formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
+        // FIXME: Moderation parameter is not allowed when using unsigned upload
+        // formData.append('moderation', 'manual')
+        const response = await fetch(cloudinaryUrl, {
+          method: 'POST',
+          body: formData,
+        })
+        const cloudinaryResponse = await response.json()
+        // submit data to mongodb
+        await fetch('/plants', {
+          method: 'POST',
+          body: JSON.stringify({
+            primaryName: values.primaryName,
+            secondaryName: values.secondaryName,
+            light: values.light,
+            water: values.water,
+            temperature: values.temperature,
+            humidity: values.humidity,
+            toxic: values.toxic === 'yes' ? true : false,
+            imageUrl: cloudinaryResponse.url,
+            sourceUrl: values.sourceUrl,
+          }),
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+          .then(res => res.json())
+          .then(json => {
+            if (json.status === 201) {
+              setNewPlant(json.data.ops[0])
+              setStatus(undefined)
+              setSubmitting(false)
+              resetForm()
+              window.scrollTo(0, 0)
+            } else if (json.status === 500) {
+              setStatus('Oops, something went wrong.')
+              setSubmitting(false)
+            }
+          })
+      })
+    } else {
+      // TODO: submit for review
+      setStatus(`You're not an admin`)
+      setSubmitting(false)
+    }
   }
 
   return (
     <Wrapper>
       <FadeIn>
+        {/* TODO: adjust wording & plant card interactions based on review status */}
         {newPlant && (
           <section className='confirmation'>
             <div className='msg'>
@@ -163,7 +160,7 @@ export const Contribute = () => {
                 information below.
               </p>
             </div>
-            <PlantCard key={newPlant._id} plant={newPlant} />
+            <PlantCard key={newPlant._id} plant={newPlant} approved={false} viewNeeds={true} />
           </section>
         )}
       </FadeIn>
@@ -197,12 +194,9 @@ export const Contribute = () => {
               sourceUrl: '',
             }}
             validationSchema={PlantSchema}
-            // validateOnChange={false}
-            // validateOnBlur={false}
             onSubmit={handleSubmit}>
-            {({ isSubmitting }) => (
+            {({ isSubmitting, resetForm }) => (
               <Form>
-                {status && <div className='status'>{status}</div>}
                 <Text
                   label='Primary name'
                   name='primaryName'
@@ -244,13 +238,16 @@ export const Contribute = () => {
                   type='select'
                   options={['average', 'above average']}
                 />
-                {/* FIXME: radio instead of checkbox? */}
-                <Checkbox name='toxic'>This plant is toxic</Checkbox>
+                <Select
+                  label='Is this plant toxic?'
+                  name='toxic'
+                  type='select'
+                  options={['yes', 'no']}
+                />
                 <DropZone>
                   {/* TODO:
-                    - make this work with formik
-              - set up signed uploads with cloudinary
-              - set up a way to approve images before saving to db (cloudinary analysis using amazon rekognition, must be plant and pass guidelines, no offensive content) */}
+                  - set up signed uploads with cloudinary
+                  - set up a way to approve images before saving to db (cloudinary analysis using amazon rekognition, must be plant and pass guidelines, no offensive content) */}
                   <div className='guidelines-wrapper'>
                     <div className='guidelines'>
                       <p>
@@ -297,13 +294,20 @@ export const Contribute = () => {
                 {/* TODO: accept multiple source links? */}
                 <Text label='Source' name='sourceUrl' type='text' placeholder='Insert URL' />
                 <div className='buttons'>
-                  <button className='secondary' disabled onClick={() => console.log('clear form')}>
-                    CLEAR
+                  <button
+                    type='reset'
+                    className='secondary'
+                    onClick={() => {
+                      setImages()
+                      resetForm()
+                    }}>
+                    RESET
                   </button>
                   <button type='submit' disabled={isSubmitting}>
                     {isSubmitting ? <Ellipsis /> : 'SUBMIT'}
                   </button>
                 </div>
+                {status && <div className='status'>{status}</div>}
               </Form>
             )}
           </Formik>
@@ -339,13 +343,13 @@ const Wrapper = styled.main`
     &.confirmation {
       background: ${COLORS.light};
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-evenly;
       .msg {
         h2 {
           display: flex;
           align-items: center;
-          margin-bottom: 20px;
           .checkmark {
             background: ${COLORS.lightest};
             padding: 2px;
@@ -356,6 +360,7 @@ const Wrapper = styled.main`
         }
         p {
           max-width: 400px;
+          margin: 20px 0;
         }
       }
     }
@@ -452,6 +457,13 @@ export const FormWrapper = styled.section`
         color: ${COLORS.darkest};
       }
     }
+    .status {
+      background: #fcece1;
+      color: #ff6b00;
+      border: 1px solid #fac19e;
+      border-radius: 5px;
+      text-align: center;
+    }
   }
 `
 
@@ -476,6 +488,18 @@ const DropZone = styled.div`
         list-style: disc inside;
       }
     }
+    .example {
+      background: #dadada;
+      border-radius: 5px;
+      margin: 10px 0;
+      padding: 20px;
+      display: grid;
+      place-content: center;
+      text-align: center;
+      img {
+        margin-top: 10px;
+      }
+    }
     @media only screen and (min-width: 1000px) {
       flex-direction: row;
     }
@@ -483,6 +507,7 @@ const DropZone = styled.div`
   .preview-container {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     margin-top: 16px;
     .thumbnail {
       display: inline-flex;
