@@ -26,8 +26,8 @@ export const UserProvider = ({ children }) => {
           'Content-Type': 'application/json',
         },
       })
-        .then((res) => res.json())
-        .then((json) => {
+        .then(res => res.json())
+        .then(json => {
           if (json.status === 200) {
             setSubmitting(false)
             setCurrentUser(json.data)
@@ -52,36 +52,24 @@ export const UserProvider = ({ children }) => {
   }
 
   // LOGOUT
-  const handleLogout = (ev) => {
+  const handleLogout = ev => {
     ev.preventDefault()
     localStorage.removeItem('plantgeekToken')
     window.location.replace('/login')
   }
 
   // VERIFY TOKEN AND SET CURRENT USER
-  const verifyToken = async (token) => {
+  const verifyToken = async token => {
     try {
-      // FIXME: use axios
-      fetch('/token', {
-        method: 'POST',
-        body: JSON.stringify({
-          token: token,
-        }),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
+      axios.post('/token', { token }).then(res => {
+        if (res.status === 200) {
+          setCurrentUser(res.data.data)
+        } else {
+          // something wrong with token
+          localStorage.removeItem('plantgeekToken')
+          window.location.replace('/login')
+        }
       })
-        .then((res) => res.json())
-        .then((json) => {
-          if (json.status === 200) {
-            setCurrentUser(json.data)
-          } else {
-            // something wrong with token
-            localStorage.removeItem('plantgeekToken')
-            window.location.replace('/login')
-          }
-        })
     } catch (err) {
       console.log(err)
     }
@@ -94,11 +82,11 @@ export const UserProvider = ({ children }) => {
   }, [token])
 
   // GET USER BY ID AND SET AS CURRENT USER
-  const getUser = async (id) => {
+  const getUser = async id => {
     await axios
       .get(`/users/${id}`)
-      .then((res) => setCurrentUser(res.data.data))
-      .catch((err) => console.log(err))
+      .then(res => setCurrentUser(res.data.data))
+      .catch(err => console.log(err))
   }
 
   return (
