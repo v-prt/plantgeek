@@ -15,8 +15,8 @@ const {
   getUser,
   addToUser,
   removeFromUser,
-} = require('./handlers/userHandlers')
-const { createPlant, getPlants, getPlant, addComment } = require('./handlers/plantHandlers')
+} = require('./handlers/userHandlers.ts')
+const { createPlant, getPlants, getPlant, addComment } = require('./handlers/plantHandlers.ts')
 
 // run on whatever port heroku has available or 4000 (local)
 const PORT = process.env.PORT || 4000
