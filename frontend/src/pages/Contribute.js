@@ -128,6 +128,7 @@ export const Contribute = () => {
               setNewPlant(json.data.ops[0])
               setStatus(undefined)
               setSubmitting(false)
+              setImages()
               resetForm()
               window.scrollTo(0, 0)
             } else if (json.status === 500) {

@@ -28,6 +28,7 @@ export const App = () => {
   usePlantsFetcher()
   useUsersFetcher()
 
+  // TODO: set app level loading state for checking if user logged in
   return (
     <BrowserRouter>
       <GlobalStyles />
