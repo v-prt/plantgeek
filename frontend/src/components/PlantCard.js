@@ -116,6 +116,7 @@ const InfoLink = styled(Link)`
   img {
     height: 200px;
     width: 200px;
+    border-radius: 50%;
     &.placeholder {
       height: 200px;
       width: 150px;
