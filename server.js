@@ -15,8 +15,15 @@ const {
   getUser,
   addToUser,
   removeFromUser,
-} = require('./handlers/userHandlers.ts')
-const { createPlant, getPlants, getPlant, addComment } = require('./handlers/plantHandlers.ts')
+} = require('./handlers/userHandlers.js')
+const {
+  createPlant,
+  getPlants,
+  getPlant,
+  addComment,
+  updatePlant,
+  deletePlant,
+} = require('./handlers/plantHandlers.js')
 
 // run on whatever port heroku has available or 4000 (local)
 const PORT = process.env.PORT || 4000
@@ -45,7 +52,9 @@ app
   .post('/plants', createPlant)
   .get('/plants', getPlants)
   .get('/plants/:_id', getPlant)
+  .put('plants/:_id', updatePlant)
   .put('/plants/:_id/comments', addComment)
+  .delete('/plants/:_id', deletePlant)
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'frontend', 'build')))

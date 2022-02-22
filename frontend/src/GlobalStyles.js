@@ -77,6 +77,88 @@ export const Switch = styled.label`
   }
 `
 
+export const DropZone = styled.div`
+  padding: 15px 0;
+  border-bottom: 1px solid #fff;
+  .guidelines-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .guidelines {
+      margin-right: 50px;
+      ul {
+        font-size: 0.9rem;
+        list-style: disc inside;
+      }
+    }
+    .example {
+      background: #dadada;
+      border-radius: 5px;
+      margin: 10px 0;
+      padding: 20px;
+      display: grid;
+      place-content: center;
+      text-align: center;
+      img {
+        margin-top: 10px;
+      }
+    }
+    @media only screen and (min-width: 1000px) {
+      flex-direction: row;
+    }
+  }
+  .preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 16px;
+    .thumbnail {
+      display: inline-flex;
+      border-radius: 2px;
+      border: 1px solid #eaeaea;
+      margin-bottom: 8px;
+      margin-right: 8px;
+      width: 100px;
+      height: 100px;
+      padding: 4px;
+      box-sizing: border-box;
+      .thumbnail-inner {
+        display: flex;
+        min-width: 0px;
+        overflow: hidden;
+        img {
+          display: block;
+          width: auto;
+          height: 100%;
+        }
+      }
+    }
+  }
+`
+
+export const DropBox = styled.div`
+  background: ${props => (props.isDragAccept ? `rgba(255,255,255,0.8)` : `rgba(255,255,255,0.4)`)};
+  border: ${props => (props.isDragAccept ? `2px solid ${COLORS.light}` : `2px dotted #ccc`)};
+  color: ${props => (props.isDragAccept ? `${COLORS.light}` : '#ccc')};
+  margin: 10px 0;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 150px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  .icon {
+    font-size: 4rem;
+  }
+  &:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid ${COLORS.light};
+    color: ${COLORS.light};
+  }
+`
+
 export default createGlobalStyle`
     * {
         font-family: 'Quicksand', sans-serif;

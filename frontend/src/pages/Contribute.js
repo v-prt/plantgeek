@@ -11,7 +11,7 @@ import * as Yup from 'yup'
 import { Text, Select } from '../components/forms/FormItems'
 
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
+import { COLORS, DropZone, DropBox } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import checkmark from '../assets/checkmark.svg'
@@ -180,7 +180,7 @@ export const Contribute = () => {
       </FadeIn>
       <FadeIn delay={200}>
         <FormWrapper>
-          <Heading>houseplant info</Heading>
+          <h2>houseplant info</h2>
           <Formik
             initialValues={{
               primaryName: '',
@@ -218,6 +218,7 @@ export const Contribute = () => {
                     'medium indirect',
                     'medium to bright indirect',
                     'bright indirect',
+                    'bright',
                   ]}
                 />
                 <Select
@@ -230,13 +231,13 @@ export const Contribute = () => {
                   label='Temperature'
                   name='temperature'
                   type='select'
-                  options={['average', 'above average']}
+                  options={['average', 'warm']}
                 />
                 <Select
                   label='Humidity'
                   name='humidity'
                   type='select'
-                  options={['average', 'above average']}
+                  options={['average', 'high']}
                 />
                 <Select
                   label='Is this plant toxic?'
@@ -377,6 +378,12 @@ export const FormWrapper = styled.section`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   max-width: 600px;
+  h2 {
+    box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
+    padding: 0 20px 10px 20px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
   form {
     display: flex;
     flex-direction: column;
@@ -464,94 +471,5 @@ export const FormWrapper = styled.section`
       border-radius: 5px;
       text-align: center;
     }
-  }
-`
-
-const Heading = styled.h2`
-  box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
-  padding: 0 20px 10px 20px;
-  margin-bottom: 10px;
-  text-align: center;
-`
-
-const DropZone = styled.div`
-  padding: 15px 0;
-  border-bottom: 1px solid #fff;
-  .guidelines-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    .guidelines {
-      margin-right: 50px;
-      ul {
-        font-size: 0.9rem;
-        list-style: disc inside;
-      }
-    }
-    .example {
-      background: #dadada;
-      border-radius: 5px;
-      margin: 10px 0;
-      padding: 20px;
-      display: grid;
-      place-content: center;
-      text-align: center;
-      img {
-        margin-top: 10px;
-      }
-    }
-    @media only screen and (min-width: 1000px) {
-      flex-direction: row;
-    }
-  }
-  .preview-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 16px;
-    .thumbnail {
-      display: inline-flex;
-      border-radius: 2px;
-      border: 1px solid #eaeaea;
-      margin-bottom: 8px;
-      margin-right: 8px;
-      width: 100px;
-      height: 100px;
-      padding: 4px;
-      box-sizing: border-box;
-      .thumbnail-inner {
-        display: flex;
-        min-width: 0px;
-        overflow: hidden;
-        img {
-          display: block;
-          width: auto;
-          height: 100%;
-        }
-      }
-    }
-  }
-`
-
-const DropBox = styled.div`
-  background: ${props => (props.isDragAccept ? `rgba(255,255,255,0.8)` : `rgba(255,255,255,0.4)`)};
-  border: ${props => (props.isDragAccept ? `2px solid ${COLORS.light}` : `2px dotted #ccc`)};
-  color: ${props => (props.isDragAccept ? `${COLORS.light}` : '#ccc')};
-  margin: 10px 0;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  height: 150px;
-  cursor: pointer;
-  transition: 0.2s ease-in-out;
-  .icon {
-    font-size: 4rem;
-  }
-  &:hover {
-    background: rgba(255, 255, 255, 0.8);
-    border: 2px solid ${COLORS.light};
-    color: ${COLORS.light};
   }
 `

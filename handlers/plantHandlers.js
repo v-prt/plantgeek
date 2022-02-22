@@ -95,7 +95,48 @@ const addComment = async (req, res) => {
   client.close()
 }
 
-// TODO: (DELETE) REMOVE A PLANT
-// will need to remove from users' lists or add a check in case plant data is missing
+const updatePlant = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  const _id = req.params._id
+  try {
+    await client.connect()
+    const db = client.db('plantgeekdb')
+    const filter = { _id: ObjectId(_id) }
+    const update = {
+      $set: {
+        primaryName: req.body.primaryName,
+        secondaryName: req.body.secondaryName,
+        light: req.body.light,
+        water: req.body.water,
+        temperature: req.body.temperature,
+        humidity: req.body.humidity,
+        toxic: req.body.toxic,
+        imageUrl: req.body.imageUrl,
+        sourceUrl: req.body.sourceUrl,
+      },
+    }
+    const result = await db.collection('plants').updateOne(filter, update)
+    res.status(200).json({ status: 200, data: result })
+  } catch (err) {
+    res.status(500).json({ status: 500, data: req.body, message: err.message })
+    console.error(err)
+  }
+}
 
-module.exports = { createPlant, getPlants, getPlant, addComment }
+// TODO: will need to remove from users' lists or add a check in case plant data is missing
+const deletePlant = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  const _id = req.params._id
+  try {
+    await client.connect()
+    const db = client.db('plantgeekdb')
+    const filter = { _id: ObjectId(_id) }
+    const result = await db.collection('plants').deleteOne(filter)
+    res.status(200).json({ status: 200, data: result })
+  } catch (err) {
+    res.status(500).json({ status: 500, data: req.body, message: err.message })
+    console.error(err)
+  }
+}
+
+module.exports = { createPlant, getPlants, getPlant, addComment, updatePlant, deletePlant }

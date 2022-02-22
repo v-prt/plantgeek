@@ -7,8 +7,6 @@ import { UserContext } from '../contexts/UserContext'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
-import { FaPaw } from 'react-icons/fa'
-import skull from '../assets/skull.svg'
 import placeholder from '../assets/plant-placeholder.svg'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
@@ -19,7 +17,7 @@ import { ActionBox } from '../components/ActionBox'
 
 export const PlantProfile = () => {
   const plants = useSelector(plantsArray)
-  const [plant, setPlant] = useState([])
+  const [plant, setPlant] = useState()
   const { id } = useParams()
   const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
@@ -199,6 +197,13 @@ export const PlantProfile = () => {
               <h2>similar plants</h2>
             </section>
           </FadeIn> */}
+
+          {/* TODO: wip */}
+          {/* {currentUser && (
+            <FadeIn>
+              <UpdatePlant currentUser={currentUser} plant={plant} />
+            </FadeIn>
+          )} */}
         </>
       )}
     </Wrapper>
@@ -254,8 +259,6 @@ const Image = styled.img`
 `
 
 const Needs = styled.div`
-  /* background: #f2f2f2;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); */
   display: flex;
   flex-direction: column;
   margin-top: 20px;
