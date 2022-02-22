@@ -14,22 +14,12 @@ const createPlant = async (req, res) => {
   try {
     await client.connect()
     const db = client.db('plantgeekdb')
-    const plant = await db.collection('plants').insertOne({
-      primaryName: req.body.primaryName,
-      secondaryName: req.body.secondaryName,
-      light: req.body.light,
-      water: req.body.water,
-      temperature: req.body.temperature,
-      humidity: req.body.humidity,
-      toxic: req.body.toxic,
-      imageUrl: req.body.imageUrl,
-      sourceUrl: req.body.sourceUrl,
-    })
+    const plant = await db.collection('plants').insertOne(req.body)
     assert.strictEqual(1, plant.insertedCount)
     res.status(201).json({ status: 201, data: plant })
   } catch (err) {
     res.status(500).json({ status: 500, data: req.body, message: err.message })
-    console.log(err.stack)
+    console.error(err.stack)
   }
   client.close()
 }
@@ -85,12 +75,9 @@ const addComment = async (req, res) => {
       status: 200,
       message: `${result.matchedCount} plant(s) matched the filter, updated ${result.modifiedCount} plant(s)`,
     })
-    console.log(
-      `${result.matchedCount} plant(s) matched the filter, updated ${result.modifiedCount} plant(s)`
-    )
   } catch (err) {
     res.status(404).json({ status: 404, message: err.message })
-    console.log(err.stack)
+    console.error(err.stack)
   }
   client.close()
 }

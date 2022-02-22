@@ -47,7 +47,7 @@ const createUser = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ status: 500, data: req.body, message: err.message })
-    console.log(err.stack)
+    console.error(err.stack)
   }
   client.close()
 }
@@ -78,7 +78,7 @@ const authenticateUser = async (req, res) => {
     }
   } catch (err) {
     res.status(500).send('Internal server error')
-    console.log(err.stack)
+    console.error(err.stack)
   }
   client.close()
 }
@@ -110,7 +110,7 @@ const verifyToken = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ status: 500, message: err.message })
-    console.log(err.stack)
+    console.error(err.stack)
   }
   client.close()
 }
@@ -190,12 +190,9 @@ const addToUser = async (req, res) => {
       status: 200,
       message: `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`,
     })
-    console.log(
-      `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`
-    )
   } catch (err) {
     res.status(404).json({ status: 404, message: err.message })
-    console.log(err.stack)
+    console.error(err.stack)
   }
   client.close()
 }
@@ -246,12 +243,9 @@ const removeFromUser = async (req, res) => {
       status: 200,
       message: `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`,
     })
-    console.log(
-      `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`
-    )
   } catch (err) {
     res.status(404).json({ status: 404, message: err.message })
-    console.log(err.stack)
+    console.error(err.stack)
   }
   client.close()
 }
