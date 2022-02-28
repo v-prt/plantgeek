@@ -11,7 +11,7 @@ import YupPassword from 'yup-password'
 import { Text, Checkbox } from '../components/forms/FormItems.js'
 
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
+import { COLORS, Button } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { TiHeartOutline } from 'react-icons/ti'
@@ -172,12 +172,12 @@ export const SignUp = () => {
                 <Form>
                   {/* TODO: improve error status message (show beside specific input - email/username) */}
                   {status && <div className='status'>{status}</div>}
-                  <Text label='First name' name='firstName' type='text' />
-                  <Text label='Last name' name='lastName' type='text' />
-                  <Text label='Email' name='email' type='email' />
-                  <Text label='Username' name='username' type='text' />
+                  <Text label='First name' name='firstName' type='text' placeholder='Jane' />
+                  <Text label='Last name' name='lastName' type='text' placeholder='Doe' />
+                  <Text label='Email' name='email' type='email' placeholder='janedoe@gmail.com' />
+                  <Text label='Username' name='username' type='text' placeholder='JaneDoe' />
                   {/* TODO: add password visibility toggle button */}
-                  <Text label='Password' name='password' type='password' />
+                  <Text label='Password' name='password' type='password' placeholder='********' />
                   <Checkbox name='acceptedTerms'>
                     I have read and agree to the{' '}
                     <a
@@ -187,13 +187,15 @@ export const SignUp = () => {
                       Terms and Conditions
                     </a>
                   </Checkbox>
-                  {/* TEMPORARILY DISABLED FOR LIVE SITE */}
-                  <button type='submit' disabled>
-                    {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                  </button>
-                  {/* <button type='submit' disabled={isSubmitting}>
-                    {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                  </button> */}
+                  <div className='button'>
+                    {/* TEMPORARILY DISABLED FOR LIVE SITE */}
+                    <Button type='submit' disabled>
+                      {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                    </Button>
+                    {/* <Button type='submit' disabled={isSubmitting}>
+                      {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                    </Button> */}
+                  </div>
                   <p className='subtext'>
                     Already have an account? <Link to='/login'>Log in</Link>
                   </p>
@@ -214,7 +216,7 @@ export const Wrapper = styled.main`
 `
 
 export const Card = styled.div`
-  background: #f2f2f2;
+  background: #fff;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -239,80 +241,6 @@ export const Card = styled.div`
       margin: 10px;
     }
   }
-  form {
-    display: flex;
-    flex-direction: column;
-    padding: 0 10px;
-    .status {
-      background: rgba(255, 0, 0, 0.1);
-      border: 1px solid #ff0000;
-      border-radius: 5px;
-      color: #ff0000;
-      text-align: center;
-      margin-top: 10px;
-    }
-    // TODO: error styling for labels & inputs (red border, red font color, smooth transitions)
-    .form-item {
-      .text-wrapper {
-        display: flex;
-        flex-direction: column;
-      }
-    }
-    .text-label {
-      background: #f2f2f2;
-      color: ${COLORS.dark};
-      width: fit-content;
-      position: relative;
-      top: 15px;
-      left: 30px;
-      padding: 0 10px;
-      font-size: 0.9rem;
-      border-radius: 10px;
-    }
-    .text-input {
-      background: #f2f2f2;
-      border-radius: 15px;
-      border: 2px solid ${COLORS.light};
-      text-align: right;
-      transition: 0.2s ease-in-out;
-      &:focus {
-        border: 2px solid ${COLORS.dark};
-        outline: none;
-      }
-    }
-    // TODO: improve checkbox styling
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      font-size: 0.7rem;
-      white-space: pre;
-    }
-    .checkbox-input {
-      margin-right: 10px;
-    }
-    .error {
-      color: #ff0000;
-      font-size: 0.8rem;
-    }
-    button {
-      background: ${COLORS.darkest};
-      color: ${COLORS.lightest};
-      height: 50px;
-      margin: 30px 0;
-      border-radius: 15px;
-      padding: 10px;
-      &:hover {
-        background: ${COLORS.medium};
-      }
-      &:focus {
-        background: ${COLORS.medium};
-      }
-      &:disabled:hover {
-        background: ${COLORS.darkest};
-      }
-    }
-  }
   a {
     text-decoration: underline;
   }
@@ -333,18 +261,9 @@ export const Card = styled.div`
         font-size: 1.1rem;
       }
     }
-    form {
-      padding: 0 20px;
-      .checkbox-label {
-        font-size: 0.8rem;
-      }
-    }
   }
   @media only screen and (min-width: 1000px) {
     width: 500px;
-    form {
-      padding: 0 30px;
-    }
   }
 `
 

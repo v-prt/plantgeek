@@ -2,7 +2,7 @@ import { useField } from 'formik'
 
 // TODO: radio
 
-export const Text = ({ label, ...props }) => {
+export const Text = ({ label, placeholder, ...props }) => {
   const [field, meta] = useField(props)
   return (
     <div className='form-item'>
@@ -10,7 +10,7 @@ export const Text = ({ label, ...props }) => {
         <label className='text-label' htmlFor={props.id || props.name}>
           {label}
         </label>
-        <input className='text-input' {...field} {...props} />
+        <input className='text-input' placeholder={placeholder} {...field} {...props} />
       </div>
       {meta.touched && meta.error ? <div className='error'>{meta.error}</div> : null}
     </div>
@@ -29,7 +29,7 @@ export const Select = ({ label, options, ...props }) => {
           <option value='' disabled>
             select
           </option>
-          {options.map((option) => {
+          {options.map(option => {
             return (
               <option key={option} value={option}>
                 {option}

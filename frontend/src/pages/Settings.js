@@ -4,8 +4,16 @@ import { useDispatch } from 'react-redux'
 import { requestUsers, receiveUsers } from '../actions'
 import { UserContext } from '../contexts/UserContext'
 
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
+import YupPassword from 'yup-password'
+import { Text } from '../components/forms/FormItems.js'
+
 import styled from 'styled-components/macro'
 import { COLORS, Button } from '../GlobalStyles'
+import { Ellipsis } from '../components/loaders/Ellipsis'
+import { FiEdit } from 'react-icons/fi'
+import { MdOutlineCancel } from 'react-icons/md'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Image } from './UserProfile'
@@ -15,97 +23,98 @@ export const Settings = () => {
   const dispatch = useDispatch()
   // const history = useHistory();
   const { getUser, currentUser } = useContext(UserContext)
+  const [status, setStatus] = useState()
+  const [editMode, setEditMode] = useState(false)
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  const [existingImage, setExistingImage] = useState(undefined)
-  useEffect(() => {
-    if (currentUser && currentUser.image) {
-      setExistingImage(currentUser.image[0])
-    }
-  }, [currentUser])
+  const AccountSchema = Yup.object().shape({
+    profileImage: Yup.string(),
+    firstName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('First name required'),
+    lastName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Last name required'),
+    email: Yup.string().email('Invalid email').required('Email required'),
+    username: Yup.string()
+      .min(4, 'Too short')
+      .max(20, 'Too long')
+      .required('Username required')
+      .matches(/^[a-zA-Z0-9]+$/, 'No special characters or spaces allowed'),
+    password: Yup.string()
+      .min(6, 'Too short')
+      .minLowercase(1, 'Must include at least 1 lowercase letter')
+      .minUppercase(1, 'Must include at least 1 uppercase letter')
+      .minNumbers(1, 'Must include at least 1 number')
+      .minSymbols(1, 'Must include at least 1 symbol')
+      .required('Password required'),
+  })
 
-  const [url, setUrl] = useState('')
-  const handleUrl = ev => {
-    setUrl(ev.target.value)
-  }
-
-  const changeImage = ev => {
-    ev.preventDefault()
-    // REMOVES EXISTING IMAGE
-    if (existingImage) {
-      fetch(`/${currentUser.username}/remove`, {
-        method: 'PUT',
-        body: JSON.stringify({ image: existingImage }),
-        headers: {
-          Accept: 'application/json',
-          'Content-type': 'application/json',
-        },
-      }).then(res => {
-        if (res.status === 200) {
-          dispatch(requestUsers())
-          axios
-            .get('/users')
-            .then(res => dispatch(receiveUsers(res.data.data)))
-            .catch(err => console.log(err))
-          getUser(currentUser._id)
-        } else if (res.status === 404) {
-          console.log('Something went wrong')
-        }
-      })
-    }
-    // ADDS NEW IMAGE
-    fetch(`/${currentUser.username}/add`, {
-      method: 'PUT',
-      body: JSON.stringify({ image: url }),
-      headers: {
-        Accept: 'application/json',
-        'Content-type': 'application/json',
-      },
-    }).then(res => {
-      if (res.status === 200) {
-        dispatch(requestUsers())
-        axios
-          .get('/users')
-          .then(res => dispatch(receiveUsers(res.data.data)))
-          .catch(err => console.log(err))
-        getUser(currentUser._id)
-      } else if (res.status === 404) {
-        console.log('Something went wrong')
-      }
-    })
-  }
-
-  const [username, setUsername] = useState('')
-  const handleUsername = ev => {
-    setUsername(ev.target.value)
-    console.log(username)
-  }
-
-  const changeUsername = () => {
-    // check if username is taken
-    // if not, update username
-    // else, show error
-  }
-
-  const [password, setPassword] = useState('')
-  const handlePassword = ev => {
-    setPassword(ev.target.value)
-    console.log(password)
-  }
-
-  const changePassword = () => {
-    // update password
+  const saveSettings = () => {
+    // TODO:
   }
 
   const deleteAccount = () => {
-    console.log(currentUser)
-    // TODO: ask to confirm, delete account if yes
-    // history push to homepage
+    // TODO:
   }
+
+  // const [existingImage, setExistingImage] = useState(undefined)
+  // useEffect(() => {
+  //   if (currentUser && currentUser.image) {
+  //     setExistingImage(currentUser.image[0])
+  //   }
+  // }, [currentUser])
+
+  // const [url, setUrl] = useState('')
+  // const handleUrl = ev => {
+  //   setUrl(ev.target.value)
+  // }
+
+  // const changeImage = ev => {
+  //   ev.preventDefault()
+  //   // REMOVES EXISTING IMAGE
+  //   if (existingImage) {
+  //     fetch(`/${currentUser.username}/remove`, {
+  //       method: 'PUT',
+  //       body: JSON.stringify({ image: existingImage }),
+  //       headers: {
+  //         Accept: 'application/json',
+  //         'Content-type': 'application/json',
+  //       },
+  //     }).then(res => {
+  //       if (res.status === 200) {
+  //         dispatch(requestUsers())
+  //         axios
+  //           .get('/users')
+  //           .then(res => dispatch(receiveUsers(res.data.data)))
+  //           .catch(err => console.log(err))
+  //         getUser(currentUser._id)
+  //       } else if (res.status === 404) {
+  //         console.log('Something went wrong')
+  //       }
+  //     })
+  //   }
+  //   // ADDS NEW IMAGE
+  //   fetch(`/${currentUser.username}/add`, {
+  //     method: 'PUT',
+  //     body: JSON.stringify({ image: url }),
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-type': 'application/json',
+  //     },
+  //   }).then(res => {
+  //     if (res.status === 200) {
+  //       dispatch(requestUsers())
+  //       axios
+  //         .get('/users')
+  //         .then(res => dispatch(receiveUsers(res.data.data)))
+  //         .catch(err => console.log(err))
+  //       getUser(currentUser._id)
+  //     } else if (res.status === 404) {
+  //       console.log('Something went wrong')
+  //     }
+  //   })
+  // }
 
   return (
     <Wrapper>
@@ -122,32 +131,67 @@ export const Settings = () => {
           </FadeIn>
           <FadeIn>
             <section className='settings'>
-              <Heading>account settings</Heading>
-              <Option key='upload-image'>
-                <input
-                  type='text'
-                  placeholder={`${
-                    currentUser && currentUser.image
-                      ? 'Change profile image'
-                      : 'Upload profile image'
-                  }`}
-                  onChange={handleUrl}
-                />
-                <Button onClick={changeImage}>Submit</Button>
-              </Option>
-              <Option key='change-username'>
-                <input type='text' placeholder='Change username' onChange={handleUsername} />
-                <Button onClick={changeUsername}>Submit</Button>
-              </Option>
-              <Option key='change-password'>
-                <input type='text' placeholder='Change password' onChange={handlePassword} />
-                <Button onClick={changePassword}>Submit</Button>
-              </Option>
-              <Option last={true}>
-                <Button className='delete-acc' onClick={deleteAccount}>
-                  DELETE ACCOUNT
-                </Button>
-              </Option>
+              <Heading>
+                <span>account details</span>
+                <button
+                  className={editMode ? 'cancel' : 'edit'}
+                  onClick={() => setEditMode(!editMode)}>
+                  {editMode ? 'Cancel' : 'Edit'}
+                  <span className='icon'>{editMode ? <MdOutlineCancel /> : <FiEdit />}</span>
+                </button>
+              </Heading>
+              <Formik
+                initialValues={{}}
+                validationSchema={AccountSchema}
+                validateOnChange={false}
+                validateOnBlur={false}
+                onSubmit={saveSettings}>
+                {({ isSubmitting }) => (
+                  <Form>
+                    {status && <div className='status'>{status}</div>}
+                    <Text
+                      label='Profile image'
+                      name='profileImage'
+                      type='text'
+                      placeholder='Insert URL'
+                      disabled={!editMode}
+                    />
+                    <Text
+                      label='Email'
+                      name='email'
+                      type='text'
+                      placeholder={currentUser.email}
+                      disabled={!editMode}
+                    />
+                    <Text
+                      label='Username'
+                      name='username'
+                      type='text'
+                      placeholder={currentUser.username}
+                      disabled={!editMode}
+                    />
+                    <Text
+                      label='Password'
+                      name='password'
+                      type='password'
+                      // TODO: get hashed pass and decrypt it
+                      placeholder={currentUser.password}
+                      disabled={!editMode}
+                    />
+                    <div className='buttons'>
+                      <Button
+                        className='danger'
+                        onClick={deleteAccount}
+                        disabled={!editMode || isSubmitting}>
+                        DELETE ACCOUNT
+                      </Button>
+                      <Button type='submit' disabled={!editMode || isSubmitting}>
+                        {isSubmitting ? <Ellipsis /> : 'SAVE'}
+                      </Button>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
             </section>
           </FadeIn>
         </>
@@ -176,50 +220,34 @@ const Wrapper = styled.main`
     border-radius: 20px;
     max-width: 600px;
   }
+  @media only screen and (min-width: 500px) {
+    .user-info {
+      flex-direction: row;
+      .text {
+        margin-left: 30px;
+        text-align: left;
+      }
+    }
+  }
 `
 
 const Heading = styled.h2`
   box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
   padding: 10px 20px;
   margin-bottom: 10px;
-  text-align: center;
-`
-
-const Option = styled.div`
   display: flex;
-  border-bottom: ${props => (props.last ? 'none' : '1px dotted #ccc')};
-  padding: 10px 0;
-  input {
-    border: 2px solid transparent;
-    border-radius: 10px;
-    margin-right: 10px;
-    flex: 3;
-    transition: 0.2s ease-in-out;
-    &:focus {
-      border: 2px solid ${COLORS.light};
-      outline: none;
-    }
-  }
+  justify-content: space-between;
   button {
-    background: ${COLORS.darkest};
-    color: ${COLORS.lightest};
-    flex: 1;
-    border-radius: 10px;
-    padding: 10px 20px;
-    &:hover {
-      background: ${COLORS.medium};
+    display: flex;
+    align-items: center;
+    .icon {
+      margin-left: 5px;
+      display: grid;
     }
-    &:focus {
-      background: ${COLORS.medium};
+    &.edit {
     }
-    &:disabled {
-      pointer-events: none;
-    }
-    &.delete-acc {
-      background: #cc0000;
-      height: 50px;
-      max-width: 200px;
-      margin: 20px auto auto auto;
+    &.cancel {
+      color: ${COLORS.danger};
     }
   }
 `

@@ -10,36 +10,55 @@ import { createGlobalStyle } from 'styled-components'
 import styled from 'styled-components/macro'
 
 export const COLORS = {
-  darkest: '#1A1A1A',
+  darkest: '#1a1a1a',
   dark: '#112211',
   medium: '#224422',
   mediumLight: '#5d9e2e',
-  light: '#92D265',
-  lightest: '#E5EFDC',
-  accent: '#966FD1',
+  light: '#92d265',
+  lightest: '#e5efdc',
+  accent: '#966fd1',
+  danger: '#cc0000',
+  alert: '#ff6b00',
 }
 
 export const Button = styled.button`
-  background: ${COLORS.medium};
+  background: ${COLORS.darkest};
   color: #fff;
+  border: 2px solid ${COLORS.darkest};
   display: grid;
   place-content: center;
   line-height: 1;
-  padding: 0 20px;
+  height: 50px;
+  padding: 10px 20px;
   border-radius: 10px;
+  &.secondary {
+    background: #fff;
+    color: ${COLORS.darkest};
+    border: 2px solid ${COLORS.darkest};
+  }
+  &.danger {
+    background: #fff;
+    color: ${COLORS.danger};
+    border: 2px solid ${COLORS.danger};
+  }
   h2 {
     margin-right: 10px;
   }
   &:hover {
-    background: ${COLORS.mediumLight};
-  }
-  &:disabled {
-    background: #ccc;
-    color: #000;
+    background: ${COLORS.medium};
+    border: 2px solid ${COLORS.medium};
+    &.secondary {
+      color: #fff;
+    }
+    &.danger {
+      background: ${COLORS.danger};
+      color: #fff;
+      border: 2px solid ${COLORS.danger};
+    }
   }
 `
 
-export const Switch = styled.label`
+export const Toggle = styled.label`
   height: 20px;
   width: 40px;
   position: relative;
@@ -78,8 +97,9 @@ export const Switch = styled.label`
 `
 
 export const DropZone = styled.div`
-  padding: 15px 0;
-  border-bottom: 1px solid #fff;
+  /* padding-bottom: 15px;
+  border-bottom: 1px solid #e6e6e6; */
+  margin-bottom: 15px;
   .guidelines-wrapper {
     display: flex;
     flex-direction: column;
@@ -188,13 +208,112 @@ export default createGlobalStyle`
             color: ${COLORS.accent};
         }
     }
-    input {
+   form {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    .status {
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid ${COLORS.danger};
+      border-radius: 5px;
+      color: ${COLORS.danger};
+      text-align: center;
+      margin-top: 10px;
+    }
+    // TODO: error styling for labels & inputs (red border, red font color, smooth transitions)
+    .form-item {
+      /* padding-bottom: 15px;
+      border-bottom: 1px solid #e6e6e6; */
+      margin-bottom: 15px;
+      .text-wrapper {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+    .select-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .text-label {
+      margin-bottom: 5px;
+    }
+    .text-input, .select-input {
+      box-shadow: 0 0 0 1px #e6e6e6;
+      border: 1px solid #e6e6e6;
+      border-radius: 10px;
       padding: 10px;
       font-size: 1rem;
+      transition: 0.2s ease-in-out;
+      &:focus {
+        box-shadow: 0 0 0 1px ${COLORS.light};
+        border: 1px solid ${COLORS.light};
+        &:not([type='radio']) {
+          outline: none;
+        }
+      }
+      ::placeholder {
+        color: #ccc;
+      }
+      &:hover {
+        border: 1px solid ${COLORS.light};
+      }
+      &:disabled {
+        pointer-events: none;
+      }
     }
+    .select-input {
+      cursor: pointer;
+    }
+    // TODO: improve checkbox styling
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      font-size: 0.7rem;
+      white-space: pre;
+    }
+    .checkbox-input {
+      margin-right: 10px;
+    }
+    .info-text {
+      color: #666;
+      font-style: italic;
+      font-size: 0.8rem;
+    }
+    .error {
+      color: ${COLORS.danger};
+      font-size: 0.8rem;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .button {
+      margin: 10px 0;
+      display: grid;
+    }
+    .status {
+      background: #fcece1;
+      color: ${COLORS.alert};
+      border: 1px solid #fac19e;
+      border-radius: 5px;
+      text-align: center;
+    }
+    @media only screen and (min-width: 500px) {
+      padding: 10px 20px;
+      .checkbox-label {
+        font-size: 0.8rem;
+    }
+    }
+    @media only screen and (min-width: 1000px) {
+      padding: 10px 30px;
+    }
+  }
     button {
         background: none;
         border: none;
+        font-size: 1rem;
         transition: 0.2s ease-in-out;
         &:hover {
             cursor: pointer;

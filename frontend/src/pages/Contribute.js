@@ -11,7 +11,7 @@ import * as Yup from 'yup'
 import { Text, Select } from '../components/forms/FormItems'
 
 import styled from 'styled-components/macro'
-import { COLORS, DropZone, DropBox } from '../GlobalStyles'
+import { COLORS, DropZone, DropBox, Button } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import checkmark from '../assets/checkmark.svg'
@@ -296,7 +296,7 @@ export const Contribute = () => {
                 {/* TODO: accept multiple source links? */}
                 <Text label='Source' name='sourceUrl' type='text' placeholder='Insert URL' />
                 <div className='buttons'>
-                  <button
+                  <Button
                     type='reset'
                     className='secondary'
                     onClick={() => {
@@ -304,10 +304,10 @@ export const Contribute = () => {
                       resetForm()
                     }}>
                     RESET
-                  </button>
-                  <button type='submit' disabled={isSubmitting}>
+                  </Button>
+                  <Button type='submit' disabled={isSubmitting}>
                     {isSubmitting ? <Ellipsis /> : 'SUBMIT'}
-                  </button>
+                  </Button>
                 </div>
                 {status && <div className='status'>{status}</div>}
               </Form>
@@ -384,93 +384,5 @@ export const FormWrapper = styled.section`
     padding: 0 20px 10px 20px;
     margin-bottom: 10px;
     text-align: center;
-  }
-  form {
-    display: flex;
-    flex-direction: column;
-    .form-item {
-      padding: 15px 0;
-      border-bottom: 1px solid #fff;
-      &:last-child {
-        border: none;
-      }
-    }
-    .text-wrapper {
-      display: flex;
-      flex-direction: column;
-    }
-    .select-wrapper {
-      display: flex;
-      justify-content: space-between;
-    }
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      white-space: pre;
-      a {
-        text-decoration: underline;
-      }
-    }
-    .checkbox-input {
-      margin-right: 10px;
-    }
-    input,
-    select {
-      border: 2px solid transparent;
-      border-radius: 10px;
-      padding: 10px;
-      transition: 0.2s ease-in-out;
-      &:focus {
-        border: 2px solid ${COLORS.light};
-        &:not([type='radio']) {
-          outline: none;
-        }
-      }
-      ::placeholder {
-        font-style: italic;
-      }
-    }
-    .info-text {
-      color: #666;
-      font-style: italic;
-      font-size: 0.8rem;
-    }
-    .error {
-      color: #ff0000;
-      font-size: 0.8rem;
-    }
-    .buttons {
-      display: flex;
-      justify-content: space-between;
-    }
-    button {
-      background: ${COLORS.darkest};
-      color: ${COLORS.lightest};
-      height: 50px;
-      margin: 20px 0;
-      border-radius: 10px;
-      padding: 10px 20px;
-      &:hover {
-        background: ${COLORS.medium};
-      }
-      &:focus {
-        background: ${COLORS.medium};
-      }
-      &:disabled {
-        pointer-events: none;
-      }
-      &.secondary {
-        background: transparent;
-        border: 2px solid ${COLORS.darkest};
-        color: ${COLORS.darkest};
-      }
-    }
-    .status {
-      background: #fcece1;
-      color: #ff6b00;
-      border: 1px solid #fac19e;
-      border-radius: 5px;
-      text-align: center;
-    }
   }
 `

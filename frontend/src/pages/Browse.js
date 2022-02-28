@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer'
 
 import styled from 'styled-components/macro'
-import { COLORS, Switch } from '../GlobalStyles'
+import { COLORS, Toggle } from '../GlobalStyles'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
@@ -114,14 +114,14 @@ export const Browse = () => {
                 </Search>
                 <div className='toggle-wrapper'>
                   <span className='toggle-option'>Detailed view</span>
-                  <Switch>
+                  <Toggle>
                     <input
                       id='needs-toggle'
                       type='checkbox'
                       onChange={ev => setViewNeeds(ev.target.checked)}
                     />
                     <span className='slider'></span>
-                  </Switch>
+                  </Toggle>
                 </div>
               </div>
               {/* <Filter className='filters'>
@@ -244,6 +244,7 @@ const Search = styled.form`
     margin-right: 10px;
     padding-top: 5px;
     font-size: 1.3rem;
+    color: #000;
     &:hover {
       color: ${COLORS.light};
     }

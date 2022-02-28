@@ -6,7 +6,7 @@ import { plantsArray } from '../../reducers/plantReducer'
 import { UserContext } from '../../contexts/UserContext'
 
 import styled from 'styled-components/macro'
-import { Switch } from '../../GlobalStyles'
+import { Toggle } from '../../GlobalStyles'
 import { FadeIn } from '../loaders/FadeIn'
 import { PlantCard } from '../PlantCard'
 import { MdOutlineArrowDropDownCircle } from 'react-icons/md'
@@ -74,14 +74,14 @@ export const DetailedPlantList = ({ title }) => {
                 <div className='filter-bar'>
                   <div className='toggle-wrapper'>
                     <span className='toggle-option'>Detailed view</span>
-                    <Switch>
+                    <Toggle>
                       <input
                         id='needs-toggle'
                         type='checkbox'
                         onChange={ev => setViewNeeds(ev.target.checked)}
                       />
                       <span className='slider'></span>
-                    </Switch>
+                    </Toggle>
                   </div>
                 </div>
                 <Plants>

@@ -6,7 +6,7 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import { Text } from '../components/forms/FormItems.js'
 import { Wrapper, Card } from './SignUp.js'
-
+import { Button } from '../GlobalStyles'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 
@@ -43,14 +43,22 @@ export const Login = () => {
             onSubmit={handleLogin}>
             {({ isSubmitting }) => (
               <Form>
-                <Text label='Username' name='username' type='text' autoFocus />
+                <Text
+                  label='Username'
+                  name='username'
+                  type='text'
+                  placeholder='JaneDoe'
+                  autoFocus
+                />
                 {incorrectUsername && <div className='error'>Username not found</div>}
                 {/* TODO: add password visibility toggle button */}
-                <Text label='Password' name='password' type='password' />
+                <Text label='Password' name='password' type='password' placeholder='********' />
                 {incorrectPassword && <div className='error'>Password is incorrect</div>}
-                <button type='submit' disabled={isSubmitting}>
-                  {isSubmitting ? <Ellipsis /> : 'LOG IN'}
-                </button>
+                <div className='button'>
+                  <Button type='submit' disabled={isSubmitting}>
+                    {isSubmitting ? <Ellipsis /> : 'LOG IN'}
+                  </Button>
+                </div>
                 <p className='subtext'>
                   Don't have an account yet? <Link to='/signup'>Sign up</Link>
                 </p>
