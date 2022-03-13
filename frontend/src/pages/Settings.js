@@ -10,7 +10,7 @@ import YupPassword from 'yup-password'
 import { Text } from '../components/forms/FormItems.js'
 
 import styled from 'styled-components/macro'
-import { COLORS, Button } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS, Button } from '../GlobalStyles'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FiEdit } from 'react-icons/fi'
 import { MdOutlineCancel } from 'react-icons/md'
@@ -220,7 +220,7 @@ const Wrapper = styled.main`
     border-radius: 20px;
     max-width: 600px;
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {
       flex-direction: row;
       .text {

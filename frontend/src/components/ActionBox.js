@@ -7,7 +7,7 @@ import { plantsArray } from '../reducers/plantReducer'
 import { requestUsers, receiveUsers } from '../actions.js'
 
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
@@ -190,7 +190,7 @@ const Wrapper = styled.div`
       color: #666;
     }
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     grid-gap: 30px;
   }
   @media only screen and (min-width: 1200px) {

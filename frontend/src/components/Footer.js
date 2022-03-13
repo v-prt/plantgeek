@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 
 export const Footer = () => {
   return (
@@ -39,7 +39,7 @@ const Wrapper = styled.footer`
       margin: 10px;
     }
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     font-size: 0.8rem;
     padding: 10px 20px;
     .inner {

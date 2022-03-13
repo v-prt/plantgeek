@@ -11,7 +11,7 @@ import YupPassword from 'yup-password'
 import { Text, Checkbox } from '../components/forms/FormItems.js'
 
 import styled from 'styled-components/macro'
-import { COLORS, Button } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS, Button } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { TiHeartOutline } from 'react-icons/ti'
@@ -210,7 +210,7 @@ export const SignUp = () => {
 }
 
 export const Wrapper = styled.main`
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     place-content: center;
   }
 `
@@ -247,7 +247,7 @@ export const Card = styled.div`
   .subtext {
     margin: auto auto 30px auto;
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     width: 400px;
     margin: auto;
     .welcome-header {
@@ -262,7 +262,7 @@ export const Card = styled.div`
       }
     }
   }
-  @media only screen and (min-width: 1000px) {
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     width: 500px;
   }
 `

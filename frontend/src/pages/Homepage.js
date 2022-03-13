@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { FaArrowAltCircleRight } from 'react-icons/fa'
 import placeholder from '../assets/avatar-placeholder.png'
@@ -178,7 +178,7 @@ const Wrapper = styled.main`
     margin-right: 10px;
     display: grid;
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     section {
       margin: 20px;
       padding: 40px;

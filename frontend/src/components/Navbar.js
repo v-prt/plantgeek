@@ -8,7 +8,7 @@ import { CgProfile } from 'react-icons/cg'
 import { AiOutlinePlusCircle } from 'react-icons/ai'
 import { BiCog } from 'react-icons/bi'
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 
 export const Navbar = () => {
   const { handleLogout, currentUser } = useContext(UserContext)
@@ -115,7 +115,7 @@ const Wrapper = styled.nav`
       font-size: 1.5rem;
     }
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     right: 0;
     height: 100%;
     width: 55px;
@@ -135,7 +135,7 @@ const Wrapper = styled.nav`
       }
     }
   }
-  @media only screen and (min-width: 1000px) {
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     width: 240px;
     .inner {
       padding: 20px 40px;

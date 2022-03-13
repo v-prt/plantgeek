@@ -17,7 +17,7 @@ import { UserProfile } from './pages/UserProfile'
 import { Footer } from './components/Footer'
 
 import styled from 'styled-components/macro'
-import GlobalStyles from './GlobalStyles'
+import GlobalStyles, { BREAKPOINTS } from './GlobalStyles'
 
 export const App = () => {
   // makes window scroll to top between renders
@@ -91,7 +91,7 @@ const Body = styled.div`
       border-radius: 20px;
     }
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     margin-right: 55px;
     main {
       min-height: calc(100vh - 150px);
@@ -102,7 +102,7 @@ const Body = styled.div`
       }
     }
   }
-  @media only screen and (min-width: 1000px) {
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     margin-right: 240px;
     main {
       max-width: 1200px;
@@ -118,7 +118,7 @@ const Banner = styled.div`
   height: 110px;
   width: 100%;
   display: none;
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     display: block;
   }
 `

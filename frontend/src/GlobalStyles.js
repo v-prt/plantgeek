@@ -21,6 +21,11 @@ export const COLORS = {
   alert: '#ff6b00',
 }
 
+export const BREAKPOINTS = {
+  tablet: '500px',
+  desktop: '1000px',
+}
+
 export const Button = styled.button`
   background: ${COLORS.darkest};
   color: #fff;
@@ -123,7 +128,7 @@ export const DropZone = styled.div`
         margin-top: 10px;
       }
     }
-    @media only screen and (min-width: 1000px) {
+    @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
       flex-direction: row;
     }
   }
@@ -245,21 +250,21 @@ export default createGlobalStyle`
       padding: 10px;
       font-size: 1rem;
       transition: 0.2s ease-in-out;
+      ::placeholder {
+        color: #ccc;
+      } 
+      &:hover {
+        border: 1px solid ${COLORS.darkest};
+      }
+      &:disabled {
+        pointer-events: none;
+      } 
       &:focus {
         box-shadow: 0 0 0 1px ${COLORS.light};
         border: 1px solid ${COLORS.light};
         &:not([type='radio']) {
           outline: none;
         }
-      }
-      ::placeholder {
-        color: #ccc;
-      }
-      &:hover {
-        border: 1px solid ${COLORS.light};
-      }
-      &:disabled {
-        pointer-events: none;
       }
     }
     .select-input {
@@ -300,13 +305,13 @@ export default createGlobalStyle`
       border-radius: 5px;
       text-align: center;
     }
-    @media only screen and (min-width: 500px) {
+    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
       padding: 10px 20px;
       .checkbox-label {
         font-size: 0.8rem;
     }
     }
-    @media only screen and (min-width: 1000px) {
+    @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
       padding: 10px 30px;
     }
   }

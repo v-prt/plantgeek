@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer'
 
 import styled from 'styled-components/macro'
-import { COLORS, Toggle } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS, Toggle } from '../GlobalStyles'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
@@ -103,15 +103,28 @@ export const Browse = () => {
     <Wrapper>
       {plants && types && filteredPlants && (
         <FadeIn>
-          <Div>
+          <div className='inner'>
             <Actions>
-              <div className='search-toggle-wrapper'>
-                <Search>
-                  <input type='text' placeholder='Search houseplants' onChange={handleQuery} />
-                  <button type='submit' onClick={handleSearch}>
-                    <BiSearch />
-                  </button>
-                </Search>
+              <Search>
+                <input type='text' placeholder='Search houseplants' onChange={handleQuery} />
+                <button type='submit' onClick={handleSearch}>
+                  <BiSearch />
+                </button>
+              </Search>
+              <div className='toggles'>
+                <div className='toggle-wrapper'>
+                  <span className='toggle-option'>Non-toxic only</span>
+                  <Toggle>
+                    <input
+                      id='toxic-toggle'
+                      type='checkbox'
+                      onChange={ev =>
+                        ev.target.checked ? handleFilter('nontoxic') : removeFilter()
+                      }
+                    />
+                    <span className='slider'></span>
+                  </Toggle>
+                </div>
                 <div className='toggle-wrapper'>
                   <span className='toggle-option'>Detailed view</span>
                   <Toggle>
@@ -163,7 +176,7 @@ export const Browse = () => {
                 <BeatingHeart />
               )}
             </Results>
-          </Div>
+          </div>
         </FadeIn>
       )}
     </Wrapper>
@@ -173,69 +186,66 @@ export const Browse = () => {
 const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
-`
-
-const Div = styled.div`
-  display: flex;
-  @media only screen and (max-width: 1000px) {
+  .inner {
+    display: flex;
     flex-direction: column;
   }
 `
 
 const Actions = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  .toggles {
+    display: flex;
+  }
   .toggle-wrapper {
     background: #fff;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 10px 0;
+    margin: 5px;
     padding: 5px 10px;
     border-radius: 20px;
+    font-size: 0.8rem;
     .toggle-option {
-      margin-right: 20px;
+      margin-right: 10px;
     }
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     flex-direction: row;
-    .search-toggle-wrapper {
-      flex: 1;
-      margin: 0 20px 0 0;
-    }
-    .filters {
-      flex: 1;
-      margin: 0 0 0 20px;
-    }
-  }
-  @media only screen and (min-width: 1000px) {
-    width: 250px;
-    flex-direction: column;
-    padding: 20px;
-    .search-toggle-wrapper {
-      flex: inherit;
-      margin: 0 0 20px 0;
-    }
-    .filters {
-      flex: inherit;
-      margin: 0;
+    .toggle-wrapper {
+      font-size: 1rem;
     }
   }
 `
 
-const Search = styled.form`
+const Search = styled.div`
   background: #fff;
-  width: 100%;
-  height: 50px;
-  border: 2px solid ${COLORS.light};
-  border-radius: 20px;
+  width: 90vw;
+  box-shadow: 0 0 0 1px #e6e6e6;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
   display: flex;
   justify-content: space-between;
+  margin: 5px;
   overflow: hidden;
+  transition: 0.2s ease-in-out;
+  &:hover {
+    border: 1px solid ${COLORS.darkest};
+  }
+  &:focus-within {
+    box-shadow: 0 0 0 1px ${COLORS.light};
+    border: 1px solid ${COLORS.light};
+  }
   input {
-    width: 90%;
     border: none;
+    padding: 10px;
+    font-size: 1rem;
+    ::placeholder {
+      color: #ccc;
+    }
     &:focus {
       outline: none;
     }
@@ -249,49 +259,14 @@ const Search = styled.form`
       color: ${COLORS.light};
     }
   }
-`
-
-const Filter = styled.div`
-  width: 100%;
-  margin-top: 20px;
-  h2 {
-    margin-left: 5px;
-  }
-  h3 {
-    margin: 5px 0 0 5px;
-  }
-`
-
-const Types = styled.ul`
-  display: flex;
-  flex-direction: column;
-  div {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    @media only screen and (max-width: 1000px) {
-      flex-direction: row;
-    }
-  }
-`
-
-const Type = styled.li`
-  background: ${props => (props.active ? `${COLORS.light}` : '#f2f2f2')};
-  border-radius: 20px;
-  margin: 5px;
-  padding: 0 10px;
-  font-weight: ${props => (props.active ? '700' : '')};
-  transition: 0.2s ease-in-out;
-  &:hover {
-    background: ${COLORS.light};
-    cursor: pointer;
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    width: 300px;
   }
 `
 
 const Results = styled.div`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  width: 75%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

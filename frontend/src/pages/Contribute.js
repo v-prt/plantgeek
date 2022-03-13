@@ -11,7 +11,7 @@ import * as Yup from 'yup'
 import { Text, Select } from '../components/forms/FormItems'
 
 import styled from 'styled-components/macro'
-import { COLORS, DropZone, DropBox, Button } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS, DropZone, DropBox, Button } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import checkmark from '../assets/checkmark.svg'
@@ -367,7 +367,7 @@ const Wrapper = styled.main`
       }
     }
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     section {
       margin: 20px;
       padding: 40px;

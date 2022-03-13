@@ -5,7 +5,7 @@ import { plantsArray } from '../reducers/plantReducer'
 import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import placeholder from '../assets/plant-placeholder.svg'
 import sun from '../assets/sun.svg'
@@ -223,7 +223,7 @@ const Wrapper = styled.main`
     }
   }
   .plant-info {
-    background: #f2f2f2;
+    background: #fff;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
@@ -235,7 +235,7 @@ const Wrapper = styled.main`
       }
     }
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
       text-align: right;
     }
@@ -250,7 +250,7 @@ const Wrapper = styled.main`
 const Image = styled.img`
   width: 100%;
   border-radius: 50%;
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     width: 400px;
     &.placeholder {
       width: 200px;
@@ -259,6 +259,7 @@ const Image = styled.img`
 `
 
 const Needs = styled.div`
+  background: #f2f2f2;
   display: flex;
   flex-direction: column;
   margin-top: 20px;
