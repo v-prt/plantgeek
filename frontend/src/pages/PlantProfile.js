@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useHistory, useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { plantsArray } from '../reducers/plantReducer'
+import { requestPlants, receivePlants } from '../actions.js'
 import { UserContext } from '../contexts/UserContext'
+import axios from 'axios'
 
 import styled from 'styled-components/macro'
-import { COLORS, BREAKPOINTS } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS, Button } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import placeholder from '../assets/plant-placeholder.svg'
 import sun from '../assets/sun.svg'
@@ -16,6 +18,8 @@ import humidity from '../assets/humidity.svg'
 import { ActionBox } from '../components/ActionBox'
 
 export const PlantProfile = () => {
+  const dispatch = useDispatch()
+  const history = useHistory()
   const plants = useSelector(plantsArray)
   const [plant, setPlant] = useState()
   const { id } = useParams()
@@ -81,6 +85,20 @@ export const PlantProfile = () => {
       }
     }
   }, [plant])
+
+  // DELETE PLANT (ADMINS ONLY)
+  const deletePlant = () => {
+    window.confirm(
+      'Are you sure you want to delete this plant from the database? This cannot be undone!'
+    )
+    axios.delete(`/plants/${plant._id}`).catch(err => console.log(err))
+    dispatch(requestPlants())
+    axios
+      .get('/plants')
+      .then(res => dispatch(receivePlants(res.data.data)))
+      .then(history.push('/browse'))
+      .catch(err => console.log(err))
+  }
 
   return (
     <Wrapper>
@@ -179,6 +197,15 @@ export const PlantProfile = () => {
             <FadeIn>
               <ActionBox id={plant._id} />
             </FadeIn>
+          )}
+
+          {currentUser.role === 'admin' && (
+            <DangerZone>
+              <p>DANGER ZONE</p>
+              <Button className='danger' onClick={deletePlant}>
+                DELETE PLANT
+              </Button>
+            </DangerZone>
           )}
 
           {/* TODO: gallery section */}
@@ -314,4 +341,17 @@ const Indicator = styled.div`
   width: ${props => props.level === '2' && '50%'};
   width: ${props => props.level === '2-3' && '75%'};
   width: ${props => props.level === '3' && '100%'};
+`
+
+const DangerZone = styled.div`
+  width: 100%;
+  margin: 30px 0;
+  border: 1px dotted red;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  p {
+    color: red;
+  }
 `
