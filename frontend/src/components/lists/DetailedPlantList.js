@@ -140,6 +140,7 @@ const Wrapper = styled.div`
   margin: 20px 0;
   border-radius: 20px;
   overflow: hidden;
+  position: relative;
 `
 
 const Heading = styled.div`
