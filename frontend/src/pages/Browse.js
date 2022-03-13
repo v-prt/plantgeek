@@ -8,10 +8,12 @@ import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
 import { BiSearch } from 'react-icons/bi'
+import { IoFilter } from 'react-icons/io5'
 
 export const Browse = () => {
   const plants = useSelector(plantsArray)
   const [viewNeeds, setViewNeeds] = useState(false)
+  const [viewFilters, setViewFilters] = useState(false)
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -103,7 +105,7 @@ export const Browse = () => {
     <Wrapper>
       {plants && types && filteredPlants && (
         <FadeIn>
-          <div className='inner'>
+          <section className='inner'>
             <Actions>
               <Search>
                 <input type='text' placeholder='Search houseplants' onChange={handleQuery} />
@@ -111,61 +113,40 @@ export const Browse = () => {
                   <BiSearch />
                 </button>
               </Search>
-              <div className='toggles'>
-                <div className='toggle-wrapper'>
-                  <span className='toggle-option'>Non-toxic only</span>
-                  <Toggle>
-                    <input
-                      id='toxic-toggle'
-                      type='checkbox'
-                      onChange={ev =>
-                        ev.target.checked ? handleFilter('nontoxic') : removeFilter()
-                      }
-                    />
-                    <span className='slider'></span>
-                  </Toggle>
+              <Filters>
+                <div className='heading'>
+                  <p>Filters</p>
+                  <span className='filter-icon' onClick={() => setViewFilters(!viewFilters)}>
+                    <IoFilter />
+                  </span>
                 </div>
-                <div className='toggle-wrapper'>
-                  <span className='toggle-option'>Detailed view</span>
-                  <Toggle>
-                    <input
-                      id='needs-toggle'
-                      type='checkbox'
-                      onChange={ev => setViewNeeds(ev.target.checked)}
-                    />
-                    <span className='slider'></span>
-                  </Toggle>
+                <div className={`toggles ${viewFilters && 'view'}`}>
+                  <div className='toggle-wrapper'>
+                    <span className='toggle-option'>Non-toxic only</span>
+                    <Toggle>
+                      <input
+                        id='toxic-toggle'
+                        type='checkbox'
+                        onChange={ev =>
+                          ev.target.checked ? handleFilter('nontoxic') : removeFilter()
+                        }
+                      />
+                      <span className='slider'></span>
+                    </Toggle>
+                  </div>
+                  <div className='toggle-wrapper'>
+                    <span className='toggle-option'>Detailed view</span>
+                    <Toggle>
+                      <input
+                        id='needs-toggle'
+                        type='checkbox'
+                        onChange={ev => setViewNeeds(ev.target.checked)}
+                      />
+                      <span className='slider'></span>
+                    </Toggle>
+                  </div>
                 </div>
-              </div>
-              {/* <Filter className='filters'>
-                <h2>filters</h2>
-                <Types>
-                  <div>
-                    <Type key='all' onClick={() => removeFilter()} active={selectedType === 'all'}>
-                      all
-                    </Type>
-                    <Type
-                      key='nontoxic'
-                      onClick={() => handleFilter('nontoxic')}
-                      active={selectedType === 'nontoxic'}>
-                      nontoxic
-                    </Type>
-                  </div>
-                  <h3>by genus</h3>
-                  <div>
-                    {types.map((type) => {
-                      return (
-                        <Type
-                          key={type}
-                          onClick={() => handleFilter(type)}
-                          active={type === selectedType}>
-                          {type}
-                        </Type>
-                      )
-                    })}
-                  </div>
-                </Types>
-              </Filter> */}
+              </Filters>
             </Actions>
             <Results>
               {plants.length > 0 && filteredPlants ? (
@@ -176,7 +157,7 @@ export const Browse = () => {
                 <BeatingHeart />
               )}
             </Results>
-          </div>
+          </section>
         </FadeIn>
       )}
     </Wrapper>
@@ -187,43 +168,31 @@ const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
   .inner {
+    background: #f2f2f2;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
   }
 `
 
 const Actions = styled.div`
+  box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  .toggles {
-    display: flex;
-  }
-  .toggle-wrapper {
-    background: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 5px;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    .toggle-option {
-      margin-right: 10px;
-    }
-  }
+  padding-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     flex-direction: row;
-    .toggle-wrapper {
-      font-size: 1rem;
-    }
   }
 `
 
 const Search = styled.div`
   background: #fff;
-  width: 90vw;
+  width: 100%;
   box-shadow: 0 0 0 1px #e6e6e6;
   border: 1px solid #e6e6e6;
   border-radius: 10px;
@@ -253,7 +222,7 @@ const Search = styled.div`
   button {
     margin-right: 10px;
     padding-top: 5px;
-    font-size: 1.3rem;
+    /* font-size: 1.3rem; */
     color: #000;
     &:hover {
       color: ${COLORS.light};
@@ -264,16 +233,76 @@ const Search = styled.div`
   }
 `
 
+const Filters = styled.div`
+  background: #fff;
+  width: 100%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  .heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    p,
+    .filter-icon {
+      padding: 10px;
+    }
+    .filter-icon {
+      cursor: pointer;
+      transition: 0.2s ease-in-out;
+      &:hover {
+        color: ${COLORS.light};
+      }
+    }
+  }
+  .toggles {
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    visibility: hidden;
+    opacity: 0;
+    max-height: 0;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    transition: 0.2s ease-in-out;
+    &.view {
+      visibility: visible;
+      opacity: 1;
+      max-height: 5000px;
+    }
+    .toggle-wrapper {
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 5px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      .toggle-option {
+        margin-right: 10px;
+      }
+    }
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    width: 200px;
+  }
+`
+
 const Results = styled.div`
-  background: #f2f2f2;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  background: #e6e6e6;
+  height: calc(100vh - 260px);
+  position: relative;
+  overflow: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 10px 0;
-  margin: 20px 0;
-  border-radius: 20px;
-  @media only screen and (max-width: 1000px) {
-    width: 100%;
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    height: calc(100vh - 360px);
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    height: calc(100vh - 340px);
   }
 `

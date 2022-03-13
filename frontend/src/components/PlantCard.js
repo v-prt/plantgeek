@@ -139,7 +139,7 @@ const Name = styled.p`
 `
 
 const Needs = styled.div`
-  padding: 0 10px 10px 10px;
+  padding: 0 10px;
   visibility: ${props => (props.expanded ? 'visible' : 'hidden')};
   opacity: ${props => (props.expanded ? '1' : '0')};
   max-height: ${props => (props.expanded ? '1000px' : '0')};
