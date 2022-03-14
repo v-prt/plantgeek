@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
+import { ImageLoader } from './loaders/ImageLoader'
 import { ActionBar } from './ActionBar'
 import { FaPaw } from 'react-icons/fa'
 import placeholder from '../assets/plant-placeholder.svg'
@@ -20,11 +21,7 @@ export const PlantCard = ({ plant, viewNeeds }) => {
           </Stamp>
         )}
         <InfoLink to={`/plant-profile/${plant?._id}`}>
-          {plant?.imageUrl ? (
-            <img src={plant?.imageUrl} alt='' />
-          ) : (
-            <img className='placeholder' src={placeholder} alt='' />
-          )}
+          <ImageLoader src={plant?.imageUrl} alt={''} placeholder={placeholder} />
           <Name>
             {plant?.primaryName.length > 25
               ? plant?.primaryName.toLowerCase().substring(0, 23) + '...'
@@ -113,6 +110,12 @@ const Stamp = styled.div`
 const InfoLink = styled(Link)`
   display: grid;
   place-items: center;
+  .image-loading {
+    background: #f2f2f2;
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+  }
   img {
     height: 200px;
     width: 200px;

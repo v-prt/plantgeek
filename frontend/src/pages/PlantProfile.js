@@ -9,6 +9,7 @@ import axios from 'axios'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS, Button } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
+import { ImageLoader } from '../components/loaders/ImageLoader'
 import placeholder from '../assets/plant-placeholder.svg'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
@@ -130,7 +131,7 @@ export const PlantProfile = () => {
           <FadeIn>
             <section className='plant-info'>
               <div className='primary-image'>
-                <Image src={plant?.imageUrl ? plant?.imageUrl : placeholder} alt='' />
+                <ImageLoader src={plant?.imageUrl} alt={''} placeholder={placeholder} />
               </div>
               <Needs>
                 <h2>
@@ -259,6 +260,14 @@ const Wrapper = styled.main`
       flex: 1;
       img {
         margin: auto;
+        width: 100%;
+        border-radius: 50%;
+        @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+          width: 400px;
+          &.placeholder {
+            width: 200px;
+          }
+        }
       }
     }
   }
@@ -270,17 +279,6 @@ const Wrapper = styled.main`
   @media only screen and (min-width: 1200px) {
     .plant-info {
       flex-direction: row;
-    }
-  }
-`
-
-const Image = styled.img`
-  width: 100%;
-  border-radius: 50%;
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    width: 400px;
-    &.placeholder {
-      width: 200px;
     }
   }
 `
