@@ -200,7 +200,7 @@ export const PlantProfile = () => {
             </FadeIn>
           )}
 
-          {currentUser.role === 'admin' && (
+          {currentUser?.role === 'admin' && (
             <DangerZone>
               <p>DANGER ZONE</p>
               <Button className='danger' onClick={deletePlant}>
