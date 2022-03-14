@@ -257,15 +257,19 @@ const Wrapper = styled.main`
     flex-direction: column;
     .primary-image {
       display: flex;
+      justify-content: center;
       flex: 1;
       img {
         margin: auto;
         width: 100%;
         border-radius: 50%;
+        &.placeholder {
+          border-radius: 0;
+        }
         @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
           width: 400px;
           &.placeholder {
-            width: 200px;
+            width: 300px;
           }
         }
       }
