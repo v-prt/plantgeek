@@ -18,6 +18,7 @@ import { Footer } from './components/Footer'
 
 import styled from 'styled-components/macro'
 import GlobalStyles, { BREAKPOINTS } from './GlobalStyles'
+import 'antd/dist/antd.css'
 
 export const App = () => {
   // makes window scroll to top between renders
@@ -74,17 +75,18 @@ export const App = () => {
 }
 
 const Body = styled.div`
+  min-height: 100vh;
   overscroll-behavior: none;
   display: flex;
   flex-direction: column;
   main {
-    min-height: calc(100vh - 90px);
     width: 90%;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 50px auto 0 auto;
-    padding: 20px 0;
+    padding: 10px 0;
+    flex: 1;
     section {
       margin: 10px auto;
       padding: 20px;
@@ -94,7 +96,7 @@ const Body = styled.div`
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     margin-right: 55px;
     main {
-      min-height: calc(100vh - 150px);
+      padding: 20px 0;
       margin: auto;
       section {
         margin: 20px auto;

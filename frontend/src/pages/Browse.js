@@ -222,7 +222,6 @@ const Search = styled.div`
   button {
     margin-right: 10px;
     padding-top: 5px;
-    /* font-size: 1.3rem; */
     color: #000;
     &:hover {
       color: ${COLORS.light};
@@ -293,12 +292,13 @@ const Filters = styled.div`
 
 const Results = styled.div`
   background: #e6e6e6;
-  height: calc(100vh - 260px);
+  height: calc(100vh - 248px);
   position: relative;
   overflow: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  padding: 10px 0;
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     height: calc(100vh - 360px);
   }

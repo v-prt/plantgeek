@@ -91,6 +91,7 @@ const Wrapper = styled.div`
 const Div = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
 `
 
 const Stamp = styled.div`
@@ -127,18 +128,19 @@ const InfoLink = styled(Link)`
   }
   &:hover {
     p {
-      color: ${COLORS.darkest};
+      color: ${COLORS.accent};
     }
   }
 `
 
 const Name = styled.p`
   color: ${COLORS.darkest};
-  font-size: 1.1rem;
   align-self: center;
   text-align: center;
   max-width: 230px;
   margin: 5px;
+  font-weight: bold;
+  transition: 0.2s ease-in-out;
 `
 
 const Needs = styled.div`

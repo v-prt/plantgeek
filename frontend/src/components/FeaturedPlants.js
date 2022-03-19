@@ -14,7 +14,7 @@ import { RiPlantLine } from 'react-icons/ri'
 
 import { PlantCard } from './PlantCard'
 
-export const FeaturedPlants = () => {
+export const FeaturedPlants = ({ currentUser }) => {
   const plants = useSelector(plantsArray)
   const [featuredPlants, setFeaturedPlants] = useState(undefined)
 
@@ -45,29 +45,32 @@ export const FeaturedPlants = () => {
       {featuredPlants && featuredPlants.length > 0 ? (
         <FadeIn>
           <Heading>featured houseplants</Heading>
-          <div className='info-box'>
-            <Info>
-              <Icon className='collection'>
-                <RiPlantLine />
-              </Icon>
-              <b>Have a plant?</b>
-              <p>Add it to your collection</p>
-            </Info>
-            <Info>
-              <Icon className='wishlist'>
-                <AiOutlineStar />
-              </Icon>
-              <b>Want a plant?</b>
-              <p>Add it to your wishlist</p>
-            </Info>
-            <Info>
-              <Icon className='favorite'>
-                <TiHeartOutline />
-              </Icon>
-              <b>Love a plant?</b>
-              <p>Add it to your favorites</p>
-            </Info>
-          </div>
+          {currentUser && (
+            <div className='info-box'>
+              <Info>
+                <Icon className='collection'>
+                  <RiPlantLine />
+                </Icon>
+                <b>Have a plant?</b>
+                <p>Add it to your collection</p>
+              </Info>
+              <Info>
+                <Icon className='wishlist'>
+                  <AiOutlineStar />
+                </Icon>
+                <b>Want a plant?</b>
+                <p>Add it to your wishlist</p>
+              </Info>
+              <Info>
+                <Icon className='favorite'>
+                  <TiHeartOutline />
+                </Icon>
+                <b>Love a plant?</b>
+                <p>Add it to your favorites</p>
+              </Info>
+            </div>
+          )}
+          {/* TODO: slick slider? */}
           <Plants>
             {featuredPlants.map(plant => {
               return <PlantCard key={plant._id} plant={plant} />
@@ -105,7 +108,7 @@ const Wrapper = styled.section`
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-around;
-    margin: 20px 75px;
+    margin: 20px 0;
   }
   h3 {
     width: fit-content;
@@ -125,7 +128,6 @@ const Plants = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 0 50px;
   max-width: 900px;
 `
 
@@ -141,7 +143,7 @@ const Icon = styled.div`
   display: flex;
   align-items: center;
   font-size: 2rem;
-  margin: 0 10px;
+  margin: 10px;
   border-radius: 50%;
   padding: 10px;
   &.collection {

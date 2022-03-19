@@ -91,7 +91,7 @@ const Wrapper = styled.nav`
       align-items: center;
       margin: 10px;
       &:hover {
-        color: ${COLORS.mediumLight};
+        color: ${COLORS.accent};
       }
       &.active {
         color: ${COLORS.light};

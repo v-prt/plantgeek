@@ -171,6 +171,7 @@ export const SignUp = () => {
               {({ isSubmitting }) => (
                 <Form>
                   {/* TODO: improve error status message (show beside specific input - email/username) */}
+                  {/* TODO: arrange inputs horizontally on desktop */}
                   {status && <div className='status'>{status}</div>}
                   <Text label='First name' name='firstName' type='text' placeholder='Jane' />
                   <Text label='Last name' name='lastName' type='text' placeholder='Doe' />
@@ -210,9 +211,8 @@ export const SignUp = () => {
 }
 
 export const Wrapper = styled.main`
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    place-content: center;
-  }
+  display: flex;
+  place-content: center;
 `
 
 export const Card = styled.div`
@@ -220,6 +220,7 @@ export const Card = styled.div`
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  margin: 10px auto;
   border-radius: 20px;
   overflow: hidden;
   .welcome-header {
@@ -241,6 +242,9 @@ export const Card = styled.div`
       margin: 10px;
     }
   }
+  form {
+    padding: 20px;
+  }
   a {
     text-decoration: underline;
   }
@@ -261,9 +265,6 @@ export const Card = styled.div`
         font-size: 1.1rem;
       }
     }
-  }
-  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    width: 500px;
   }
 `
 

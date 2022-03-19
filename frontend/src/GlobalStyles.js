@@ -196,10 +196,25 @@ export default createGlobalStyle`
         overflow-x: hidden;
         overscroll-behavior-y: none;
         overscroll-behavior-x: none;
+        min-height: 100vh;
+        font-size: 16px;
     }
     h1, h2, h3 {
         font-family: 'Quicksand', sans-serif;
         font-weight: 700;
+        margin: 0;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    h2 {
+      font-size: 1.5rem;
+    }
+    h3 {
+      font-size: 1.2rem;
+    }
+    p {
+      margin: 0;
     }
     ol, ul {
         list-style: none;
@@ -254,7 +269,7 @@ export default createGlobalStyle`
         color: #ccc;
       } 
       &:hover {
-        border: 1px solid ${COLORS.darkest};
+        border: 1px solid ${COLORS.accent};
       }
       &:disabled {
         pointer-events: none;

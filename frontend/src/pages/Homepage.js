@@ -101,7 +101,7 @@ export const Homepage = () => {
         </InfoCard>
       </FadeIn>
       <FadeIn delay={300}>
-        <FeaturedPlants />
+        <FeaturedPlants currentUser={currentUser} />
       </FadeIn>
       <FadeIn delay={400}>
         <InfoCard>
