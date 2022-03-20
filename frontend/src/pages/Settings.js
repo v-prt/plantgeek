@@ -7,7 +7,7 @@ import { UserContext } from '../contexts/UserContext'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import YupPassword from 'yup-password'
-import { Text } from '../components/forms/FormItems.js'
+import { Text } from '../components/forms/FormItem.js'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS, Button } from '../GlobalStyles'
@@ -149,7 +149,8 @@ export const Settings = () => {
                 {({ isSubmitting }) => (
                   <Form>
                     {status && <div className='status'>{status}</div>}
-                    <Text
+                    {/* TODO: use FormItem */}
+                    {/* <Text
                       label='Profile image'
                       name='profileImage'
                       type='text'
@@ -188,7 +189,7 @@ export const Settings = () => {
                       <Button type='submit' disabled={!editMode || isSubmitting}>
                         {isSubmitting ? <Ellipsis /> : 'SAVE'}
                       </Button>
-                    </div>
+                    </div> */}
                   </Form>
                 )}
               </Formik>

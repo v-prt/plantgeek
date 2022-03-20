@@ -8,7 +8,7 @@ import { requestPlants, receivePlants } from '../actions'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-import { Text, Select } from '../components/forms/FormItems'
+import { FormItem } from '../components/forms/FormItem'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS, DropZone, DropBox, Button } from '../GlobalStyles'
@@ -198,7 +198,8 @@ export const Contribute = () => {
             onSubmit={handleSubmit}>
             {({ isSubmitting, resetForm }) => (
               <Form>
-                <Text
+                {/* TODO: use FormItem */}
+                {/* <Text
                   label='Primary name'
                   name='primaryName'
                   type='text'
@@ -245,7 +246,7 @@ export const Contribute = () => {
                   name='toxic'
                   type='select'
                   options={['yes', 'no']}
-                />
+                /> */}
                 <DropZone>
                   {/* TODO:
                   - set up signed uploads with cloudinary
@@ -294,7 +295,7 @@ export const Contribute = () => {
                   </div>
                 </DropZone>
                 {/* TODO: accept multiple source links? */}
-                <Text label='Source' name='sourceUrl' type='text' placeholder='Insert URL' />
+                {/* <Text label='Source' name='sourceUrl' type='text' placeholder='Insert URL' /> */}
                 <div className='buttons'>
                   <Button
                     type='reset'

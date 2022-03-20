@@ -1,14 +1,15 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 
 import { Formik, Form } from 'formik'
+import { Input } from 'formik-antd'
+import { Button, Alert } from 'antd'
 import * as Yup from 'yup'
-import { Text } from '../components/forms/FormItems.js'
-import { Wrapper, Card } from './SignUp.js'
-import { Button } from '../GlobalStyles'
+import { FormItem } from '../components/forms/FormItem'
+import { Wrapper, Card } from './SignUp'
 import { Ellipsis } from '../components/loaders/Ellipsis'
-import { FadeIn } from '../components/loaders/FadeIn.js'
+import { FadeIn } from '../components/loaders/FadeIn'
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string().required('Username required'),
@@ -16,20 +17,33 @@ const LoginSchema = Yup.object().shape({
 })
 
 export const Login = () => {
-  const { handleLogin, incorrectUsername, incorrectPassword, currentUser } = useContext(UserContext)
+  const { handleLogin, currentUser } = useContext(UserContext)
+  const [loading, setLoading] = useState(false)
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
+  const handleSubmit = async (values, { setStatus }) => {
+    setLoading(true)
+    setStatus(undefined)
+    const result = await handleLogin(values)
+    if (result.error) {
+      setStatus(result.error.message)
+      setLoading(false)
+    } else {
+      localStorage.setItem('plantgeekToken', result.token)
+    }
+  }
+
   return currentUser ? (
-    <Redirect to={`/user-profile/${currentUser.username}`} />
+    <Redirect to='/' />
   ) : (
     <Wrapper>
       <FadeIn duration={900} delay={200}>
         <Card>
-          <div className='welcome-header'>
+          <div className='header'>
             <h1>welcome back!</h1>
           </div>
           <Formik
@@ -40,25 +54,23 @@ export const Login = () => {
             validationSchema={LoginSchema}
             validateOnChange={false}
             validateOnBlur={false}
-            onSubmit={handleLogin}>
-            {({ isSubmitting }) => (
+            onSubmit={handleSubmit}>
+            {({ status, isSubmitting }) => (
               <Form>
-                <Text
-                  label='Username'
-                  name='username'
-                  type='text'
-                  placeholder='JaneDoe'
-                  autoFocus
-                />
-                {incorrectUsername && <div className='error'>Username not found</div>}
-                {/* TODO: add password visibility toggle button */}
-                <Text label='Password' name='password' type='password' placeholder='********' />
-                {incorrectPassword && <div className='error'>Password is incorrect</div>}
-                <div className='button'>
-                  <Button type='submit' disabled={isSubmitting}>
-                    {isSubmitting ? <Ellipsis /> : 'LOG IN'}
-                  </Button>
-                </div>
+                <FormItem name='username'>
+                  <Input name='username' type='text' placeholder='Username' autoFocus />
+                </FormItem>
+                <FormItem name='password'>
+                  <Input.Password name='password' type='password' placeholder='Password' />
+                </FormItem>
+                <Button
+                  htmlType='submit'
+                  type='primary'
+                  size='large'
+                  disabled={loading || isSubmitting}>
+                  {loading || isSubmitting ? <Ellipsis /> : 'LOG IN'}
+                </Button>
+                {status && <Alert type='error' message={status} showIcon />}
                 <p className='subtext'>
                   Don't have an account yet? <Link to='/signup'>Sign up</Link>
                 </p>

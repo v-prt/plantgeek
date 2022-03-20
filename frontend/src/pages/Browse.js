@@ -211,7 +211,6 @@ const Search = styled.div`
   input {
     border: none;
     padding: 10px;
-    font-size: 1rem;
     ::placeholder {
       color: #ccc;
     }

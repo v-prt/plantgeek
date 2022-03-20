@@ -55,8 +55,8 @@ const createUser = async (req, res) => {
 // (READ/POST) AUTHENTICATES USER WHEN LOGGING IN
 const authenticateUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
   try {
-    await client.connect()
     const db = client.db('plantgeekdb')
     const user = await db
       .collection('users')
@@ -64,23 +64,24 @@ const authenticateUser = async (req, res) => {
     if (user) {
       const isValid = await bcrypt.compare(req.body.password, user.password)
       if (isValid) {
-        res.status(200).json({
-          status: 200,
+        client.close()
+        return res.status(200).json({
           // TODO: look into how "expiresIn" works, remove from local storage if expired
           token: jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '7d' }),
           data: user,
         })
       } else {
-        res.status(403).json({ status: 403, message: 'Incorrect password' })
+        client.close()
+        return res.status(403).json({ message: 'Incorrect password' })
       }
     } else {
-      res.status(401).json({ status: 401, message: 'Username not found' })
+      client.close()
+      return res.status(401).json({ message: 'Username not found' })
     }
   } catch (err) {
-    res.status(500).send('Internal server error')
     console.error(err.stack)
+    return res.status(500).send('Internal server error')
   }
-  client.close()
 }
 
 // (READ/POST) VERIFIES JWT TOKEN

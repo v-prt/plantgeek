@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react'
-import axios from 'axios'
-import { Redirect, Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { requestUsers, receiveUsers } from '../actions.js'
+import { Redirect, Link, useHistory } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import YupPassword from 'yup-password'
-import { Text, Checkbox } from '../components/forms/FormItems.js'
-
+import { FormItem } from '../components/forms/FormItem.js'
+import { Input, Checkbox } from 'formik-antd'
+import { Button, Alert } from 'antd'
 import styled from 'styled-components/macro'
-import { COLORS, BREAKPOINTS, Button } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { TiHeartOutline } from 'react-icons/ti'
@@ -21,13 +19,9 @@ import { RiPlantLine } from 'react-icons/ri'
 YupPassword(Yup) // extend yup
 
 export const SignUp = () => {
-  const dispatch = useDispatch()
-  const { currentUser } = useContext(UserContext)
-  const [status, setStatus] = useState()
-  const [firstName, setFirstName] = useState()
-  const [email, setEmail] = useState()
-  const [username, setUsername] = useState()
-  const [password, setPassword] = useState()
+  const history = useHistory()
+  const { currentUser, handleSignup } = useContext(UserContext)
+  const [loading, setLoading] = useState(false)
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -55,49 +49,17 @@ export const SignUp = () => {
       .oneOf([true], 'You must accept the Terms and Conditions'),
   })
 
-  // UPDATES STORE AFTER NEW USER ADDED TO DB
-  useEffect(() => {
-    if (username) {
-      dispatch(requestUsers())
-      axios
-        .get('/users')
-        .then(res => dispatch(receiveUsers(res.data.data)))
-        .catch(err => console.log(err))
+  const handleSubmit = async (values, { setStatus }) => {
+    setLoading(true)
+    setStatus(undefined)
+    const result = await handleSignup(values)
+    if (result.error) {
+      setStatus(result.error.message)
+      setLoading(false)
+    } else {
+      // TODO: push to welcome page (needs more work)
+      history.push('/login')
     }
-  }, [dispatch, username])
-
-  const handleSignup = async (values, { setSubmitting }) => {
-    await fetch('/users', {
-      method: 'POST',
-      body: JSON.stringify({
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        username: values.username,
-        password: values.password,
-      }),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-      .then(res => res.json())
-      .then(json => {
-        if (json.status === 201) {
-          console.log('Signup successful!')
-          setSubmitting(false)
-          setFirstName(values.firstName)
-          setEmail(values.email)
-          setUsername(values.username)
-          setPassword(values.password)
-        } else if (json.status === 409) {
-          setStatus(json.message)
-          setSubmitting(false)
-        } else if (json.status === 500) {
-          console.log(json.message)
-          setSubmitting(false)
-        }
-      })
   }
 
   return currentUser ? (
@@ -106,79 +68,63 @@ export const SignUp = () => {
     <Wrapper>
       <FadeIn duration={700} delay={150}>
         <Card>
-          <div className='welcome-header'>
-            <h1>welcome to plantgeek!</h1>
-            {!username && (
-              <>
-                <p>You may create an account in order to...</p>
-                <ul>
-                  <li>
-                    <Icon>
-                      <RiPlantLine />
-                    </Icon>
-                    show off your collection
-                  </li>
-                  <li>
-                    <Icon>
-                      <TiHeartOutline />
-                    </Icon>
-                    save your favorite plants
-                  </li>
-                  <li>
-                    <Icon>
-                      <AiOutlineStar />
-                    </Icon>
-                    create a wishlist
-                  </li>
-                </ul>
-              </>
-            )}
+          <div className='header'>
+            <h1>welcome!</h1>
+            <>
+              <p>Create an account in order to...</p>
+              <ul>
+                <li>
+                  <Icon>
+                    <RiPlantLine />
+                  </Icon>
+                  show off your collection
+                </li>
+                <li>
+                  <Icon>
+                    <TiHeartOutline />
+                  </Icon>
+                  save your favorite plants
+                </li>
+                <li>
+                  <Icon>
+                    <AiOutlineStar />
+                  </Icon>
+                  create a wishlist
+                </li>
+              </ul>
+            </>
           </div>
-          {username ? (
-            <Confirmation>
-              <div className='message'>
-                <p>Thanks for signing up, {firstName}!</p>
-                <p>Please save your credentials in a safe place.</p>
-              </div>
-              <div className='box'>
-                <p className='tag'>email</p>
-                <p>{email}</p>
-              </div>
-              <div className='box'>
-                <p className='tag'>username</p>
-                <p>{username}</p>
-              </div>
-              <div className='box'>
-                <p className='tag'>password</p>
-                {/* TODO: toggle hide/show password (use password type input?) */}
-                <p>{password}</p>
-              </div>
-            </Confirmation>
-          ) : (
-            <Formik
-              initialValues={{
-                firstName: '',
-                lastName: '',
-                email: '',
-                username: '',
-                password: '',
-                acceptedTerms: false,
-              }}
-              validationSchema={SignUpSchema}
-              validateOnChange={false}
-              validateOnBlur={false}
-              onSubmit={handleSignup}>
-              {({ isSubmitting }) => (
-                <Form>
-                  {/* TODO: improve error status message (show beside specific input - email/username) */}
-                  {/* TODO: arrange inputs horizontally on desktop */}
-                  {status && <div className='status'>{status}</div>}
-                  <Text label='First name' name='firstName' type='text' placeholder='Jane' />
-                  <Text label='Last name' name='lastName' type='text' placeholder='Doe' />
-                  <Text label='Email' name='email' type='email' placeholder='janedoe@gmail.com' />
-                  <Text label='Username' name='username' type='text' placeholder='JaneDoe' />
-                  {/* TODO: add password visibility toggle button */}
-                  <Text label='Password' name='password' type='password' placeholder='********' />
+          <Formik
+            initialValues={{
+              firstName: '',
+              lastName: '',
+              email: '',
+              username: '',
+              password: '',
+              acceptedTerms: false,
+            }}
+            validationSchema={SignUpSchema}
+            validateOnChange={false}
+            validateOnBlur={false}
+            onSubmit={handleSubmit}>
+            {({ status, isSubmitting }) => (
+              <Form>
+                <FormItem name='firstName'>
+                  <Input name='firstName' type='text' placeholder='First name' autoFocus />
+                </FormItem>
+                <FormItem name='lastName'>
+                  <Input name='lastName' type='text' placeholder='Last name' />
+                </FormItem>
+                <FormItem name='email'>
+                  <Input name='email' type='text' placeholder='Email address' />
+                </FormItem>
+                <FormItem name='username'>
+                  <Input name='username' type='text' placeholder='Username' />
+                </FormItem>
+                <FormItem name='password'>
+                  <Input.Password name='password' type='password' placeholder='Password' />
+                </FormItem>
+                <FormItem name='acceptedTerms'>
                   <Checkbox name='acceptedTerms'>
                     I have read and agree to the{' '}
                     <a
@@ -188,22 +134,25 @@ export const SignUp = () => {
                       Terms and Conditions
                     </a>
                   </Checkbox>
-                  <div className='button'>
-                    {/* TEMPORARILY DISABLED FOR LIVE SITE */}
-                    <Button type='submit' disabled>
-                      {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                    </Button>
-                    {/* <Button type='submit' disabled={isSubmitting}>
-                      {isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                    </Button> */}
-                  </div>
-                  <p className='subtext'>
-                    Already have an account? <Link to='/login'>Log in</Link>
-                  </p>
-                </Form>
-              )}
-            </Formik>
-          )}
+                </FormItem>
+                {/* TEMPORARILY DISABLED FOR LIVE SITE */}
+                {/* <Button htmlType='submit' type='primary' size='large' disabled>
+                    {loading || isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                  </Button> */}
+                <Button
+                  htmlType='submit'
+                  type='primary'
+                  size='large'
+                  disabled={loading || isSubmitting}>
+                  {loading || isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                </Button>
+                {status && <Alert type='error' message={status} showIcon />}
+                <p className='subtext'>
+                  Already have an account? <Link to='/login'>Log in</Link>
+                </p>
+              </Form>
+            )}
+          </Formik>
         </Card>
       </FadeIn>
     </Wrapper>
@@ -217,22 +166,22 @@ export const Wrapper = styled.main`
 
 export const Card = styled.div`
   background: #fff;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   margin: 10px auto;
+  padding: 20px;
   border-radius: 20px;
   overflow: hidden;
-  .welcome-header {
+  .header {
     background: ${COLORS.light};
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    h1 {
-      margin: 10px;
-      font-size: 1.2rem;
-    }
+    justify-content: center;
+    text-align: center;
+    border-radius: 10px;
+    padding: 10px;
     p {
       font-size: 0.9rem;
     }
@@ -242,14 +191,26 @@ export const Card = styled.div`
       margin: 10px;
     }
   }
+  .body {
+    margin: 20px;
+    text-align: center;
+  }
   form {
-    padding: 20px;
+    margin: 20px;
   }
   a {
     text-decoration: underline;
   }
+  .ant-btn {
+    width: 100%;
+    margin-top: 20px;
+  }
+  .ant-alert {
+    margin-top: 10px;
+  }
   .subtext {
-    margin: auto auto 30px auto;
+    text-align: center;
+    margin-top: 20px;
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     width: 400px;
@@ -278,34 +239,4 @@ const Icon = styled.div`
   margin-right: 10px;
   border-radius: 50%;
   font-size: 1.3rem;
-`
-
-const Confirmation = styled.div`
-  background: #f2f2f2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px;
-  .message {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  .box {
-    background: #f2f2f2;
-    width: 80%;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    margin: 10px;
-    border: 1px solid ${COLORS.light};
-    border-radius: 10px;
-    .tag {
-      background: ${COLORS.light};
-      width: 90px;
-      text-align: center;
-      margin-right: 10px;
-      padding: 5px 10px;
-      font-weight: bold;
-    }
-  }
 `

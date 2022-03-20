@@ -4,49 +4,29 @@ import axios from 'axios'
 export const UserContext = createContext(null)
 export const UserProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('plantgeekToken'))
-  const [incorrectUsername, setIncorrectUsername] = useState(false)
-  const [incorrectPassword, setIncorrectPassword] = useState(false)
   const [currentUser, setCurrentUser] = useState(undefined)
 
-  // LOGIN
-  const handleLogin = async (values, { setSubmitting }) => {
-    // FIXME: improve incorrect username/password error messages
-    setIncorrectUsername(false)
-    setIncorrectPassword(false)
+  // SIGNUP
+  const handleSignup = async values => {
     try {
-      await fetch('/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          username: values.username,
-          password: values.password,
-        }),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(res => res.json())
-        .then(json => {
-          if (json.status === 200) {
-            setSubmitting(false)
-            setCurrentUser(json.data)
-            // set token in local storage (not best practice)
-            localStorage.setItem('plantgeekToken', json.token)
-            setToken(json.token)
-          } else if (json.status === 401) {
-            // username not found
-            console.log(json.message)
-            setIncorrectUsername(true)
-            setSubmitting(false)
-          } else if (json.status === 403) {
-            // incorrect password
-            console.log(json.message)
-            setIncorrectPassword(true)
-            setSubmitting(false)
-          }
-        })
+      const res = await axios.post('/users', values)
+      // TODO: log user in on success
+      return res.data
     } catch (err) {
-      console.log(err)
+      console.log(err.response)
+      return { error: err.response.data }
+    }
+  }
+
+  // LOGIN
+  const handleLogin = async values => {
+    try {
+      const res = await axios.post('/login', values)
+      setToken(res.data.token)
+      return res.data
+    } catch (err) {
+      console.log(err.response)
+      return { error: err.response.data }
     }
   }
 
@@ -92,10 +72,9 @@ export const UserProvider = ({ children }) => {
     <UserContext.Provider
       value={{
         token,
+        handleSignup,
         handleLogin,
         handleLogout,
-        incorrectUsername,
-        incorrectPassword,
         getUser,
         currentUser,
         setCurrentUser,

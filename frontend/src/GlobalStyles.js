@@ -197,7 +197,6 @@ export default createGlobalStyle`
         overscroll-behavior-y: none;
         overscroll-behavior-x: none;
         min-height: 100vh;
-        font-size: 16px;
     }
     h1, h2, h3 {
         font-family: 'Quicksand', sans-serif;
@@ -218,132 +217,47 @@ export default createGlobalStyle`
     }
     ol, ul {
         list-style: none;
+        margin: 0;
     }
     a {
-        font-family: 'Quicksand', sans-serif;
-        text-decoration: none;
-        color: ${COLORS.darkest};
-        transition: 0.2s ease-in-out;
-        &:hover {
-            color: ${COLORS.accent};
-        }
-    }
-   form {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    .status {
-      background: rgba(255, 0, 0, 0.1);
-      border: 1px solid ${COLORS.danger};
-      border-radius: 5px;
-      color: ${COLORS.danger};
-      text-align: center;
-      margin-top: 10px;
-    }
-    // TODO: error styling for labels & inputs (red border, red font color, smooth transitions)
-    .form-item {
-      /* padding-bottom: 15px;
-      border-bottom: 1px solid #e6e6e6; */
-      margin-bottom: 15px;
-      .text-wrapper {
-        display: flex;
-        flex-direction: column;
+      font-family: 'Quicksand', sans-serif;
+      text-decoration: none;
+      color: #000;
+      &:hover, &:focus {
+        color: ${COLORS.accent};
       }
     }
-    .select-wrapper {
+    .ant-btn {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-    }
-    .text-label {
-      margin-bottom: 5px;
-    }
-    .text-input, .select-input {
-      box-shadow: 0 0 0 1px #e6e6e6;
-      border: 1px solid #e6e6e6;
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 1rem;
+      justify-content: center;
+      text-shadow: none !important;
+      box-shadow: none !important;
       transition: 0.2s ease-in-out;
-      ::placeholder {
-        color: #ccc;
-      } 
-      &:hover {
-        border: 1px solid ${COLORS.accent};
-      }
       &:disabled {
-        pointer-events: none;
-      } 
-      &:focus {
-        box-shadow: 0 0 0 1px ${COLORS.light};
-        border: 1px solid ${COLORS.light};
-        &:not([type='radio']) {
-          outline: none;
-        }
+        background: grey;
+      border-color: grey;
+      color: #fff;
+      opacity: 0.5;
+      pointer-events: none;
       }
     }
-    .select-input {
-      cursor: pointer;
+    .ant-btn-primary {
+      background: ${COLORS.darkest};
+      border-color: ${COLORS.darkest};
+      color: #fff;
+      &:hover, &:focus {
+        background: ${COLORS.accent};
+        border-color: ${COLORS.accent};
+      }
     }
-    // TODO: improve checkbox styling
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      font-size: 0.7rem;
-      white-space: pre;
-    }
-    .checkbox-input {
-      margin-right: 10px;
-    }
-    .info-text {
-      color: #666;
-      font-style: italic;
-      font-size: 0.8rem;
-    }
-    .error {
-      color: ${COLORS.danger};
-      font-size: 0.8rem;
-    }
-    .buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-    }
-    .button {
-      margin: 10px 0;
-      display: grid;
-    }
-    .status {
-      background: #fcece1;
-      color: ${COLORS.alert};
-      border: 1px solid #fac19e;
-      border-radius: 5px;
-      text-align: center;
-    }
-    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-      padding: 10px 20px;
-      .checkbox-label {
-        font-size: 0.8rem;
-    }
-    }
-    @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-      padding: 10px 30px;
-    }
-  }
-    button {
-        background: none;
-        border: none;
-        font-size: 1rem;
-        transition: 0.2s ease-in-out;
-        &:hover {
-            cursor: pointer;
-        }
-        &:focus {
-            outline: none;
-        }
-        &:disabled {
-            opacity: 50%;
-            pointer-events: none;
-        }
+    .ant-btn-secondary {
+      background: #fff;
+      border-color: ${COLORS.darkest};
+      color: ${COLORS.darkest};
+      &:hover, &:focus {
+        border-color: ${COLORS.accent};
+        color: ${COLORS.accent};
+      }
     }
 `

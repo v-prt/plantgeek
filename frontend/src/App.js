@@ -1,3 +1,4 @@
+import './App.less'
 import React, { useEffect } from 'react'
 import { usePlantsFetcher, useUsersFetcher } from './utilities/fetch'
 
@@ -8,6 +9,7 @@ import { Homepage } from './pages/Homepage'
 import { Browse } from './pages/Browse'
 import { Login } from './pages/Login'
 import { SignUp } from './pages/SignUp'
+import { Welcome } from './pages/Welcome'
 import { Terms } from './pages/Terms'
 import { Privacy } from './pages/Privacy'
 import { Settings } from './pages/Settings'
@@ -18,7 +20,6 @@ import { Footer } from './components/Footer'
 
 import styled from 'styled-components/macro'
 import GlobalStyles, { BREAKPOINTS } from './GlobalStyles'
-import 'antd/dist/antd.css'
 
 export const App = () => {
   // makes window scroll to top between renders
@@ -30,6 +31,7 @@ export const App = () => {
   useUsersFetcher()
 
   // TODO: set app level loading state for checking if user logged in
+  // TODO: restrict routes if user logged in/out
   return (
     <BrowserRouter>
       <GlobalStyles />
@@ -48,6 +50,9 @@ export const App = () => {
           </Route>
           <Route exact path='/signup'>
             <SignUp />
+          </Route>
+          <Route exact path='/welcome'>
+            <Welcome />
           </Route>
           <Route exact path='/terms'>
             <Terms />

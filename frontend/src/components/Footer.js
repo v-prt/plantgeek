@@ -4,6 +4,8 @@ import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 
 export const Footer = () => {
+  const currentYear = new Date().getFullYear()
+
   return (
     <Wrapper>
       <div className='inner'>
@@ -11,14 +13,14 @@ export const Footer = () => {
           <Link to='/terms'>Terms and Conditions</Link>•<Link to='/privacy'>Privacy Policy</Link>•
           <Link to='/contact'>Contact</Link>
         </div>
-        <p>&copy; 2022 plantgeek - All rights reserved.</p>
+        <p>&copy; 2021 - {currentYear} plantgeek - All rights reserved.</p>
       </div>
     </Wrapper>
   )
 }
 
 const Wrapper = styled.footer`
-  background: ${COLORS.light};
+  background: #fff;
   color: ${COLORS.dark};
   font-size: 0.7rem;
   padding: 10px;
@@ -31,9 +33,6 @@ const Wrapper = styled.footer`
     a {
       text-decoration: underline;
       margin: 10px;
-      &:hover {
-        color: #fff;
-      }
     }
     p {
       margin: 10px;
