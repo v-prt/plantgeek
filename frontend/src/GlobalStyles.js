@@ -187,7 +187,6 @@ export const DropBox = styled.div`
 export default createGlobalStyle`
     * {
         font-family: 'Quicksand', sans-serif;
-        line-height: 1.75;
         margin: 0;
         padding: 0;
     }
@@ -226,6 +225,12 @@ export default createGlobalStyle`
       &:hover, &:focus {
         color: ${COLORS.accent};
       }
+    }
+    button {
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      transition: 0.2s ease-in-out;
     }
     .ant-btn {
       display: flex;

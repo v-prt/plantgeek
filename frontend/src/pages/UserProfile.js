@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { usersArray } from '../reducers/userReducer'
 import styled from 'styled-components/macro'
+import { Collapse } from 'antd'
+import { RightCircleOutlined } from '@ant-design/icons'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
+import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
-import { DetailedPlantList } from '../components/lists/DetailedPlantList'
+import { PlantList } from '../components/lists/PlantList'
 import placeholder from '../assets/avatar-placeholder.png'
 import moment from 'moment'
+const { Panel } = Collapse
 
 export const UserProfile = () => {
   const users = useSelector(usersArray)
-  const [user, setUser] = useState([])
+  const [user, setUser] = useState(undefined)
   const { username } = useParams()
 
   // makes window scroll to top between renders
@@ -19,41 +23,74 @@ export const UserProfile = () => {
     window.scrollTo(0, 0)
   }, [username])
 
+  // TODO: react-query
   useEffect(() => {
-    setUser(users.find(user => user?.username === username))
+    setUser(users.find(user => user.username === username))
   }, [users, user, username])
 
   return (
     <Wrapper>
-      {user && (
+      {user ? (
         <FadeIn>
           <section className='user-info'>
-            <Image src={user?.image ? user?.image[0] : placeholder} alt='' />
+            <Image src={user.image ? user.image[0] : placeholder} alt='' />
             <div className='text'>
-              <h1>{user?.username}</h1>
-              <p>Member since {moment(user?.joined).format('ll')}</p>
+              <h1>{user.username}</h1>
+              <p>Member since {moment(user.joined).format('ll')}</p>
             </div>
           </section>
-          <Lists>
-            <DetailedPlantList username={username} list={user?.collection} title='collection' />
-            <DetailedPlantList username={username} list={user?.wishlist} title='wishlist' />
-            <DetailedPlantList username={username} list={user?.favorites} title='favorites' />
-          </Lists>
+          <Collapse
+            accordion
+            bordered={false}
+            expandIcon={({ isActive }) => <RightCircleOutlined rotate={isActive ? 90 : 0} />}
+            className='custom-collapse'>
+            <Panel
+              header={
+                <div className='panel-header'>
+                  <h2>collection</h2>
+                  <p>{user.collection.length} plants</p>
+                </div>
+              }
+              className='custom-panel'>
+              <PlantList
+                username={username}
+                user={user}
+                list={user.collection}
+                title='Collection'
+              />
+            </Panel>
+            <Panel
+              header={
+                <div className='panel-header'>
+                  <h2>favorites</h2>
+                  <p>{user.favorites.length} plants</p>
+                </div>
+              }
+              className='custom-panel'>
+              <PlantList username={username} user={user} list={user.favorites} title='Favorites' />
+            </Panel>
+            <Panel
+              header={
+                <div className='panel-header'>
+                  <h2>wishlist</h2>
+                  <p>{user.wishlist.length} plants</p>
+                </div>
+              }
+              className='custom-panel'>
+              <PlantList username={username} user={user} list={user.wishlist} title='Wishlist' />
+            </Panel>
+          </Collapse>
           <section className='contributions'>
-            <h2>my contributions</h2>
-            {user?.contributions?.length > 0 ? (
-              <p>
-                You've made ${user.contributions.length} contributions! Thanks for your help in
-                growing our database.
-              </p>
+            <h2>contributions</h2>
+            {user.contributions?.length > 0 ? (
+              <p>{user.contributions.length} contributions made!</p>
             ) : (
-              <p>
-                You haven't made any contributions yet.{' '}
-                <Link to='/contributions'>Help us grow our database.</Link>
-              </p>
+              <p>No contributions yet.</p>
             )}
           </section>
         </FadeIn>
+      ) : (
+        <BeatingHeart />
       )}
     </Wrapper>
   )
@@ -71,6 +108,30 @@ const Wrapper = styled.main`
     align-items: center;
     .text {
       text-align: center;
+    }
+  }
+  .custom-collapse {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    .custom-panel {
+      .ant-collapse-header {
+        display: flex;
+        align-items: center;
+        .anticon {
+          font-size: 14px;
+        }
+        .panel-header {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        h2 {
+          font-size: 1.2rem;
+        }
+      }
+      .ant-collapse-content {
+        background: #f2f2f2;
+      }
     }
   }
   .contributions {

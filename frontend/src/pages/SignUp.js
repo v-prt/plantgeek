@@ -126,13 +126,7 @@ export const SignUp = () => {
                 </FormItem>
                 <FormItem name='acceptedTerms'>
                   <Checkbox name='acceptedTerms'>
-                    I have read and agree to the{' '}
-                    <a
-                      href='https://www.plantgeek.co/terms'
-                      target='_blank'
-                      rel='noopener noreferrer'>
-                      Terms and Conditions
-                    </a>
+                    I have read and agree to the <Link to='/terms'>Terms and Conditions</Link>
                   </Checkbox>
                 </FormItem>
                 {/* TEMPORARILY DISABLED FOR LIVE SITE */}
