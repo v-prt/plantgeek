@@ -58,6 +58,7 @@ export const Login = () => {
             {({ status, isSubmitting }) => (
               <Form>
                 <FormItem name='username'>
+                  {/* TODO: login with email */}
                   <Input name='username' type='text' placeholder='Username' autoFocus />
                 </FormItem>
                 <FormItem name='password'>

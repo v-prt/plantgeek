@@ -7,10 +7,13 @@ import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
 
 import styled from 'styled-components/macro'
-import { COLORS, BREAKPOINTS, Button } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
+import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
 import placeholder from '../assets/plant-placeholder.svg'
+import { Button } from 'antd'
+import { LeftCircleFilled } from '@ant-design/icons'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
@@ -19,18 +22,18 @@ import humidity from '../assets/humidity.svg'
 import { ActionBox } from '../components/ActionBox'
 
 export const PlantProfile = () => {
+  // makes window scroll to top between renders
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   const dispatch = useDispatch()
-  const history = useHistory()
+  const { history, goBack } = useHistory()
   const plants = useSelector(plantsArray)
   const [plant, setPlant] = useState()
   const { id } = useParams()
   const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
-
-  // makes window scroll to top between renders
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   useEffect(() => {
     setPlant(plants.find(plant => plant._id === id))
@@ -103,10 +106,15 @@ export const PlantProfile = () => {
 
   return (
     <Wrapper>
-      {plant && (
+      {plant ? (
         <>
           <FadeIn>
             <section className='heading'>
+              <div className='back'>
+                <Button type='link' icon={<LeftCircleFilled />} onClick={goBack}>
+                  Back
+                </Button>
+              </div>
               <h1>{plant?.primaryName?.toLowerCase()}</h1>
               <div className='secondary-name-wrapper'>
                 <b className='aka'>Also known as: </b>
@@ -135,7 +143,8 @@ export const PlantProfile = () => {
               </div>
               <Needs>
                 <h2>
-                  needs <span className='difficulty'>Difficulty: {difficulty}</span>
+                  care information
+                  <p className='difficulty'>Difficulty: {difficulty}</p>
                 </h2>
                 <div className='row'>
                   <img src={sun} alt='' />
@@ -203,7 +212,7 @@ export const PlantProfile = () => {
           {currentUser?.role === 'admin' && (
             <DangerZone>
               <p>DANGER ZONE</p>
-              <Button className='danger' onClick={deletePlant}>
+              <Button type='danger' onClick={deletePlant}>
                 DELETE PLANT
               </Button>
             </DangerZone>
@@ -233,6 +242,8 @@ export const PlantProfile = () => {
             </FadeIn>
           )} */}
         </>
+      ) : (
+        <BeatingHeart />
       )}
     </Wrapper>
   )
@@ -244,10 +255,20 @@ const Wrapper = styled.main`
   align-items: center;
   .heading {
     background: ${COLORS.light};
+    .ant-btn-link {
+      color: #fff;
+      padding: 0;
+      margin: 0;
+      border: 0;
+      margin-bottom: 10px;
+    }
     h1 {
       line-height: 1;
-      font-size: 2rem;
+      font-size: 1.5rem;
       margin-bottom: 10px;
+    }
+    .secondary-name-wrapper {
+      font-size: 0.8rem;
     }
   }
   .plant-info {
@@ -278,6 +299,12 @@ const Wrapper = styled.main`
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
       text-align: right;
+      h1 {
+        font-size: 2rem;
+      }
+      .secondary-name-wrapper {
+        font-size: 1rem;
+      }
     }
   }
   @media only screen and (min-width: 1200px) {
@@ -296,9 +323,7 @@ const Needs = styled.div`
   border-radius: 20px;
   flex: 1;
   h2 {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    font-size: 1.2rem;
     .difficulty {
       color: #999;
       font-size: 0.9rem;
@@ -309,17 +334,36 @@ const Needs = styled.div`
     align-items: center;
     margin: 10px 0;
     img {
+      background: #fff;
+      padding: 5px;
+      border-radius: 50%;
       height: 40px;
-      margin-right: 15px;
+      margin-right: 10px;
     }
     .column {
       flex: 1;
+      p {
+        font-size: 0.8rem;
+      }
     }
   }
   .sources {
     color: #999;
     font-size: 0.8rem;
     margin: 10px 0;
+  }
+  @media only screen and (min-width: 500px) {
+    .row {
+      img {
+        height: 45px;
+        margin-right: 15px;
+      }
+      .column {
+        p {
+          font-size: 1rem;
+        }
+      }
+    }
   }
   @media only screen and (min-width: 1200px) {
     margin-top: 0;
@@ -346,9 +390,11 @@ const Indicator = styled.div`
 `
 
 const DangerZone = styled.div`
+  background: #fff;
   width: 100%;
   margin: 30px 0;
   border: 1px dotted red;
+  border-radius: 20px;
   padding: 20px;
   display: flex;
   align-items: center;

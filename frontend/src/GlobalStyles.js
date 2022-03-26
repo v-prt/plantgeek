@@ -192,10 +192,11 @@ export default createGlobalStyle`
     }
     html, body {
         background: ${COLORS.lightest};
-        overflow-x: hidden;
+        // causes issues with window.scrollTo(0,0)
+        /* overflow-x: hidden; */
         overscroll-behavior-y: none;
         overscroll-behavior-x: none;
-        min-height: 100vh;
+        /* min-height: 100vh; */
     }
     h1, h2, h3 {
         font-family: 'Quicksand', sans-serif;

@@ -107,6 +107,23 @@ export const Browse = () => {
         <FadeIn>
           <section className='inner'>
             <Actions>
+              {/* TODO: formik, query database not redux */}
+              {/* <Input
+                name='search'
+                // onChange={submitForm}
+                placeholder='Search houseplants'
+                suffix={<SearchOutlined />}
+              /> */}
+              {/* <Select
+                name='filters'
+                onChange={submitForm}
+                allowClear
+                placeholder='Filter'
+                showArrow
+                >
+                <Select.Option value='nontoxic'>Non-toxic</Select.Option>
+                <Select.Option value='details'>Detailed view</Select.Option>
+              </Select> */}
               <Search>
                 <input type='text' placeholder='Search houseplants' onChange={handleQuery} />
                 <button type='submit' onClick={handleSearch}>
@@ -176,6 +193,7 @@ const Wrapper = styled.main`
 `
 
 const Actions = styled.div`
+  background: #f2f2f2;
   box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -290,18 +308,8 @@ const Filters = styled.div`
 `
 
 const Results = styled.div`
-  background: #e6e6e6;
-  height: calc(100vh - 248px);
-  position: relative;
-  overflow: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   padding: 10px 0;
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    height: calc(100vh - 360px);
-  }
-  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    height: calc(100vh - 340px);
-  }
 `

@@ -20,7 +20,7 @@ export const Footer = () => {
 }
 
 const Wrapper = styled.footer`
-  background: #fff;
+  background: rgba(255, 255, 255, 0.3);
   color: ${COLORS.dark};
   font-size: 0.7rem;
   padding: 10px;
@@ -30,12 +30,15 @@ const Wrapper = styled.footer`
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    a {
-      text-decoration: underline;
-      margin: 10px;
+    .links {
+      margin: 5px 0;
+      a {
+        text-decoration: underline;
+        margin: 0 10px;
+      }
     }
     p {
-      margin: 10px;
+      margin: 5px;
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
@@ -43,8 +46,11 @@ const Wrapper = styled.footer`
     padding: 10px 20px;
     .inner {
       max-width: 1200px;
-      a {
-        margin: 10px 20px;
+      .links {
+        margin: 10px 0;
+        a {
+          margin: 0 20px;
+        }
       }
       p {
         margin: 10px 20px;

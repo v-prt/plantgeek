@@ -190,6 +190,8 @@ export const Card = styled.div`
     text-align: center;
   }
   form {
+    display: flex;
+    flex-direction: column;
     margin: 20px;
   }
   a {
@@ -225,6 +227,7 @@ export const Card = styled.div`
 
 const Icon = styled.div`
   background: ${COLORS.lightest};
+  color: #000;
   height: 30px;
   width: 30px;
   display: flex;
