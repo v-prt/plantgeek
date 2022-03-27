@@ -16,6 +16,7 @@ export const ImageLoader = ({ src, alt, placeholder }) => {
           }
         })
         .catch(err => {
+          // FIXME: prevent errs showing in console
           console.log(err)
         })
     }

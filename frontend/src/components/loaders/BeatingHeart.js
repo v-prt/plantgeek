@@ -34,6 +34,7 @@ const Wrapper = styled.div`
   margin: auto;
   line-height: 1;
   img {
+    opacity: 0.2;
     height: 40px;
     animation: ${beat} 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
   }
