@@ -6,7 +6,10 @@ import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
-import { PlantList } from '../components/lists/PlantList'
+import { ListWrapper, PlantList } from '../components/lists/PlantList'
+import { RiPlantLine } from 'react-icons/ri'
+import { TiHeartOutline } from 'react-icons/ti'
+import { AiOutlineStar } from 'react-icons/ai'
 import placeholder from '../assets/avatar-placeholder.png'
 import moment from 'moment'
 
@@ -39,13 +42,81 @@ export const UserProfile = () => {
             </section>
           </FadeIn>
           <FadeIn delay={200}>
-            <PlantList username={username} user={user} list={user.collection} title='Collection' />
+            {user.collection.length > 0 ? (
+              <PlantList
+                username={username}
+                user={user}
+                list={user.collection}
+                title='collection'
+              />
+            ) : (
+              <ListWrapper>
+                <FadeIn>
+                  <div className='inner'>
+                    <div className='header'>
+                      <h2>
+                        <span className='icon'>
+                          <RiPlantLine />
+                        </span>
+                        collection
+                      </h2>
+                      <div className='info'>
+                        <span className='num-plants'>0 plants</span>
+                      </div>
+                    </div>
+                    <p className='empty'>No plants in collection.</p>
+                  </div>
+                </FadeIn>
+              </ListWrapper>
+            )}
           </FadeIn>
           <FadeIn delay={300}>
-            <PlantList username={username} user={user} list={user.favorites} title='Favorites' />
+            {user.favorites.length > 0 ? (
+              <PlantList username={username} user={user} list={user.favorites} title='favorites' />
+            ) : (
+              <ListWrapper>
+                <FadeIn>
+                  <div className='inner'>
+                    <div className='header'>
+                      <h2>
+                        <span className='icon'>
+                          <AiOutlineStar />
+                        </span>
+                        favorites
+                      </h2>
+                      <div className='info'>
+                        <span className='num-plants'>0 plants</span>
+                      </div>
+                    </div>
+                    <p className='empty'>No plants in favorites.</p>
+                  </div>
+                </FadeIn>
+              </ListWrapper>
+            )}
           </FadeIn>
           <FadeIn delay={400}>
-            <PlantList username={username} user={user} list={user.wishlist} title='Wishlist' />
+            {user.wishlist.length > 0 ? (
+              <PlantList username={username} user={user} list={user.wishlist} title='wishlist' />
+            ) : (
+              <ListWrapper>
+                <FadeIn>
+                  <div className='inner'>
+                    <div className='header'>
+                      <h2>
+                        <span className='icon'>
+                          <TiHeartOutline />
+                        </span>
+                        wishlist
+                      </h2>
+                      <div className='info'>
+                        <span className='num-plants'>0 plants</span>
+                      </div>
+                    </div>
+                    <p className='empty'>No plants in wishlist.</p>
+                  </div>
+                </FadeIn>
+              </ListWrapper>
+            )}
           </FadeIn>
           <FadeIn delay={500}>
             <section className='contributions'>

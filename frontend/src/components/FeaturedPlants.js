@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { plantsArray } from '../reducers/plantReducer.js'
-
+import { useQuery } from 'react-query'
+import axios from 'axios'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { BeatingHeart } from './loaders/BeatingHeart'
@@ -11,38 +10,17 @@ import { FaArrowAltCircleRight } from 'react-icons/fa'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import { RiPlantLine } from 'react-icons/ri'
-
 import { PlantCard } from './PlantCard'
 
 export const FeaturedPlants = ({ currentUser }) => {
-  const plants = useSelector(plantsArray)
-  const [featuredPlants, setFeaturedPlants] = useState(undefined)
-
-  // SETS FEATURED PLANTS (random plants change each time you load)
-  useEffect(() => {
-    const getRandomPlant = () => {
-      const randomIndex = Math.floor(Math.random() * plants.length)
-      const randomPlant = plants[randomIndex]
-      return randomPlant
-    }
-    // only run function if there are more than 6 plants in db
-    let randomPlants = plants.length > 9 ? [] : undefined
-    if (randomPlants) {
-      while (randomPlants.length < 9) {
-        let randomPlant = getRandomPlant(plants)
-        if (!randomPlants.find(plant => plant.primaryName === randomPlant.primaryName)) {
-          randomPlants.push(randomPlant)
-        }
-      }
-      setFeaturedPlants(randomPlants)
-    } else {
-      setFeaturedPlants(plants)
-    }
-  }, [plants])
+  const { data } = useQuery('random-plants', async () => {
+    const { data } = await axios.get('/random-plants')
+    return data.plants
+  })
 
   return (
     <Wrapper>
-      {featuredPlants && featuredPlants.length > 0 ? (
+      {data ? (
         <FadeIn>
           <Heading>featured houseplants</Heading>
           {currentUser && (
@@ -70,9 +48,8 @@ export const FeaturedPlants = ({ currentUser }) => {
               </Info>
             </div>
           )}
-          {/* TODO: slick slider? */}
           <Plants>
-            {featuredPlants.map(plant => {
+            {data.map(plant => {
               return <PlantCard key={plant._id} plant={plant} />
             })}
           </Plants>

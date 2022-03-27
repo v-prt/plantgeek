@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import axios from 'axios'
 import styled from 'styled-components/macro'
-import { BREAKPOINTS } from '../GlobalStyles'
+import { BREAKPOINTS, Toggle } from '../GlobalStyles'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
@@ -25,7 +25,7 @@ export const Browse = () => {
       const { data } = await axios.get(`/plants/${pageParam ? pageParam : 0}`, {
         params: queryKey[1],
       })
-      return data.data
+      return data.plants
     }
   )
 
@@ -38,15 +38,11 @@ export const Browse = () => {
     if (data) {
       let pages = data.pages
       const array = Array.prototype.concat.apply([], pages)
-      setPlants([array][0].map(plant => <PlantCard key={plant._id} plant={plant} />))
+      setPlants(
+        [array][0].map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />)
+      )
     }
-  }, [data])
-
-  // useEffect(() => {
-  //   if (document.getElementById('needs-toggle').checked) {
-  //     setViewNeeds(true)
-  //   } else setViewNeeds(false)
-  // }, [])
+  }, [data, viewNeeds])
 
   const handleSubmit = async values => {
     submitRef.current++
@@ -66,12 +62,21 @@ export const Browse = () => {
             <Formik initialValues={formData} onSubmit={handleSubmit}>
               {({ submitForm }) => (
                 <Form>
-                  <p>{plants.length} results</p>
                   {/* TODO: add filter menu drawer for mobile */}
                   {/* <Button className='filter-menu-btn' type='primary' onClick={setViewFilters}>
                     Filters
                   </Button> */}
                   <div className='filters'>
+                    <div className='form-section'>
+                      <Input
+                        name='primaryName'
+                        placeholder='Search'
+                        prefix={<BiSearch />}
+                        onChange={submitForm}
+                        style={{ width: 200 }}
+                        allowClear
+                      />
+                    </div>
                     <div className='form-section'>
                       <Select
                         name='toxic'
@@ -94,15 +99,19 @@ export const Browse = () => {
                         {/* TODO: difficulty level */}
                       </Select>
                     </div>
-                    <div className='form-section'>
-                      <Input
-                        name='primaryName'
-                        placeholder='Search'
-                        prefix={<BiSearch />}
-                        onChange={submitForm}
-                        style={{ width: 200 }}
-                        allowClear
-                      />
+                  </div>
+                  <div className='filters'>
+                    <p>{plants.length} results</p>
+                    <div className='toggle-wrapper'>
+                      <span className='toggle-option'>View needs</span>
+                      <Toggle>
+                        <input
+                          id='needs-toggle'
+                          type='checkbox'
+                          onChange={ev => setViewNeeds(ev.target.checked)}
+                        />
+                        <span className='slider'></span>
+                      </Toggle>
                     </div>
                   </div>
                 </Form>
@@ -148,6 +157,19 @@ const Wrapper = styled.main`
           display: flex;
           align-items: center;
           margin: 10px;
+        }
+        .toggle-wrapper {
+          background: #fff;
+          width: fit-content;
+          display: flex;
+          align-items: center;
+          border-radius: 20px;
+          padding: 5px 10px;
+          margin-left: 10px;
+          .toggle-option {
+            margin-right: 20px;
+            line-height: 1;
+          }
         }
       }
     }

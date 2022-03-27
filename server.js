@@ -20,6 +20,8 @@ const {
   createPlant,
   getPlants,
   getPlant,
+  getRandomPlants,
+  getUserPlants,
   addComment,
   updatePlant,
   deletePlant,
@@ -52,6 +54,8 @@ app
   .post('/plants', createPlant)
   .get('/plants/:page', getPlants)
   .get('/plants/:_id', getPlant)
+  .get('/random-plants', getRandomPlants)
+  .get('/user-plants/:page', getUserPlants)
   .put('plants/:_id', updatePlant)
   .put('/plants/:_id/comments', addComment)
   .delete('/plants/:_id', deletePlant)

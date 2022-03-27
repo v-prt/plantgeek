@@ -3,10 +3,15 @@ import { NavLink } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 
 import plantgeekLogo from '../assets/logo.webp'
-import { BiSearch, BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
+import {
+  BiHomeHeart,
+  BiSearch,
+  BiCog,
+  BiPlusCircle,
+  BiLogInCircle,
+  BiLogOutCircle,
+} from 'react-icons/bi'
 import { CgProfile } from 'react-icons/cg'
-import { AiOutlinePlusCircle } from 'react-icons/ai'
-import { BiCog } from 'react-icons/bi'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 
@@ -23,6 +28,12 @@ export const Navbar = () => {
           </NavLink>
         </div>
         <div className='nav-links'>
+          <NavLink exact to='/'>
+            <div className='icon'>
+              <BiHomeHeart />
+            </div>
+            <span className='label'>home</span>
+          </NavLink>
           <NavLink to='/browse'>
             <div className='icon'>
               <BiSearch />
@@ -45,7 +56,7 @@ export const Navbar = () => {
               </NavLink>
               <NavLink to='/contribute'>
                 <div className='icon'>
-                  <AiOutlinePlusCircle />
+                  <BiPlusCircle />
                 </div>
                 <span className='label'>contribute</span>
               </NavLink>
@@ -90,8 +101,8 @@ const Wrapper = styled.nav`
       display: flex;
       align-items: center;
       margin: 10px;
-      &:hover {
-        color: ${COLORS.accent};
+      &:hover:not(.active) {
+        transform: scale(1.1);
       }
       &.active {
         color: ${COLORS.light};

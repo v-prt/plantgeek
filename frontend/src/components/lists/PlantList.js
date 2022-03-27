@@ -1,49 +1,66 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { plantsArray } from '../../reducers/plantReducer'
+import { useInfiniteQuery } from 'react-query'
+import axios from 'axios'
 
 import styled from 'styled-components/macro'
 import { Toggle } from '../../GlobalStyles'
 import { FadeIn } from '../loaders/FadeIn'
 import { PlantCard } from '../PlantCard'
+import { BeatingHeart } from '../loaders/BeatingHeart'
+import { RiPlantLine } from 'react-icons/ri'
+import { TiHeartOutline } from 'react-icons/ti'
+import { AiOutlineStar } from 'react-icons/ai'
 
-export const PlantList = ({ user, list, title }) => {
-  const plants = useSelector(plantsArray)
+export const PlantList = ({ list, title }) => {
+  const [plants, setPlants] = useState([])
   const [viewNeeds, setViewNeeds] = useState(false)
+
+  const { data, status } = useInfiniteQuery(
+    [`'user-${title}`, { ids: list }],
+    async ({ pageParam, queryKey }) => {
+      const { data } = await axios.get(`/user-plants/${pageParam ? pageParam : 0}`, {
+        params: queryKey[1],
+      })
+      return data.plants
+    }
+  )
+
+  useEffect(() => {
+    if (data) {
+      let pages = data.pages
+      const array = Array.prototype.concat.apply([], pages)
+      setPlants(
+        [array][0].map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />)
+      )
+    }
+  }, [data, viewNeeds])
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  // SETS USER'S PLANTS TO ACCESS THEIR PLANTS' DATA
-  // TODO: react-query
-  const [userPlants, setUserPlants] = useState(undefined)
-  useEffect(() => {
-    if (plants && list && list.length > 0) {
-      let foundPlants = []
-      list.forEach(id => {
-        // don't include IDs that aren't found in plant db
-        if (plants.find(plant => plant._id === id)) {
-          foundPlants.push(plants.find(plant => plant._id === id))
-        } else return
-      })
-      setUserPlants(foundPlants)
-    } else {
-      setUserPlants(undefined)
-    }
-  }, [list, plants])
-
   return (
-    <Wrapper>
+    <ListWrapper>
       <FadeIn>
         <div className='inner'>
           <div className='header'>
-            <h2>{title.toLowerCase()}</h2>
+            <h2>
+              <span className='icon'>
+                {title === 'collection' ? (
+                  <RiPlantLine />
+                ) : title === 'favorites' ? (
+                  <TiHeartOutline />
+                ) : (
+                  title === 'wishlist' && <AiOutlineStar />
+                )}
+              </span>
+              {title}
+            </h2>
             <div className='info'>
               <span className='num-plants'>{list.length} plants</span>
               <div className='toggle-wrapper'>
-                <span className='toggle-option'>Detailed view</span>
+                <span className='toggle-option'>View needs</span>
                 <Toggle>
                   <input
                     id='needs-toggle'
@@ -55,24 +72,14 @@ export const PlantList = ({ user, list, title }) => {
               </div>
             </div>
           </div>
-          {list && list.length > 0 ? (
-            <Plants>
-              {user &&
-                userPlants?.length > 0 &&
-                userPlants.map(plant => {
-                  return <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
-                })}
-            </Plants>
-          ) : (
-            <p className='empty'>{title} is empty.</p>
-          )}
+          <Plants>{status === 'success' ? plants : <BeatingHeart />}</Plants>
         </div>
       </FadeIn>
-    </Wrapper>
+    </ListWrapper>
   )
 }
 
-const Wrapper = styled.section`
+export const ListWrapper = styled.section`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   .inner {
@@ -83,6 +90,14 @@ const Wrapper = styled.section`
       box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
       padding: 0 20px 10px 20px;
       margin-bottom: 10px;
+      h2 {
+        display: flex;
+        align-items: center;
+        .icon {
+          display: grid;
+          margin-right: 10px;
+        }
+      }
       .info {
         display: flex;
         align-items: center;
@@ -104,10 +119,10 @@ const Wrapper = styled.section`
         }
       }
     }
-  }
-  .empty {
-    text-align: center;
-    margin-top: 20px;
+    .empty {
+      text-align: center;
+      margin-top: 20px;
+    }
   }
 `
 

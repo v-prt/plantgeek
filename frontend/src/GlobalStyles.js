@@ -96,8 +96,7 @@ export const Toggle = styled.label`
     transform: translateX(20px);
   }
   input:checked + .slider {
-    background: ${COLORS.mediumLight};
-    box-shadow: 0 0 0 1px ${COLORS.light};
+    background: ${COLORS.accent};
   }
 `
 
@@ -223,6 +222,7 @@ export default createGlobalStyle`
       font-family: 'Quicksand', sans-serif;
       text-decoration: none;
       color: #000;
+      transition: 0.2s ease-in-out;
       &:hover, &:focus {
         color: ${COLORS.accent};
       }

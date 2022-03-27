@@ -59,7 +59,7 @@ const getPlants = async (req, res) => {
     // .limit(24)
     .toArray()
   if (plants) {
-    res.status(200).json({ status: 200, data: plants })
+    res.status(200).json({ status: 200, plants: plants })
   } else {
     res.status(404).json({ status: 404, message: 'No plants found' })
   }
@@ -77,6 +77,45 @@ const getPlant = async (req, res) => {
     res.status(200).json({ status: 200, data: plant })
   } else {
     res.status(404).json({ status: 404, message: 'Plant not found' })
+  }
+  client.close()
+}
+
+const getRandomPlants = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  const plants = await db
+    .collection('plants')
+    .aggregate([{ $sample: { size: 9 } }])
+    .toArray()
+  if (plants) {
+    res.status(200).json({ status: 200, plants: plants })
+  } else {
+    res.status(404).json({ status: 404, message: 'No plants found' })
+  }
+  client.close()
+}
+
+const getUserPlants = async (req, res) => {
+  const { ids } = req.query
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  if (ids && ids.length > 0) {
+    const objectIds = ids.map(id => ObjectId(id))
+    const plants = await db
+      .collection('plants')
+      .find({ _id: { $in: objectIds } })
+      .toArray()
+    if (plants) {
+      res.status(200).json({ status: 200, plants: plants })
+    } else {
+      res.status(404).json({ status: 404, message: 'No plants found' })
+    }
+  } else {
+    console.log('no ids')
+    res.status(404).json({ status: 404, message: 'No plants in list' })
   }
   client.close()
 }
@@ -154,4 +193,13 @@ const deletePlant = async (req, res) => {
   }
 }
 
-module.exports = { createPlant, getPlants, getPlant, addComment, updatePlant, deletePlant }
+module.exports = {
+  createPlant,
+  getPlants,
+  getPlant,
+  getRandomPlants,
+  getUserPlants,
+  addComment,
+  updatePlant,
+  deletePlant,
+}
