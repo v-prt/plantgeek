@@ -26,20 +26,17 @@ const createPlant = async (req, res) => {
 
 // (READ/GET) GETS ALL PLANTS
 const getPlants = async (req, res) => {
+  const { toxic, primaryName } = req.query
   let filters
-  // converting string to boolean
-  if (req.query.toxic === 'true') {
-    filters = { ...req.query, toxic: true }
-  } else if (req.query.toxic === 'false') {
-    filters = { ...req.query, toxic: false }
-  } else filters = { ...req.query }
-  // TODO: fix filters based on queries passed
-  // const filters = {
-  //   ...req.query,
-  //   toxic: req.query.toxic === 'true' ? true : req.query.toxic === 'false' ? false : '',
-  //   // name: req.query.name ? { $regex: req.query.name } : '',
-  // }
-  console.log(filters)
+  if (toxic === 'true') {
+    filters = { ...filters, toxic: true }
+  } else if (toxic === 'false') {
+    filters = { ...filters, toxic: false }
+  }
+  if (primaryName) {
+    const regex = new RegExp(primaryName, 'i') // "i" for case insensitive
+    filters = { ...filters, primaryName: { $regex: regex } }
+  }
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')

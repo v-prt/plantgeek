@@ -8,11 +8,15 @@ import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
 import { Formik, Form } from 'formik'
 import { Input, Select } from 'formik-antd'
+import { Button } from 'antd'
 import { BiSearch } from 'react-icons/bi'
 const { Option } = Select
 
 export const Browse = () => {
+  const submitRef = useRef(0)
   const [formData, setFormData] = useState({})
+  const [viewNeeds, setViewNeeds] = useState(false)
+  const [viewFilters, setViewFilters] = useState(false)
   const [plants, setPlants] = useState([])
   const { data, status } = useInfiniteQuery(
     ['plants', formData],
@@ -21,7 +25,6 @@ export const Browse = () => {
       return data.data
     }
   )
-  const [viewNeeds, setViewNeeds] = useState(false)
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -42,12 +45,6 @@ export const Browse = () => {
   //   } else setViewNeeds(false)
   // }, [])
 
-  console.log(data)
-  console.log(status)
-  console.log(formData)
-
-  const submitRef = useRef(0)
-
   const handleSubmit = async values => {
     console.log(values)
     submitRef.current++
@@ -67,36 +64,44 @@ export const Browse = () => {
             <Formik initialValues={formData} onSubmit={handleSubmit}>
               {({ submitForm }) => (
                 <Form>
-                  <div className='form-section'>
-                    <Select
-                      name='toxic'
-                      onChange={submitForm}
-                      placeholder='Toxicity'
-                      style={{ width: 200 }}>
-                      <Option value=''>Any</Option>
-                      <Option value={true}>Toxic</Option>
-                      <Option value={false}>Non-toxic</Option>
-                    </Select>
-                  </div>
-                  <div className='form-section'>
-                    <Select
-                      name='sort'
-                      onChange={submitForm}
-                      placeholder='Sort'
-                      style={{ width: 200 }}>
-                      <Option value=''>Name (A-Z)</Option>
-                      <Option value=''>Name (Z-A)</Option>
-                      {/* TODO: difficulty level */}
-                    </Select>
-                  </div>
-                  <div className='form-section'>
-                    <Input
-                      name='name'
-                      placeholder='Search'
-                      suffix={<BiSearch />}
-                      onChange={submitForm}
-                      style={{ width: 200 }}
-                    />
+                  <p>{plants.length} results</p>
+                  {/* TODO: add filter menu drawer for mobile */}
+                  {/* <Button className='filter-menu-btn' type='primary' onClick={setViewFilters}>
+                    Filters
+                  </Button> */}
+                  <div className='filters'>
+                    <div className='form-section'>
+                      <Select
+                        name='toxic'
+                        onChange={submitForm}
+                        placeholder='Filter'
+                        allowClear
+                        style={{ width: 200 }}>
+                        <Option value={true}>Toxic</Option>
+                        <Option value={false}>Non-toxic</Option>
+                      </Select>
+                    </div>
+                    <div className='form-section'>
+                      <Select
+                        name='sort'
+                        onChange={submitForm}
+                        placeholder='Sort'
+                        style={{ width: 200 }}>
+                        <Option value=''>Name (A-Z)</Option>
+                        <Option value=''>Name (Z-A)</Option>
+                        {/* TODO: difficulty level */}
+                      </Select>
+                    </div>
+                    <div className='form-section'>
+                      <Input
+                        name='primaryName'
+                        placeholder='Search'
+                        prefix={<BiSearch />}
+                        onChange={submitForm}
+                        style={{ width: 200 }}
+                        allowClear
+                      />
+                    </div>
                   </div>
                 </Form>
               )}
@@ -121,15 +126,27 @@ const Wrapper = styled.main`
       background: #f2f2f2;
       box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
+      justify-content: space-between;
       position: sticky;
       top: 0;
       z-index: 10;
-      padding: 10px 0;
-      .form-section {
+      .filter-menu-btn {
+        @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+          display: none;
+        }
+      }
+      .filters {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        margin: 0 10px;
+        justify-content: center;
+        .form-section {
+          display: flex;
+          align-items: center;
+          margin: 10px;
+        }
       }
     }
   }
