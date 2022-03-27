@@ -26,7 +26,8 @@ const createPlant = async (req, res) => {
 
 // (READ/GET) GETS ALL PLANTS
 const getPlants = async (req, res) => {
-  const { toxic, primaryName } = req.query
+  const page = req.params.page ? parseInt(req.params.page) : 0
+  const { toxic, primaryName, sort } = req.query
   let filters
   if (toxic === 'true') {
     filters = { ...filters, toxic: true }
@@ -37,10 +38,26 @@ const getPlants = async (req, res) => {
     const regex = new RegExp(primaryName, 'i') // "i" for case insensitive
     filters = { ...filters, primaryName: { $regex: regex } }
   }
+  let order
+  if (sort) {
+    // FIXME: doesn't sort properly
+    if (sort === 'name-asc') {
+      order = { primaryName: 1 }
+    } else if (sort === 'name-desc') {
+      order = { primaryName: -1 }
+    }
+  }
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
-  const plants = await db.collection('plants').find(filters).toArray()
+  const plants = await db
+    .collection('plants')
+    .find(filters)
+    .sort(order)
+    // TODO:
+    // .skip(24 * page)
+    // .limit(24)
+    .toArray()
   if (plants) {
     res.status(200).json({ status: 200, data: plants })
   } else {

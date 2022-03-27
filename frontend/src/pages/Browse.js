@@ -14,14 +14,17 @@ const { Option } = Select
 
 export const Browse = () => {
   const submitRef = useRef(0)
-  const [formData, setFormData] = useState({})
+  const [formData, setFormData] = useState({ sort: 'name-asc' })
   const [viewNeeds, setViewNeeds] = useState(false)
   const [viewFilters, setViewFilters] = useState(false)
   const [plants, setPlants] = useState([])
+
   const { data, status } = useInfiniteQuery(
     ['plants', formData],
-    async ({ pageParam = 0, queryKey }) => {
-      const { data } = await axios.get('/plants', { params: queryKey[1] })
+    async ({ pageParam, queryKey }) => {
+      const { data } = await axios.get(`/plants/${pageParam ? pageParam : 0}`, {
+        params: queryKey[1],
+      })
       return data.data
     }
   )
@@ -46,7 +49,6 @@ export const Browse = () => {
   // }, [])
 
   const handleSubmit = async values => {
-    console.log(values)
     submitRef.current++
     const thisSubmit = submitRef.current
     setTimeout(() => {
@@ -87,8 +89,8 @@ export const Browse = () => {
                         onChange={submitForm}
                         placeholder='Sort'
                         style={{ width: 200 }}>
-                        <Option value=''>Name (A-Z)</Option>
-                        <Option value=''>Name (Z-A)</Option>
+                        <Option value='name-asc'>Name (A-Z)</Option>
+                        <Option value='name-desc'>Name (Z-A)</Option>
                         {/* TODO: difficulty level */}
                       </Select>
                     </div>
@@ -162,6 +164,6 @@ const Results = styled.div`
     min-height: calc(100vh - 280px);
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    min-height: calc(100vh - 300px);
+    min-height: calc(100vh - 320px);
   }
 `

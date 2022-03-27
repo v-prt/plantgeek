@@ -50,7 +50,7 @@ app
   .put('/:username/add', addToUser)
   .put('/:username/remove', removeFromUser)
   .post('/plants', createPlant)
-  .get('/plants', getPlants)
+  .get('/plants/:page', getPlants)
   .get('/plants/:_id', getPlant)
   .put('plants/:_id', updatePlant)
   .put('/plants/:_id/comments', addComment)

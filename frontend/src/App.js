@@ -1,6 +1,6 @@
 import './App.less'
 import React, { useEffect } from 'react'
-import { usePlantsFetcher, useUsersFetcher } from './utilities/fetch'
+import { useUsersFetcher } from './utilities/fetch'
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import background from './assets/monstera1.jpg'
@@ -27,7 +27,7 @@ export const App = () => {
     window.scrollTo(0, 0)
   }, [])
 
-  usePlantsFetcher()
+  // usePlantsFetcher()
   useUsersFetcher()
 
   // TODO: set app level loading state for checking if user logged in
