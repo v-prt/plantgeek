@@ -1,10 +1,14 @@
 import React, { createContext, useState, useEffect } from 'react'
+import { useQueryClient } from 'react-query'
 import axios from 'axios'
 
 export const UserContext = createContext(null)
 export const UserProvider = ({ children }) => {
+  const queryClient = new useQueryClient()
   const [token, setToken] = useState(localStorage.getItem('plantgeekToken'))
+  const [checkedToken, setCheckedToken] = useState(false)
   const [currentUser, setCurrentUser] = useState(undefined)
+  const [currentUserId, setCurrentUserId] = useState(undefined)
 
   // SIGNUP
   const handleSignup = async values => {
@@ -44,9 +48,14 @@ export const UserProvider = ({ children }) => {
         axios.post('/token', { token }).then(res => {
           if (res.status === 200) {
             setCurrentUser(res.data.user)
+            setCurrentUserId(res.data.user._id)
+            setCheckedToken(true)
           } else {
             // something wrong with token
             localStorage.removeItem('plantgeekToken')
+            setCurrentUser(undefined)
+            setCurrentUserId(undefined)
+            setCheckedToken(true)
             window.location.replace('/login')
           }
         })
@@ -56,11 +65,11 @@ export const UserProvider = ({ children }) => {
     }
   }, [token])
 
-  // GET USER BY ID AND SET AS CURRENT USER
-  const getUser = async id => {
+  // GET USER BY ID
+  const getUserById = async id => {
     await axios
       .get(`/users/${id}`)
-      .then(res => setCurrentUser(res.data.user))
+      .then(res => res.data.user)
       .catch(err => console.log(err))
   }
 
@@ -68,11 +77,11 @@ export const UserProvider = ({ children }) => {
   const updateCurrentUser = async data => {
     try {
       const res = await axios.put(`users/${currentUser._id}`, data)
-      // TODO:
-      // queryClient.invalidateQueries('current-user')
+      queryClient.invalidateQueries('current-user')
       return res.data
     } catch (err) {
-      return { error: 'Oops, something went wrong.' }
+      console.log(err.response)
+      return { error: err.response.data.msg }
     }
   }
 
@@ -80,11 +89,13 @@ export const UserProvider = ({ children }) => {
     <UserContext.Provider
       value={{
         token,
+        checkedToken,
         handleSignup,
         handleLogin,
         handleLogout,
-        getUser,
+        getUserById,
         currentUser,
+        currentUserId,
         updateCurrentUser,
       }}>
       {children}

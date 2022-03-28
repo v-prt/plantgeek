@@ -3,7 +3,7 @@ import { useInfiniteQuery } from 'react-query'
 import axios from 'axios'
 import styled from 'styled-components/macro'
 import { BREAKPOINTS, Toggle } from '../GlobalStyles'
-import { BeatingHeart } from '../components/loaders/BeatingHeart'
+import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
 import { Formik, Form } from 'formik'
@@ -117,7 +117,7 @@ export const Browse = () => {
                 </Form>
               )}
             </Formik>
-            <Results>{status === 'success' ? plants : <BeatingHeart />}</Results>
+            <Results>{status === 'success' ? plants : <Ellipsis />}</Results>
           </>
         </section>
       </FadeIn>

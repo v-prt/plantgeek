@@ -1,6 +1,6 @@
 import './App.less'
-import React, { useEffect } from 'react'
-import { useUsersFetcher } from './utilities/fetch'
+import React, { useEffect, useContext } from 'react'
+import { UserContext } from './contexts/UserContext'
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import background from './assets/monstera1.jpg'
@@ -20,61 +20,65 @@ import { Footer } from './components/Footer'
 
 import styled from 'styled-components/macro'
 import GlobalStyles, { BREAKPOINTS } from './GlobalStyles'
+import { BeatingHeart } from './components/loaders/BeatingHeart'
 
 export const App = () => {
+  const { checkedToken } = useContext(UserContext)
+
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  // usePlantsFetcher()
-  useUsersFetcher()
-
-  // TODO: set app level loading state for checking if user logged in
-  // TODO: restrict routes if user logged in/out
   return (
     <BrowserRouter>
       <GlobalStyles />
-      <Navbar />
-      <Body>
-        <Banner />
-        <Switch>
-          <Route exact path='/'>
-            <Homepage />
-          </Route>
-          <Route exact path='/browse'>
-            <Browse />
-          </Route>
-          <Route exact path='/login'>
-            <Login />
-          </Route>
-          <Route exact path='/signup'>
-            <SignUp />
-          </Route>
-          <Route exact path='/welcome'>
-            <Welcome />
-          </Route>
-          <Route exact path='/terms'>
-            <Terms />
-          </Route>
-          <Route exact path='/privacy'>
-            <Privacy />
-          </Route>
-          <Route exact path='/settings'>
-            <Settings />
-          </Route>
-          <Route exact path='/contribute'>
-            <Contribute />
-          </Route>
-          <Route path='/user-profile/:id'>
-            <UserProfile />
-          </Route>
-          <Route path='/plant-profile/:id'>
-            <PlantProfile />
-          </Route>
-        </Switch>
-        <Footer />
-      </Body>
+      {checkedToken ? (
+        <>
+          <Navbar />
+          <Body>
+            <Banner />
+            <Switch>
+              <Route exact path='/'>
+                <Homepage />
+              </Route>
+              <Route exact path='/browse'>
+                <Browse />
+              </Route>
+              <Route exact path='/login'>
+                <Login />
+              </Route>
+              <Route exact path='/signup'>
+                <SignUp />
+              </Route>
+              <Route exact path='/welcome'>
+                <Welcome />
+              </Route>
+              <Route exact path='/terms'>
+                <Terms />
+              </Route>
+              <Route exact path='/privacy'>
+                <Privacy />
+              </Route>
+              <Route exact path='/settings'>
+                <Settings />
+              </Route>
+              <Route exact path='/contribute'>
+                <Contribute />
+              </Route>
+              <Route path='/user-profile/:id'>
+                <UserProfile />
+              </Route>
+              <Route path='/plant-profile/:id'>
+                <PlantProfile />
+              </Route>
+            </Switch>
+            <Footer />
+          </Body>
+        </>
+      ) : (
+        <BeatingHeart />
+      )}
     </BrowserRouter>
   )
 }

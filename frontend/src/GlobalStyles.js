@@ -197,6 +197,9 @@ export default createGlobalStyle`
         overscroll-behavior-x: none;
         /* min-height: 100vh; */
     }
+    #root {
+      height: 100%;
+    }
     h1, h2, h3 {
         font-family: 'Quicksand', sans-serif;
         font-weight: 700;

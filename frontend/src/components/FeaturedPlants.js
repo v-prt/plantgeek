@@ -4,7 +4,7 @@ import { useInfiniteQuery } from 'react-query'
 import axios from 'axios'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
-import { BeatingHeart } from './loaders/BeatingHeart'
+import { Ellipsis } from './loaders/Ellipsis'
 import { FadeIn } from './loaders/FadeIn.js'
 import { FaArrowAltCircleRight } from 'react-icons/fa'
 import { TiHeartOutline } from 'react-icons/ti'
@@ -71,7 +71,7 @@ export const FeaturedPlants = ({ currentUser }) => {
           </h3>
         </FadeIn>
       ) : (
-        <BeatingHeart />
+        <Ellipsis />
       )}
     </Wrapper>
   )

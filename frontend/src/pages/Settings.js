@@ -13,7 +13,7 @@ import YupPassword from 'yup-password'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import { Button } from 'antd'
+import { Button, Alert } from 'antd'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FiEdit } from 'react-icons/fi'
@@ -38,10 +38,14 @@ const AutoSave = () => {
 
 export const Settings = () => {
   const submitRef = useRef(0)
-  const { currentUser, updateCurrentUser } = useContext(UserContext)
+  const { currentUserId, updateCurrentUser } = useContext(UserContext)
   const [savingStatus, setSavingStatus] = useState(undefined)
   const [editMode, setEditMode] = useState(false)
 
+  const { data: currentUser } = useQuery('current-user', async () => {
+    const { data } = await axios.get(`/users/${currentUserId}`)
+    return data.user
+  })
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -63,6 +67,7 @@ export const Settings = () => {
       .max(20, 'Too long')
       .required('Username required')
       .matches(/^[a-zA-Z0-9]+$/, 'No special characters or spaces allowed'),
+    // TODO:
     // password: Yup.string()
     //   .min(6, 'Too short')
     //   .minLowercase(1, 'Must include at least 1 lowercase letter')
@@ -73,6 +78,10 @@ export const Settings = () => {
   })
 
   const handleSubmit = (values, { setStatus }) => {
+    const data = {
+      ...values,
+      lowerCaseUsername: values.username.toLowerCase(),
+    }
     setSavingStatus('saving')
     // increment submitRef
     submitRef.current++
@@ -82,7 +91,7 @@ export const Settings = () => {
       // check if this is still the latest submit
       if (thisSubmit === submitRef.current) {
         setStatus('')
-        const result = await updateCurrentUser(values)
+        const result = await updateCurrentUser(data)
         if (result.error) {
           setStatus(result.error)
           setSavingStatus('error')
@@ -128,7 +137,7 @@ export const Settings = () => {
                 onSubmit={handleSubmit}>
                 {({ status, submitForm }) => (
                   <Form>
-                    {status && <div className='status'>{status}</div>}
+                    {status && <Alert type='error' message={status} showIcon />}
                     <FormItem name='firstName' label='First name'>
                       <Input name='firstName' disabled={!editMode} />
                     </FormItem>

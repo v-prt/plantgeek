@@ -102,7 +102,7 @@ const verifyToken = async (req, res) => {
         _id: ObjectId(verifiedToken),
       })
       if (user) {
-        res.status(200).json({ status: 200, data: user })
+        res.status(200).json({ status: 200, user: user })
       } else {
         res.status(404).json({ status: 404, message: 'User not found' })
       }
@@ -146,20 +146,32 @@ const getUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-  const userId = req.params.id
-  const { ...data } = req.body
+  const userId = ObjectId(req.params.id)
+  const { firstName, lastName, email, username, lowerCaseUsername } = req.body
   const client = await MongoClient(MONGO_URI, options)
   try {
     await client.connect()
     const db = client.db('plantgeekdb')
-    const filter = { _id: ObjectId(userId) }
+    const filter = { _id: userId }
     const update = {
       $set: {
-        ...data,
+        firstName,
+        lastName,
+        email,
+        username,
+        lowerCaseUsername,
       },
     }
-    const result = await db.collection('users').updateOne(filter, update)
-    res.status(200).json({ status: 200, data: result })
+    const existingEmail = await db.collection('users').findOne({ email: email })
+    const existingUsername = await db.collection('users').findOne({ username: username })
+    if (existingEmail && !existingEmail._id.equals(userId)) {
+      res.status(400).json({ code: 'email_taken', msg: 'Email already in use' })
+    } else if (existingUsername && !existingUsername._id.equals(userId)) {
+      res.status(400).json({ code: 'username_taken', msg: 'Username already in use' })
+    } else {
+      const result = await db.collection('users').updateOne(filter, update)
+      res.status(200).json({ status: 200, data: result })
+    }
   } catch (err) {
     console.error(err)
     return res.status(400).json(err)

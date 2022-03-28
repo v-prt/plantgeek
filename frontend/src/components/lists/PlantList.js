@@ -6,7 +6,7 @@ import styled from 'styled-components/macro'
 import { Toggle } from '../../GlobalStyles'
 import { FadeIn } from '../loaders/FadeIn'
 import { PlantCard } from '../PlantCard'
-import { BeatingHeart } from '../loaders/BeatingHeart'
+import { Ellipsis } from '../loaders/Ellipsis'
 import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
@@ -72,7 +72,7 @@ export const PlantList = ({ list, title }) => {
               </div>
             </div>
           </div>
-          <Plants>{status === 'success' ? plants : <BeatingHeart />}</Plants>
+          <Plants>{status === 'success' ? plants : <Ellipsis />}</Plants>
         </div>
       </FadeIn>
     </ListWrapper>

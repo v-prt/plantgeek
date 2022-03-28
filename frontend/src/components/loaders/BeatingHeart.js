@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components'
+import styled, { keyframes } from 'styled-components/macro'
 import logo from '../../assets/logo.webp'
 
 export const BeatingHeart = () => {
@@ -31,8 +31,12 @@ const beat = keyframes`
 `
 
 const Wrapper = styled.div`
+  height: 100%;
+  width: 100%;
   margin: auto;
   line-height: 1;
+  display: grid;
+  place-content: center;
   img {
     opacity: 0.2;
     height: 40px;
