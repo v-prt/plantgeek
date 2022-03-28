@@ -1,29 +1,45 @@
-import React, { useState, useEffect, useContext } from 'react'
-import axios from 'axios'
-import { useDispatch } from 'react-redux'
-import { requestUsers, receiveUsers } from '../actions'
+import React, { useState, useEffect, useContext, useRef } from 'react'
+import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
+import axios from 'axios'
+import moment from 'moment'
 
-import { Formik, Form } from 'formik'
+import { Formik, Form, useFormikContext } from 'formik'
+import { FormItem } from '../components/forms/FormItem'
+import { Saving } from '../components/forms/Saving'
+import { Input } from 'formik-antd'
 import * as Yup from 'yup'
 import YupPassword from 'yup-password'
-import { Text } from '../components/forms/FormItem.js'
 
 import styled from 'styled-components/macro'
-import { COLORS, BREAKPOINTS, Button } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
+import { Button } from 'antd'
 import { Ellipsis } from '../components/loaders/Ellipsis'
+import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FiEdit } from 'react-icons/fi'
 import { MdOutlineCancel } from 'react-icons/md'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Image } from './UserProfile'
-import moment from 'moment'
+
+const AutoSave = () => {
+  const { dirty, values, errors, submitForm } = useFormikContext()
+
+  useEffect(() => {
+    // auto saves only if form has been interacted with and there are no errors
+    // dirty is false by default, becomes true once form has been interacted with
+    if (dirty && !Object.keys(errors).length) {
+      submitForm()
+    }
+  }, [dirty, values, errors, submitForm])
+
+  return null
+}
 
 export const Settings = () => {
-  const dispatch = useDispatch()
-  // const history = useHistory();
-  const { getUser, currentUser } = useContext(UserContext)
-  const [status, setStatus] = useState()
+  const submitRef = useRef(0)
+  const { currentUser, updateCurrentUser } = useContext(UserContext)
+  const [savingStatus, setSavingStatus] = useState(undefined)
   const [editMode, setEditMode] = useState(false)
 
   // makes window scroll to top between renders
@@ -31,94 +47,61 @@ export const Settings = () => {
     window.scrollTo(0, 0)
   }, [])
 
-  const AccountSchema = Yup.object().shape({
-    profileImage: Yup.string(),
-    firstName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('First name required'),
-    lastName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Last name required'),
+  const initialValues = {
+    firstName: currentUser?.firstName ? currentUser?.firstName : '',
+    lastName: currentUser?.lastName ? currentUser?.lastName : '',
+    email: currentUser?.email ? currentUser?.email : '',
+    username: currentUser?.username ? currentUser?.username : '',
+  }
+
+  const accountSchema = Yup.object().shape({
+    firstName: Yup.string().min(2, 'Too short').required('First name required'),
+    lastName: Yup.string().min(2, 'Too short').required('Last name required'),
     email: Yup.string().email('Invalid email').required('Email required'),
     username: Yup.string()
       .min(4, 'Too short')
       .max(20, 'Too long')
       .required('Username required')
       .matches(/^[a-zA-Z0-9]+$/, 'No special characters or spaces allowed'),
-    password: Yup.string()
-      .min(6, 'Too short')
-      .minLowercase(1, 'Must include at least 1 lowercase letter')
-      .minUppercase(1, 'Must include at least 1 uppercase letter')
-      .minNumbers(1, 'Must include at least 1 number')
-      .minSymbols(1, 'Must include at least 1 symbol')
-      .required('Password required'),
+    // password: Yup.string()
+    //   .min(6, 'Too short')
+    //   .minLowercase(1, 'Must include at least 1 lowercase letter')
+    //   .minUppercase(1, 'Must include at least 1 uppercase letter')
+    //   .minNumbers(1, 'Must include at least 1 number')
+    //   .minSymbols(1, 'Must include at least 1 symbol')
+    //   .required('Password required'),
   })
 
-  const saveSettings = () => {
-    // TODO:
+  const handleSubmit = (values, { setStatus }) => {
+    setSavingStatus('saving')
+    // increment submitRef
+    submitRef.current++
+    // get current submitRef id
+    const thisSubmit = submitRef.current
+    setTimeout(async () => {
+      // check if this is still the latest submit
+      if (thisSubmit === submitRef.current) {
+        setStatus('')
+        const result = await updateCurrentUser(values)
+        if (result.error) {
+          setStatus(result.error)
+          setSavingStatus('error')
+          setTimeout(() => {
+            setSavingStatus(undefined)
+          }, 2000)
+        } else {
+          setSavingStatus('saved')
+          setTimeout(() => {
+            setSavingStatus(false)
+          }, 2000)
+        }
+      }
+    }, 300)
   }
-
-  const deleteAccount = () => {
-    // TODO:
-  }
-
-  // const [existingImage, setExistingImage] = useState(undefined)
-  // useEffect(() => {
-  //   if (currentUser && currentUser.image) {
-  //     setExistingImage(currentUser.image[0])
-  //   }
-  // }, [currentUser])
-
-  // const [url, setUrl] = useState('')
-  // const handleUrl = ev => {
-  //   setUrl(ev.target.value)
-  // }
-
-  // const changeImage = ev => {
-  //   ev.preventDefault()
-  //   // REMOVES EXISTING IMAGE
-  //   if (existingImage) {
-  //     fetch(`/${currentUser.username}/remove`, {
-  //       method: 'PUT',
-  //       body: JSON.stringify({ image: existingImage }),
-  //       headers: {
-  //         Accept: 'application/json',
-  //         'Content-type': 'application/json',
-  //       },
-  //     }).then(res => {
-  //       if (res.status === 200) {
-  //         dispatch(requestUsers())
-  //         axios
-  //           .get('/users')
-  //           .then(res => dispatch(receiveUsers(res.data.data)))
-  //           .catch(err => console.log(err))
-  //         getUser(currentUser._id)
-  //       } else if (res.status === 404) {
-  //         console.log('Something went wrong')
-  //       }
-  //     })
-  //   }
-  //   // ADDS NEW IMAGE
-  //   fetch(`/${currentUser.username}/add`, {
-  //     method: 'PUT',
-  //     body: JSON.stringify({ image: url }),
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-type': 'application/json',
-  //     },
-  //   }).then(res => {
-  //     if (res.status === 200) {
-  //       dispatch(requestUsers())
-  //       axios
-  //         .get('/users')
-  //         .then(res => dispatch(receiveUsers(res.data.data)))
-  //         .catch(err => console.log(err))
-  //       getUser(currentUser._id)
-  //     } else if (res.status === 404) {
-  //       console.log('Something went wrong')
-  //     }
-  //   })
-  // }
 
   return (
     <Wrapper>
-      {currentUser && (
+      {currentUser ? (
         <>
           <FadeIn>
             <section className='user-info'>
@@ -132,70 +115,42 @@ export const Settings = () => {
           <FadeIn>
             <section className='settings'>
               <Heading>
-                <span>account details</span>
-                <button
-                  className={editMode ? 'cancel' : 'edit'}
-                  onClick={() => setEditMode(!editMode)}>
-                  {editMode ? 'Cancel' : 'Edit'}
+                <span className='heading-text'>
+                  account details <Saving savingStatus={savingStatus} />
+                </span>
+                <Button type='text' onClick={() => setEditMode(!editMode)}>
                   <span className='icon'>{editMode ? <MdOutlineCancel /> : <FiEdit />}</span>
-                </button>
+                </Button>
               </Heading>
               <Formik
-                initialValues={{}}
-                validationSchema={AccountSchema}
-                validateOnChange={false}
-                validateOnBlur={false}
-                onSubmit={saveSettings}>
-                {({ isSubmitting }) => (
+                initialValues={initialValues}
+                validationSchema={accountSchema}
+                onSubmit={handleSubmit}>
+                {({ status, submitForm }) => (
                   <Form>
                     {status && <div className='status'>{status}</div>}
-                    {/* TODO: use FormItem */}
-                    {/* <Text
-                      label='Profile image'
-                      name='profileImage'
-                      type='text'
-                      placeholder='Insert URL'
-                      disabled={!editMode}
-                    />
-                    <Text
-                      label='Email'
-                      name='email'
-                      type='text'
-                      placeholder={currentUser.email}
-                      disabled={!editMode}
-                    />
-                    <Text
-                      label='Username'
-                      name='username'
-                      type='text'
-                      placeholder={currentUser.username}
-                      disabled={!editMode}
-                    />
-                    <Text
-                      label='Password'
-                      name='password'
-                      type='password'
-                      // TODO: get hashed pass and decrypt it
-                      placeholder={currentUser.password}
-                      disabled={!editMode}
-                    />
-                    <div className='buttons'>
-                      <Button
-                        className='danger'
-                        onClick={deleteAccount}
-                        disabled={!editMode || isSubmitting}>
-                        DELETE ACCOUNT
-                      </Button>
-                      <Button type='submit' disabled={!editMode || isSubmitting}>
-                        {isSubmitting ? <Ellipsis /> : 'SAVE'}
-                      </Button>
-                    </div> */}
+                    <FormItem name='firstName' label='First name'>
+                      <Input name='firstName' disabled={!editMode} />
+                    </FormItem>
+                    <FormItem name='lastName' label='Last name'>
+                      <Input name='lastName' disabled={!editMode} />
+                    </FormItem>
+                    <FormItem name='email' label='Email address'>
+                      <Input name='email' disabled={!editMode} />
+                    </FormItem>
+                    <FormItem name='username' label='Username'>
+                      <Input name='username' disabled={!editMode} />
+                    </FormItem>
+                    {/* TODO: upload profile image, change password, delete account (danger zone) */}
+                    <AutoSave />
                   </Form>
                 )}
               </Formik>
             </section>
           </FadeIn>
         </>
+      ) : (
+        <BeatingHeart />
       )}
     </Wrapper>
   )
@@ -220,6 +175,9 @@ const Wrapper = styled.main`
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     max-width: 600px;
+    form {
+      padding: 0 20px;
+    }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {
@@ -237,18 +195,21 @@ const Heading = styled.h2`
   padding: 10px 20px;
   margin-bottom: 10px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  .heading-text {
+    display: flex;
+    align-items: center;
+    .saving {
+      margin-left: 5px;
+    }
+  }
   button {
     display: flex;
     align-items: center;
     .icon {
       margin-left: 5px;
       display: grid;
-    }
-    &.edit {
-    }
-    &.cancel {
-      color: ${COLORS.danger};
     }
   }
 `

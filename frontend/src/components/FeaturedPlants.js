@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 import axios from 'axios'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
@@ -13,14 +13,26 @@ import { RiPlantLine } from 'react-icons/ri'
 import { PlantCard } from './PlantCard'
 
 export const FeaturedPlants = ({ currentUser }) => {
-  const { data } = useQuery('random-plants', async () => {
+  const [plants, setPlants] = useState([])
+
+  const { data, status } = useInfiniteQuery('random-plants', async () => {
     const { data } = await axios.get('/random-plants')
     return data.plants
   })
 
+  useEffect(() => {
+    if (data) {
+      let pages = data.pages
+      const array = Array.prototype.concat.apply([], pages)
+      setPlants(
+        [array][0].map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={true} />)
+      )
+    }
+  }, [data])
+
   return (
     <Wrapper>
-      {data ? (
+      {status === 'success' ? (
         <FadeIn>
           <Heading>featured houseplants</Heading>
           {currentUser && (
@@ -48,11 +60,7 @@ export const FeaturedPlants = ({ currentUser }) => {
               </Info>
             </div>
           )}
-          <Plants>
-            {data.map(plant => {
-              return <PlantCard key={plant._id} plant={plant} />
-            })}
-          </Plants>
+          <Plants>{plants}</Plants>
           <h3>
             <Link to='/browse'>
               <span className='icon'>

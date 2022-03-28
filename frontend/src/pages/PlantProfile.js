@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { plantsArray } from '../reducers/plantReducer'
-import { requestPlants, receivePlants } from '../actions.js'
+import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
 
@@ -22,23 +20,22 @@ import humidity from '../assets/humidity.svg'
 import { ActionBox } from '../components/ActionBox'
 
 export const PlantProfile = () => {
-  // makes window scroll to top between renders
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
-  const dispatch = useDispatch()
-  const { history, goBack } = useHistory()
-  const plants = useSelector(plantsArray)
-  const [plant, setPlant] = useState()
   const { id } = useParams()
+  const { history, goBack } = useHistory()
   const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
 
-  useEffect(() => {
-    setPlant(plants.find(plant => plant._id === id))
-  }, [plants, plant, id])
+  const { data: plant } = useQuery('plant', async () => {
+    const { data } = await axios.get(`/plant/${id}`)
+    return data.plant
+  })
 
+  // makes window scroll to top between renders
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  })
+
+  // setting plant care difficulty
   useEffect(() => {
     if (plant && plant.light && plant.water && plant.temperature && plant.humidity) {
       let lightLevel = 0
@@ -83,7 +80,7 @@ export const PlantProfile = () => {
       if (total <= 3) {
         setDifficulty('Easy')
       } else if (total <= 6) {
-        setDifficulty('Medium')
+        setDifficulty('Moderate')
       } else if (total <= 12) {
         setDifficulty('Hard')
       }
@@ -95,11 +92,11 @@ export const PlantProfile = () => {
     window.confirm(
       'Are you sure you want to delete this plant from the database? This cannot be undone!'
     )
-    axios.delete(`/plants/${plant._id}`).catch(err => console.log(err))
-    dispatch(requestPlants())
     axios
-      .get('/plants')
-      .then(res => dispatch(receivePlants(res.data.data)))
+      .delete(`/plants/${plant._id}`)
+      .then
+      // TODO: invalidate plant queries
+      ()
       .then(history.push('/browse'))
       .catch(err => console.log(err))
   }
@@ -352,7 +349,7 @@ const Needs = styled.div`
     font-size: 0.8rem;
     margin: 10px 0;
   }
-  @media only screen and (min-width: 500px) {
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .row {
       img {
         height: 45px;
@@ -372,9 +369,12 @@ const Needs = styled.div`
 
 const Bar = styled.div`
   background: white;
-  height: 20px;
+  height: 15px;
   border-radius: 10px;
   margin: 5px 0;
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    height: 20px;
+  }
 `
 
 const Indicator = styled.div`

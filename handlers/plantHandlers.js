@@ -74,7 +74,7 @@ const getPlant = async (req, res) => {
   const db = client.db('plantgeekdb')
   const plant = await db.collection('plants').findOne({ _id: ObjectId(_id) })
   if (plant) {
-    res.status(200).json({ status: 200, data: plant })
+    res.status(200).json({ status: 200, plant: plant })
   } else {
     res.status(404).json({ status: 404, message: 'Plant not found' })
   }
@@ -150,6 +150,17 @@ const addComment = async (req, res) => {
 }
 
 const updatePlant = async (req, res) => {
+  const {
+    primaryName,
+    secondaryName,
+    light,
+    water,
+    temperature,
+    humidity,
+    toxic,
+    imageUrl,
+    sourceUrl,
+  } = req.body
   const client = await MongoClient(MONGO_URI, options)
   const _id = req.params._id
   try {
@@ -158,15 +169,15 @@ const updatePlant = async (req, res) => {
     const filter = { _id: ObjectId(_id) }
     const update = {
       $set: {
-        primaryName: req.body.primaryName,
-        secondaryName: req.body.secondaryName,
-        light: req.body.light,
-        water: req.body.water,
-        temperature: req.body.temperature,
-        humidity: req.body.humidity,
-        toxic: req.body.toxic,
-        imageUrl: req.body.imageUrl,
-        sourceUrl: req.body.sourceUrl,
+        primaryName,
+        secondaryName,
+        light,
+        water,
+        temperature,
+        humidity,
+        toxic,
+        imageUrl,
+        sourceUrl,
       },
     }
     const result = await db.collection('plants').updateOne(filter, update)

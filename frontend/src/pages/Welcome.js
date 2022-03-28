@@ -1,24 +1,12 @@
-import React, { useContext, useEffect } from 'react'
-import axios from 'axios'
-import { useDispatch } from 'react-redux'
-import { requestUsers, receiveUsers } from '../actions.js'
-import { UserContext } from '../contexts/UserContext'
+import React from 'react'
+// import { UserContext } from '../contexts/UserContext'
 import { Wrapper, Card } from './SignUp'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 
 export const Welcome = () => {
-  const dispatch = useDispatch()
-  const { currentUser } = useContext(UserContext)
+  // const { currentUser } = useContext(UserContext)
 
-  useEffect(() => {
-    dispatch(requestUsers())
-    axios
-      .get('/users')
-      .then(res => dispatch(receiveUsers(res.data.data)))
-      .catch(err => console.log(err))
-  })
-
-  console.log(currentUser)
+  // console.log(currentUser)
 
   //   TODO: add setTimeout to redirect user to their profile after ~3sec. need react-query for userData
   return (

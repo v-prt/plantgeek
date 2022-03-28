@@ -13,6 +13,7 @@ const {
   verifyToken,
   getUsers,
   getUser,
+  updateUser,
   addToUser,
   removeFromUser,
 } = require('./handlers/userHandlers.js')
@@ -47,13 +48,14 @@ app
   .post('/login', authenticateUser)
   .post('/token', verifyToken)
   .get('/users', getUsers)
-  .get('/users/:_id', getUser)
+  .get('/users/:id', getUser)
   // FIXME: change /add and /remove endpoints to use nouns instead of verb (eg: /:username/collection ?) & update handler function(s)
+  .put('/users/:id', updateUser)
   .put('/:username/add', addToUser)
   .put('/:username/remove', removeFromUser)
   .post('/plants', createPlant)
   .get('/plants/:page', getPlants)
-  .get('/plants/:_id', getPlant)
+  .get('/plant/:_id', getPlant)
   .get('/random-plants', getRandomPlants)
   .get('/user-plants/:page', getUserPlants)
   .put('plants/:_id', updatePlant)
@@ -63,14 +65,6 @@ app
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'frontend', 'build')))
 }
-
-// CATCH-ALL ENDPOINT
-// .get('*', (req, res) => {
-//   res.status(404).json({
-//     status: 404,
-//     message: 'Oops, nothing here!',
-//   })
-// })
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'))

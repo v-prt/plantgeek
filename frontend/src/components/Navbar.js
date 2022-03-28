@@ -42,7 +42,7 @@ export const Navbar = () => {
           </NavLink>
           {currentUser ? (
             <>
-              <NavLink to={`/user-profile/${currentUser.username}`}>
+              <NavLink to={`/user-profile/${currentUser._id}`}>
                 <div className='icon'>
                   <CgProfile />
                 </div>

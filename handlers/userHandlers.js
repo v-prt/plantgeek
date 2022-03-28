@@ -133,16 +133,37 @@ const getUsers = async (req, res) => {
 // (READ/GET) GETS USER BY ID
 const getUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
-  const _id = req.params._id
+  const id = req.params.id
   await client.connect()
   const db = client.db('plantgeekdb')
-  const user = await db.collection('users').findOne({ _id: ObjectId(_id) })
+  const user = await db.collection('users').findOne({ _id: ObjectId(id) })
   if (user) {
-    res.status(200).json({ status: 200, data: user })
+    res.status(200).json({ status: 200, user: user })
   } else {
     res.status(404).json({ status: 404, message: 'User not found' })
   }
   client.close()
+}
+
+const updateUser = async (req, res) => {
+  const userId = req.params.id
+  const { ...data } = req.body
+  const client = await MongoClient(MONGO_URI, options)
+  try {
+    await client.connect()
+    const db = client.db('plantgeekdb')
+    const filter = { _id: ObjectId(userId) }
+    const update = {
+      $set: {
+        ...data,
+      },
+    }
+    const result = await db.collection('users').updateOne(filter, update)
+    res.status(200).json({ status: 200, data: result })
+  } catch (err) {
+    console.error(err)
+    return res.status(400).json(err)
+  }
 }
 
 // (UPDATE/PUT) ADDS A PLANT, FRIEND, OR IMAGE TO USER'S DATA
@@ -260,6 +281,7 @@ module.exports = {
   verifyToken,
   getUser,
   getUsers,
+  updateUser,
   addToUser,
   removeFromUser,
 }

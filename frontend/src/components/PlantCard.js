@@ -162,7 +162,7 @@ const Row = styled.div`
 
 const Bar = styled.div`
   background: #f2f2f2;
-  height: 20px;
+  height: 15px;
   flex: 1;
   margin-left: 5px;
   border-radius: 10px;

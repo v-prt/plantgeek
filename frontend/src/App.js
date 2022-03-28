@@ -66,7 +66,7 @@ export const App = () => {
           <Route exact path='/contribute'>
             <Contribute />
           </Route>
-          <Route path='/user-profile/:username'>
+          <Route path='/user-profile/:id'>
             <UserProfile />
           </Route>
           <Route path='/plant-profile/:id'>

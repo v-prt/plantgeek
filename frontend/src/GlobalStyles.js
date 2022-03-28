@@ -266,4 +266,13 @@ export default createGlobalStyle`
         color: ${COLORS.accent};
       }
     }
+    .ant-btn-text {
+      background: transparent;
+      border: 0;
+      margin: 0;
+      padding: 0;
+      &:hover, &:focus {
+        background: transparent;
+      }
+    }
 `

@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { usersArray } from '../reducers/userReducer'
+import { useQuery } from 'react-query'
+import { UserContext } from '../contexts/UserContext'
+import axios from 'axios'
+import moment from 'moment'
+
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
@@ -11,22 +14,20 @@ import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import placeholder from '../assets/avatar-placeholder.png'
-import moment from 'moment'
 
 export const UserProfile = () => {
-  const users = useSelector(usersArray)
-  const [user, setUser] = useState(undefined)
-  const { username } = useParams()
+  const { id } = useParams()
+  // const { currentUser } = useContext(UserContext)
+
+  const { data: user } = useQuery('user', async () => {
+    const { data } = await axios.get(`/users/${id}`)
+    return data.user
+  })
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [username])
-
-  // TODO: react-query
-  useEffect(() => {
-    setUser(users.find(user => user.username === username))
-  }, [users, user, username])
+  }, [])
 
   return (
     <Wrapper>
@@ -43,12 +44,7 @@ export const UserProfile = () => {
           </FadeIn>
           <FadeIn delay={200}>
             {user.collection.length > 0 ? (
-              <PlantList
-                username={username}
-                user={user}
-                list={user.collection}
-                title='collection'
-              />
+              <PlantList user={user} list={user.collection} title='collection' />
             ) : (
               <ListWrapper>
                 <FadeIn>
@@ -72,7 +68,7 @@ export const UserProfile = () => {
           </FadeIn>
           <FadeIn delay={300}>
             {user.favorites.length > 0 ? (
-              <PlantList username={username} user={user} list={user.favorites} title='favorites' />
+              <PlantList user={user} list={user.favorites} title='favorites' />
             ) : (
               <ListWrapper>
                 <FadeIn>
@@ -96,7 +92,7 @@ export const UserProfile = () => {
           </FadeIn>
           <FadeIn delay={400}>
             {user.wishlist.length > 0 ? (
-              <PlantList username={username} user={user} list={user.wishlist} title='wishlist' />
+              <PlantList user={user} list={user.wishlist} title='wishlist' />
             ) : (
               <ListWrapper>
                 <FadeIn>
