@@ -95,7 +95,7 @@ export const PlantProfile = () => {
     axios
       .delete(`/plants/${plant._id}`)
       .then
-      // TODO: invalidate plant queries
+      // TODO: invalidate plant queries?
       ()
       .then(history.push('/browse'))
       .catch(err => console.log(err))

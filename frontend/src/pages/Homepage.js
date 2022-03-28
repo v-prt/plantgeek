@@ -18,8 +18,6 @@ export const Homepage = () => {
     window.scrollTo(0, 0)
   }, [])
 
-  // TODO: set loading state true while checking for current user - if not logged in load public homepage, if logged in load personal homepage (may need react query)
-  // TODO: improve site info, add more content to heading (profile info/image? stats? random tip?)
   return (
     <Wrapper>
       <FadeIn>
