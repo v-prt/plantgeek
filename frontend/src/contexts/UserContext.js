@@ -62,7 +62,7 @@ export const UserProvider = ({ children }) => {
       } catch (err) {
         console.log(err)
       }
-    }
+    } else setCheckedToken(true)
   }, [token])
 
   // GET USER BY ID
