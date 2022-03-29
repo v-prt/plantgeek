@@ -20,7 +20,7 @@ YupPassword(Yup) // extend yup
 
 export const SignUp = () => {
   const history = useHistory()
-  const { currentUser, handleSignup } = useContext(UserContext)
+  const { token, handleSignup } = useContext(UserContext)
   const [loading, setLoading] = useState(false)
 
   // makes window scroll to top between renders
@@ -62,7 +62,7 @@ export const SignUp = () => {
     }
   }
 
-  return currentUser ? (
+  return token ? (
     <Redirect to='/' />
   ) : (
     <Wrapper>

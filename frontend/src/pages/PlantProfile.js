@@ -89,16 +89,14 @@ export const PlantProfile = () => {
 
   // DELETE PLANT (ADMINS ONLY)
   const deletePlant = () => {
-    window.confirm(
-      'Are you sure you want to delete this plant from the database? This cannot be undone!'
-    )
-    axios
-      .delete(`/plants/${plant._id}`)
-      .then
-      // TODO: invalidate plant queries?
-      ()
-      .then(history.push('/browse'))
-      .catch(err => console.log(err))
+    if (
+      window.confirm(
+        'Are you sure you want to delete this plant from the database? This cannot be undone!'
+      )
+    ) {
+      window.location.replace('/browse')
+      axios.delete(`/plants/${plant._id}`).catch(err => console.log(err))
+    }
   }
 
   return (

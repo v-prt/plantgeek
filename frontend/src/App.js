@@ -72,6 +72,7 @@ export const App = () => {
               <Route path='/plant-profile/:id'>
                 <PlantProfile />
               </Route>
+              {/* TODO: catchall for non-existing routes (generic "not found" or redirect to homepage) */}
             </Switch>
             <Footer />
           </Body>

@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
+import { Redirect } from 'react-router-dom'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { useDropzone } from 'react-dropzone'
@@ -8,7 +9,7 @@ import { requestPlants, receivePlants } from '../actions'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-import { FormItem } from '../components/forms/FormItem'
+// import { FormItem } from '../components/forms/FormItem'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS, DropZone, DropBox, Button } from '../GlobalStyles'
@@ -24,7 +25,7 @@ import { PlantCard } from '../components/PlantCard'
 export const Contribute = () => {
   const dispatch = useDispatch()
   // TODO: reward users with badges for approved submissions? (display # of submissions)
-  const { currentUser } = useContext(UserContext)
+  const { token, currentUser } = useContext(UserContext)
   const plants = useSelector(plantsArray)
   const [status, setStatus] = useState(undefined)
 
@@ -144,7 +145,9 @@ export const Contribute = () => {
     }
   }
 
-  return (
+  return !token ? (
+    <Redirect to='/' />
+  ) : (
     <Wrapper>
       <FadeIn>
         {/* TODO: adjust wording & plant card interactions based on review status */}

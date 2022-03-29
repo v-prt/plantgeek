@@ -16,6 +16,7 @@ const {
   updateUser,
   addToUser,
   removeFromUser,
+  deleteUser,
 } = require('./handlers/userHandlers.js')
 const {
   createPlant,
@@ -53,6 +54,7 @@ app
   .put('/users/:id', updateUser)
   .put('/:username/add', addToUser)
   .put('/:username/remove', removeFromUser)
+  .delete('/:users/:_id', deleteUser)
   .post('/plants', createPlant)
   .get('/plants/:page', getPlants)
   .get('/plant/:_id', getPlant)

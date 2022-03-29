@@ -1,15 +1,18 @@
-import React from 'react'
-// import { UserContext } from '../contexts/UserContext'
+import React, { useContext } from 'react'
+import { Redirect } from 'react-router-dom'
+import { UserContext } from '../contexts/UserContext'
 import { Wrapper, Card } from './SignUp'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 
 export const Welcome = () => {
-  // const { currentUser } = useContext(UserContext)
+  const { token } = useContext(UserContext)
 
   // console.log(currentUser)
 
   //   TODO: add setTimeout to redirect user to their profile after ~3sec. need react-query for userData
-  return (
+  return !token ? (
+    <Redirect to='/' />
+  ) : (
     <Wrapper>
       <FadeIn duration={700} delay={150}>
         <Card>

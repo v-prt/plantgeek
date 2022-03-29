@@ -186,15 +186,16 @@ const updatePlant = async (req, res) => {
     res.status(500).json({ status: 500, data: req.body, message: err.message })
     console.error(err)
   }
+  client.close()
 }
 
 // TODO: will need to remove from users' lists or add a check in case plant data is missing
 const deletePlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   const _id = req.params._id
+  await client.connect()
+  const db = client.db('plantgeekdb')
   try {
-    await client.connect()
-    const db = client.db('plantgeekdb')
     const filter = { _id: ObjectId(_id) }
     const result = await db.collection('plants').deleteOne(filter)
     res.status(200).json({ status: 200, data: result })
@@ -202,6 +203,7 @@ const deletePlant = async (req, res) => {
     res.status(500).json({ status: 500, data: req.body, message: err.message })
     console.error(err)
   }
+  client.close()
 }
 
 module.exports = {

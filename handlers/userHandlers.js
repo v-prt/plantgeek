@@ -76,7 +76,7 @@ const authenticateUser = async (req, res) => {
       }
     } else {
       client.close()
-      return res.status(401).json({ message: 'Username not found' })
+      return res.status(401).json({ message: 'User not found' })
     }
   } catch (err) {
     console.error(err.stack)
@@ -136,11 +136,15 @@ const getUser = async (req, res) => {
   const id = req.params.id
   await client.connect()
   const db = client.db('plantgeekdb')
-  const user = await db.collection('users').findOne({ _id: ObjectId(id) })
-  if (user) {
-    res.status(200).json({ status: 200, user: user })
-  } else {
-    res.status(404).json({ status: 404, message: 'User not found' })
+  try {
+    const user = await db.collection('users').findOne({ _id: ObjectId(id) })
+    if (user) {
+      res.status(200).json({ status: 200, user: user })
+    } else {
+      res.status(404).json({ status: 404, message: 'User not found' })
+    }
+  } catch (err) {
+    console.error(err)
   }
   client.close()
 }
@@ -176,6 +180,7 @@ const updateUser = async (req, res) => {
     console.error(err)
     return res.status(400).json(err)
   }
+  client.close()
 }
 
 // (UPDATE/PUT) ADDS A PLANT, FRIEND, OR IMAGE TO USER'S DATA
@@ -286,6 +291,22 @@ const removeFromUser = async (req, res) => {
 
 // TODO: (DELETE) REMOVE A USER
 // will need to remove from other users' friends or add a check in case friend user data is missing
+const deleteUser = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  const _id = req.params._id
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  try {
+    const filter = { _id: ObjectId(_id) }
+    const result = await db.collection('users').deleteOne(filter)
+    console.log(result)
+    res.status(200).json({ status: 200, data: result })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ status: 500, data: req.body, message: err.message })
+  }
+  client.close()
+}
 
 module.exports = {
   createUser,
@@ -296,4 +317,5 @@ module.exports = {
   updateUser,
   addToUser,
   removeFromUser,
+  deleteUser,
 }

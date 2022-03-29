@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
+import { Redirect } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
@@ -14,7 +15,6 @@ import YupPassword from 'yup-password'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { Button, Alert } from 'antd'
-import { Ellipsis } from '../components/loaders/Ellipsis'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FiEdit } from 'react-icons/fi'
 import { MdOutlineCancel } from 'react-icons/md'
@@ -38,7 +38,7 @@ const AutoSave = () => {
 
 export const Settings = () => {
   const submitRef = useRef(0)
-  const { currentUserId, updateCurrentUser } = useContext(UserContext)
+  const { token, currentUserId, updateCurrentUser } = useContext(UserContext)
   const [savingStatus, setSavingStatus] = useState(undefined)
   const [editMode, setEditMode] = useState(false)
 
@@ -108,16 +108,29 @@ export const Settings = () => {
     }, 300)
   }
 
-  return (
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete your account? This cannot be undone!')) {
+      localStorage.removeItem('plantgeekToken')
+      window.location.replace('/login')
+      axios.delete(`/users/${currentUser._id}`).catch(err => console.log(err))
+    }
+  }
+
+  return !token ? (
+    <Redirect to='/' />
+  ) : (
     <Wrapper>
       {currentUser ? (
         <>
           <FadeIn>
             <section className='user-info'>
-              <Image src={currentUser?.image ? currentUser?.image[0] : placeholder} alt='' />
+              <Image src={currentUser.image ? currentUser.image[0] : placeholder} alt='' />
               <div className='text'>
-                <h1>{currentUser?.username}</h1>
-                <p>Member since {moment(currentUser?.joined).format('ll')}</p>
+                <h1>
+                  {currentUser.firstName} {currentUser.lastName}
+                </h1>
+                <p className='username'>{currentUser.username}</p>
+                <p>Member since {moment(currentUser.joined).format('ll')}</p>
               </div>
             </section>
           </FadeIn>
@@ -128,6 +141,7 @@ export const Settings = () => {
                   account details <Saving savingStatus={savingStatus} />
                 </span>
                 <Button type='text' onClick={() => setEditMode(!editMode)}>
+                  {editMode ? 'Done' : 'Edit'}
                   <span className='icon'>{editMode ? <MdOutlineCancel /> : <FiEdit />}</span>
                 </Button>
               </Heading>
@@ -150,11 +164,18 @@ export const Settings = () => {
                     <FormItem name='username' label='Username'>
                       <Input name='username' disabled={!editMode} />
                     </FormItem>
-                    {/* TODO: upload profile image, change password, delete account (danger zone) */}
+                    {/* TODO: upload profile image, change password */}
                     <AutoSave />
                   </Form>
                 )}
               </Formik>
+              <p className='danger-label'>Danger Zone</p>
+              <div className='danger-zone'>
+                <p>Permanently delete your account.</p>
+                <Button type='danger' onClick={handleDelete}>
+                  DELETE ACCOUNT
+                </Button>
+              </div>
             </section>
           </FadeIn>
         </>
@@ -177,6 +198,10 @@ const Wrapper = styled.main`
     align-items: center;
     .text {
       text-align: center;
+      .username {
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
     }
   }
   .settings {
@@ -186,6 +211,26 @@ const Wrapper = styled.main`
     max-width: 600px;
     form {
       padding: 0 20px;
+    }
+  }
+  .danger-label {
+    color: red;
+    font-weight: bold;
+    margin: 40px 0 10px 0;
+  }
+  .danger-zone {
+    padding: 20px;
+    border: 1px dotted red;
+    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    p {
+      margin: 5px 0;
+    }
+    button {
+      margin: 5px 0;
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {

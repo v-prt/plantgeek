@@ -37,7 +37,10 @@ export const UserProfile = () => {
             <section className='user-info'>
               <Image src={user.image ? user.image[0] : placeholder} alt='' />
               <div className='text'>
-                <h1>{user.username}</h1>
+                <h1>
+                  {user.firstName} {user.lastName}
+                </h1>
+                <p className='username'>{user.username}</p>
                 <p>Member since {moment(user.joined).format('ll')}</p>
               </div>
             </section>
@@ -144,6 +147,10 @@ const Wrapper = styled.main`
     align-items: center;
     .text {
       text-align: center;
+      .username {
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
     }
   }
   .contributions {

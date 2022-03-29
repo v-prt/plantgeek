@@ -185,12 +185,13 @@ export const DropBox = styled.div`
 
 export default createGlobalStyle`
     * {
-        font-family: 'Quicksand', sans-serif;
         margin: 0;
         padding: 0;
+        border: 0;
     }
     html, body {
-        background: ${COLORS.lightest};
+      font-family: 'Quicksand', sans-serif;
+      background: ${COLORS.lightest};
         // causes issues with window.scrollTo(0,0)
         /* overflow-x: hidden; */
         overscroll-behavior-y: none;
