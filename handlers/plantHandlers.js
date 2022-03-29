@@ -50,19 +50,24 @@ const getPlants = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
-  const plants = await db
-    .collection('plants')
-    .find(filters)
-    .sort(order)
-    // TODO:
-    // .skip(24 * page)
-    // .limit(24)
-    .toArray()
-  if (plants) {
-    res.status(200).json({ status: 200, plants: plants })
-  } else {
-    res.status(404).json({ status: 404, message: 'No plants found' })
+  try {
+    const plants = await db
+      .collection('plants')
+      .find(filters)
+      .sort(order)
+      // TODO:
+      // .skip(24 * page)
+      // .limit(24)
+      .toArray()
+    if (plants) {
+      res.status(200).json({ status: 200, plants: plants })
+    } else {
+      res.status(404).json({ status: 404, message: 'No plants found' })
+    }
+  } catch (err) {
+    console.error(err)
   }
+
   client.close()
 }
 
@@ -72,11 +77,15 @@ const getPlant = async (req, res) => {
   const _id = req.params._id
   await client.connect()
   const db = client.db('plantgeekdb')
-  const plant = await db.collection('plants').findOne({ _id: ObjectId(_id) })
-  if (plant) {
-    res.status(200).json({ status: 200, plant: plant })
-  } else {
-    res.status(404).json({ status: 404, message: 'Plant not found' })
+  try {
+    const plant = await db.collection('plants').findOne({ _id: ObjectId(_id) })
+    if (plant) {
+      res.status(200).json({ status: 200, plant: plant })
+    } else {
+      res.status(404).json({ status: 404, message: 'Plant not found' })
+    }
+  } catch (err) {
+    console.error(err)
   }
   client.close()
 }
@@ -85,14 +94,18 @@ const getRandomPlants = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
-  const plants = await db
-    .collection('plants')
-    .aggregate([{ $sample: { size: 9 } }])
-    .toArray()
-  if (plants) {
-    res.status(200).json({ status: 200, plants: plants })
-  } else {
-    res.status(404).json({ status: 404, message: 'No plants found' })
+  try {
+    const plants = await db
+      .collection('plants')
+      .aggregate([{ $sample: { size: 9 } }])
+      .toArray()
+    if (plants) {
+      res.status(200).json({ status: 200, plants: plants })
+    } else {
+      res.status(404).json({ status: 404, message: 'No plants found' })
+    }
+  } catch (err) {
+    console.error(err)
   }
   client.close()
 }
@@ -102,20 +115,24 @@ const getUserPlants = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
-  if (ids && ids.length > 0) {
-    const objectIds = ids.map(id => ObjectId(id))
-    const plants = await db
-      .collection('plants')
-      .find({ _id: { $in: objectIds } })
-      .toArray()
-    if (plants) {
-      res.status(200).json({ status: 200, plants: plants })
+  try {
+    if (ids && ids.length > 0) {
+      const objectIds = ids.map(id => ObjectId(id))
+      const plants = await db
+        .collection('plants')
+        .find({ _id: { $in: objectIds } })
+        .toArray()
+      if (plants) {
+        res.status(200).json({ status: 200, plants: plants })
+      } else {
+        res.status(404).json({ status: 404, message: 'No plants found' })
+      }
     } else {
-      res.status(404).json({ status: 404, message: 'No plants found' })
+      console.log('no ids')
+      res.status(404).json({ status: 404, message: 'No plants in list' })
     }
-  } else {
-    console.log('no ids')
-    res.status(404).json({ status: 404, message: 'No plants in list' })
+  } catch (err) {
+    console.error(err)
   }
   client.close()
 }
