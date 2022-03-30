@@ -98,20 +98,25 @@ const verifyToken = async (req, res) => {
       }
     })
     if (verifiedToken) {
-      const user = await db.collection('users').findOne({
-        _id: ObjectId(verifiedToken),
-      })
-      if (user) {
-        res.status(200).json({ status: 200, user: user })
-      } else {
-        res.status(404).json({ status: 404, message: 'User not found' })
+      try {
+        const user = await db.collection('users').findOne({
+          _id: ObjectId(verifiedToken),
+        })
+        if (user) {
+          res.status(200).json({ status: 200, user: user })
+        } else {
+          res.status(404).json({ status: 404, message: 'User not found' })
+        }
+      } catch (err) {
+        console.error(err.stack)
+        res.status(500).json({ status: 500, message: err.message })
       }
     } else {
-      res.status(500).json({ status: 500, message: `Token couldn't be verified` })
+      res.status(400).json({ status: 400, message: `Token couldn't be verified` })
     }
   } catch (err) {
-    res.status(500).json({ status: 500, message: err.message })
     console.error(err.stack)
+    res.status(500).json({ status: 500, message: err.message })
   }
   client.close()
 }

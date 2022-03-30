@@ -42,26 +42,32 @@ export const UserProvider = ({ children }) => {
   }
 
   // VERIFY TOKEN AND SET CURRENT USER ID
+  const verifyToken = async token => {
+    try {
+      const res = await axios.post('/token', { token })
+      if (res.status === 200) {
+        setCurrentUser(res.data.user)
+        setCurrentUserId(res.data.user._id)
+        setCheckedToken(true)
+      } else {
+        // something wrong with token
+        localStorage.removeItem('plantgeekToken')
+        window.location.replace('/')
+        setCurrentUser(undefined)
+        setCurrentUserId(undefined)
+      }
+    } catch (err) {
+      // something wrong with token
+      localStorage.removeItem('plantgeekToken')
+      window.location.replace('/')
+      setCurrentUser(undefined)
+      setCurrentUserId(undefined)
+    }
+  }
+
   useEffect(() => {
     if (token) {
-      try {
-        axios.post('/token', { token }).then(res => {
-          if (res.status === 200) {
-            setCurrentUser(res.data.user)
-            setCurrentUserId(res.data.user._id)
-            setCheckedToken(true)
-          } else {
-            // something wrong with token
-            localStorage.removeItem('plantgeekToken')
-            setCurrentUser(undefined)
-            setCurrentUserId(undefined)
-            setCheckedToken(true)
-            window.location.replace('/login')
-          }
-        })
-      } catch (err) {
-        console.log(err)
-      }
+      verifyToken(token)
     } else setCheckedToken(true)
   }, [token])
 
