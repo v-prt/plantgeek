@@ -39,8 +39,6 @@ export const SignUp = () => {
       .matches(/^[a-zA-Z0-9]+$/, 'No special characters or spaces allowed'),
     password: Yup.string()
       .min(6, 'Too short')
-      .minLowercase(1, 'Must include at least 1 lowercase letter')
-      .minUppercase(1, 'Must include at least 1 uppercase letter')
       .minNumbers(1, 'Must include at least 1 number')
       .minSymbols(1, 'Must include at least 1 symbol')
       .required('Password required'),
@@ -118,10 +116,14 @@ export const SignUp = () => {
                 <FormItem name='email'>
                   <Input name='email' type='text' placeholder='Email address' />
                 </FormItem>
-                <FormItem name='username'>
+                <FormItem
+                  name='username'
+                  sublabel='Username must be between 4-20 characters long, with no symbols or spaces.'>
                   <Input name='username' type='text' placeholder='Username' />
                 </FormItem>
-                <FormItem name='password'>
+                <FormItem
+                  name='password'
+                  sublabel='Password must be at least 6 characters long, and include 1 number and 1 symbol.'>
                   <Input.Password name='password' type='password' placeholder='Password' />
                 </FormItem>
                 <FormItem name='acceptedTerms'>
@@ -130,16 +132,16 @@ export const SignUp = () => {
                   </Checkbox>
                 </FormItem>
                 {/* TEMPORARILY DISABLED FOR LIVE SITE */}
-                {/* <Button htmlType='submit' type='primary' size='large' disabled>
-                    {loading || isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                  </Button> */}
-                <Button
+                <Button htmlType='submit' type='primary' size='large' disabled>
+                  {loading || isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                </Button>
+                {/* <Button
                   htmlType='submit'
                   type='primary'
                   size='large'
                   disabled={loading || isSubmitting}>
                   {loading || isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                </Button>
+                </Button> */}
                 {status && <Alert type='error' message={status} showIcon />}
                 <p className='subtext'>
                   Already have an account? <Link to='/login'>Log in</Link>

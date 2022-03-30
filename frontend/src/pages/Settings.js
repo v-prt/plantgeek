@@ -21,6 +21,7 @@ import { MdOutlineCancel } from 'react-icons/md'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Image } from './UserProfile'
+import { Ellipsis } from '../components/loaders/Ellipsis'
 
 const AutoSave = () => {
   const { dirty, values, errors, submitForm } = useFormikContext()
@@ -41,23 +42,36 @@ export const Settings = () => {
   const { token, currentUserId, updateCurrentUser } = useContext(UserContext)
   const [savingStatus, setSavingStatus] = useState(undefined)
   const [editMode, setEditMode] = useState(false)
+  const [passwordEditMode, setPasswordEditMode] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [successStatus, setSuccessStatus] = useState('')
 
   const { data: currentUser } = useQuery('current-user', async () => {
     const { data } = await axios.get(`/users/${currentUserId}`)
     return data.user
   })
+
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  const initialValues = {
+  // #region Initial Values
+  const accountInitialValues = {
     firstName: currentUser?.firstName ? currentUser?.firstName : '',
     lastName: currentUser?.lastName ? currentUser?.lastName : '',
     email: currentUser?.email ? currentUser?.email : '',
     username: currentUser?.username ? currentUser?.username : '',
   }
 
+  const passwordInitialValues = {
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
+  }
+  // #endregion
+
+  // #region Schemas
   const accountSchema = Yup.object().shape({
     firstName: Yup.string().min(2, 'Too short').required('First name required'),
     lastName: Yup.string().min(2, 'Too short').required('Last name required'),
@@ -67,17 +81,23 @@ export const Settings = () => {
       .max(20, 'Too long')
       .required('Username required')
       .matches(/^[a-zA-Z0-9]+$/, 'No special characters or spaces allowed'),
-    // TODO:
-    // password: Yup.string()
-    //   .min(6, 'Too short')
-    //   .minLowercase(1, 'Must include at least 1 lowercase letter')
-    //   .minUppercase(1, 'Must include at least 1 uppercase letter')
-    //   .minNumbers(1, 'Must include at least 1 number')
-    //   .minSymbols(1, 'Must include at least 1 symbol')
-    //   .required('Password required'),
   })
 
-  const handleSubmit = (values, { setStatus }) => {
+  const passwordSchema = Yup.object().shape({
+    currentPassword: Yup.string().required('Current password required'),
+    newPassword: Yup.string()
+      .min(6, 'Too short')
+      .minNumbers(1, 'Must include at least 1 number')
+      .minSymbols(1, 'Must include at least 1 symbol')
+      .required('New password required'),
+    confirmNewPassword: Yup.string()
+      .oneOf([Yup.ref('newPassword')], "Passwords don't match")
+      .required('You must confirm your new password'),
+  })
+  // #endregion
+
+  // #region Functions
+  const updateAccount = (values, { setStatus }) => {
     const data = {
       ...values,
       lowerCaseUsername: values.username.toLowerCase(),
@@ -108,6 +128,21 @@ export const Settings = () => {
     }, 300)
   }
 
+  const changePassword = async (values, { setStatus }) => {
+    setLoading(true)
+    setStatus('')
+    setSuccessStatus('')
+    const result = await updateCurrentUser(values)
+    if (result.error) {
+      setStatus(result.error)
+      setLoading(false)
+    } else {
+      setSuccessStatus('Password changed')
+      setLoading(false)
+      setPasswordEditMode(false)
+    }
+  }
+
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete your account? This cannot be undone!')) {
       localStorage.removeItem('plantgeekToken')
@@ -115,6 +150,7 @@ export const Settings = () => {
       axios.delete(`/users/${currentUser._id}`).catch(err => console.log(err))
     }
   }
+  // #endregion
 
   return !token ? (
     <Redirect to='/' />
@@ -146,10 +182,10 @@ export const Settings = () => {
                 </Button>
               </Heading>
               <Formik
-                initialValues={initialValues}
+                initialValues={accountInitialValues}
                 validationSchema={accountSchema}
-                onSubmit={handleSubmit}>
-                {({ status, submitForm }) => (
+                onSubmit={updateAccount}>
+                {({ status }) => (
                   <Form>
                     {status && <Alert type='error' message={status} showIcon />}
                     <FormItem name='firstName' label='First name'>
@@ -164,17 +200,73 @@ export const Settings = () => {
                     <FormItem name='username' label='Username'>
                       <Input name='username' disabled={!editMode} />
                     </FormItem>
-                    {/* TODO: upload profile image, change password */}
+                    {/* TODO: upload profile image */}
                     <AutoSave />
                   </Form>
                 )}
               </Formik>
-              <p className='danger-label'>Danger Zone</p>
-              <div className='danger-zone'>
-                <p>Permanently delete your account.</p>
-                <Button type='danger' onClick={handleDelete}>
-                  DELETE ACCOUNT
-                </Button>
+              <div className='zone'>
+                {successStatus && <Alert type='success' message={successStatus} showIcon />}
+                <div className='password'>
+                  <p>Change password</p>
+                  <Button
+                    type='secondary'
+                    onClick={() => setPasswordEditMode(!passwordEditMode)}
+                    className={passwordEditMode && 'hidden'}>
+                    CHANGE
+                  </Button>
+                </div>
+                <Formik
+                  initialValues={passwordInitialValues}
+                  validationSchema={passwordSchema}
+                  onSubmit={changePassword}>
+                  {({ status, isSubmitting, submitForm }) => (
+                    <Form className={passwordEditMode ? 'expanded' : 'hidden'}>
+                      {status && <Alert type='error' message={status} showIcon />}
+                      <FormItem name='currentPassword'>
+                        <Input.Password
+                          name='currentPassword'
+                          type='password'
+                          placeholder='Current password'
+                        />
+                      </FormItem>
+                      <FormItem
+                        name='newPassword'
+                        sublabel='New password must be at least 6 characters long, and include 1 number and 1 symbol.'>
+                        <Input.Password
+                          name='newPassword'
+                          type='password'
+                          placeholder='New password'
+                        />
+                      </FormItem>
+                      <FormItem name='confirmNewPassword'>
+                        <Input.Password
+                          name='confirmNewPassword'
+                          type='password'
+                          placeholder='Confirm new password'
+                        />
+                      </FormItem>
+                      <div className='buttons'>
+                        <Button
+                          type='secondary'
+                          onClick={() => setPasswordEditMode(!passwordEditMode)}>
+                          CANCEL
+                        </Button>
+                        <Button htmlType='submit' type='primary' disabled={isSubmitting}>
+                          {loading || isSubmitting ? <Ellipsis /> : 'SUBMIT'}
+                        </Button>
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
+              </div>
+              <div className='zone'>
+                <div className='danger'>
+                  <p>Danger zone</p>
+                  <Button type='danger' onClick={handleDelete}>
+                    DELETE ACCOUNT
+                  </Button>
+                </div>
               </div>
             </section>
           </FadeIn>
@@ -209,36 +301,74 @@ const Wrapper = styled.main`
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     max-width: 600px;
-    form {
-      padding: 0 20px;
-    }
-  }
-  .danger-label {
-    color: red;
-    font-weight: bold;
-    margin: 40px 0 10px 0;
-  }
-  .danger-zone {
-    padding: 20px;
-    border: 1px dotted red;
-    border-radius: 5px;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    p {
-      margin: 5px 0;
+    flex-direction: column;
+    form {
+      display: flex;
+      flex-direction: column;
+      margin: 20px;
+      &.hidden {
+        display: none;
+      }
+      &.expanded {
+        display: flex;
+      }
+      .buttons {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
     }
-    button {
-      margin: 5px 0;
+    .zone {
+      background: #fff;
+      padding: 20px;
+      border: 1px dotted #ccc;
+      border-radius: 5px;
+      margin: 20px;
+      .password,
+      .danger {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        p {
+          font-weight: bold;
+          margin: 5px 0;
+        }
+        button {
+          margin: 5px 0;
+          &.hidden {
+            display: none;
+          }
+        }
+      }
+      .danger {
+        border-color: ${COLORS.danger};
+        p {
+          color: ${COLORS.danger};
+        }
+      }
+      form {
+        margin: 20px 0;
+      }
     }
   }
+
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {
       flex-direction: row;
       .text {
         margin-left: 30px;
         text-align: left;
+      }
+    }
+    .settings {
+      .zone {
+        .password,
+        .danger {
+          flex-direction: row;
+        }
       }
     }
   }

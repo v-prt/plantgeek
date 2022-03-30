@@ -160,21 +160,38 @@ const getUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const userId = ObjectId(req.params.id)
-  const { firstName, lastName, email, username, lowerCaseUsername } = req.body
+  const { firstName, lastName, email, username, lowerCaseUsername, currentPassword, newPassword } =
+    req.body
   const client = await MongoClient(MONGO_URI, options)
   try {
     await client.connect()
     const db = client.db('plantgeekdb')
     const filter = { _id: userId }
-    const update = {
-      $set: {
-        firstName,
-        lastName,
-        email,
-        username,
-        lowerCaseUsername,
-      },
-    }
+    const user = await db.collection('users').findOne({ _id: userId })
+    // FIXME: can probably make this simpler
+    let update = {}
+    if (newPassword) {
+      const hashedPwd = await bcrypt.hash(newPassword, user.password)
+      const passwordValid = await bcrypt.compare(currentPassword, user.password)
+      if (!passwordValid) {
+        res.status(400).json({ code: 'incorrect_password', msg: 'Password is incorrect' })
+      } else {
+        update = {
+          $set: {
+            password: hashedPwd,
+          },
+        }
+      }
+    } else
+      update = {
+        $set: {
+          firstName,
+          lastName,
+          email,
+          username,
+          lowerCaseUsername,
+        },
+      }
     const existingEmail = await db.collection('users').findOne({ email: email })
     const existingUsername = await db.collection('users').findOne({ username: username })
     if (existingEmail && !existingEmail._id.equals(userId)) {

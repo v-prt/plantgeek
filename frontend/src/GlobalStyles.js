@@ -270,13 +270,27 @@ export default createGlobalStyle`
         color: ${COLORS.accent};
       }
     }
+    .ant-btn-danger {
+      background: #fff;
+      border-color: ${COLORS.danger};
+      color: ${COLORS.danger};
+      &:hover, &:focus {
+        background: ${COLORS.danger};
+        border-color: ${COLORS.danger};
+        color: #fff;
+      }
+    }
     .ant-btn-text {
       background: transparent;
       border: 0;
       margin: 0;
       padding: 0;
-      &:hover, &:focus {
+      &:focus {
         background: transparent;
+      }
+      &:hover {
+        background: transparent;
+        color: ${COLORS.accent};
       }
     }
 `

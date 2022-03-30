@@ -58,10 +58,9 @@ export const Login = () => {
             {({ status, isSubmitting }) => (
               <Form>
                 <FormItem name='username'>
-                  {/* TODO: login with email */}
                   <Input name='username' type='text' placeholder='Username' autoFocus />
                 </FormItem>
-                <FormItem name='password'>
+                <FormItem name='password' sublabel='Password is case sensitive.'>
                   <Input.Password name='password' type='password' placeholder='Password' />
                 </FormItem>
                 <Button
