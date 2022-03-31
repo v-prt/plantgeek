@@ -1,5 +1,8 @@
 # plantgeek
 
+### Disclaimer
+This app started as a school project in 2021 and has since undergone major changes, particularly in the backend. It is currently an ongoing side project I work on in my free time.
+
 ### an app for houseplant lovers
 - [Video Tour](https://youtu.be/_LXWqhxIMrQ)
 
