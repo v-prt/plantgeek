@@ -71,7 +71,7 @@ export const FeaturedPlants = ({ currentUser }) => {
           </h3>
         </FadeIn>
       ) : (
-        <Ellipsis />
+        <Ellipsis color='#222' />
       )}
     </Wrapper>
   )

@@ -43,7 +43,11 @@ const createUser = async (req, res) => {
         wishlist: [],
       })
       assert.strictEqual(1, user.insertedCount)
-      res.status(201).json({ status: 201, data: user })
+      res.status(201).json({
+        status: 201,
+        data: user,
+        token: jwt.sign({ userId: user.insertedId }, process.env.TOKEN_SECRET, { expiresIn: '7d' }),
+      })
     }
   } catch (err) {
     res.status(500).json({ status: 500, data: req.body, message: err.message })

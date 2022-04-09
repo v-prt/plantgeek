@@ -1,13 +1,13 @@
 import styled from 'styled-components'
 
-export const Ellipsis = () => {
+export const Ellipsis = ({ color = '#fff' }) => {
   return (
     <Wrapper>
       <div className='ellipsis'>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+        <div style={{ background: `${color}` }}></div>
+        <div style={{ background: `${color}` }}></div>
+        <div style={{ background: `${color}` }}></div>
+        <div style={{ background: `${color}` }}></div>
       </div>
     </Wrapper>
   )
@@ -27,7 +27,6 @@ const Wrapper = styled.div`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #fff;
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
   }
   .ellipsis div:nth-child(1) {

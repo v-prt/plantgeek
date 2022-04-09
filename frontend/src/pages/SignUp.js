@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Redirect, Link, useHistory } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 
 import { Formik, Form } from 'formik'
@@ -19,8 +19,7 @@ import { RiPlantLine } from 'react-icons/ri'
 YupPassword(Yup) // extend yup
 
 export const SignUp = () => {
-  const history = useHistory()
-  const { token, handleSignup } = useContext(UserContext)
+  const { currentUser, handleSignup } = useContext(UserContext)
   const [loading, setLoading] = useState(false)
 
   // makes window scroll to top between renders
@@ -55,13 +54,12 @@ export const SignUp = () => {
       setStatus(result.error.message)
       setLoading(false)
     } else {
-      // TODO: push to welcome page (needs more work)
-      history.push('/login')
+      localStorage.setItem('plantgeekToken', result.token)
     }
   }
 
-  return token ? (
-    <Redirect to='/' />
+  return currentUser ? (
+    <Redirect to='/welcome' />
   ) : (
     <Wrapper>
       <FadeIn duration={700} delay={150}>
@@ -131,17 +129,13 @@ export const SignUp = () => {
                     I have read and agree to the <Link to='/terms'>Terms and Conditions</Link>
                   </Checkbox>
                 </FormItem>
-                {/* TEMPORARILY DISABLED FOR LIVE SITE */}
-                <Button htmlType='submit' type='primary' size='large' disabled>
-                  {loading || isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                </Button>
-                {/* <Button
+                <Button
                   htmlType='submit'
                   type='primary'
                   size='large'
                   disabled={loading || isSubmitting}>
                   {loading || isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
-                </Button> */}
+                </Button>
                 {status && <Alert type='error' message={status} showIcon />}
                 <p className='subtext'>
                   Already have an account? <Link to='/login'>Log in</Link>

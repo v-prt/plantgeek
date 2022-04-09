@@ -117,7 +117,7 @@ export const Browse = () => {
                 </Form>
               )}
             </Formik>
-            <Results>{status === 'success' ? plants : <Ellipsis />}</Results>
+            <Results>{status === 'success' ? plants : <Ellipsis color='#222' />}</Results>
           </>
         </section>
       </FadeIn>

@@ -10,11 +10,13 @@ export const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(undefined)
   const [currentUserId, setCurrentUserId] = useState(undefined)
 
+  console.log(token)
+
   // SIGNUP
   const handleSignup = async values => {
     try {
       const res = await axios.post('/users', values)
-      // TODO: log user in on success
+      setToken(res.data.token)
       return res.data
     } catch (err) {
       console.log(err.response)

@@ -1,15 +1,22 @@
-import React, { useContext } from 'react'
-import { Redirect } from 'react-router-dom'
+import React, { useContext, useEffect } from 'react'
+import { Redirect, useHistory } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import { Wrapper, Card } from './SignUp'
 import { FadeIn } from '../components/loaders/FadeIn.js'
+import { Ellipsis } from '../components/loaders/Ellipsis'
 
 export const Welcome = () => {
-  const { token } = useContext(UserContext)
+  const history = useHistory()
+  const { token, currentUser } = useContext(UserContext)
 
-  // console.log(currentUser)
+  useEffect(() => {
+    if (currentUser) {
+      setTimeout(() => {
+        history.push(`/user-profile/${currentUser._id}`)
+      }, 3000)
+    }
+  })
 
-  //   TODO: add setTimeout to redirect user to their profile after ~3sec. need react-query for userData
   return !token ? (
     <Redirect to='/' />
   ) : (
@@ -21,6 +28,7 @@ export const Welcome = () => {
           </div>
           <div className='body'>
             <p>You're all signed up. You'll be redirected to your profile soon.</p>
+            <Ellipsis color='#222' />
           </div>
         </Card>
       </FadeIn>
