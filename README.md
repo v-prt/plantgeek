@@ -14,9 +14,9 @@ Full-stack live website built 100% by me - including concept, design, and implem
 
 ### UX/UI
 - [x] responsive across mobile, tablet, and desktop
-- [x] cohesive style, color scheme
+- [x] cohesive style and color scheme
 - [x] antd form components
-- [x] all forms built with formik and yup validation to provide feedback
+- [x] all forms built with formik and yup validation which provide feedback
 - [x] react-query data synchronization
 
 ### homepage
@@ -40,16 +40,18 @@ Full-stack live website built 100% by me - including concept, design, and implem
 ### plant profiles (wip)
 - [x] view detailed care information
 - [ ] edit incorrect or missing information
-- [x] admins can delete plants
+- [x] admins can delete plants in case of corrupt or duplicate data
 
 ### user profile
 - [x] manage your collection, favorites, and wishlist
 - [x] toggle between simple or detailed view
 
 ### contribute (wip)
-- [ ] upload new plant data and help grow the houseplant database
-- [ ] admins can review submissions and approve or reject
+- [ ] upload new plant data to help grow database
+- [ ] cloudinary media library image storage (urls stored in database)
+- [ ] admins can review and approve or reject submissions
+- [ ] earn badges for approved submissions
 
 ### account settings (wip)
 - [x] update your name, username, email, and password
-- [ ] upload a profile image
+- [ ] upload a profile image (stored in cloudinary)
