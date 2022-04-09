@@ -196,7 +196,7 @@ export default createGlobalStyle`
         /* overflow-x: hidden; */
         overscroll-behavior-y: none;
         overscroll-behavior-x: none;
-        /* min-height: 100vh; */
+        scroll-behavior: smooth;
     }
     #root {
       height: 100%;
