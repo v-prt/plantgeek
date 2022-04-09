@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
+import { PlantContext } from '../contexts/PlantContext'
 
 import styled from 'styled-components/macro'
 import { BREAKPOINTS, COLORS, Toggle } from '../GlobalStyles'
@@ -16,16 +17,20 @@ import { BiSearch } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import { RiPlantLine } from 'react-icons/ri'
-import { FilterOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons'
+import {
+  FilterOutlined,
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  CloseCircleOutlined,
+} from '@ant-design/icons'
 const { Option } = Select
 
 export const Browse = () => {
   const submitRef = useRef(0)
-  const [formData, setFormData] = useState({ sort: 'name-asc' })
-  const [viewNeeds, setViewNeeds] = useState(false)
+  const { formData, setFormData, viewNeeds, setViewNeeds } = useContext(PlantContext)
+  const { currentUser } = useContext(UserContext)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [plants, setPlants] = useState([])
-  const { currentUser } = useContext(UserContext)
 
   const { data, status } = useInfiniteQuery(
     ['plants', formData],
@@ -53,6 +58,8 @@ export const Browse = () => {
   }, [data, viewNeeds])
 
   const handleSubmit = async values => {
+    console.log(values)
+    console.log(formData)
     submitRef.current++
     const thisSubmit = submitRef.current
     setTimeout(() => {
@@ -92,28 +99,31 @@ export const Browse = () => {
         )}
         <section className='inner'>
           <Formik initialValues={formData} onSubmit={handleSubmit}>
-            {({ values, submitForm, resetForm }) => (
+            {({ values, setValues, submitForm, resetForm }) => (
               <Form>
-                <div className='filter'>
-                  <Input
-                    name='primaryName'
-                    placeholder='Search'
-                    value={values.primaryName}
-                    prefix={<BiSearch />}
-                    onChange={submitForm}
-                    style={{ width: '100%' }}
-                    allowClear
-                  />
+                <div className='form-upper'>
+                  <div className='search'>
+                    <Input
+                      name='primaryName'
+                      placeholder='Search'
+                      value={values.primaryName}
+                      prefix={<BiSearch />}
+                      onChange={submitForm}
+                      style={{ width: '100%' }}
+                      allowClear
+                    />
+                  </div>
+                  <Button
+                    className='filter-menu-btn'
+                    type='primary'
+                    onClick={() => setSidebarOpen(!sidebarOpen)}>
+                    <FilterOutlined />
+                    <span className='label'> Filter</span>
+                  </Button>
+                  {/* <ScrollButton /> */}
                 </div>
-                <Button
-                  className='filter-menu-btn'
-                  type='primary'
-                  onClick={() => setSidebarOpen(!sidebarOpen)}>
-                  <FilterOutlined />
-                  <span className='label'> Filter & Sort</span>
-                </Button>
-                <ScrollButton />
                 <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
+                  <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
                   <div className='filter-menu-inner'>
                     <p className='num-results'>{plants.length} results</p>
                     <div className='filter'>
@@ -123,7 +133,9 @@ export const Browse = () => {
                         onChange={submitForm}
                         placeholder='Toxicity'
                         style={{ width: '100%' }}
+                        defaultValue={''}
                         allowClear>
+                        <Option value=''>All</Option>
                         <Option value={true}>Toxic</Option>
                         <Option value={false}>Non-toxic</Option>
                       </Select>
@@ -165,12 +177,42 @@ export const Browse = () => {
                       onClick={() => {
                         resetForm()
                         setFormData({ sort: 'name-asc' })
+                        setValues(formData)
                         setSidebarOpen(false)
                       }}>
-                      Reset Filters
+                      Reset
                     </Button>
                   </div>
-                  <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
+                </div>
+                <div className='form-lower'>
+                  <div className='search-params'>
+                    {formData.primaryName && (
+                      <Button
+                        className='clear-btn'
+                        onClick={() => {
+                          setValues({ ...values, primaryName: '' })
+                          submitForm()
+                        }}>
+                        {formData.primaryName}
+                        <CloseCircleOutlined />
+                      </Button>
+                    )}
+                    {(formData.toxic === true || formData.toxic === false) && (
+                      <Button
+                        className='clear-btn'
+                        onClick={() => {
+                          setValues({ ...values, toxic: '' })
+                          submitForm()
+                        }}>
+                        {formData.toxic === true && 'Toxic'}
+                        {formData.toxic === false && 'Non-toxic'}
+                        <CloseCircleOutlined />
+                      </Button>
+                    )}
+                    <Button className='clear-btn' disabled>
+                      {formData.sort === 'name-asc' ? 'Name (A-Z)' : 'Name (Z-A)'}
+                    </Button>
+                  </div>
                 </div>
               </Form>
             )}
@@ -213,8 +255,14 @@ const Wrapper = styled.main`
       position: sticky;
       padding-bottom: 5px;
       top: 50px;
-      z-index: 10;
       grid-gap: 10px;
+      z-index: 10;
+      .form-upper {
+        width: 100%;
+        display: flex;
+        grid-gap: 10px;
+        margin-top: 10px;
+      }
       .filter-menu-btn {
         z-index: 10;
         .label {
@@ -230,6 +278,7 @@ const Wrapper = styled.main`
         visibility: hidden;
         opacity: 0;
         transition: 0.2s ease-in-out;
+        z-index: 100;
         .overlay {
           background-color: rgba(0, 0, 0, 0.2);
           position: fixed;
@@ -240,8 +289,8 @@ const Wrapper = styled.main`
           right: 0;
           bottom: 0;
           transition: 0.2s ease-in-out;
-          z-index: -1;
           cursor: pointer;
+          z-index: -1;
         }
         &.open {
           visibility: visible;
@@ -273,6 +322,10 @@ const Wrapper = styled.main`
         flex: 1;
         z-index: 10;
       }
+      .search {
+        flex: 1;
+        z-index: 10;
+      }
       .toggle-wrapper {
         display: flex;
         align-items: center;
@@ -293,11 +346,30 @@ const Wrapper = styled.main`
           }
         }
       }
+      .search-params {
+        display: flex;
+        flex-wrap: wrap;
+        button {
+          background: ${COLORS.light};
+          color: #fff;
+          border: 0;
+          border-radius: 5px;
+          padding: 0 5px;
+          font-size: 0.8rem;
+          margin: 0 5px 5px 0;
+          cursor: pointer;
+          z-index: 10;
+          &:hover {
+            opacity: 0.5;
+          }
+        }
+      }
     }
   }
 `
 
 const Results = styled.div`
+  min-height: 300px;
   flex: 1;
   display: flex;
   flex-wrap: wrap;

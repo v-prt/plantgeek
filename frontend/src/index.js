@@ -4,6 +4,7 @@ import { App } from './App'
 import { Provider } from 'react-redux'
 import configureStore from './store'
 import { UserProvider } from './contexts/UserContext'
+import { PlantProvider } from './contexts/PlantContext'
 import {
   // useQuery,
   // useMutation,
@@ -33,7 +34,9 @@ ReactDOM.render(
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
       <UserProvider>
-        <App />
+        <PlantProvider>
+          <App />
+        </PlantProvider>
       </UserProvider>
     </Provider>
     <ReactQueryDevtools initialIsOpen={false} position='bottom-left' />

@@ -37,7 +37,7 @@ export const App = () => {
         <>
           <Navbar />
           <Body>
-            <Banner />
+            {/* <Banner /> */}
             <Switch>
               <Route exact path='/'>
                 <Homepage />

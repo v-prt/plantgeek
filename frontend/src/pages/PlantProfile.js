@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
@@ -11,7 +11,7 @@ import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
 import placeholder from '../assets/plant-placeholder.svg'
 import { Button } from 'antd'
-import { LeftCircleFilled } from '@ant-design/icons'
+import { WarningOutlined, SafetyOutlined } from '@ant-design/icons'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
@@ -21,11 +21,10 @@ import { ActionBox } from '../components/ActionBox'
 
 export const PlantProfile = () => {
   const { id } = useParams()
-  const { history, goBack } = useHistory()
   const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
 
-  const { data: plant } = useQuery('plant', async () => {
+  const { data: plant } = useQuery(['plant', id], async () => {
     const { data } = await axios.get(`/plant/${id}`)
     return data.plant
   })
@@ -105,42 +104,22 @@ export const PlantProfile = () => {
         <>
           <FadeIn>
             <section className='heading'>
-              <div className='back'>
-                <Button type='link' icon={<LeftCircleFilled />} onClick={goBack}>
-                  Back
-                </Button>
-              </div>
-              <h1>{plant?.primaryName?.toLowerCase()}</h1>
+              <h1>{plant.primaryName?.toLowerCase()}</h1>
               <div className='secondary-name-wrapper'>
                 <b className='aka'>Also known as: </b>
                 <span className='secondary-name'>
-                  {plant?.secondaryName ? plant?.secondaryName : 'N/A'}
+                  {plant.secondaryName ? plant.secondaryName : 'N/A'}
                 </span>
               </div>
-              {/* TODO: keep this subtle, style as tags */}
-              {/* {plant?.toxic ? (
-                <span className='toxic'>
-                  <img src={skull} alt='' />
-                  Toxic
-                </span>
-              ) : (
-                <span className='nontoxic'>
-                  <FaPaw />
-                  Nontoxic
-                </span>
-              )} */}
             </section>
           </FadeIn>
           <FadeIn>
             <section className='plant-info'>
               <div className='primary-image'>
-                <ImageLoader src={plant?.imageUrl} alt={''} placeholder={placeholder} />
+                <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
               </div>
               <Needs>
-                <h2>
-                  care information
-                  <p className='difficulty'>Difficulty: {difficulty}</p>
-                </h2>
+                <h2>Care information</h2>
                 <div className='row'>
                   <img src={sun} alt='' />
                   <div className='column'>
@@ -187,14 +166,31 @@ export const PlantProfile = () => {
                     </Bar>
                   </div>
                 </div>
-                {plant.sourceUrl && (
-                  <p className='sources'>
-                    Source(s):{' '}
-                    <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
-                      [1]
-                    </a>
+                <div className='misc-info'>
+                  <p className='difficulty'>
+                    Difficulty: <span className={difficulty?.toLowerCase()}>{difficulty}</span>
                   </p>
-                )}
+                  <p className='toxicity'>
+                    Toxicity:{' '}
+                    {plant.toxic ? (
+                      <span className='toxic'>
+                        <WarningOutlined /> Not pet friendly
+                      </span>
+                    ) : (
+                      <span className='nontoxic'>
+                        <SafetyOutlined /> Pet friendly
+                      </span>
+                    )}
+                  </p>
+                  {plant.sourceUrl && (
+                    <p className='sources'>
+                      Source(s):{' '}
+                      <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
+                        [1]
+                      </a>
+                    </p>
+                  )}
+                </div>
               </Needs>
             </section>
           </FadeIn>
@@ -203,7 +199,6 @@ export const PlantProfile = () => {
               <ActionBox id={plant._id} />
             </FadeIn>
           )}
-
           {currentUser?.role === 'admin' && (
             <DangerZone>
               <p>DANGER ZONE</p>
@@ -212,24 +207,21 @@ export const PlantProfile = () => {
               </Button>
             </DangerZone>
           )}
-
           {/* TODO: gallery section */}
           {/* <FadeIn>
             <section className='gallery'>
               <h2>gallery</h2>
-              {plant?.gallery?.length > 0
+              {plant.gallery?.length > 0
                 ? plant.gallery.map(image => <img className='gallery-image' src={image} alt='' />)
                 : 'This plant has no additional images yet. Upload new images of this plant to add to our gallery!'}
             </section>
           </FadeIn> */}
-
           {/* TODO: similar plants section (genus) */}
           {/* <FadeIn>
             <section className='similar-plants'>
               <h2>similar plants</h2>
             </section>
           </FadeIn> */}
-
           {/* TODO: wip */}
           {/* {currentUser && (
             <FadeIn>
@@ -250,13 +242,6 @@ const Wrapper = styled.main`
   align-items: center;
   .heading {
     background: ${COLORS.light};
-    .ant-btn-link {
-      color: #fff;
-      padding: 0;
-      margin: 0;
-      border: 0;
-      margin-bottom: 10px;
-    }
     h1 {
       line-height: 1;
       font-size: 1.5rem;
@@ -319,10 +304,7 @@ const Needs = styled.div`
   flex: 1;
   h2 {
     font-size: 1.2rem;
-    .difficulty {
-      color: #999;
-      font-size: 0.9rem;
-    }
+    margin-bottom: 10px;
   }
   .row {
     display: flex;
@@ -342,10 +324,36 @@ const Needs = styled.div`
       }
     }
   }
-  .sources {
+  .misc-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
     color: #999;
-    font-size: 0.8rem;
-    margin: 10px 0;
+    font-weight: bold;
+    margin-top: 10px;
+    p {
+      margin-right: 20px;
+    }
+    .difficulty {
+      .easy {
+        color: ${COLORS.light};
+      }
+      .moderate {
+        color: orange;
+      }
+      .hard {
+        color: red;
+      }
+    }
+    .toxicity {
+      .toxic {
+        color: orange;
+      }
+      .nontoxic {
+        color: ${COLORS.light};
+      }
+    }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .row {
