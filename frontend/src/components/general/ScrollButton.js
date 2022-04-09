@@ -42,6 +42,7 @@ const Wrapper = styled.button`
   padding: 0;
   font-size: 1.2rem;
   transition: 0.1s ease-in-out;
+  z-index: 10;
   .anticon {
     display: grid;
   }

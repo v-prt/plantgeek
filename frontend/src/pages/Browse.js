@@ -92,12 +92,13 @@ export const Browse = () => {
         )}
         <section className='inner'>
           <Formik initialValues={formData} onSubmit={handleSubmit}>
-            {({ submitForm }) => (
+            {({ values, submitForm, resetForm }) => (
               <Form>
                 <div className='filter'>
                   <Input
                     name='primaryName'
                     placeholder='Search'
+                    value={values.primaryName}
                     prefix={<BiSearch />}
                     onChange={submitForm}
                     style={{ width: '100%' }}
@@ -144,18 +145,32 @@ export const Browse = () => {
                         {/* TODO: difficulty level */}
                       </Select>
                     </div>
-                    <div className='toggle-wrapper'>
-                      <Toggle>
-                        <input
-                          id='needs-toggle'
-                          type='checkbox'
-                          onChange={ev => setViewNeeds(ev.target.checked)}
-                        />
-                        <span className='slider'></span>
-                      </Toggle>
-                      <span className='toggle-option'>Show needs</span>
+                    <div className='filter'>
+                      <p>Display</p>
+                      <div className='toggle-wrapper'>
+                        <span className='toggle-option'>Need levels</span>
+                        <Toggle>
+                          <input
+                            id='needs-toggle'
+                            type='checkbox'
+                            onChange={ev => setViewNeeds(ev.target.checked)}
+                          />
+                          <span className='slider'></span>
+                        </Toggle>
+                      </div>
                     </div>
+                    <Button
+                      type='secondary'
+                      className='reset-filters'
+                      onClick={() => {
+                        resetForm()
+                        setFormData({ sort: 'name-asc' })
+                        setSidebarOpen(false)
+                      }}>
+                      Reset Filters
+                    </Button>
                   </div>
+                  <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
                 </div>
               </Form>
             )}
@@ -200,12 +215,12 @@ const Wrapper = styled.main`
       z-index: 10;
       grid-gap: 10px;
       .filter-menu-btn {
+        z-index: 10;
         .label {
           display: none;
         }
       }
       .filter-menu-wrapper {
-        background: #fff;
         width: 100%;
         max-width: 300px;
         position: absolute;
@@ -214,18 +229,38 @@ const Wrapper = styled.main`
         visibility: hidden;
         opacity: 0;
         transition: 0.2s ease-in-out;
-        border-radius: 5px;
-        padding: 20px;
+        .overlay {
+          background-color: rgba(0, 0, 0, 0.2);
+          position: fixed;
+          visibility: hidden;
+          opacity: 0;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          transition: 0.2s ease-in-out;
+          z-index: -1;
+          cursor: pointer;
+        }
         &.open {
           visibility: visible;
           opacity: 1;
-          box-shadow: 0 3px 5px rgb(0 0 0 / 10%);
+          .overlay {
+            visibility: visible;
+            opacity: 1;
+          }
         }
       }
       .filter-menu-inner {
         background: #fff;
         display: flex;
         flex-direction: column;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+        .reset-filters {
+          margin-top: 20px;
+        }
       }
       .num-results {
         text-align: center;
@@ -234,13 +269,17 @@ const Wrapper = styled.main`
       .filter {
         margin: 10px 0;
         flex: 1;
+        z-index: 10;
       }
       .toggle-wrapper {
         display: flex;
         align-items: center;
-        margin: 10px 0;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        justify-content: space-between;
         .toggle-option {
-          margin-left: 10px;
+          margin-right: 10px;
           line-height: 1;
         }
       }
