@@ -12,6 +12,7 @@ import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { Ellipsis } from '../components/loaders/Ellipsis'
+import { BiSearch, BiPlusCircle } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import { RiPlantLine } from 'react-icons/ri'
@@ -62,33 +63,42 @@ export const SignUp = () => {
     <Redirect to='/welcome' />
   ) : (
     <Wrapper>
-      <FadeIn duration={700} delay={150}>
+      <FadeIn>
         <Card>
           <div className='header'>
             <h1>welcome!</h1>
-            <>
-              <p>Create an account in order to...</p>
-              <ul>
-                <li>
-                  <Icon>
-                    <RiPlantLine />
-                  </Icon>
-                  show off your collection
-                </li>
-                <li>
-                  <Icon>
-                    <TiHeartOutline />
-                  </Icon>
-                  save your favorite plants
-                </li>
-                <li>
-                  <Icon>
-                    <AiOutlineStar />
-                  </Icon>
-                  create a wishlist
-                </li>
-              </ul>
-            </>
+            <ul>
+              <li>
+                <Icon>
+                  <BiSearch />
+                </Icon>
+                browse hundreds of plants
+              </li>
+              <li>
+                <Icon>
+                  <RiPlantLine />
+                </Icon>
+                keep a list of your collection
+              </li>
+              <li>
+                <Icon>
+                  <TiHeartOutline />
+                </Icon>
+                save your favorite plants
+              </li>
+              <li>
+                <Icon>
+                  <AiOutlineStar />
+                </Icon>
+                create a wishlist
+              </li>
+              <li>
+                <Icon>
+                  <BiPlusCircle />
+                </Icon>
+                contribute to our database
+              </li>
+            </ul>
           </div>
           <Formik
             initialValues={{
@@ -159,7 +169,6 @@ export const Card = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  margin: 10px auto;
   padding: 20px;
   border-radius: 20px;
   overflow: hidden;
@@ -172,8 +181,8 @@ export const Card = styled.div`
     text-align: center;
     border-radius: 10px;
     padding: 10px;
-    p {
-      font-size: 0.9rem;
+    img {
+      height: 30px;
     }
     li {
       display: flex;
@@ -188,7 +197,7 @@ export const Card = styled.div`
   form {
     display: flex;
     flex-direction: column;
-    margin: 20px;
+    margin: 20px 0;
   }
   a {
     text-decoration: underline;
@@ -205,18 +214,25 @@ export const Card = styled.div`
     margin-top: 20px;
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    width: 400px;
     margin: auto;
-    .welcome-header {
+    max-width: 400px;
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    flex-direction: row;
+    max-width: fit-content;
+    .header {
+      min-width: 310px;
+      padding: 20px;
       h1 {
         font-size: 1.8rem;
       }
-      p {
-        font-size: 1.1rem;
-      }
       li {
-        font-size: 1.1rem;
+        font-size: 1rem;
       }
+    }
+    form {
+      margin: 0 0 0 20px;
+      max-width: 300px;
     }
   }
 `

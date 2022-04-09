@@ -202,6 +202,7 @@ const Wrapper = styled.main`
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
+    flex: 1;
     form {
       background: #f2f2f2;
       box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
@@ -265,6 +266,7 @@ const Wrapper = styled.main`
       .num-results {
         text-align: center;
         font-size: 0.8rem;
+        color: #999;
       }
       .filter {
         margin: 10px 0;
@@ -296,6 +298,7 @@ const Wrapper = styled.main`
 `
 
 const Results = styled.div`
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

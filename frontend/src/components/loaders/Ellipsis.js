@@ -14,6 +14,7 @@ export const Ellipsis = ({ color = '#fff' }) => {
 }
 
 const Wrapper = styled.div`
+  margin: auto;
   line-height: 1;
   .ellipsis {
     margin: auto;

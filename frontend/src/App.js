@@ -101,6 +101,7 @@ const Body = styled.div`
       margin: 10px auto;
       padding: 20px;
       border-radius: 20px;
+      width: 100%;
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {

@@ -1,11 +1,3 @@
-// STYLE GUIDELINES
-// lowercase for all heading text
-// proper sentence case for body text
-// rounded corners for all sections/cards
-// mobile first (up to 500px)
-// tablet breakpoint: 500px
-// desktop breakpoint: 1000px
-
 import { createGlobalStyle } from 'styled-components'
 import styled from 'styled-components/macro'
 
@@ -244,13 +236,6 @@ export default createGlobalStyle`
       text-shadow: none !important;
       box-shadow: none !important;
       transition: 0.2s ease-in-out;
-      &:disabled {
-        background: grey;
-      border-color: grey;
-      color: #fff;
-      opacity: 0.5;
-      pointer-events: none;
-      }
     }
     .ant-btn-primary {
       background: ${COLORS.darkest};
@@ -285,12 +270,16 @@ export default createGlobalStyle`
       border: 0;
       margin: 0;
       padding: 0;
-      &:focus {
-        background: transparent;
-      }
-      &:hover {
+      &:hover, &:focus {
         background: transparent;
         color: ${COLORS.accent};
       }
+    }
+    .ant-btn:disabled {
+      background: grey !important;
+      border-color: grey !important;
+      color: #fff !important;
+      opacity: 0.5 !important;
+      pointer-events: none !important;
     }
 `

@@ -10,6 +10,7 @@ import { FormItem } from '../components/forms/FormItem'
 import { Wrapper, Card } from './SignUp'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
+import plantgeekLogo from '../assets/logo.webp'
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string().required('Username required'),
@@ -41,10 +42,11 @@ export const Login = () => {
     <Redirect to='/' />
   ) : (
     <Wrapper>
-      <FadeIn duration={900} delay={200}>
+      <FadeIn>
         <Card>
           <div className='header'>
             <h1>welcome back!</h1>
+            <img src={plantgeekLogo} alt='' />
           </div>
           <Formik
             initialValues={{
