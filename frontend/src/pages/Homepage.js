@@ -50,7 +50,7 @@ export const Homepage = () => {
           {currentUser ? (
             <>
               <h2>
-                <Link to={`/user-profile/${currentUser._id}`}>
+                <Link to='/profile'>
                   <span className='icon'>
                     <FaArrowAltCircleRight />
                   </span>

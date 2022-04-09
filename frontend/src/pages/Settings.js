@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import { Redirect } from 'react-router-dom'
-import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
 import moment from 'moment'
@@ -10,7 +9,6 @@ import { FormItem } from '../components/forms/FormItem'
 import { Saving } from '../components/forms/Saving'
 import { Input } from 'formik-antd'
 import * as Yup from 'yup'
-import YupPassword from 'yup-password'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
@@ -39,17 +37,12 @@ const AutoSave = () => {
 
 export const Settings = () => {
   const submitRef = useRef(0)
-  const { token, currentUserId, updateCurrentUser } = useContext(UserContext)
+  const { currentUser, updateCurrentUser } = useContext(UserContext)
   const [savingStatus, setSavingStatus] = useState(undefined)
   const [editMode, setEditMode] = useState(false)
   const [passwordEditMode, setPasswordEditMode] = useState(false)
   const [loading, setLoading] = useState(false)
   const [successStatus, setSuccessStatus] = useState('')
-
-  const { data: currentUser } = useQuery('current-user', async () => {
-    const { data } = await axios.get(`/users/${currentUserId}`)
-    return data.user
-  })
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -152,128 +145,116 @@ export const Settings = () => {
   }
   // #endregion
 
-  return !token ? (
-    <Redirect to='/' />
+  return !currentUser ? (
+    <Redirect to='/signup' />
   ) : (
     <Wrapper>
-      {currentUser ? (
-        <>
-          <FadeIn>
-            <section className='user-info'>
-              <Image src={currentUser.image ? currentUser.image[0] : placeholder} alt='' />
-              <div className='text'>
-                <h1>
-                  {currentUser.firstName} {currentUser.lastName}
-                </h1>
-                <p className='username'>{currentUser.username}</p>
-                <p>Member since {moment(currentUser.joined).format('ll')}</p>
-              </div>
-            </section>
-          </FadeIn>
-          <FadeIn>
-            <section className='settings'>
-              <Heading>
-                <span className='heading-text'>
-                  account details <Saving savingStatus={savingStatus} />
-                </span>
-                <Button type='text' onClick={() => setEditMode(!editMode)}>
-                  {editMode ? 'Done' : 'Edit'}
-                  <span className='icon'>{editMode ? <MdOutlineCancel /> : <FiEdit />}</span>
-                </Button>
-              </Heading>
-              <Formik
-                initialValues={accountInitialValues}
-                validationSchema={accountSchema}
-                onSubmit={updateAccount}>
-                {({ status }) => (
-                  <Form>
-                    {status && <Alert type='error' message={status} showIcon />}
-                    <FormItem name='firstName' label='First name'>
-                      <Input name='firstName' disabled={!editMode} />
-                    </FormItem>
-                    <FormItem name='lastName' label='Last name'>
-                      <Input name='lastName' disabled={!editMode} />
-                    </FormItem>
-                    <FormItem name='email' label='Email address'>
-                      <Input name='email' disabled={!editMode} />
-                    </FormItem>
-                    <FormItem name='username' label='Username'>
-                      <Input name='username' disabled={!editMode} />
-                    </FormItem>
-                    {/* TODO: upload profile image */}
-                    <AutoSave />
-                  </Form>
-                )}
-              </Formik>
-              <div className='zone'>
-                {successStatus && <Alert type='success' message={successStatus} showIcon />}
-                <div className='password'>
-                  <p>Change password</p>
-                  <Button
-                    type='secondary'
-                    onClick={() => setPasswordEditMode(!passwordEditMode)}
-                    className={passwordEditMode && 'hidden'}>
-                    CHANGE
-                  </Button>
-                </div>
-                <Formik
-                  initialValues={passwordInitialValues}
-                  validationSchema={passwordSchema}
-                  onSubmit={changePassword}>
-                  {({ status, isSubmitting, submitForm }) => (
-                    <Form className={passwordEditMode ? 'expanded' : 'hidden'}>
-                      {status && <Alert type='error' message={status} showIcon />}
-                      <FormItem name='currentPassword'>
-                        <Input.Password
-                          name='currentPassword'
-                          type='password'
-                          placeholder='Current password'
-                        />
-                      </FormItem>
-                      <FormItem
-                        name='newPassword'
-                        sublabel='New password must be at least 6 characters long, and include 1 number and 1 symbol.'>
-                        <Input.Password
-                          name='newPassword'
-                          type='password'
-                          placeholder='New password'
-                        />
-                      </FormItem>
-                      <FormItem name='confirmNewPassword'>
-                        <Input.Password
-                          name='confirmNewPassword'
-                          type='password'
-                          placeholder='Confirm new password'
-                        />
-                      </FormItem>
-                      <div className='buttons'>
-                        <Button
-                          type='secondary'
-                          onClick={() => setPasswordEditMode(!passwordEditMode)}>
-                          CANCEL
-                        </Button>
-                        <Button htmlType='submit' type='primary' disabled={isSubmitting}>
-                          {loading || isSubmitting ? <Ellipsis /> : 'SUBMIT'}
-                        </Button>
-                      </div>
-                    </Form>
-                  )}
-                </Formik>
-              </div>
-              <div className='zone'>
-                <div className='danger'>
-                  <p>Danger zone</p>
-                  <Button type='danger' onClick={handleDelete}>
-                    DELETE ACCOUNT
-                  </Button>
-                </div>
-              </div>
-            </section>
-          </FadeIn>
-        </>
-      ) : (
-        <BeatingHeart />
-      )}
+      <FadeIn>
+        <section className='user-info'>
+          <Image src={currentUser.image ? currentUser.image[0] : placeholder} alt='' />
+          <div className='text'>
+            <h1>
+              {currentUser.firstName} {currentUser.lastName}
+            </h1>
+            <p className='username'>{currentUser.username}</p>
+            <p>Member since {moment(currentUser.joined).format('ll')}</p>
+          </div>
+        </section>
+      </FadeIn>
+      <FadeIn>
+        <section className='settings'>
+          <Heading>
+            <span className='heading-text'>
+              account details <Saving savingStatus={savingStatus} />
+            </span>
+            <Button type='text' onClick={() => setEditMode(!editMode)}>
+              {editMode ? 'Done' : 'Edit'}
+              <span className='icon'>{editMode ? <MdOutlineCancel /> : <FiEdit />}</span>
+            </Button>
+          </Heading>
+          <Formik
+            initialValues={accountInitialValues}
+            validationSchema={accountSchema}
+            onSubmit={updateAccount}>
+            {({ status }) => (
+              <Form>
+                {status && <Alert type='error' message={status} showIcon />}
+                <FormItem name='firstName' label='First name'>
+                  <Input name='firstName' disabled={!editMode} />
+                </FormItem>
+                <FormItem name='lastName' label='Last name'>
+                  <Input name='lastName' disabled={!editMode} />
+                </FormItem>
+                <FormItem name='email' label='Email address'>
+                  <Input name='email' disabled={!editMode} />
+                </FormItem>
+                <FormItem name='username' label='Username'>
+                  <Input name='username' disabled={!editMode} />
+                </FormItem>
+                {/* TODO: upload profile image */}
+                <AutoSave />
+              </Form>
+            )}
+          </Formik>
+          <div className='zone'>
+            {successStatus && <Alert type='success' message={successStatus} showIcon closable />}
+            <div className='password'>
+              <p>Change password</p>
+              <Button
+                type='secondary'
+                onClick={() => setPasswordEditMode(!passwordEditMode)}
+                className={passwordEditMode && 'hidden'}>
+                CHANGE
+              </Button>
+            </div>
+            <Formik
+              initialValues={passwordInitialValues}
+              validationSchema={passwordSchema}
+              onSubmit={changePassword}>
+              {({ status, isSubmitting, submitForm }) => (
+                <Form className={passwordEditMode ? 'expanded' : 'hidden'}>
+                  {status && <Alert type='error' message={status} showIcon />}
+                  <FormItem name='currentPassword'>
+                    <Input.Password
+                      name='currentPassword'
+                      type='password'
+                      placeholder='Current password'
+                    />
+                  </FormItem>
+                  <FormItem
+                    name='newPassword'
+                    sublabel='New password must be at least 6 characters long, and include 1 number and 1 symbol.'>
+                    <Input.Password name='newPassword' type='password' placeholder='New password' />
+                  </FormItem>
+                  <FormItem name='confirmNewPassword'>
+                    <Input.Password
+                      name='confirmNewPassword'
+                      type='password'
+                      placeholder='Confirm new password'
+                    />
+                  </FormItem>
+                  <div className='buttons'>
+                    <Button type='secondary' onClick={() => setPasswordEditMode(!passwordEditMode)}>
+                      CANCEL
+                    </Button>
+                    <Button htmlType='submit' type='primary' disabled={isSubmitting}>
+                      {loading || isSubmitting ? <Ellipsis /> : 'SUBMIT'}
+                    </Button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
+          <div className='zone'>
+            <div className='danger'>
+              <p>Danger zone</p>
+              <Button type='danger' onClick={handleDelete}>
+                DELETE ACCOUNT
+              </Button>
+            </div>
+          </div>
+        </section>
+      </FadeIn>
     </Wrapper>
   )
 }

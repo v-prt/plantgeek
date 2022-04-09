@@ -8,9 +8,6 @@ export const UserProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('plantgeekToken'))
   const [checkedToken, setCheckedToken] = useState(false)
   const [currentUser, setCurrentUser] = useState(undefined)
-  const [currentUserId, setCurrentUserId] = useState(undefined)
-
-  console.log(token)
 
   // SIGNUP
   const handleSignup = async values => {
@@ -49,21 +46,18 @@ export const UserProvider = ({ children }) => {
       const res = await axios.post('/token', { token })
       if (res.status === 200) {
         setCurrentUser(res.data.user)
-        setCurrentUserId(res.data.user._id)
         setCheckedToken(true)
       } else {
         // something wrong with token
         localStorage.removeItem('plantgeekToken')
         window.location.replace('/')
         setCurrentUser(undefined)
-        setCurrentUserId(undefined)
       }
     } catch (err) {
       // something wrong with token
       localStorage.removeItem('plantgeekToken')
       window.location.replace('/')
       setCurrentUser(undefined)
-      setCurrentUserId(undefined)
     }
   }
 
@@ -103,7 +97,6 @@ export const UserProvider = ({ children }) => {
         handleLogout,
         getUserById,
         currentUser,
-        currentUserId,
         updateCurrentUser,
       }}>
       {children}

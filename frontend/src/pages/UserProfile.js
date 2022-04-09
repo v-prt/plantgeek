@@ -1,13 +1,10 @@
 import React, { useContext, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { Redirect } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
-import axios from 'axios'
 import moment from 'moment'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ListWrapper, PlantList } from '../components/lists/PlantList'
 import { RiPlantLine } from 'react-icons/ri'
@@ -16,121 +13,111 @@ import { AiOutlineStar } from 'react-icons/ai'
 import placeholder from '../assets/avatar-placeholder.png'
 
 export const UserProfile = () => {
-  const { id } = useParams()
-  // const { currentUser } = useContext(UserContext)
-
-  const { data: user } = useQuery('user', async () => {
-    const { data } = await axios.get(`/users/${id}`)
-    return data.user
-  })
+  const { currentUser } = useContext(UserContext)
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  return (
+  return !currentUser ? (
+    <Redirect to='/signup' />
+  ) : (
     <Wrapper>
-      {user ? (
-        <>
-          <FadeIn>
-            <section className='user-info'>
-              <Image src={user.image ? user.image[0] : placeholder} alt='' />
-              <div className='text'>
-                <h1>
-                  {user.firstName} {user.lastName}
-                </h1>
-                <p className='username'>{user.username}</p>
-                <p>Member since {moment(user.joined).format('ll')}</p>
+      <FadeIn>
+        <section className='user-info'>
+          <Image src={currentUser.image ? currentUser.image[0] : placeholder} alt='' />
+          <div className='text'>
+            <h1>
+              {currentUser.firstName} {currentUser.lastName}
+            </h1>
+            <p className='username'>{currentUser.username}</p>
+            <p>Member since {moment(currentUser.joined).format('ll')}</p>
+          </div>
+        </section>
+      </FadeIn>
+      <FadeIn delay={200}>
+        {currentUser.collection.length > 0 ? (
+          <PlantList user={currentUser} list={currentUser.collection} title='collection' />
+        ) : (
+          <ListWrapper>
+            <FadeIn>
+              <div className='inner'>
+                <div className='header'>
+                  <h2>
+                    <span className='icon'>
+                      <RiPlantLine />
+                    </span>
+                    collection
+                  </h2>
+                  <div className='info'>
+                    <span className='num-plants'>0 plants</span>
+                  </div>
+                </div>
+                <p className='empty'>No plants in collection.</p>
               </div>
-            </section>
-          </FadeIn>
-          <FadeIn delay={200}>
-            {user.collection.length > 0 ? (
-              <PlantList user={user} list={user.collection} title='collection' />
-            ) : (
-              <ListWrapper>
-                <FadeIn>
-                  <div className='inner'>
-                    <div className='header'>
-                      <h2>
-                        <span className='icon'>
-                          <RiPlantLine />
-                        </span>
-                        collection
-                      </h2>
-                      <div className='info'>
-                        <span className='num-plants'>0 plants</span>
-                      </div>
-                    </div>
-                    <p className='empty'>No plants in collection.</p>
+            </FadeIn>
+          </ListWrapper>
+        )}
+      </FadeIn>
+      <FadeIn delay={300}>
+        {currentUser.favorites.length > 0 ? (
+          <PlantList user={currentUser} list={currentUser.favorites} title='favorites' />
+        ) : (
+          <ListWrapper>
+            <FadeIn>
+              <div className='inner'>
+                <div className='header'>
+                  <h2>
+                    <span className='icon'>
+                      <AiOutlineStar />
+                    </span>
+                    favorites
+                  </h2>
+                  <div className='info'>
+                    <span className='num-plants'>0 plants</span>
                   </div>
-                </FadeIn>
-              </ListWrapper>
-            )}
-          </FadeIn>
-          <FadeIn delay={300}>
-            {user.favorites.length > 0 ? (
-              <PlantList user={user} list={user.favorites} title='favorites' />
-            ) : (
-              <ListWrapper>
-                <FadeIn>
-                  <div className='inner'>
-                    <div className='header'>
-                      <h2>
-                        <span className='icon'>
-                          <AiOutlineStar />
-                        </span>
-                        favorites
-                      </h2>
-                      <div className='info'>
-                        <span className='num-plants'>0 plants</span>
-                      </div>
-                    </div>
-                    <p className='empty'>No plants in favorites.</p>
+                </div>
+                <p className='empty'>No plants in favorites.</p>
+              </div>
+            </FadeIn>
+          </ListWrapper>
+        )}
+      </FadeIn>
+      <FadeIn delay={400}>
+        {currentUser.wishlist.length > 0 ? (
+          <PlantList user={currentUser} list={currentUser.wishlist} title='wishlist' />
+        ) : (
+          <ListWrapper>
+            <FadeIn>
+              <div className='inner'>
+                <div className='header'>
+                  <h2>
+                    <span className='icon'>
+                      <TiHeartOutline />
+                    </span>
+                    wishlist
+                  </h2>
+                  <div className='info'>
+                    <span className='num-plants'>0 plants</span>
                   </div>
-                </FadeIn>
-              </ListWrapper>
-            )}
-          </FadeIn>
-          <FadeIn delay={400}>
-            {user.wishlist.length > 0 ? (
-              <PlantList user={user} list={user.wishlist} title='wishlist' />
-            ) : (
-              <ListWrapper>
-                <FadeIn>
-                  <div className='inner'>
-                    <div className='header'>
-                      <h2>
-                        <span className='icon'>
-                          <TiHeartOutline />
-                        </span>
-                        wishlist
-                      </h2>
-                      <div className='info'>
-                        <span className='num-plants'>0 plants</span>
-                      </div>
-                    </div>
-                    <p className='empty'>No plants in wishlist.</p>
-                  </div>
-                </FadeIn>
-              </ListWrapper>
-            )}
-          </FadeIn>
-          <FadeIn delay={500}>
-            <section className='contributions'>
-              <h2>contributions</h2>
-              {user.contributions?.length > 0 ? (
-                <p>{user.contributions.length} contributions made!</p>
-              ) : (
-                <p>No contributions yet.</p>
-              )}
-            </section>
-          </FadeIn>
-        </>
-      ) : (
-        <BeatingHeart />
-      )}
+                </div>
+                <p className='empty'>No plants in wishlist.</p>
+              </div>
+            </FadeIn>
+          </ListWrapper>
+        )}
+      </FadeIn>
+      <FadeIn delay={500}>
+        <section className='contributions'>
+          <h2>contributions</h2>
+          {currentUser.contributions?.length > 0 ? (
+            <p>{currentUser.contributions.length} contributions made!</p>
+          ) : (
+            <p>No contributions yet.</p>
+          )}
+        </section>
+      </FadeIn>
     </Wrapper>
   )
 }

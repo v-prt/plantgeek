@@ -12,7 +12,7 @@ export const Welcome = () => {
   useEffect(() => {
     if (currentUser) {
       setTimeout(() => {
-        history.push(`/user-profile/${currentUser._id}`)
+        history.push('/profile')
       }, 3000)
     }
   })

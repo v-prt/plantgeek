@@ -20,7 +20,7 @@ export const PlantCard = ({ plant, viewNeeds }) => {
             <FaPaw />
           </Stamp>
         )}
-        <InfoLink to={`/plant-profile/${plant?._id}`}>
+        <InfoLink to={`/plant/${plant?._id}`}>
           <ImageLoader src={plant?.imageUrl} alt={''} placeholder={placeholder} />
           <Name>
             {plant?.primaryName.length > 25

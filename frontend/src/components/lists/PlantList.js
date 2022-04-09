@@ -60,7 +60,7 @@ export const PlantList = ({ list, title }) => {
             <div className='info'>
               <span className='num-plants'>{list.length} plants</span>
               <div className='toggle-wrapper'>
-                <span className='toggle-option'>View needs</span>
+                <span className='toggle-option'>Show needs</span>
                 <Toggle>
                   <input
                     id='needs-toggle'

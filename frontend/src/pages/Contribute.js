@@ -25,7 +25,7 @@ import { PlantCard } from '../components/PlantCard'
 export const Contribute = () => {
   const dispatch = useDispatch()
   // TODO: reward users with badges for approved submissions? (display # of submissions)
-  const { token, currentUser } = useContext(UserContext)
+  const { currentUser } = useContext(UserContext)
   const plants = useSelector(plantsArray)
   const [status, setStatus] = useState(undefined)
 
@@ -145,8 +145,8 @@ export const Contribute = () => {
     }
   }
 
-  return !token ? (
-    <Redirect to='/' />
+  return !currentUser ? (
+    <Redirect to='/signup' />
   ) : (
     <Wrapper>
       <FadeIn>

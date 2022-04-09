@@ -66,10 +66,10 @@ export const App = () => {
               <Route exact path='/contribute'>
                 <Contribute />
               </Route>
-              <Route path='/user-profile/:id'>
+              <Route path='/profile'>
                 <UserProfile />
               </Route>
-              <Route path='/plant-profile/:id'>
+              <Route path='/plant/:id'>
                 <PlantProfile />
               </Route>
               {/* TODO: catchall for non-existing routes (generic "not found" or redirect to homepage) */}

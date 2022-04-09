@@ -9,6 +9,7 @@ import { PlantCard } from '../components/PlantCard'
 import { Formik, Form } from 'formik'
 import { Input, Select } from 'formik-antd'
 import { Button } from 'antd'
+import { FilterFilled } from '@ant-design/icons'
 import { BiSearch } from 'react-icons/bi'
 const { Option } = Select
 
@@ -16,7 +17,7 @@ export const Browse = () => {
   const submitRef = useRef(0)
   const [formData, setFormData] = useState({ sort: 'name-asc' })
   const [viewNeeds, setViewNeeds] = useState(false)
-  const [viewFilters, setViewFilters] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [plants, setPlants] = useState([])
 
   const { data, status } = useInfiniteQuery(
@@ -62,62 +63,69 @@ export const Browse = () => {
             <Formik initialValues={formData} onSubmit={handleSubmit}>
               {({ submitForm }) => (
                 <Form>
-                  {/* TODO: add filter menu drawer for mobile */}
-                  {/* <Button className='filter-menu-btn' type='primary' onClick={setViewFilters}>
-                    Filters
-                  </Button> */}
-                  <div className='filters'>
-                    <div className='form-section'>
-                      <Input
-                        name='primaryName'
-                        placeholder='Search'
-                        prefix={<BiSearch />}
-                        onChange={submitForm}
-                        style={{ width: 200 }}
-                        allowClear
-                      />
-                    </div>
-                    <div className='form-section'>
-                      <Select
-                        name='toxic'
-                        onChange={submitForm}
-                        placeholder='Filter'
-                        allowClear
-                        style={{ width: 200 }}>
-                        <Option value={true}>Toxic</Option>
-                        <Option value={false}>Non-toxic</Option>
-                      </Select>
-                    </div>
-                    <div className='form-section'>
-                      <Select
-                        name='sort'
-                        onChange={submitForm}
-                        placeholder='Sort'
-                        style={{ width: 200 }}>
-                        <Option value='name-asc'>Name (A-Z)</Option>
-                        <Option value='name-desc'>Name (Z-A)</Option>
-                        {/* TODO: difficulty level */}
-                      </Select>
-                    </div>
+                  <div className='filter'>
+                    <Input
+                      name='primaryName'
+                      placeholder='Search'
+                      prefix={<BiSearch />}
+                      onChange={submitForm}
+                      style={{ width: '100%' }}
+                      allowClear
+                    />
                   </div>
-                  <div className='filters'>
-                    <p>{plants.length} results</p>
-                    <div className='toggle-wrapper'>
-                      <span className='toggle-option'>View needs</span>
-                      <Toggle>
-                        <input
-                          id='needs-toggle'
-                          type='checkbox'
-                          onChange={ev => setViewNeeds(ev.target.checked)}
-                        />
-                        <span className='slider'></span>
-                      </Toggle>
+                  <Button
+                    className='filter-menu-btn'
+                    type='primary'
+                    onClick={() => setSidebarOpen(!sidebarOpen)}>
+                    <FilterFilled />
+                  </Button>
+                  <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
+                    <div className='filter-menu-inner'>
+                      <p className='num-results'>{plants.length} results</p>
+                      <div className='filter'>
+                        <p>Filter by</p>
+                        <Select
+                          name='toxic'
+                          onChange={submitForm}
+                          placeholder='Toxicity'
+                          style={{ width: '100%' }}
+                          allowClear>
+                          <Option value={true}>Toxic</Option>
+                          <Option value={false}>Non-toxic</Option>
+                        </Select>
+                      </div>
+                      <div className='filter'>
+                        <p>Sort by</p>
+                        <Select
+                          name='sort'
+                          onChange={submitForm}
+                          placeholder='Sort'
+                          style={{ width: '100%' }}>
+                          {/* FIXME: Z-A doesn't work */}
+                          <Option value='name-asc'>Name (A-Z)</Option>
+                          <Option value='name-desc'>Name (Z-A)</Option>
+                          {/* TODO: difficulty level */}
+                        </Select>
+                      </div>
+                      <div className='toggle-wrapper'>
+                        <Toggle>
+                          <input
+                            id='needs-toggle'
+                            type='checkbox'
+                            onChange={ev => setViewNeeds(ev.target.checked)}
+                          />
+                          <span className='slider'></span>
+                        </Toggle>
+                        <span className='toggle-option'>Show needs</span>
+                      </div>
                     </div>
                   </div>
                 </Form>
               )}
             </Formik>
-            <Results>{status === 'success' ? plants : <Ellipsis color='#222' />}</Results>
+            <Results disabled={sidebarOpen}>
+              {status === 'success' ? plants : <Ellipsis color='#222' />}
+            </Results>
           </>
         </section>
       </FadeIn>
@@ -141,36 +149,52 @@ const Wrapper = styled.main`
       align-items: center;
       justify-content: space-between;
       position: sticky;
-      top: 0;
+      padding-bottom: 5px;
+      top: 50px;
       z-index: 10;
-      .filter-menu-btn {
-        @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-          display: none;
+      grid-gap: 10px;
+      .filter-menu-wrapper {
+        background: #fff;
+        width: 100%;
+        max-width: 300px;
+        position: absolute;
+        top: 57px;
+        right: 0;
+        visibility: hidden;
+        opacity: 0;
+        transition: 0.2s ease-in-out;
+        border-radius: 0 0 5px 5px;
+        padding: 20px;
+        &.open {
+          visibility: visible;
+          opacity: 1;
+          box-shadow: 0 3px 5px rgb(0 0 0 / 10%);
         }
       }
-      .filters {
+      .filter-menu-inner {
+        background: #fff;
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
+      }
+      .num-results {
+        text-align: center;
+        font-size: 0.8rem;
+      }
+      .filter {
+        margin: 10px 0;
+        flex: 1;
+      }
+      .toggle-wrapper {
+        display: flex;
         align-items: center;
-        justify-content: center;
-        .form-section {
-          display: flex;
-          align-items: center;
-          margin: 10px;
-        }
-        .toggle-wrapper {
-          background: #fff;
-          width: fit-content;
-          display: flex;
-          align-items: center;
-          border-radius: 20px;
-          padding: 5px 10px;
+        margin: 10px 0;
+        .toggle-option {
           margin-left: 10px;
-          .toggle-option {
-            margin-right: 20px;
-            line-height: 1;
-          }
+          line-height: 1;
         }
+      }
+      @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+        top: 0;
       }
     }
   }
@@ -182,6 +206,9 @@ const Results = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   padding: 10px 0;
+  opacity: ${props => (props.disabled ? 0.5 : 1)};
+  pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
+  transition: 0.2s ease-in-out;
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     min-height: calc(100vh - 280px);
   }

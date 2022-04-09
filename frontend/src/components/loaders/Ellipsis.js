@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components/macro'
 
 export const Ellipsis = ({ color = '#fff' }) => {
   return (
