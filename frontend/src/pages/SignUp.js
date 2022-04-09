@@ -115,24 +115,26 @@ export const SignUp = () => {
             onSubmit={handleSubmit}>
             {({ status, isSubmitting }) => (
               <Form>
-                <FormItem name='firstName'>
-                  <Input name='firstName' type='text' placeholder='First name' autoFocus />
+                <FormItem name='firstName' label='First name'>
+                  <Input name='firstName' type='text' placeholder='Jane' autoFocus />
                 </FormItem>
-                <FormItem name='lastName'>
-                  <Input name='lastName' type='text' placeholder='Last name' />
+                <FormItem name='lastName' label='Last name'>
+                  <Input name='lastName' type='text' placeholder='Doe' />
                 </FormItem>
-                <FormItem name='email'>
-                  <Input name='email' type='text' placeholder='Email address' />
+                <FormItem name='email' label='Email'>
+                  <Input name='email' type='text' placeholder='janedoe@gmail.com' />
                 </FormItem>
                 <FormItem
                   name='username'
-                  sublabel='Username must be between 4-20 characters long, with no symbols or spaces.'>
-                  <Input name='username' type='text' placeholder='Username' />
+                  label='Username'
+                  sublabel=' - must be between 4-20 characters long, with no symbols or spaces.'>
+                  <Input name='username' type='text' placeholder='JaneDoe' />
                 </FormItem>
                 <FormItem
                   name='password'
-                  sublabel='Password must be at least 6 characters long, and include 1 number and 1 symbol.'>
-                  <Input.Password name='password' type='password' placeholder='Password' />
+                  label='Password'
+                  sublabel=' - must be at least 6 characters long, and include 1 number and 1 symbol.'>
+                  <Input.Password name='password' type='password' placeholder='********' />
                 </FormItem>
                 <FormItem name='acceptedTerms'>
                   <Checkbox name='acceptedTerms'>

@@ -59,11 +59,11 @@ export const Login = () => {
             onSubmit={handleSubmit}>
             {({ status, isSubmitting }) => (
               <Form>
-                <FormItem name='username'>
-                  <Input name='username' type='text' placeholder='Username' autoFocus />
+                <FormItem name='username' label='Username'>
+                  <Input name='username' type='text' placeholder='JaneDoe' autoFocus />
                 </FormItem>
-                <FormItem name='password' sublabel='Password is case sensitive.'>
-                  <Input.Password name='password' type='password' placeholder='Password' />
+                <FormItem name='password' label='Password' sublabel=' - case sensitive'>
+                  <Input.Password name='password' type='password' placeholder='********' />
                 </FormItem>
                 <Button
                   htmlType='submit'
