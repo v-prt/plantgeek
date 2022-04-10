@@ -1,9 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
+import { useQueryClient } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
-import { plantsArray } from '../reducers/plantReducer'
-import { requestUsers, receiveUsers } from '../actions.js'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
@@ -11,11 +9,9 @@ import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 
-export const ActionBar = ({ id }) => {
-  const dispatch = useDispatch()
-  const { getUser, currentUser } = useContext(UserContext)
-  const plants = useSelector(plantsArray)
-  const [plant, setPlant] = useState(undefined)
+export const ActionBar = ({ plantId }) => {
+  const queryClient = new useQueryClient()
+  const { currentUser } = useContext(UserContext)
   const [inCollection, setInCollection] = useState(false)
   const [inFavorites, setInFavorites] = useState(false)
   const [inWishlist, setInWishlist] = useState(false)
@@ -25,20 +21,12 @@ export const ActionBar = ({ id }) => {
   const [clicked3, setClicked3] = useState(false)
 
   useEffect(() => {
-    setPlant(plants.find(plant => plant._id === id))
-    // CLEANUP - PREVENTS MEMORY LEAK
-    return () => {
-      setPlant(undefined)
+    if (currentUser) {
+      setInCollection(currentUser.collection.find(id => id === plantId))
+      setInFavorites(currentUser.favorites.find(id => id === plantId))
+      setInWishlist(currentUser.wishlist.find(id => id === plantId))
     }
-  }, [plants, id])
-
-  useEffect(() => {
-    if (currentUser && plant) {
-      setInCollection(currentUser.collection.find(id => id === plant._id))
-      setInFavorites(currentUser.favorites.find(id => id === plant._id))
-      setInWishlist(currentUser.wishlist.find(id => id === plant._id))
-    }
-  }, [currentUser, plant])
+  }, [plantId, currentUser])
 
   const handleList = list => {
     let data
@@ -47,21 +35,21 @@ export const ActionBar = ({ id }) => {
       setTimeout(() => {
         setClicked1(false)
       }, 3000)
-      data = { collection: plant._id }
+      data = { collection: plantId }
     } else if (list === currentUser.favorites) {
       setClicked2(true)
       setTimeout(() => {
         setClicked2(false)
       }, 3000)
-      data = { favorites: plant._id }
+      data = { favorites: plantId }
     } else if (list === currentUser.wishlist) {
       setClicked3(true)
       setTimeout(() => {
         setClicked3(false)
       }, 3000)
-      data = { wishlist: plant._id }
+      data = { wishlist: plantId }
     }
-    if (list && list.find(id => id === plant._id)) {
+    if (list && list.find(id => id === plantId)) {
       // REMOVES PLANT
       fetch(`/${currentUser.username}/remove`, {
         method: 'PUT',
@@ -72,14 +60,9 @@ export const ActionBar = ({ id }) => {
         },
       }).then(res => {
         if (res.status === 200) {
-          console.log(`Removed ${plant.primaryName} from user's list!`)
-          // FIXME: updating store causes plants to reload (use react query instead?)
-          dispatch(requestUsers())
-          axios
-            .get('/users')
-            .then(res => dispatch(receiveUsers(res.data.data)))
-            .catch(err => console.log(err))
-          getUser(currentUser._id)
+          console.log(res)
+          console.log(`Removed ${plantId} from user's list!`)
+          queryClient.invalidateQueries('current-user')
         } else if (res.status === 404) {
           console.log('Something went wrong')
         }
@@ -95,14 +78,9 @@ export const ActionBar = ({ id }) => {
         },
       }).then(res => {
         if (res.status === 200) {
-          console.log(`Added ${plant.primaryName} to user's list!`)
-          // FIXME: updating store causes plants to reload (use react query instead?)
-          dispatch(requestUsers())
-          axios
-            .get('/users')
-            .then(res => dispatch(receiveUsers(res.data.data)))
-            .catch(err => console.log(err))
-          getUser(currentUser._id)
+          console.log(res)
+          console.log(`Added ${plantId} to user's list!`)
+          queryClient.invalidateQueries('current-user')
         } else if (res.status === 404) {
           console.log('Something went wrong')
         }
@@ -112,7 +90,7 @@ export const ActionBar = ({ id }) => {
 
   return (
     <>
-      {currentUser && plant && (
+      {currentUser && (
         <Wrapper>
           <Action
             aria-label='collect'

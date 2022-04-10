@@ -145,21 +145,24 @@ const getUsers = async (req, res) => {
 
 // (READ/GET) GETS USER BY ID
 const getUser = async (req, res) => {
-  const client = await MongoClient(MONGO_URI, options)
-  const id = req.params.id
-  await client.connect()
-  const db = client.db('plantgeekdb')
-  try {
-    const user = await db.collection('users').findOne({ _id: ObjectId(id) })
-    if (user) {
-      res.status(200).json({ status: 200, user: user })
-    } else {
-      res.status(404).json({ status: 404, message: 'User not found' })
+  if (req.params.id === 'undefined') {
+    return null
+  } else {
+    const client = await MongoClient(MONGO_URI, options)
+    await client.connect()
+    const db = client.db('plantgeekdb')
+    try {
+      const user = await db.collection('users').findOne({ _id: ObjectId(req.params.id) })
+      if (user) {
+        res.status(200).json({ status: 200, user: user })
+      } else {
+        res.status(404).json({ status: 404, message: 'User not found' })
+      }
+    } catch (err) {
+      console.error('Error getting user', err)
     }
-  } catch (err) {
-    console.error(err)
+    client.close()
   }
-  client.close()
 }
 
 const updateUser = async (req, res) => {

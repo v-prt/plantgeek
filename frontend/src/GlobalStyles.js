@@ -184,11 +184,10 @@ export default createGlobalStyle`
     html, body {
       font-family: 'Quicksand', sans-serif;
       background: ${COLORS.lightest};
-        // causes issues with window.scrollTo(0,0)
-        /* overflow-x: hidden; */
-        overscroll-behavior-y: none;
-        overscroll-behavior-x: none;
-        scroll-behavior: smooth;
+      // causes issues with window.scrollTo(0,0)
+      /* overflow-x: hidden; */
+      overscroll-behavior-y: none;
+      overscroll-behavior-x: none;
     }
     #root {
       height: 100%;

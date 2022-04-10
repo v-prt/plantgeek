@@ -13,19 +13,19 @@ import humidity from '../assets/humidity.svg'
 
 export const PlantCard = ({ plant, viewNeeds }) => {
   return (
-    <Wrapper key={plant?._id}>
+    <Wrapper key={plant._id}>
       <Div>
-        {!plant?.toxic && (
+        {!plant.toxic && (
           <Stamp>
             <FaPaw />
           </Stamp>
         )}
-        <InfoLink to={`/plant/${plant?._id}`}>
-          <ImageLoader src={plant?.imageUrl} alt={''} placeholder={placeholder} />
+        <InfoLink to={`/plant/${plant._id}`}>
+          <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
           <Name>
-            {plant?.primaryName.length > 25
-              ? plant?.primaryName.toLowerCase().substring(0, 23) + '...'
-              : plant?.primaryName.toLowerCase()}
+            {plant.primaryName.length > 25
+              ? plant.primaryName.toLowerCase().substring(0, 23) + '...'
+              : plant.primaryName.toLowerCase()}
           </Name>
         </InfoLink>
       </Div>
@@ -33,39 +33,39 @@ export const PlantCard = ({ plant, viewNeeds }) => {
         <Row>
           <img src={sun} alt='light' />
           <Bar>
-            {plant?.light === 'low to bright indirect' && <Indicator level={'1'} />}
-            {plant?.light === 'medium indirect' && <Indicator level={'1-2'} />}
-            {plant?.light === 'medium to bright indirect' && <Indicator level={'2'} />}
-            {plant?.light === 'bright indirect' && <Indicator level={'2-3'} />}
-            {plant?.light === 'bright' && <Indicator level={'3'} />}
+            {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
+            {plant.light === 'medium indirect' && <Indicator level={'1-2'} />}
+            {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
+            {plant.light === 'bright indirect' && <Indicator level={'2-3'} />}
+            {plant.light === 'bright' && <Indicator level={'3'} />}
           </Bar>
         </Row>
         <Row>
           <img src={water} alt='water' />
           <Bar>
-            {plant?.water === 'low' && <Indicator level={'1'} />}
-            {plant?.water === 'low to medium' && <Indicator level={'1-2'} />}
-            {plant?.water === 'medium' && <Indicator level={'2'} />}
-            {plant?.water === 'medium to high' && <Indicator level={'2-3'} />}
-            {plant?.water === 'high' && <Indicator level={'3'} />}
+            {plant.water === 'low' && <Indicator level={'1'} />}
+            {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+            {plant.water === 'medium' && <Indicator level={'2'} />}
+            {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+            {plant.water === 'high' && <Indicator level={'3'} />}
           </Bar>
         </Row>
         <Row>
           <img src={temp} alt='temperature' />
           <Bar>
-            {plant?.temperature === 'average' && <Indicator level={'1-2'} />}
-            {plant?.temperature === 'warm' && <Indicator level={'3'} />}
+            {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+            {plant.temperature === 'warm' && <Indicator level={'3'} />}
           </Bar>
         </Row>
         <Row>
           <img src={humidity} alt='humidity' />
           <Bar>
-            {plant?.humidity === 'average' && <Indicator level={'1-2'} />}
-            {plant?.humidity === 'high' && <Indicator level={'3'} />}
+            {plant.humidity === 'average' && <Indicator level={'1-2'} />}
+            {plant.humidity === 'high' && <Indicator level={'3'} />}
           </Bar>
         </Row>
       </Needs>
-      <ActionBar id={plant?._id} />
+      <ActionBar plantId={plant._id} />
     </Wrapper>
   )
 }

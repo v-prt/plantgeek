@@ -72,7 +72,7 @@ export const PlantList = ({ list, title }) => {
               </div>
             </div>
           </div>
-          <Plants>{status === 'success' ? plants : <Ellipsis />}</Plants>
+          <Plants>{plants ? plants : <Ellipsis />}</Plants>
         </div>
       </FadeIn>
     </ListWrapper>
