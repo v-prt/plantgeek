@@ -61,30 +61,6 @@ export const UserProfile = () => {
         )}
       </FadeIn>
       <FadeIn delay={300}>
-        {currentUser.favorites.length > 0 ? (
-          <PlantList user={currentUser} list={currentUser.favorites} title='favorites' />
-        ) : (
-          <ListWrapper>
-            <FadeIn>
-              <div className='inner'>
-                <div className='header'>
-                  <h2>
-                    <span className='icon'>
-                      <AiOutlineStar />
-                    </span>
-                    favorites
-                  </h2>
-                  <div className='info'>
-                    <span className='num-plants'>0 plants</span>
-                  </div>
-                </div>
-                <p className='empty'>No plants in favorites.</p>
-              </div>
-            </FadeIn>
-          </ListWrapper>
-        )}
-      </FadeIn>
-      <FadeIn delay={400}>
         {currentUser.wishlist.length > 0 ? (
           <PlantList user={currentUser} list={currentUser.wishlist} title='wishlist' />
         ) : (
@@ -103,6 +79,30 @@ export const UserProfile = () => {
                   </div>
                 </div>
                 <p className='empty'>No plants in wishlist.</p>
+              </div>
+            </FadeIn>
+          </ListWrapper>
+        )}
+      </FadeIn>
+      <FadeIn delay={400}>
+        {currentUser.favorites.length > 0 ? (
+          <PlantList user={currentUser} list={currentUser.favorites} title='favorites' />
+        ) : (
+          <ListWrapper>
+            <FadeIn>
+              <div className='inner'>
+                <div className='header'>
+                  <h2>
+                    <span className='icon'>
+                      <AiOutlineStar />
+                    </span>
+                    favorites
+                  </h2>
+                  <div className='info'>
+                    <span className='num-plants'>0 plants</span>
+                  </div>
+                </div>
+                <p className='empty'>No plants in favorites.</p>
               </div>
             </FadeIn>
           </ListWrapper>
