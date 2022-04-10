@@ -116,7 +116,7 @@ export const SignUp = () => {
             {({ status, isSubmitting }) => (
               <Form>
                 <FormItem name='firstName' label='First name'>
-                  <Input name='firstName' type='text' placeholder='Jane' autoFocus />
+                  <Input name='firstName' type='text' placeholder='Jane' />
                 </FormItem>
                 <FormItem name='lastName' label='Last name'>
                   <Input name='lastName' type='text' placeholder='Doe' />
@@ -162,8 +162,10 @@ export const SignUp = () => {
 }
 
 export const Wrapper = styled.main`
-  display: flex;
-  place-content: center;
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    display: flex;
+    place-content: center;
+  }
 `
 
 export const Card = styled.div`

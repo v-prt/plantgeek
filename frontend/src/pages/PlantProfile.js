@@ -100,7 +100,7 @@ export const PlantProfile = () => {
 
   return (
     <Wrapper>
-      {plant ? (
+      {plant && (
         <>
           <FadeIn>
             <section className='heading'>
@@ -229,9 +229,11 @@ export const PlantProfile = () => {
             </FadeIn>
           )} */}
         </>
+      )}
+      {/* // FIXME: out of place on mobile
       ) : (
         <BeatingHeart />
-      )}
+      )} */}
     </Wrapper>
   )
 }

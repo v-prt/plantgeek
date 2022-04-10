@@ -12,7 +12,7 @@ import { PlantCard } from '../components/PlantCard'
 import { Formik, Form } from 'formik'
 import { Input, Select } from 'formik-antd'
 import { Button } from 'antd'
-import { ScrollButton } from '../components/general/ScrollButton'
+// import { ScrollButton } from '../components/general/ScrollButton'
 import { BiSearch } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
@@ -97,7 +97,7 @@ export const Browse = () => {
             </Info>
           </div>
         )}
-        <section className='inner'>
+        <section className='filter-bar'>
           <Formik initialValues={formData} onSubmit={handleSubmit}>
             {({ values, setValues, submitForm, resetForm }) => (
               <Form>
@@ -217,10 +217,10 @@ export const Browse = () => {
               </Form>
             )}
           </Formik>
-          <Results disabled={sidebarOpen}>
-            {status === 'success' ? plants : <Ellipsis color='#222' />}
-          </Results>
         </section>
+        <Results disabled={sidebarOpen}>
+          {status === 'success' ? plants : <Ellipsis color='#222' />}
+        </Results>
       </FadeIn>
     </Wrapper>
   )
@@ -239,24 +239,19 @@ const Wrapper = styled.main`
     justify-content: space-around;
     margin: 20px 0;
   }
-  .inner {
+  .filter-bar {
     background: #f2f2f2;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-    flex: 1;
+    z-index: 10;
     form {
-      background: #f2f2f2;
-      box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      position: sticky;
-      padding-bottom: 5px;
-      top: 50px;
       grid-gap: 10px;
-      z-index: 10;
+      position: relative;
       .form-upper {
         width: 100%;
         display: flex;

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import axios from 'axios'
 import { useQueryClient } from 'react-query'
 import { UserContext } from '../contexts/UserContext'

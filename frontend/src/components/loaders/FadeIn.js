@@ -25,11 +25,7 @@ const fadeIn = keyframes`
 `
 
 const Wrapper = styled.div`
-  height: 100%;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
   @media only screen and (prefers-reduced-motion: no-preference) {
     animation-name: ${fadeIn};
     animation-fill-mode: backwards;
