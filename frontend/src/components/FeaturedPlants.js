@@ -113,7 +113,6 @@ const Plants = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  max-width: 900px;
 `
 
 const Info = styled.div`

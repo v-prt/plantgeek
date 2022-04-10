@@ -5,6 +5,7 @@ import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
+import { LoadingOutlined } from '@ant-design/icons'
 import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
@@ -15,13 +16,15 @@ export const ActionBar = ({ plantId }) => {
   const [submitting, setSubmitting] = useState(false)
 
   const handleList = list => {
-    setSubmitting(true)
     let data
     if (list === currentUser.collection) {
+      setSubmitting('collection')
       data = { collection: plantId }
     } else if (list === currentUser.favorites) {
+      setSubmitting('favorites')
       data = { favorites: plantId }
     } else if (list === currentUser.wishlist) {
+      setSubmitting('wishlist')
       data = { wishlist: plantId }
     }
     if (list && list.find(id => id === plantId)) {
@@ -61,25 +64,25 @@ export const ActionBar = ({ plantId }) => {
             className='collection'
             aria-label='collect'
             onClick={() => handleList(currentUser.collection)}
-            disabled={submitting}
+            disabled={submitting === 'collection'}
             added={currentUser.collection.find(id => id === plantId)}>
-            <RiPlantLine />
+            {submitting === 'collection' ? <LoadingOutlined spin /> : <RiPlantLine />}
           </Action>
           <Action
             className='wishlist'
             aria-label='wishlist'
             onClick={() => handleList(currentUser.wishlist)}
-            disabled={submitting}
+            disabled={submitting === 'wishlist'}
             added={currentUser.wishlist.find(id => id === plantId)}>
-            <AiOutlineStar />
+            {submitting === 'wishlist' ? <LoadingOutlined spin /> : <AiOutlineStar />}
           </Action>
           <Action
             className='favorites'
             aria-label='favorite'
             onClick={() => handleList(currentUser.favorites)}
-            disabled={submitting}
+            disabled={submitting === 'favorites'}
             added={currentUser.favorites.find(id => id === plantId)}>
-            <TiHeartOutline />
+            {submitting === 'favorites' ? <LoadingOutlined spin /> : <TiHeartOutline />}
           </Action>
         </Wrapper>
       )}

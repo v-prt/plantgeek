@@ -29,7 +29,7 @@ export const ImageLoader = ({ src, alt, placeholder }) => {
           <img
             src={placeholder}
             alt={alt}
-            className={`placeholder smooth-image image-${imageLoaded ? 'visible' : 'hidden'}`}
+            className={`placeholder smooth-image ${imageLoaded ? 'visible' : 'hidden'}`}
             onLoad={() => setImageLoaded(true)}
           />
           {!imageLoaded && (
@@ -43,7 +43,7 @@ export const ImageLoader = ({ src, alt, placeholder }) => {
           <img
             src={src}
             alt={alt}
-            className={`smooth-image image-${imageLoaded ? 'visible' : 'hidden'}`}
+            className={`smooth-image ${imageLoaded ? 'visible' : 'hidden'}`}
             onLoad={() => setImageLoaded(true)}
           />
           {!imageLoaded && (
@@ -62,10 +62,10 @@ const Wrapper = styled.div`
   .smooth-image {
     transition: opacity 1s;
   }
-  .image-visible {
+  .visible {
     opacity: 1;
   }
-  .image-hidden {
+  .hidden {
     opacity: 0;
   }
 `

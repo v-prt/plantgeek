@@ -96,7 +96,6 @@ const Body = styled.div`
     align-items: center;
     margin: 50px auto 0 auto;
     padding: 10px 0;
-    flex: 1;
     section {
       margin: 10px auto;
       padding: 20px;

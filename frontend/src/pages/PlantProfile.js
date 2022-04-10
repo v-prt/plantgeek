@@ -100,7 +100,7 @@ export const PlantProfile = () => {
 
   return (
     <Wrapper>
-      {plant && (
+      {plant ? (
         <>
           <FadeIn>
             <section className='heading'>
@@ -207,41 +207,15 @@ export const PlantProfile = () => {
               </Button>
             </DangerZone>
           )}
-          {/* TODO: gallery section */}
-          {/* <FadeIn>
-            <section className='gallery'>
-              <h2>gallery</h2>
-              {plant.gallery?.length > 0
-                ? plant.gallery.map(image => <img className='gallery-image' src={image} alt='' />)
-                : 'This plant has no additional images yet. Upload new images of this plant to add to our gallery!'}
-            </section>
-          </FadeIn> */}
-          {/* TODO: similar plants section (genus) */}
-          {/* <FadeIn>
-            <section className='similar-plants'>
-              <h2>similar plants</h2>
-            </section>
-          </FadeIn> */}
-          {/* TODO: wip */}
-          {/* {currentUser && (
-            <FadeIn>
-              <UpdatePlant currentUser={currentUser} plant={plant} />
-            </FadeIn>
-          )} */}
         </>
-      )}
-      {/* // FIXME: out of place on mobile
       ) : (
         <BeatingHeart />
-      )} */}
+      )}
     </Wrapper>
   )
 }
 
 const Wrapper = styled.main`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   .heading {
     background: ${COLORS.light};
     h1 {

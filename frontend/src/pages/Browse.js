@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import { useInfiniteQuery } from 'react-query'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
-import { UserContext } from '../contexts/UserContext'
 import { PlantContext } from '../contexts/PlantContext'
 
 import styled from 'styled-components/macro'
@@ -12,7 +12,6 @@ import { PlantCard } from '../components/PlantCard'
 import { Formik, Form } from 'formik'
 import { Input, Select } from 'formik-antd'
 import { Button } from 'antd'
-// import { ScrollButton } from '../components/general/ScrollButton'
 import { BiSearch } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
@@ -28,9 +27,8 @@ const { Option } = Select
 export const Browse = () => {
   const submitRef = useRef(0)
   const { formData, setFormData, viewNeeds, setViewNeeds } = useContext(PlantContext)
-  const { currentUser } = useContext(UserContext)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [plants, setPlants] = useState([])
+  const [plants, setPlants] = useState(null)
 
   const { data, status } = useInfiniteQuery(
     ['plants', formData],
@@ -72,156 +70,163 @@ export const Browse = () => {
   return (
     <Wrapper>
       <FadeIn>
-        {currentUser && (
-          <div className='info-box'>
-            <Info>
-              <Icon className='collection'>
-                <RiPlantLine />
-              </Icon>
-              <b>Have a plant?</b>
-              <p>Add it to your collection</p>
-            </Info>
-            <Info>
-              <Icon className='wishlist'>
-                <AiOutlineStar />
-              </Icon>
-              <b>Want a plant?</b>
-              <p>Add it to your wishlist</p>
-            </Info>
-            <Info>
-              <Icon className='favorite'>
-                <TiHeartOutline />
-              </Icon>
-              <b>Love a plant?</b>
-              <p>Add it to your favorites</p>
-            </Info>
-          </div>
-        )}
-        <section className='filter-bar'>
-          <Formik initialValues={formData} onSubmit={handleSubmit}>
-            {({ values, setValues, submitForm, resetForm }) => (
-              <Form>
-                <div className='form-upper'>
-                  <div className='search'>
-                    <Input
-                      name='primaryName'
-                      placeholder='Search'
-                      value={values.primaryName}
-                      prefix={<BiSearch />}
+        <section className='heading'>
+          <h1>browse houseplants</h1>
+          <p>
+            Search hundreds of houseplants by name or genus. Use the filters to refine your results
+            and sort to quickly find any plant.
+          </p>
+          <p>
+            Can't find a specific plant? <Link to='/contribute'>Contribute to our database.</Link>{' '}
+            You'll earn badges for approved submissions! If you notice any corrupt or duplicate
+            information please report it <Link to='/contact'>here</Link>.
+          </p>
+        </section>
+      </FadeIn>
+      <FadeIn delay={200}>
+        <div className='info-box'>
+          <Info>
+            <Icon className='collection'>
+              <RiPlantLine />
+            </Icon>
+            <b>Have a plant?</b>
+            <p>Add it to your collection</p>
+          </Info>
+          <Info>
+            <Icon className='wishlist'>
+              <AiOutlineStar />
+            </Icon>
+            <b>Want a plant?</b>
+            <p>Add it to your wishlist</p>
+          </Info>
+          <Info>
+            <Icon className='favorite'>
+              <TiHeartOutline />
+            </Icon>
+            <b>Love a plant?</b>
+            <p>Add it to your favorites</p>
+          </Info>
+        </div>
+      </FadeIn>
+      <section className='filter-bar'>
+        <Formik initialValues={formData} onSubmit={handleSubmit}>
+          {({ values, setValues, submitForm, resetForm }) => (
+            <Form>
+              <div className='form-upper'>
+                <div className='search'>
+                  <Input
+                    name='primaryName'
+                    placeholder='Search by name or genus'
+                    value={values.primaryName}
+                    prefix={<BiSearch />}
+                    onChange={submitForm}
+                    style={{ width: '100%' }}
+                    allowClear
+                  />
+                </div>
+                <Button
+                  className='filter-menu-btn'
+                  type='primary'
+                  onClick={() => setSidebarOpen(!sidebarOpen)}>
+                  <FilterOutlined />
+                  <span className='label'> Filter</span>
+                </Button>
+              </div>
+              <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
+                <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
+                <div className='filter-menu-inner'>
+                  <p className='num-results'>{plants?.length} results</p>
+                  <div className='filter'>
+                    <p>Filter by</p>
+                    <Select
+                      name='toxic'
                       onChange={submitForm}
+                      placeholder='Toxicity'
                       style={{ width: '100%' }}
-                      allowClear
-                    />
+                      allowClear>
+                      <Option value={true}>Toxic</Option>
+                      <Option value={false}>Non-toxic</Option>
+                    </Select>
+                  </div>
+                  <div className='filter'>
+                    <p>Sort by</p>
+                    <Select
+                      name='sort'
+                      onChange={submitForm}
+                      placeholder='Sort'
+                      style={{ width: '100%' }}>
+                      <Option value='name-asc'>
+                        <ArrowDownOutlined /> Name (A-Z)
+                      </Option>
+                      <Option value='name-desc'>
+                        <ArrowUpOutlined /> Name (Z-A)
+                      </Option>
+                    </Select>
+                  </div>
+                  <div className='filter'>
+                    <p>Display</p>
+                    <div className='toggle-wrapper'>
+                      <span className='toggle-option'>Need levels</span>
+                      <Toggle>
+                        <input
+                          id='needs-toggle'
+                          type='checkbox'
+                          onChange={ev => setViewNeeds(ev.target.checked)}
+                        />
+                        <span className='slider'></span>
+                      </Toggle>
+                    </div>
                   </div>
                   <Button
-                    className='filter-menu-btn'
-                    type='primary'
-                    onClick={() => setSidebarOpen(!sidebarOpen)}>
-                    <FilterOutlined />
-                    <span className='label'> Filter</span>
+                    type='secondary'
+                    className='reset-filters'
+                    onClick={() => {
+                      resetForm()
+                      setFormData({ sort: 'name-asc' })
+                      setValues(formData)
+                      setSidebarOpen(false)
+                    }}>
+                    Reset all filters
                   </Button>
-                  {/* <ScrollButton /> */}
                 </div>
-                <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
-                  <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
-                  <div className='filter-menu-inner'>
-                    <p className='num-results'>{plants.length} results</p>
-                    <div className='filter'>
-                      <p>Filter by</p>
-                      <Select
-                        name='toxic'
-                        onChange={submitForm}
-                        placeholder='Toxicity'
-                        style={{ width: '100%' }}
-                        defaultValue={''}
-                        allowClear>
-                        <Option value=''>All</Option>
-                        <Option value={true}>Toxic</Option>
-                        <Option value={false}>Non-toxic</Option>
-                      </Select>
-                    </div>
-                    <div className='filter'>
-                      <p>Sort by</p>
-                      <Select
-                        name='sort'
-                        onChange={submitForm}
-                        placeholder='Sort'
-                        style={{ width: '100%' }}>
-                        {/* FIXME: Z-A doesn't work */}
-                        <Option value='name-asc'>
-                          <ArrowDownOutlined /> Name (A-Z)
-                        </Option>
-                        <Option value='name-desc'>
-                          <ArrowUpOutlined /> Name (Z-A)
-                        </Option>
-                        {/* TODO: difficulty level */}
-                      </Select>
-                    </div>
-                    <div className='filter'>
-                      <p>Display</p>
-                      <div className='toggle-wrapper'>
-                        <span className='toggle-option'>Need levels</span>
-                        <Toggle>
-                          <input
-                            id='needs-toggle'
-                            type='checkbox'
-                            onChange={ev => setViewNeeds(ev.target.checked)}
-                          />
-                          <span className='slider'></span>
-                        </Toggle>
-                      </div>
-                    </div>
+              </div>
+              <div className='form-lower'>
+                <div className='search-params'>
+                  {formData.primaryName && (
                     <Button
-                      type='secondary'
-                      className='reset-filters'
+                      className='clear-btn'
                       onClick={() => {
-                        resetForm()
-                        setFormData({ sort: 'name-asc' })
-                        setValues(formData)
-                        setSidebarOpen(false)
+                        setValues({ ...values, primaryName: '' })
+                        submitForm()
                       }}>
-                      Reset
+                      {formData.primaryName}
+                      <CloseCircleOutlined />
                     </Button>
-                  </div>
-                </div>
-                <div className='form-lower'>
-                  <div className='search-params'>
-                    {formData.primaryName && (
-                      <Button
-                        className='clear-btn'
-                        onClick={() => {
-                          setValues({ ...values, primaryName: '' })
-                          submitForm()
-                        }}>
-                        {formData.primaryName}
-                        <CloseCircleOutlined />
-                      </Button>
-                    )}
-                    {(formData.toxic === true || formData.toxic === false) && (
-                      <Button
-                        className='clear-btn'
-                        onClick={() => {
-                          setValues({ ...values, toxic: '' })
-                          submitForm()
-                        }}>
-                        {formData.toxic === true && 'Toxic'}
-                        {formData.toxic === false && 'Non-toxic'}
-                        <CloseCircleOutlined />
-                      </Button>
-                    )}
-                    <Button className='clear-btn' disabled>
-                      {formData.sort === 'name-asc' ? 'Name (A-Z)' : 'Name (Z-A)'}
+                  )}
+                  {(formData.toxic === true || formData.toxic === false) && (
+                    <Button
+                      className='clear-btn'
+                      onClick={() => {
+                        setValues({ ...values, toxic: '' })
+                        submitForm()
+                      }}>
+                      {formData.toxic === true && 'Toxic'}
+                      {formData.toxic === false && 'Non-toxic'}
+                      <CloseCircleOutlined />
                     </Button>
-                  </div>
+                  )}
+                  <Button className='clear-btn' disabled>
+                    {formData.sort === 'name-asc' ? 'Name (A-Z)' : 'Name (Z-A)'}
+                  </Button>
                 </div>
-              </Form>
-            )}
-          </Formik>
-        </section>
-        <Results disabled={sidebarOpen}>
-          {status === 'success' ? plants : <Ellipsis color='#222' />}
-        </Results>
-      </FadeIn>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </section>
+      <Results disabled={sidebarOpen}>
+        {status === 'success' && plants ? plants : <Ellipsis color='#222' />}
+      </Results>
     </Wrapper>
   )
 }
@@ -229,6 +234,28 @@ export const Browse = () => {
 const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
+  .heading {
+    background: ${COLORS.light};
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    h1 {
+      font-size: 1.8rem;
+    }
+    p {
+      max-width: 600px;
+      margin: 10px;
+    }
+    a {
+      font-weight: bold;
+    }
+    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  }
   .info-box {
     background: #fff;
     border: 1px dotted #ccc;
@@ -245,6 +272,11 @@ const Wrapper = styled.main`
     display: flex;
     flex-direction: column;
     z-index: 10;
+    position: sticky;
+    top: 30px;
+    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+      top: -30px;
+    }
     form {
       display: flex;
       flex-wrap: wrap;
@@ -257,6 +289,10 @@ const Wrapper = styled.main`
         display: flex;
         grid-gap: 10px;
         margin-top: 10px;
+      }
+      .search {
+        flex: 1;
+        z-index: 10;
       }
       .filter-menu-btn {
         z-index: 10;
@@ -303,34 +339,30 @@ const Wrapper = styled.main`
         padding: 20px;
         border-radius: 5px;
         box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+        .num-results {
+          text-align: center;
+          font-size: 0.8rem;
+          color: #999;
+        }
+        .filter {
+          margin: 10px 0;
+          flex: 1;
+          z-index: 10;
+        }
+        .toggle-wrapper {
+          display: flex;
+          align-items: center;
+          padding: 5px 10px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          justify-content: space-between;
+          .toggle-option {
+            margin-right: 10px;
+            line-height: 1;
+          }
+        }
         .reset-filters {
           margin-top: 20px;
-        }
-      }
-      .num-results {
-        text-align: center;
-        font-size: 0.8rem;
-        color: #999;
-      }
-      .filter {
-        margin: 10px 0;
-        flex: 1;
-        z-index: 10;
-      }
-      .search {
-        flex: 1;
-        z-index: 10;
-      }
-      .toggle-wrapper {
-        display: flex;
-        align-items: center;
-        padding: 5px 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        justify-content: space-between;
-        .toggle-option {
-          margin-right: 10px;
-          line-height: 1;
         }
       }
       @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
@@ -365,7 +397,6 @@ const Wrapper = styled.main`
 
 const Results = styled.div`
   min-height: 300px;
-  flex: 1;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

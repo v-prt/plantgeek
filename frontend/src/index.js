@@ -5,13 +5,7 @@ import { Provider } from 'react-redux'
 import configureStore from './store'
 import { UserProvider } from './contexts/UserContext'
 import { PlantProvider } from './contexts/PlantContext'
-import {
-  // useQuery,
-  // useMutation,
-  // useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
 // set default behavior of query client to only fetch once on render and when stale after 3 hours
