@@ -196,7 +196,7 @@ export const PlantProfile = () => {
           </FadeIn>
           {currentUser && (
             <FadeIn>
-              <ActionBox id={plant._id} />
+              <ActionBox plantId={plant._id} />
             </FadeIn>
           )}
           {currentUser?.role === 'admin' && (

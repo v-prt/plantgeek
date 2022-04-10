@@ -1,10 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useQueryClient } from 'react-query'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
-import { plantsArray } from '../reducers/plantReducer'
-import { requestUsers, receiveUsers } from '../actions.js'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
@@ -12,100 +10,45 @@ import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 
-export const ActionBox = ({ id }) => {
-  const dispatch = useDispatch()
-  const { getUser, currentUser } = useContext(UserContext)
-  const plants = useSelector(plantsArray)
-  const [plant, setPlant] = useState(undefined)
-  const [inCollection, setInCollection] = useState(false)
-  const [inFavorites, setInFavorites] = useState(false)
-  const [inWishlist, setInWishlist] = useState(false)
-  // FIXME: need to improve loading state of action buttons (don't use set timeout)
-  const [clicked1, setClicked1] = useState(false)
-  const [clicked2, setClicked2] = useState(false)
-  const [clicked3, setClicked3] = useState(false)
-
-  useEffect(() => {
-    setPlant(plants.find(plant => plant._id === id))
-    // CLEANUP - PREVENTS MEMORY LEAK
-    return () => {
-      setPlant(undefined)
-    }
-  }, [plants, id])
-
-  useEffect(() => {
-    if (currentUser && plant) {
-      setInCollection(currentUser.collection.find(id => id === plant._id))
-      setInFavorites(currentUser.favorites.find(id => id === plant._id))
-      setInWishlist(currentUser.wishlist.find(id => id === plant._id))
-    }
-  }, [currentUser, plant])
+export const ActionBox = ({ plantId }) => {
+  const queryClient = new useQueryClient()
+  const { currentUser } = useContext(UserContext)
+  const [submitting, setSubmitting] = useState(false)
 
   const handleList = list => {
+    setSubmitting(true)
     let data
     if (list === currentUser.collection) {
-      setClicked1(true)
-      setTimeout(() => {
-        setClicked1(false)
-      }, 3000)
-      data = { collection: plant._id }
+      data = { collection: plantId }
     } else if (list === currentUser.favorites) {
-      setClicked2(true)
-      setTimeout(() => {
-        setClicked2(false)
-      }, 3000)
-      data = { favorites: plant._id }
+      data = { favorites: plantId }
     } else if (list === currentUser.wishlist) {
-      setClicked3(true)
-      setTimeout(() => {
-        setClicked3(false)
-      }, 3000)
-      data = { wishlist: plant._id }
+      data = { wishlist: plantId }
     }
-    if (list && list.find(id => id === plant._id)) {
+    if (list && list.find(id => id === plantId)) {
       // REMOVES PLANT
-      fetch(`/${currentUser.username}/remove`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-        headers: {
-          Accept: 'application/json',
-          'Content-type': 'application/json',
-        },
-      }).then(res => {
+      axios.put(`/${currentUser.username}/remove`, data).then(res => {
         if (res.status === 200) {
-          console.log(`Removed ${plant.primaryName} from user's list!`)
-          // FIXME: updating store causes plants to reload (use react query instead?)
-          dispatch(requestUsers())
-          axios
-            .get('/users')
-            .then(res => dispatch(receiveUsers(res.data.data)))
-            .catch(err => console.log(err))
-          getUser(currentUser._id)
+          console.log(res)
+          console.log(`Removed ${plantId} from user's list!`)
+          queryClient.invalidateQueries('current-user')
+          setSubmitting(false)
         } else if (res.status === 404) {
           console.log('Something went wrong')
+          setSubmitting(false)
         }
       })
     } else {
       // ADDS PLANT
-      fetch(`/${currentUser.username}/add`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-        headers: {
-          Accept: 'application/json',
-          'Content-type': 'application/json',
-        },
-      }).then(res => {
+      axios.put(`/${currentUser.username}/add`, data).then(res => {
         if (res.status === 200) {
-          console.log(`Added ${plant.primaryName} to user's list!`)
-          // FIXME: updating store causes plants to reload (use react query instead?)
-          dispatch(requestUsers())
-          axios
-            .get('/users')
-            .then(res => dispatch(receiveUsers(res.data.data)))
-            .catch(err => console.log(err))
-          getUser(currentUser._id)
+          console.log(res)
+          console.log(`Added ${plantId} to user's list!`)
+          queryClient.invalidateQueries('current-user')
+          setSubmitting(false)
         } else if (res.status === 404) {
           console.log('Something went wrong')
+          setSubmitting(false)
         }
       })
     }
@@ -115,9 +58,10 @@ export const ActionBox = ({ id }) => {
     <Wrapper>
       <div className='action-wrapper'>
         <Action
+          className='collection'
           aria-label='collect'
-          disabled={clicked1}
-          added={inCollection}
+          disabled={submitting}
+          added={currentUser.collection.find(id => id === plantId)}
           onClick={() => handleList(currentUser.collection)}>
           <RiPlantLine />
           <span>Have it</span>
@@ -133,8 +77,8 @@ export const ActionBox = ({ id }) => {
           className='wishlist'
           aria-label='wishlist'
           onClick={() => handleList(currentUser.wishlist)}
-          disabled={clicked3}
-          added={inWishlist}>
+          disabled={submitting}
+          added={currentUser.wishlist.find(id => id === plantId)}>
           <AiOutlineStar />
           <span>Want it</span>
         </Action>
@@ -147,11 +91,11 @@ export const ActionBox = ({ id }) => {
       </div>
       <div className='action-wrapper'>
         <Action
-          className='favorite'
+          className='favorites'
           aria-label='favorite'
           onClick={() => handleList(currentUser.favorites)}
-          disabled={clicked2}
-          added={inFavorites}>
+          disabled={submitting}
+          added={currentUser.favorites.find(id => id === plantId)}>
           <TiHeartOutline />
           <span>Love it</span>
         </Action>
@@ -200,8 +144,8 @@ const Wrapper = styled.div`
 `
 
 const Action = styled.button`
+  background: #e6e6e6;
   width: 100%;
-  background: ${props => (props.added ? `${COLORS.light}` : '#d9d9d9')};
   color: #000;
   opacity: ${props => (props.added ? '1' : '0.5')};
   display: flex;
@@ -216,29 +160,20 @@ const Action = styled.button`
     font-weight: bold;
   }
   &:hover,
-  &:focus,
-  &:disabled {
-    background: ${COLORS.light};
-    color: #000;
-    opacity: 0.5;
+  &:focus {
+    background: #ccc;
   }
   &:disabled {
+    opacity: 0.5;
     pointer-events: none;
   }
-  &.wishlist {
-    background: ${props => (props.added ? '#ffd24d' : '#d9d9d9')};
-    &:hover,
-    &:focus,
-    &:disabled {
-      background: #ffd24d;
-    }
+  &.collection {
+    background: ${props => (props.added ? COLORS.light : '')};
   }
-  &.favorite {
-    background: ${props => (props.added ? '#b493e6' : '#d9d9d9')};
-    &:hover,
-    &:focus,
-    &:disabled {
-      background: #b493e6;
-    }
+  &.wishlist {
+    background: ${props => (props.added ? '#ffd24d' : '')};
+  }
+  &.favorites {
+    background: ${props => (props.added ? '#b493e6' : '')};
   }
 `

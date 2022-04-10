@@ -12,77 +12,42 @@ import { AiOutlineStar } from 'react-icons/ai'
 export const ActionBar = ({ plantId }) => {
   const queryClient = new useQueryClient()
   const { currentUser } = useContext(UserContext)
-  const [inCollection, setInCollection] = useState(false)
-  const [inFavorites, setInFavorites] = useState(false)
-  const [inWishlist, setInWishlist] = useState(false)
-  // FIXME: need to improve loading state of action buttons (don't use set timeout)
-  const [clicked1, setClicked1] = useState(false)
-  const [clicked2, setClicked2] = useState(false)
-  const [clicked3, setClicked3] = useState(false)
-
-  useEffect(() => {
-    if (currentUser) {
-      setInCollection(currentUser.collection.find(id => id === plantId))
-      setInFavorites(currentUser.favorites.find(id => id === plantId))
-      setInWishlist(currentUser.wishlist.find(id => id === plantId))
-    }
-  }, [plantId, currentUser])
+  const [submitting, setSubmitting] = useState(false)
 
   const handleList = list => {
+    setSubmitting(true)
     let data
     if (list === currentUser.collection) {
-      setClicked1(true)
-      setTimeout(() => {
-        setClicked1(false)
-      }, 3000)
       data = { collection: plantId }
     } else if (list === currentUser.favorites) {
-      setClicked2(true)
-      setTimeout(() => {
-        setClicked2(false)
-      }, 3000)
       data = { favorites: plantId }
     } else if (list === currentUser.wishlist) {
-      setClicked3(true)
-      setTimeout(() => {
-        setClicked3(false)
-      }, 3000)
       data = { wishlist: plantId }
     }
     if (list && list.find(id => id === plantId)) {
       // REMOVES PLANT
-      fetch(`/${currentUser.username}/remove`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-        headers: {
-          Accept: 'application/json',
-          'Content-type': 'application/json',
-        },
-      }).then(res => {
+      axios.put(`/${currentUser.username}/remove`, data).then(res => {
         if (res.status === 200) {
           console.log(res)
           console.log(`Removed ${plantId} from user's list!`)
           queryClient.invalidateQueries('current-user')
+          setSubmitting(false)
         } else if (res.status === 404) {
           console.log('Something went wrong')
+          setSubmitting(false)
         }
       })
     } else {
       // ADDS PLANT
-      fetch(`/${currentUser.username}/add`, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-        headers: {
-          Accept: 'application/json',
-          'Content-type': 'application/json',
-        },
-      }).then(res => {
+      axios.put(`/${currentUser.username}/add`, data).then(res => {
         if (res.status === 200) {
           console.log(res)
           console.log(`Added ${plantId} to user's list!`)
           queryClient.invalidateQueries('current-user')
+          setSubmitting(false)
         } else if (res.status === 404) {
           console.log('Something went wrong')
+          setSubmitting(false)
         }
       })
     }
@@ -93,26 +58,27 @@ export const ActionBar = ({ plantId }) => {
       {currentUser && (
         <Wrapper>
           <Action
+            className='collection'
             aria-label='collect'
             onClick={() => handleList(currentUser.collection)}
-            disabled={clicked1}
-            added={inCollection}>
+            disabled={submitting}
+            added={currentUser.collection.find(id => id === plantId)}>
             <RiPlantLine />
           </Action>
           <Action
             className='wishlist'
             aria-label='wishlist'
             onClick={() => handleList(currentUser.wishlist)}
-            disabled={clicked3}
-            added={inWishlist}>
+            disabled={submitting}
+            added={currentUser.wishlist.find(id => id === plantId)}>
             <AiOutlineStar />
           </Action>
           <Action
-            className='favorite'
+            className='favorites'
             aria-label='favorite'
             onClick={() => handleList(currentUser.favorites)}
-            disabled={clicked2}
-            added={inFavorites}>
+            disabled={submitting}
+            added={currentUser.favorites.find(id => id === plantId)}>
             <TiHeartOutline />
           </Action>
         </Wrapper>
@@ -134,7 +100,6 @@ const Wrapper = styled.div`
 `
 
 const Action = styled.button`
-  background: ${props => (props.added ? `${COLORS.light}` : '')};
   color: #000;
   opacity: ${props => (props.added ? '1' : '0.5')};
   border-radius: 50%;
@@ -144,29 +109,20 @@ const Action = styled.button`
   place-content: center;
   font-size: 1.3rem;
   &:hover,
-  &:focus,
-  &:disabled {
-    background: ${COLORS.light};
-    color: #000;
-    opacity: 0.5;
+  &:focus {
+    background: #ccc;
   }
   &:disabled {
+    opacity: 0.5;
     pointer-events: none;
+  }
+  &.collection {
+    background: ${props => (props.added ? COLORS.light : '')};
   }
   &.wishlist {
     background: ${props => (props.added ? '#ffd24d' : '')};
-    &:hover,
-    &:focus,
-    &:disabled {
-      background: #ffd24d;
-    }
   }
-  &.favorite {
+  &.favorites {
     background: ${props => (props.added ? '#b493e6' : '')};
-    &:hover,
-    &:focus,
-    &:disabled {
-      background: #b493e6;
-    }
   }
 `

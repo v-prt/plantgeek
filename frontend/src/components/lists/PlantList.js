@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import axios from 'axios'
-
 import styled from 'styled-components/macro'
-import { Toggle } from '../../GlobalStyles'
+import { COLORS } from '../../GlobalStyles'
 import { FadeIn } from '../loaders/FadeIn'
 import { PlantCard } from '../PlantCard'
 import { Ellipsis } from '../loaders/Ellipsis'
@@ -12,10 +11,9 @@ import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 
 export const PlantList = ({ list, title }) => {
-  const [plants, setPlants] = useState([])
-  const [viewNeeds, setViewNeeds] = useState(false)
+  const [plants, setPlants] = useState(null)
 
-  const { data, status } = useInfiniteQuery(
+  const { data } = useInfiniteQuery(
     [`'user-${title}`, { ids: list }],
     async ({ pageParam, queryKey }) => {
       const { data } = await axios.get(`/user-plants/${pageParam ? pageParam : 0}`, {
@@ -30,10 +28,10 @@ export const PlantList = ({ list, title }) => {
       let pages = data.pages
       const array = Array.prototype.concat.apply([], pages)
       setPlants(
-        [array][0].map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />)
+        [array][0].map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={true} />)
       )
     }
-  }, [data, viewNeeds])
+  }, [data])
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -41,7 +39,7 @@ export const PlantList = ({ list, title }) => {
   }, [])
 
   return (
-    <ListWrapper>
+    <ListWrapper className={title}>
       <FadeIn>
         <div className='inner'>
           <div className='header'>
@@ -57,20 +55,6 @@ export const PlantList = ({ list, title }) => {
               </span>
               {title}
             </h2>
-            <div className='info'>
-              <span className='num-plants'>{list.length} plants</span>
-              <div className='toggle-wrapper'>
-                <span className='toggle-option'>Show needs</span>
-                <Toggle>
-                  <input
-                    id='needs-toggle'
-                    type='checkbox'
-                    onChange={ev => setViewNeeds(ev.target.checked)}
-                  />
-                  <span className='slider'></span>
-                </Toggle>
-              </div>
-            </div>
           </div>
           <Plants>{plants ? plants : <Ellipsis />}</Plants>
         </div>
@@ -82,6 +66,15 @@ export const PlantList = ({ list, title }) => {
 export const ListWrapper = styled.section`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  /* &.collection {
+    border: 2px solid ${COLORS.light};
+  }
+  &.wishlist {
+    border: 2px solid #ffd24d;
+  }
+  &.favorites {
+    border: 2px solid #b493e6;
+  } */
   .inner {
     .header {
       display: flex;
@@ -96,26 +89,6 @@ export const ListWrapper = styled.section`
         .icon {
           display: grid;
           margin-right: 10px;
-        }
-      }
-      .info {
-        display: flex;
-        align-items: center;
-        .num-plants {
-          margin-right: 10px;
-          color: #666;
-        }
-        .toggle-wrapper {
-          background: #fff;
-          width: fit-content;
-          display: flex;
-          align-items: center;
-          border-radius: 20px;
-          padding: 5px 10px;
-          .toggle-option {
-            margin-right: 20px;
-            line-height: 1;
-          }
         }
       }
     }

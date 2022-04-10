@@ -10,6 +10,7 @@ import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
+// import { FadeIn } from './loaders/FadeIn'
 
 export const PlantCard = ({ plant, viewNeeds }) => {
   return (
