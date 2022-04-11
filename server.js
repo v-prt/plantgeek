@@ -21,6 +21,7 @@ const {
 const {
   createPlant,
   getPlants,
+  getPlantsToReview,
   getPlant,
   getRandomPlants,
   getUserPlants,
@@ -54,13 +55,14 @@ app
   .put('/users/:id', updateUser)
   .put('/:username/add', addToUser)
   .put('/:username/remove', removeFromUser)
-  .delete('/:users/:_id', deleteUser)
+  .delete('/users/:_id', deleteUser)
   .post('/plants', createPlant)
   .get('/plants/:page', getPlants)
+  .get('/plants-to-review', getPlantsToReview)
   .get('/plant/:_id', getPlant)
   .get('/random-plants', getRandomPlants)
   .get('/user-plants/:page', getUserPlants)
-  .put('plants/:_id', updatePlant)
+  .put('/plants/:_id', updatePlant)
   .put('/plants/:_id/comments', addComment)
   .delete('/plants/:_id', deletePlant)
 

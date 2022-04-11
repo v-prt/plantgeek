@@ -85,7 +85,7 @@ export const Contribute = () => {
     if (!images) {
       setStatus('You must upload an image.')
       setSubmitting(false)
-    } else if (currentUser.role === 'admin') {
+    } else {
       // upload image to cloudinary via dropzone
       images.forEach(async image => {
         const formData = new FormData()
@@ -100,6 +100,7 @@ export const Contribute = () => {
         })
         const cloudinaryResponse = await response.json()
         // submit data to mongodb
+        const review = currentUser.role === 'admin' ? 'approved' : 'pending'
         // TODO: axios
         await fetch('/plants', {
           method: 'POST',
@@ -113,6 +114,7 @@ export const Contribute = () => {
             toxic: values.toxic === 'toxic' ? true : false,
             imageUrl: cloudinaryResponse.url,
             sourceUrl: values.sourceUrl,
+            review: review,
           }),
           headers: {
             Accept: 'application/json',
@@ -137,10 +139,6 @@ export const Contribute = () => {
             }
           })
       })
-    } else {
-      // TODO: submit for review
-      setStatus(`You're not an admin`)
-      setSubmitting(false)
     }
   }
 
@@ -157,13 +155,24 @@ export const Contribute = () => {
                 <img className='checkmark' src={checkmark} alt='' />
                 new plant submitted
               </h2>
-              <p>
-                Thank you! Your submission will be reviewed shortly and, if approved, you will see
-                the new plant on site soon. In the meantime, you may submit additional plant
-                information below.
-              </p>
+              {newPlant.review === 'approved' ? (
+                <p>
+                  Thank you! Since you're an admin, your submission has been automatically approved.
+                </p>
+              ) : (
+                <p>
+                  Thank you! Your submission will be reviewed shortly and, if approved, you will see
+                  the new plant on site soon. In the meantime, you may submit additional plant
+                  information below.
+                </p>
+              )}
             </div>
-            <PlantCard key={newPlant._id} plant={newPlant} approved={false} viewNeeds={true} />
+            <PlantCard
+              key={newPlant._id}
+              plant={newPlant}
+              pendingReview={newPlant.review === 'pending'}
+              viewNeeds={true}
+            />
           </section>
         )}
       </FadeIn>
@@ -184,7 +193,12 @@ export const Contribute = () => {
       <FadeIn delay={200}>
         <FormWrapper>
           <h2>new houseplant info</h2>
-          <Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={schema}
+            validateOnChange={false}
+            validateOnBlur={false}
+            onSubmit={handleSubmit}>
             {({ isSubmitting, resetForm }) => (
               <Form>
                 <FormItem label='Latin name' sublabel='(genus and species)' name='primaryName'>

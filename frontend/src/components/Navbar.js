@@ -4,12 +4,12 @@ import { UserContext } from '../contexts/UserContext'
 
 import plantgeekLogo from '../assets/logo.webp'
 import {
-  BiHomeHeart,
   BiSearch,
   BiCog,
   BiPlusCircle,
   BiLogInCircle,
   BiLogOutCircle,
+  BiBadgeCheck,
 } from 'react-icons/bi'
 import { CgProfile } from 'react-icons/cg'
 import styled from 'styled-components/macro'
@@ -28,12 +28,6 @@ export const Navbar = () => {
           </NavLink>
         </div>
         <div className='nav-links'>
-          <NavLink exact to='/'>
-            <div className='icon'>
-              <BiHomeHeart />
-            </div>
-            <span className='label'>home</span>
-          </NavLink>
           <NavLink to='/browse'>
             <div className='icon'>
               <BiSearch />
@@ -60,6 +54,14 @@ export const Navbar = () => {
                 </div>
                 <span className='label'>contribute</span>
               </NavLink>
+              {currentUser.role === 'admin' && (
+                <NavLink to='/review'>
+                  <div className='icon'>
+                    <BiBadgeCheck />
+                  </div>
+                  <span className='label'>review</span>
+                </NavLink>
+              )}
               <button className='logout-btn' onClick={handleLogout}>
                 <div className='icon'>
                   <BiLogOutCircle />

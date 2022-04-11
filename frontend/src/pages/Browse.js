@@ -11,7 +11,7 @@ import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
 import { Formik, Form } from 'formik'
 import { Input, Select } from 'formik-antd'
-import { Button } from 'antd'
+import { Button, Empty } from 'antd'
 import { BiSearch } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
@@ -57,8 +57,6 @@ export const Browse = () => {
   }, [data, viewNeeds])
 
   const handleSubmit = async values => {
-    console.log(values)
-    console.log(formData)
     submitRef.current++
     const thisSubmit = submitRef.current
     setTimeout(() => {
@@ -191,7 +189,7 @@ export const Browse = () => {
                     onClick={() => {
                       resetForm()
                       setFormData({ sort: 'name-asc' })
-                      setValues(formData)
+                      setValues({ sort: 'name-asc' })
                       setSidebarOpen(false)
                     }}>
                     Reset all filters
@@ -233,7 +231,15 @@ export const Browse = () => {
         </Formik>
       </section>
       <Results disabled={sidebarOpen}>
-        {status === 'success' && plants ? plants : <Ellipsis />}
+        {status === 'success' && plants ? (
+          plants.length > 0 ? (
+            plants
+          ) : (
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
+          )
+        ) : (
+          <Ellipsis />
+        )}
       </Results>
     </Wrapper>
   )

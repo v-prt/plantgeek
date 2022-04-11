@@ -33,7 +33,8 @@ const createPlant = async (req, res) => {
 const getPlants = async (req, res) => {
   const page = req.params.page ? parseInt(req.params.page) : 0
   const { toxic, primaryName, sort } = req.query
-  let filters
+  // don't include any plants which are pending review ($ne = not equal)
+  let filters = { review: { $ne: 'pending' } }
   if (toxic === 'true') {
     filters = { ...filters, toxic: true }
   } else if (toxic === 'false') {
@@ -74,6 +75,22 @@ const getPlants = async (req, res) => {
   }
 
   client.close()
+}
+
+const getPlantsToReview = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  try {
+    const plants = await db.collection('plants').find({ review: 'pending' }).toArray()
+    if (plants) {
+      res.status(200).json({ status: 200, plants: plants })
+    } else {
+      res.status(404).json({ status: 404, message: 'No plants found' })
+    }
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 // (READ/GET) GETS PLANT BY ID
@@ -172,17 +189,6 @@ const addComment = async (req, res) => {
 }
 
 const updatePlant = async (req, res) => {
-  const {
-    primaryName,
-    secondaryName,
-    light,
-    water,
-    temperature,
-    humidity,
-    toxic,
-    imageUrl,
-    sourceUrl,
-  } = req.body
   const client = await MongoClient(MONGO_URI, options)
   const _id = req.params._id
   try {
@@ -190,17 +196,7 @@ const updatePlant = async (req, res) => {
     const db = client.db('plantgeekdb')
     const filter = { _id: ObjectId(_id) }
     const update = {
-      $set: {
-        primaryName,
-        secondaryName,
-        light,
-        water,
-        temperature,
-        humidity,
-        toxic,
-        imageUrl,
-        sourceUrl,
-      },
+      $set: req.body,
     }
     const result = await db.collection('plants').updateOne(filter, update)
     res.status(200).json({ status: 200, data: result })
@@ -222,8 +218,8 @@ const deletePlant = async (req, res) => {
     const result = await db.collection('plants').deleteOne(filter)
     res.status(200).json({ status: 200, data: result })
   } catch (err) {
-    res.status(500).json({ status: 500, data: req.body, message: err.message })
     console.error(err)
+    res.status(500).json({ status: 500, data: req.body, message: err.message })
   }
   client.close()
 }
@@ -231,6 +227,7 @@ const deletePlant = async (req, res) => {
 module.exports = {
   createPlant,
   getPlants,
+  getPlantsToReview,
   getPlant,
   getRandomPlants,
   getUserPlants,

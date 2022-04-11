@@ -24,7 +24,7 @@ const Wrapper = styled.footer`
   color: ${COLORS.dark};
   font-size: 0.7rem;
   padding: 10px;
-  margin-top: auto;
+  /* margin-top: auto; */
   .inner {
     margin: auto;
     display: flex;

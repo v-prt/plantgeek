@@ -1,9 +1,13 @@
-import React from 'react'
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { useQueryClient } from 'react-query'
+import axios from 'axios'
+import { UserContext } from '../contexts/UserContext'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { ImageLoader } from './loaders/ImageLoader'
 import { ActionBar } from './ActionBar'
+import { LikeOutlined, DislikeOutlined } from '@ant-design/icons'
 import { FaPaw } from 'react-icons/fa'
 import placeholder from '../assets/plant-placeholder.svg'
 import sun from '../assets/sun.svg'
@@ -12,9 +16,53 @@ import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
 // import { FadeIn } from './loaders/FadeIn'
 
-export const PlantCard = ({ plant, viewNeeds }) => {
+export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
+  const queryClient = new useQueryClient()
+  const { currentUser } = useContext(UserContext)
+
+  const handleApprove = () => {
+    if (
+      window.confirm(
+        'Are you sure you want to approve this plant? It will become publicly visible.'
+      )
+    ) {
+      try {
+        axios.put(`/plants/${plant._id}`, { review: 'approved' })
+        queryClient.invalidateQueries('plants-to-review')
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
+  const handleReject = plantId => {
+    if (window.confirm('Are you sure you want to reject and permanently delete this plant?')) {
+      try {
+        axios.delete(`/plants/${plantId}`).catch(err => console.log(err))
+        queryClient.invalidateQueries('plants-to-review')
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
   return (
     <Wrapper key={plant._id}>
+      {pendingReview && (
+        <div className='pending-review'>
+          {currentUser.role === 'admin' && (
+            <button onClick={handleApprove}>
+              <LikeOutlined />
+            </button>
+          )}
+          <span className='label'>PENDING REVIEW</span>
+          {currentUser.role === 'admin' && (
+            <button onClick={() => handleReject(plant._id)}>
+              <DislikeOutlined />
+            </button>
+          )}
+        </div>
+      )}
       <Div>
         {!plant.toxic && (
           <Stamp>
@@ -83,9 +131,38 @@ const Wrapper = styled.div`
   transition: 0.2s ease-in-out;
   min-height: 250px;
   width: 250px;
+  position: relative;
   &:hover {
     color: ${COLORS.darkest};
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+  .pending-review {
+    background: orange;
+    color: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 1;
+    font-size: 0.8rem;
+    padding: 5px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    font-weight: bold;
+    button {
+      background: #fff;
+      color: orange;
+      margin: 0 5px;
+      display: grid;
+      place-content: center;
+      padding: 5px;
+      border-radius: 50%;
+      &:hover,
+      &:focus {
+        color: #000;
+      }
+    }
   }
 `
 
@@ -129,7 +206,7 @@ const InfoLink = styled(Link)`
   }
   &:hover {
     p {
-      color: ${COLORS.accent};
+      color: ${COLORS.mediumLight};
     }
   }
 `

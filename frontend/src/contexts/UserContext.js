@@ -28,7 +28,6 @@ export const UserProvider = ({ children }) => {
       setToken(res.data.token)
       return res.data
     } catch (err) {
-      console.log(err.response)
       return { error: err.response.data }
     }
   }
@@ -40,7 +39,6 @@ export const UserProvider = ({ children }) => {
       setToken(res.data.token)
       return res.data
     } catch (err) {
-      console.log(err.response)
       return { error: err.response.data }
     }
   }

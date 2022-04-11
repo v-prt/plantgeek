@@ -10,7 +10,7 @@ import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
 import placeholder from '../assets/plant-placeholder.svg'
-import { Button } from 'antd'
+import { Alert, Button } from 'antd'
 import { WarningOutlined, SafetyOutlined } from '@ant-design/icons'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
@@ -87,14 +87,14 @@ export const PlantProfile = () => {
   }, [plant])
 
   // DELETE PLANT (ADMINS ONLY)
-  const deletePlant = () => {
+  const handleDelete = plantId => {
     if (
       window.confirm(
         'Are you sure you want to delete this plant from the database? This cannot be undone!'
       )
     ) {
       window.location.replace('/browse')
-      axios.delete(`/plants/${plant._id}`).catch(err => console.log(err))
+      axios.delete(`/plants/${plantId}`).catch(err => console.log(err))
     }
   }
 
@@ -103,6 +103,9 @@ export const PlantProfile = () => {
       {plant ? (
         <>
           <FadeIn>
+            {plant.review === 'pending' && (
+              <Alert type='warning' message='This plant is pending review' showIcon />
+            )}
             <section className='heading'>
               <h1>{plant.primaryName?.toLowerCase()}</h1>
               <div className='secondary-name-wrapper'>
@@ -202,7 +205,7 @@ export const PlantProfile = () => {
           {currentUser?.role === 'admin' && (
             <DangerZone>
               <p>DANGER ZONE</p>
-              <Button type='danger' onClick={deletePlant}>
+              <Button type='danger' onClick={() => handleDelete(plant._id)}>
                 DELETE PLANT
               </Button>
             </DangerZone>
