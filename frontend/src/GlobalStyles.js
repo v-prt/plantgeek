@@ -93,45 +93,15 @@ export const Toggle = styled.label`
 `
 
 export const DropZone = styled.div`
-  /* padding-bottom: 15px;
-  border-bottom: 1px solid #e6e6e6; */
-  margin-bottom: 15px;
-  .guidelines-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    .guidelines {
-      margin-right: 50px;
-      ul {
-        font-size: 0.9rem;
-        list-style: disc inside;
-      }
-    }
-    .example {
-      background: #dadada;
-      border-radius: 5px;
-      margin: 10px 0;
-      padding: 20px;
-      display: grid;
-      place-content: center;
-      text-align: center;
-      img {
-        margin-top: 10px;
-      }
-    }
-    @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-      flex-direction: row;
-    }
-  }
   .preview-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 16px;
     .thumbnail {
-      display: inline-flex;
+      display: grid;
+      place-content: center;
       border-radius: 2px;
-      border: 1px solid #eaeaea;
+      border: 1px solid #e6e6e6;
       margin-bottom: 8px;
       margin-right: 8px;
       width: 100px;
@@ -154,8 +124,8 @@ export const DropZone = styled.div`
 
 export const DropBox = styled.div`
   background: ${props => (props.isDragAccept ? `rgba(255,255,255,0.8)` : `rgba(255,255,255,0.4)`)};
-  border: ${props => (props.isDragAccept ? `2px solid ${COLORS.light}` : `2px dotted #ccc`)};
-  color: ${props => (props.isDragAccept ? `${COLORS.light}` : '#ccc')};
+  border: ${props => (props.isDragAccept ? `2px solid ${COLORS.accent}` : `2px dotted #ccc`)};
+  color: ${props => (props.isDragAccept ? `${COLORS.accent}` : '#ccc')};
   margin: 10px 0;
   padding: 20px;
   display: flex;
@@ -167,11 +137,12 @@ export const DropBox = styled.div`
   transition: 0.2s ease-in-out;
   .icon {
     font-size: 4rem;
+    display: grid;
   }
   &:hover {
     background: rgba(255, 255, 255, 0.8);
-    border: 2px solid ${COLORS.light};
-    color: ${COLORS.light};
+    border: 2px solid ${COLORS.accent};
+    color: ${COLORS.accent};
   }
 `
 

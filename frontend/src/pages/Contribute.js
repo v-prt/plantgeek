@@ -1,48 +1,58 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
-import axios from 'axios'
-import { useSelector, useDispatch } from 'react-redux'
+// import axios from 'axios'
 import { useDropzone } from 'react-dropzone'
 import { UserContext } from '../contexts/UserContext'
-import { plantsArray } from '../reducers/plantReducer'
-import { requestPlants, receivePlants } from '../actions'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-// import { FormItem } from '../components/forms/FormItem'
+import { FormItem } from '../components/forms/FormItem'
+import { Input, Select } from 'formik-antd'
+import { Button, Alert } from 'antd'
 
 import styled from 'styled-components/macro'
-import { COLORS, BREAKPOINTS, DropZone, DropBox, Button } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS, DropZone, DropBox } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
-import { Ellipsis } from '../components/loaders/Ellipsis'
 import checkmark from '../assets/checkmark.svg'
 import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
 import { ImCross } from 'react-icons/im'
-import monstera from '../assets/monstera.jpeg'
 import placeholder from '../assets/plant-placeholder.svg'
 import { PlantCard } from '../components/PlantCard'
+const { Option } = Select
 
 export const Contribute = () => {
-  const dispatch = useDispatch()
-  // TODO: reward users with badges for approved submissions? (display # of submissions)
+  // TODO: reward users with badges for approved submissions (display in profile)
   const { currentUser } = useContext(UserContext)
-  const plants = useSelector(plantsArray)
   const [status, setStatus] = useState(undefined)
+  const [newPlant, setNewPlant] = useState(null)
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  const PlantSchema = Yup.object().shape({
-    primaryName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('*required'),
-    // secondaryName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('*required'),
-    light: Yup.string().required('*required'),
-    water: Yup.string().required('*required'),
-    temperature: Yup.string().required('*required'),
-    humidity: Yup.string().required('*required'),
-    toxic: Yup.string().required('*required'),
-    sourceUrl: Yup.string().required('*required'),
+  const initialValues = {
+    primaryName: '',
+    secondaryName: '',
+    imageUrl: '',
+    light: '',
+    water: '',
+    temperature: '',
+    humidity: '',
+    toxic: '',
+    sourceUrl: '',
+  }
+
+  const schema = Yup.object().shape({
+    primaryName: Yup.string().min(2, 'Too short').required('Required'),
+    secondaryName: Yup.string().min(2, 'Too short').required('Required'),
+    // TODO: validate image (check if in array)
+    light: Yup.string().required('Required'),
+    water: Yup.string().required('Required'),
+    temperature: Yup.string().required('Required'),
+    humidity: Yup.string().required('Required'),
+    toxic: Yup.string().required('Required'),
+    sourceUrl: Yup.string().url('Invalid URL').required('Required'),
   })
 
   // DROPZONE
@@ -50,6 +60,8 @@ export const Contribute = () => {
   const [images, setImages] = useState()
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
     accept: 'image/*',
+    minSize: 0,
+    maxSize: 5242880, // up to 5mb
     multiple: false, // accepts only 1 image
     onDrop: acceptedFiles => {
       setImages(
@@ -68,27 +80,9 @@ export const Contribute = () => {
     }
   }, [images])
 
-  // UPDATES STORE AFTER NEW PLANT ADDED TO DB
-  const [newPlant, setNewPlant] = useState()
-  useEffect(() => {
-    if (newPlant) {
-      dispatch(requestPlants())
-      axios
-        .get('/plants')
-        .then(res => dispatch(receivePlants(res.data.data)))
-        .catch(err => console.log(err))
-    }
-  }, [dispatch, newPlant])
-
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     setStatus(undefined)
-    const existingPlant = plants.find(
-      plant => plant.primaryName.toLowerCase() === values.primaryName.toLowerCase()
-    )
-    if (existingPlant) {
-      setStatus('Oops, this plant already exists.')
-      setSubmitting(false)
-    } else if (!images) {
+    if (!images) {
       setStatus('You must upload an image.')
       setSubmitting(false)
     } else if (currentUser.role === 'admin') {
@@ -99,12 +93,14 @@ export const Contribute = () => {
         formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
         // FIXME: Moderation parameter is not allowed when using unsigned upload
         // formData.append('moderation', 'manual')
+        // TODO: axios
         const response = await fetch(cloudinaryUrl, {
           method: 'POST',
           body: formData,
         })
         const cloudinaryResponse = await response.json()
         // submit data to mongodb
+        // TODO: axios
         await fetch('/plants', {
           method: 'POST',
           body: JSON.stringify({
@@ -114,7 +110,7 @@ export const Contribute = () => {
             water: values.water,
             temperature: values.temperature,
             humidity: values.humidity,
-            toxic: values.toxic === 'yes' ? true : false,
+            toxic: values.toxic === 'toxic' ? true : false,
             imageUrl: cloudinaryResponse.url,
             sourceUrl: values.sourceUrl,
           }),
@@ -125,8 +121,11 @@ export const Contribute = () => {
         })
           .then(res => res.json())
           .then(json => {
-            if (json.status === 201) {
-              setNewPlant(json.data.ops[0])
+            if (json.status === 409) {
+              setStatus('This plant already exists.')
+              setSubmitting(false)
+            } else if (json.status === 201) {
+              setNewPlant(json.plant)
               setStatus(undefined)
               setSubmitting(false)
               setImages()
@@ -184,136 +183,113 @@ export const Contribute = () => {
       </FadeIn>
       <FadeIn delay={200}>
         <FormWrapper>
-          <h2>houseplant info</h2>
-          <Formik
-            initialValues={{
-              primaryName: '',
-              secondaryName: '',
-              light: '',
-              water: '',
-              temperature: '',
-              humidity: '',
-              toxic: '',
-              imageUrl: '',
-              sourceUrl: '',
-            }}
-            validationSchema={PlantSchema}
-            onSubmit={handleSubmit}>
+          <h2>new houseplant info</h2>
+          <Formik initialValues={initialValues} validationSchema={schema} onSubmit={handleSubmit}>
             {({ isSubmitting, resetForm }) => (
               <Form>
-                {/* TODO: use FormItem */}
-                {/* <Text
-                  label='Primary name'
-                  name='primaryName'
-                  type='text'
-                  placeholder='e.g. Monstera deliciosa'
-                />
-                <Text
-                  label='Secondary name'
-                  name='secondaryName'
-                  type='text'
-                  placeholder='e.g. Swiss cheese plant'
-                />
-                <Select
-                  label='Light'
-                  name='light'
-                  type='select'
-                  options={[
-                    'low to bright indirect',
-                    'medium indirect',
-                    'medium to bright indirect',
-                    'bright indirect',
-                    'bright',
-                  ]}
-                />
-                <Select
-                  label='Water'
-                  name='water'
-                  type='select'
-                  options={['low', 'low to medium', 'medium', 'medium to high', 'high']}
-                />
-                <Select
-                  label='Temperature'
-                  name='temperature'
-                  type='select'
-                  options={['average', 'warm']}
-                />
-                <Select
-                  label='Humidity'
-                  name='humidity'
-                  type='select'
-                  options={['average', 'high']}
-                />
-                <Select
-                  label='Is this plant toxic?'
-                  name='toxic'
-                  type='select'
-                  options={['yes', 'no']}
-                /> */}
-                <DropZone>
-                  {/* TODO:
+                <FormItem label='Latin name' sublabel='(genus and species)' name='primaryName'>
+                  <Input name='primaryName' placeholder='Monstera deliciosa' />
+                </FormItem>
+
+                <FormItem label='Common name' name='secondaryName'>
+                  <Input name='secondaryName' placeholder='Swiss cheese plant' />
+                </FormItem>
+
+                <FormItem label='Upload image' sublabel='(max 5mb)' name=''>
+                  <DropZone>
+                    {/* TODO:
                   - set up signed uploads with cloudinary
-                  - set up a way to approve images before saving to db (cloudinary analysis using amazon rekognition, must be plant and pass guidelines, no offensive content) */}
-                  <div className='guidelines-wrapper'>
-                    <div className='guidelines'>
-                      <p>
-                        Upload image{' '}
-                        <span className='info-text'>(please follow our guidelines)</span>
-                      </p>
-                      <ul>
-                        <li key={1}>houseplants only</li>
-                        <li key={2}>1:1 aspect ratio (square)</li>
-                        <li key={3}>display the whole plant in a plain pot</li>
-                        <li key={4}>white background</li>
-                        <li>well lit & in focus (no blurry images)</li>
-                        <li>full color (no filters)</li>
-                        <li>max 1 image (up to 1mb)</li>
-                      </ul>
-                    </div>
-                    <div className='example'>
-                      <p className='info-text'>Example:</p>
-                      <img style={{ height: '200px' }} src={monstera} alt='' />
-                    </div>
-                  </div>
-                  <DropBox
-                    {...getRootProps()}
-                    isDragAccept={isDragAccept}
-                    isDragReject={isDragReject}>
-                    <input {...getInputProps()} name='images' />
-                    <div className='icon'>
-                      {isDragAccept && <RiImageAddFill />}
-                      {isDragReject && <ImCross />}
-                      {!isDragActive && <RiImageAddLine />}
-                    </div>
-                  </DropBox>
-                  <div className='preview-container'>
-                    {images &&
-                      images.map(image => (
-                        <div className='thumbnail' key={image.name}>
-                          <div className='thumbnail-inner'>
-                            <img src={image.preview} alt={image.name} />
+                  - (STRETCH GOAL) set up a way to approve images before saving to db (cloudinary analysis using amazon rekognition, must be plant and pass guidelines, no offensive content) */}
+                    <DropBox
+                      {...getRootProps()}
+                      isDragAccept={isDragAccept}
+                      isDragReject={isDragReject}>
+                      <input {...getInputProps()} name='images' />
+                      <div className='icon'>
+                        {isDragAccept && <RiImageAddFill />}
+                        {isDragReject && <ImCross />}
+                        {!isDragActive && <RiImageAddLine />}
+                      </div>
+                    </DropBox>
+                    <div className='preview-container'>
+                      {images &&
+                        images.map(image => (
+                          <div className='thumbnail' key={image.name}>
+                            <div className='thumbnail-inner'>
+                              <img src={image.preview} alt={image.name} />
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                  </div>
-                </DropZone>
-                {/* TODO: accept multiple source links? */}
-                {/* <Text label='Source' name='sourceUrl' type='text' placeholder='Insert URL' /> */}
+                        ))}
+                    </div>
+                  </DropZone>
+                </FormItem>
+
+                <FormItem label='Light' name='light'>
+                  <Select name='light' placeholder='Select'>
+                    <Option value='low to bright indirect'>low to bright indirect</Option>
+                    <Option value='medium indirect'>medium indirect</Option>
+                    <Option value='medium to bright indirect'>medium to bright indirect</Option>
+                    <Option value='bright indirect'>bright indirect</Option>
+                    <Option value='bright'>bright</Option>
+                  </Select>
+                </FormItem>
+
+                <FormItem label='Water' name='water'>
+                  <Select name='water' placeholder='Select'>
+                    <Option value='low'>low</Option>
+                    <Option value='low to medium'>low to medium</Option>
+                    <Option value='medium'>medium</Option>
+                    <Option value='medium to high'>medium to high</Option>
+                    <Option value='high'>high</Option>
+                  </Select>
+                </FormItem>
+
+                <FormItem label='Temperature' name='temperature'>
+                  <Select name='temperature' placeholder='Select'>
+                    <Option value='average'>average</Option>
+                    <Option value='warm'>warm</Option>
+                  </Select>
+                </FormItem>
+
+                <FormItem label='Humidity' name='humidity'>
+                  <Select name='humidity' placeholder='Select'>
+                    <Option value='average'>average</Option>
+                    <Option value='high'>high</Option>
+                  </Select>
+                </FormItem>
+
+                <FormItem label='Toxicity' name='toxic'>
+                  <Select name='toxic' placeholder='Select'>
+                    <Option value='toxic'>toxic</Option>
+                    <Option value='nontoxic'>nontoxic</Option>
+                  </Select>
+                </FormItem>
+
+                <FormItem label='Source URL' name='sourceUrl'>
+                  <Input
+                    name='sourceUrl'
+                    placeholder='https://www.plantpedia.com/monstera-deliciosa'
+                  />
+                </FormItem>
+
                 <div className='buttons'>
                   <Button
-                    type='reset'
-                    className='secondary'
+                    type='secondary'
                     onClick={() => {
                       setImages()
                       resetForm()
                     }}>
                     RESET
                   </Button>
-                  <Button type='submit' disabled={isSubmitting}>
-                    {isSubmitting ? <Ellipsis /> : 'SUBMIT'}
+                  <Button
+                    type='primary'
+                    htmlType='submit'
+                    disabled={isSubmitting}
+                    loading={isSubmitting}>
+                    SUBMIT
                   </Button>
                 </div>
-                {status && <div className='status'>{status}</div>}
+                {status && <Alert type='error' message={status} showIcon />}
               </Form>
             )}
           </Formik>
@@ -388,5 +364,17 @@ export const FormWrapper = styled.section`
     padding: 0 20px 10px 20px;
     margin-bottom: 10px;
     text-align: center;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    .ant-select {
+      width: 100%;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
   }
 `

@@ -8,7 +8,6 @@ import { Button, Alert } from 'antd'
 import * as Yup from 'yup'
 import { FormItem } from '../components/forms/FormItem'
 import { Wrapper, Card } from './SignUp'
-import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
 import plantgeekLogo from '../assets/logo.webp'
 
@@ -69,8 +68,9 @@ export const Login = () => {
                   htmlType='submit'
                   type='primary'
                   size='large'
-                  disabled={loading || isSubmitting}>
-                  {loading || isSubmitting ? <Ellipsis /> : 'LOG IN'}
+                  disabled={loading || isSubmitting}
+                  loading={loading || isSubmitting}>
+                  LOG IN
                 </Button>
                 {status && <Alert type='error' message={status} showIcon />}
                 <p className='subtext'>

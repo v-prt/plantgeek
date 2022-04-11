@@ -56,7 +56,7 @@ export const PlantList = ({ list, title }) => {
               {title}
             </h2>
           </div>
-          <Plants>{plants ? plants : <Ellipsis color='#222' />}</Plants>
+          <Plants>{plants ? plants : <Ellipsis />}</Plants>
         </div>
       </FadeIn>
     </ListWrapper>

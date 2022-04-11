@@ -4,8 +4,8 @@ import { useDropzone } from 'react-dropzone'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import { Text, Select } from './FormItems'
+import { Button } from 'antd'
 
-import { Ellipsis } from '../loaders/Ellipsis'
 import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
 import { ImCross } from 'react-icons/im'
 import monstera from '../../assets/monstera.jpeg'
@@ -198,18 +198,21 @@ export const UpdatePlant = ({ currentUser, plant }) => {
             {/* TODO: accept multiple source links? */}
             <Text label='Source' name='sourceUrl' type='text' placeholder='Insert URL' />
             <div className='buttons'>
-              <button
-                type='reset'
-                className='secondary'
+              <Button
+                type='secondary'
                 onClick={() => {
                   setImages()
                   resetForm()
                 }}>
                 RESET
-              </button>
-              <button type='submit' disabled={isSubmitting}>
-                {isSubmitting ? <Ellipsis /> : 'SUBMIT'}
-              </button>
+              </Button>
+              <Button
+                type='primary'
+                htmlType='submit'
+                disabled={isSubmitting}
+                loading={isSubmitting}>
+                SUBMIT
+              </Button>
             </div>
             {status && <div className='status'>{status}</div>}
           </Form>

@@ -18,7 +18,6 @@ import { MdOutlineCancel } from 'react-icons/md'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Image } from './UserProfile'
-import { Ellipsis } from '../components/loaders/Ellipsis'
 
 const AutoSave = () => {
   const { dirty, values, errors, submitForm } = useFormikContext()
@@ -236,8 +235,12 @@ export const Settings = () => {
                     <Button type='secondary' onClick={() => setPasswordEditMode(!passwordEditMode)}>
                       CANCEL
                     </Button>
-                    <Button htmlType='submit' type='primary' disabled={isSubmitting}>
-                      {loading || isSubmitting ? <Ellipsis /> : 'SUBMIT'}
+                    <Button
+                      htmlType='submit'
+                      type='primary'
+                      disabled={loading || isSubmitting}
+                      loading={loading || isSubmitting}>
+                      SUBMIT
                     </Button>
                   </div>
                 </Form>

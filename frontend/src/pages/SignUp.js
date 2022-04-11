@@ -11,7 +11,6 @@ import { Button, Alert } from 'antd'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
-import { Ellipsis } from '../components/loaders/Ellipsis'
 import { BiSearch, BiPlusCircle } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
@@ -145,8 +144,9 @@ export const SignUp = () => {
                   htmlType='submit'
                   type='primary'
                   size='large'
-                  disabled={loading || isSubmitting}>
-                  {loading || isSubmitting ? <Ellipsis /> : 'CREATE ACCOUNT'}
+                  disabled={loading || isSubmitting}
+                  loading={loading || isSubmitting}>
+                  CREATE ACCOUNT
                 </Button>
                 {status && <Alert type='error' message={status} showIcon />}
                 <p className='subtext'>

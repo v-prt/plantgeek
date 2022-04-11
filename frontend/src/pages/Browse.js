@@ -21,6 +21,7 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
   CloseCircleOutlined,
+  PlusCircleOutlined,
 } from '@ant-design/icons'
 const { Option } = Select
 
@@ -77,10 +78,15 @@ export const Browse = () => {
             and sort to quickly find any plant.
           </p>
           <p>
-            Can't find a specific plant? <Link to='/contribute'>Contribute to our database.</Link>{' '}
-            You'll earn badges for approved submissions! If you notice any corrupt or duplicate
-            information please report it <Link to='/contact'>here</Link>.
+            Can't find a specific plant? Please contribute it to our database. You'll earn badges
+            for approved submissions. If you notice any corrupt or duplicate information please
+            report it.
           </p>
+          <Link to='/contribute'>
+            <Button type='primary'>
+              <PlusCircleOutlined /> Contribute
+            </Button>
+          </Link>
         </section>
       </FadeIn>
       <FadeIn delay={200}>
@@ -139,6 +145,7 @@ export const Browse = () => {
                   <div className='filter'>
                     <p>Filter by</p>
                     <Select
+                      getPopupContainer={trigger => trigger.parentNode}
                       name='toxic'
                       onChange={submitForm}
                       placeholder='Toxicity'
@@ -151,6 +158,7 @@ export const Browse = () => {
                   <div className='filter'>
                     <p>Sort by</p>
                     <Select
+                      getPopupContainer={trigger => trigger.parentNode}
                       name='sort'
                       onChange={submitForm}
                       placeholder='Sort'
@@ -225,7 +233,7 @@ export const Browse = () => {
         </Formik>
       </section>
       <Results disabled={sidebarOpen}>
-        {status === 'success' && plants ? plants : <Ellipsis color='#222' />}
+        {status === 'success' && plants ? plants : <Ellipsis />}
       </Results>
     </Wrapper>
   )
@@ -292,10 +300,8 @@ const Wrapper = styled.main`
       }
       .search {
         flex: 1;
-        z-index: 10;
       }
       .filter-menu-btn {
-        z-index: 10;
         .label {
           display: none;
         }
@@ -347,7 +353,6 @@ const Wrapper = styled.main`
         .filter {
           margin: 10px 0;
           flex: 1;
-          z-index: 10;
         }
         .toggle-wrapper {
           display: flex;

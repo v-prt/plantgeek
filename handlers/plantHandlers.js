@@ -14,9 +14,14 @@ const createPlant = async (req, res) => {
   try {
     await client.connect()
     const db = client.db('plantgeekdb')
-    const plant = await db.collection('plants').insertOne(req.body)
-    assert.strictEqual(1, plant.insertedCount)
-    res.status(201).json({ status: 201, data: plant })
+    const regex = new RegExp(req.body.primaryName, 'i') // "i" for case insensitive
+    const existingPlant = await db.collection('plants').findOne({ primaryName: { $regex: regex } })
+    if (existingPlant) {
+      res.status(409).json({ status: 409, message: 'Plant already exists' })
+    } else {
+      const plant = await db.collection('plants').insertOne(req.body)
+      res.status(201).json({ status: 201, plant: plant.ops[0] })
+    }
   } catch (err) {
     res.status(500).json({ status: 500, data: req.body, message: err.message })
     console.error(err.stack)

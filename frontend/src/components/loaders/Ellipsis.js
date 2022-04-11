@@ -1,13 +1,13 @@
 import styled from 'styled-components/macro'
 
-export const Ellipsis = ({ color = '#fff' }) => {
+export const Ellipsis = () => {
   return (
     <Wrapper>
       <div className='ellipsis'>
-        <div style={{ background: `${color}` }}></div>
-        <div style={{ background: `${color}` }}></div>
-        <div style={{ background: `${color}` }}></div>
-        <div style={{ background: `${color}` }}></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
       </div>
     </Wrapper>
   )
@@ -23,6 +23,7 @@ const Wrapper = styled.div`
     height: 30px;
   }
   .ellipsis div {
+    background: #222;
     position: absolute;
     top: 10px;
     width: 6px;
