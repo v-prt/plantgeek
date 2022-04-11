@@ -20,7 +20,7 @@ Full-stack live website built 100% by me - including concept, design, and implem
 - [x] react-query data synchronization
 
 ### homepage
-- [x] features 9 random plants and site information
+- [x] features 12 random plants and site information
 
 ### sign up & login
 - [x] create an account & log in
@@ -34,7 +34,7 @@ Full-stack live website built 100% by me - including concept, design, and implem
 - [x] hundreds of plants stored in MongoDB database
 - [x] search & filter by name or type
 - [x] find pet friendly (non-toxic) plants
-- [ ] add or remove plants to your lists (collection, favorites, wishlist)
+- [x] add or remove plants to your lists (collection, favorites, wishlist)
 - [x] toggle detailed view
 
 ### plant profiles (wip)
@@ -47,9 +47,9 @@ Full-stack live website built 100% by me - including concept, design, and implem
 - [x] toggle between simple or detailed view
 
 ### contribute (wip)
-- [ ] upload new plant data to help grow database
-- [ ] cloudinary media library image storage (urls stored in database)
-- [ ] admins can review and approve or reject submissions
+- [x] upload new plant data to help grow database
+- [x] cloudinary media library image storage (urls stored in database)
+- [x] admins can review and approve or reject submissions
 - [ ] earn badges for approved submissions
 
 ### account settings (wip)
