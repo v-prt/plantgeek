@@ -48,7 +48,7 @@ export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
 
   return (
     <Wrapper key={plant._id}>
-      {pendingReview && (
+      {plant.review === 'pending' && (
         <div className='pending-review'>
           {currentUser.role === 'admin' && (
             <button onClick={handleApprove}>

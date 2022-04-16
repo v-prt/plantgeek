@@ -114,6 +114,7 @@ export const Contribute = () => {
             toxic: values.toxic === 'toxic' ? true : false,
             imageUrl: cloudinaryResponse.url,
             sourceUrl: values.sourceUrl,
+            contributorId: currentUser._id,
             review: review,
           }),
           headers: {
@@ -147,7 +148,6 @@ export const Contribute = () => {
   ) : (
     <Wrapper>
       <FadeIn>
-        {/* TODO: adjust wording & plant card interactions based on review status */}
         {newPlant && (
           <section className='confirmation'>
             <div className='msg'>

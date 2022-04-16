@@ -1,24 +1,65 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Redirect } from 'react-router-dom'
+import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import moment from 'moment'
-
+import axios from 'axios'
 import styled from 'styled-components/macro'
+import { Empty } from 'antd'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
+import { ImageLoader } from '../components/loaders/ImageLoader'
 import { ListWrapper, PlantList } from '../components/lists/PlantList'
 import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import placeholder from '../assets/avatar-placeholder.png'
+import { Ellipsis } from '../components/loaders/Ellipsis'
+import bee from '../assets/stickers/bee.svg'
+import boot from '../assets/stickers/boot.svg'
+import cactus from '../assets/stickers/cactus.svg'
+import flower from '../assets/stickers/flower.svg'
+import flowers from '../assets/stickers/flowers.svg'
+import leaf from '../assets/stickers/leaf.svg'
+import potted1 from '../assets/stickers/potted1.svg'
+import potted2 from '../assets/stickers/potted2.svg'
 
 export const UserProfile = () => {
   const { currentUser } = useContext(UserContext)
+  const [approvedContributions, setApprovedContributions] = useState([])
+  const [pendingContributions, setPendingContributions] = useState([])
+  const stickers = [
+    { name: leaf, value: 1 },
+    { name: flower, value: 3 },
+    { name: bee, value: 10 },
+    { name: flowers, value: 25 },
+    { name: potted2, value: 40 },
+    { name: potted1, value: 50 },
+    { name: boot, value: 75 },
+    { name: cactus, value: 100 },
+  ]
+
+  const { data: contributions, status: contributionsStatus } = useQuery(
+    ['contributions', currentUser._id],
+    async () => {
+      const { data } = await axios.get(`/contributions/${currentUser._id}`)
+      return data.contributions
+    }
+  )
 
   // makes window scroll to top between renders
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+
+  useEffect(() => {
+    if (contributions) {
+      const approved = contributions.filter(contribution => contribution.review === 'approved')
+      const pending = contributions.filter(contribution => contribution.review === 'pending')
+      setApprovedContributions(approved)
+      setPendingContributions(pending)
+    }
+  }, [contributions])
 
   return !currentUser ? (
     <Redirect to='/signup' />
@@ -48,13 +89,13 @@ export const UserProfile = () => {
                     <span className='icon'>
                       <RiPlantLine />
                     </span>
-                    collection
+                    my collection
                   </h2>
                   <div className='info'>
                     <span className='num-plants'>0 plants</span>
                   </div>
                 </div>
-                <p className='empty'>No plants in collection.</p>
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No plants in collection' />
               </div>
             </FadeIn>
           </ListWrapper>
@@ -72,13 +113,13 @@ export const UserProfile = () => {
                     <span className='icon'>
                       <TiHeartOutline />
                     </span>
-                    wishlist
+                    my wishlist
                   </h2>
                   <div className='info'>
                     <span className='num-plants'>0 plants</span>
                   </div>
                 </div>
-                <p className='empty'>No plants in wishlist.</p>
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No plants in wishlist' />
               </div>
             </FadeIn>
           </ListWrapper>
@@ -96,27 +137,74 @@ export const UserProfile = () => {
                     <span className='icon'>
                       <AiOutlineStar />
                     </span>
-                    favorites
+                    my favorites
                   </h2>
                   <div className='info'>
                     <span className='num-plants'>0 plants</span>
                   </div>
                 </div>
-                <p className='empty'>No plants in favorites.</p>
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No plants in favorities' />
               </div>
             </FadeIn>
           </ListWrapper>
         )}
       </FadeIn>
       <FadeIn delay={500}>
-        <section className='contributions'>
-          <h2>contributions</h2>
-          {currentUser.contributions?.length > 0 ? (
-            <p>{currentUser.contributions.length} contributions made!</p>
+        <Contributions>
+          <h2>my contributions</h2>
+          {contributionsStatus === 'loading' ? (
+            <Ellipsis />
+          ) : contributions?.length > 0 ? (
+            <div className='inner'>
+              <div className='stickers'>
+                {stickers.map(sticker => (
+                  <div
+                    className={`sticker ${
+                      approvedContributions.length >= sticker.value && 'earned'
+                    } `}
+                    key={sticker.name}>
+                    <img src={sticker.name} alt='' />
+                    <span className='value'>{sticker.value}</span>
+                  </div>
+                ))}
+              </div>
+              {approvedContributions.length > 0 && (
+                <div className='approved-contributions'>
+                  <h3>approved ({approvedContributions.length})</h3>
+                  <div className='plants'>
+                    {approvedContributions.map(plant => (
+                      <div className='contribution-card'>
+                        <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+                        <div className='info'>
+                          <p className='primary-name'>{plant.primaryName}</p>
+                          <p className='secondary-name'>{plant.secondaryName}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {pendingContributions.length > 0 && (
+                <div className='pending-contributions'>
+                  <h3>pending review ({pendingContributions.length})</h3>
+                  <div className='plants'>
+                    {pendingContributions.map(plant => (
+                      <div className='contribution-card'>
+                        <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+                        <div className='info'>
+                          <p className='primary-name'>{plant.primaryName}</p>
+                          <p className='secondary-name'>{plant.secondaryName}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <p>No contributions yet.</p>
           )}
-        </section>
+        </Contributions>
       </FadeIn>
     </Wrapper>
   )
@@ -140,12 +228,6 @@ const Wrapper = styled.main`
       }
     }
   }
-  .contributions {
-    background: #fff;
-    a {
-      text-decoration: underline;
-    }
-  }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {
       flex-direction: row;
@@ -163,4 +245,101 @@ export const Image = styled.img`
   width: 200px;
   border-radius: 50%;
   padding: 5px;
+`
+
+const Contributions = styled.section`
+  background: #fff;
+  .inner {
+    display: flex;
+    flex-direction: column;
+  }
+  .stickers {
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    grid-gap: 10px;
+    .sticker {
+      opacity: 0.5;
+      filter: grayscale(1);
+      background: #e6e6e6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      border-radius: 10px;
+      position: relative;
+      &.earned {
+        opacity: 1;
+        filter: grayscale(0);
+      }
+      img {
+        height: 40px;
+        filter: drop-shadow(0 0 2px rgba(55, 73, 87, 0.15))
+          drop-shadow(0 2px 5px rgba(55, 73, 87, 0.2));
+      }
+      .value {
+        background: ${COLORS.accent};
+        color: #fff;
+        padding: 2px 5px;
+        text-align: center;
+        border-radius: 10px;
+        font-size: 0.6rem;
+        font-weight: bold;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+      }
+    }
+    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+      grid-gap: 20px;
+      .sticker {
+        padding: 20px;
+        img {
+          height: 80px;
+        }
+        .value {
+          padding: 5px 10px;
+        }
+      }
+    }
+  }
+  .approved-contributions,
+  .pending-contributions {
+    margin: 10px 0;
+    .plants {
+      display: flex;
+      grid-gap: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+      .contribution-card {
+        border: 1px solid #e6e6e6;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        img {
+          height: 100px;
+          width: 100px;
+          border-radius: 50%;
+          &.placeholder {
+            height: 75px;
+            width: 75px;
+          }
+        }
+        .info {
+          margin-left: 10px;
+          .primary-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+          }
+          .secondary-name {
+            color: #999;
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+  }
 `

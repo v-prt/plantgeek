@@ -25,6 +25,7 @@ const {
   getPlant,
   getRandomPlants,
   getUserPlants,
+  getUserContributions,
   addComment,
   updatePlant,
   deletePlant,
@@ -62,6 +63,7 @@ app
   .get('/plant/:_id', getPlant)
   .get('/random-plants', getRandomPlants)
   .get('/user-plants/:page', getUserPlants)
+  .get('/contributions/:userId', getUserContributions)
   .put('/plants/:_id', updatePlant)
   .put('/plants/:_id/comments', addComment)
   .delete('/plants/:_id', deletePlant)

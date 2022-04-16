@@ -13,7 +13,7 @@ export const Footer = () => {
           <Link to='/terms'>Terms and Conditions</Link>•<Link to='/privacy'>Privacy Policy</Link>•
           <Link to='/contact'>Contact</Link>
         </div>
-        <p>&copy; 2021 - {currentYear} plantgeek - All rights reserved.</p>
+        <p>&copy; 2021 - {currentYear} plantgeek. All rights reserved.</p>
       </div>
     </Wrapper>
   )
@@ -24,7 +24,7 @@ const Wrapper = styled.footer`
   color: ${COLORS.dark};
   font-size: 0.7rem;
   padding: 10px;
-  /* margin-top: auto; */
+  margin-top: auto;
   .inner {
     margin: auto;
     display: flex;

@@ -13,8 +13,6 @@ import * as Yup from 'yup'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { Button, Alert } from 'antd'
-import { FiEdit } from 'react-icons/fi'
-import { MdOutlineCancel } from 'react-icons/md'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Image } from './UserProfile'
@@ -37,7 +35,6 @@ export const Settings = () => {
   const submitRef = useRef(0)
   const { currentUser, updateCurrentUser } = useContext(UserContext)
   const [savingStatus, setSavingStatus] = useState(undefined)
-  const [editMode, setEditMode] = useState(false)
   const [passwordEditMode, setPasswordEditMode] = useState(false)
   const [loading, setLoading] = useState(false)
   const [successStatus, setSuccessStatus] = useState('')
@@ -162,13 +159,7 @@ export const Settings = () => {
       <FadeIn>
         <section className='settings'>
           <Heading>
-            <span className='heading-text'>
-              account details <Saving savingStatus={savingStatus} />
-            </span>
-            <Button type='text' onClick={() => setEditMode(!editMode)}>
-              {editMode ? 'Done' : 'Edit'}
-              <span className='icon'>{editMode ? <MdOutlineCancel /> : <FiEdit />}</span>
-            </Button>
+            account details <Saving savingStatus={savingStatus} />
           </Heading>
           <Formik
             initialValues={accountInitialValues}
@@ -178,16 +169,16 @@ export const Settings = () => {
               <Form>
                 {status && <Alert type='error' message={status} showIcon />}
                 <FormItem name='firstName' label='First name'>
-                  <Input name='firstName' disabled={!editMode} />
+                  <Input name='firstName' />
                 </FormItem>
                 <FormItem name='lastName' label='Last name'>
-                  <Input name='lastName' disabled={!editMode} />
+                  <Input name='lastName' />
                 </FormItem>
                 <FormItem name='email' label='Email address'>
-                  <Input name='email' disabled={!editMode} />
+                  <Input name='email' />
                 </FormItem>
                 <FormItem name='username' label='Username'>
-                  <Input name='username' disabled={!editMode} />
+                  <Input name='username' />
                 </FormItem>
                 {/* TODO: upload profile image */}
                 <AutoSave />
@@ -364,19 +355,7 @@ const Heading = styled.h2`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  .heading-text {
-    display: flex;
-    align-items: center;
-    .saving {
-      margin-left: 5px;
-    }
-  }
-  button {
-    display: flex;
-    align-items: center;
-    .icon {
-      margin-left: 5px;
-      display: grid;
-    }
+  .saving {
+    margin-left: 5px;
   }
 `

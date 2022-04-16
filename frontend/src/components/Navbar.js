@@ -1,5 +1,7 @@
 import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useQuery } from 'react-query'
+import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
 
 import plantgeekLogo from '../assets/logo.webp'
@@ -14,9 +16,15 @@ import {
 import { CgProfile } from 'react-icons/cg'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
+import { Pulser } from '../components/general/Pulser'
 
 export const Navbar = () => {
   const { handleLogout, currentUser } = useContext(UserContext)
+
+  const { data: plantsToReview } = useQuery(['plants-to-review'], async () => {
+    const { data } = await axios.get(`/plants-to-review`)
+    return data.plants
+  })
 
   return (
     <Wrapper>
@@ -60,6 +68,7 @@ export const Navbar = () => {
                     <BiBadgeCheck />
                   </div>
                   <span className='label'>review</span>
+                  {plantsToReview.length > 0 && <Pulser color='orange' />}
                 </NavLink>
               )}
               <button className='logout-btn' onClick={handleLogout}>
@@ -99,6 +108,7 @@ const Wrapper = styled.nav`
     padding: 0 20px;
     a,
     .logout-btn {
+      position: relative;
       color: #fff;
       display: flex;
       align-items: center;

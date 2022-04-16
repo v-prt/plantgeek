@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useInfiniteQuery } from 'react-query'
 import axios from 'axios'
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
+import { BREAKPOINTS, COLORS } from '../GlobalStyles'
 import { Ellipsis } from './loaders/Ellipsis'
 import { FadeIn } from './loaders/FadeIn.js'
 import { FaArrowAltCircleRight } from 'react-icons/fa'
@@ -41,22 +41,28 @@ export const FeaturedPlants = ({ currentUser }) => {
                 <Icon className='collection'>
                   <RiPlantLine />
                 </Icon>
-                <b>Have a plant?</b>
-                <p>Add it to your collection</p>
+                <div>
+                  <b>Have a plant?</b>
+                  <p>Add it to your collection</p>
+                </div>
               </Info>
               <Info>
                 <Icon className='wishlist'>
                   <AiOutlineStar />
                 </Icon>
-                <b>Want a plant?</b>
-                <p>Add it to your wishlist</p>
+                <div>
+                  <b>Want a plant?</b>
+                  <p>Add it to your wishlist</p>
+                </div>
               </Info>
               <Info>
                 <Icon className='favorite'>
                   <TiHeartOutline />
                 </Icon>
-                <b>Love a plant?</b>
-                <p>Add it to your favorites</p>
+                <div>
+                  <b>Love a plant?</b>
+                  <p>Add it to your favorites</p>
+                </div>
               </Info>
             </div>
           )}
@@ -117,10 +123,13 @@ const Plants = styled.div`
 
 const Info = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  margin: 20px;
+  margin: 10px;
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    flex-direction: column;
+    text-align: center;
+    margin: 20px;
+  }
 `
 
 const Icon = styled.div`

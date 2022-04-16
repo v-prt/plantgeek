@@ -93,29 +93,35 @@ export const Browse = () => {
             <Icon className='collection'>
               <RiPlantLine />
             </Icon>
-            <b>Have a plant?</b>
-            <p>Add it to your collection</p>
+            <div>
+              <b>Have a plant?</b>
+              <p>Add it to your collection</p>
+            </div>
           </Info>
           <Info>
             <Icon className='wishlist'>
               <AiOutlineStar />
             </Icon>
-            <b>Want a plant?</b>
-            <p>Add it to your wishlist</p>
+            <div>
+              <b>Want a plant?</b>
+              <p>Add it to your wishlist</p>
+            </div>
           </Info>
           <Info>
             <Icon className='favorite'>
               <TiHeartOutline />
             </Icon>
-            <b>Love a plant?</b>
-            <p>Add it to your favorites</p>
+            <div>
+              <b>Love a plant?</b>
+              <p>Add it to your favorites</p>
+            </div>
           </Info>
         </div>
       </FadeIn>
-      <section className='filter-bar'>
+      <section className='browse-content'>
         <Formik initialValues={formData} onSubmit={handleSubmit}>
           {({ values, setValues, submitForm, resetForm }) => (
-            <Form>
+            <Form className='filter-bar'>
               <div className='form-upper'>
                 <div className='search'>
                   <Input
@@ -133,26 +139,13 @@ export const Browse = () => {
                   type='primary'
                   onClick={() => setSidebarOpen(!sidebarOpen)}>
                   <FilterOutlined />
-                  <span className='label'> Filter</span>
+                  <span className='label'> SORT & FILTER</span>
                 </Button>
               </div>
               <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
                 <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
                 <div className='filter-menu-inner'>
                   <p className='num-results'>{plants?.length} results</p>
-                  <div className='filter'>
-                    <p>Filter by</p>
-                    <Select
-                      getPopupContainer={trigger => trigger.parentNode}
-                      name='toxic'
-                      onChange={submitForm}
-                      placeholder='Toxicity'
-                      style={{ width: '100%' }}
-                      allowClear>
-                      <Option value={true}>Toxic</Option>
-                      <Option value={false}>Non-toxic</Option>
-                    </Select>
-                  </div>
                   <div className='filter'>
                     <p>Sort by</p>
                     <Select
@@ -167,6 +160,19 @@ export const Browse = () => {
                       <Option value='name-desc'>
                         <ArrowUpOutlined /> Name (Z-A)
                       </Option>
+                    </Select>
+                  </div>
+                  <div className='filter'>
+                    <p>Filter by</p>
+                    <Select
+                      getPopupContainer={trigger => trigger.parentNode}
+                      name='toxic'
+                      onChange={submitForm}
+                      placeholder='Toxicity'
+                      style={{ width: '100%' }}
+                      allowClear>
+                      <Option value={true}>Toxic</Option>
+                      <Option value={false}>Non-toxic</Option>
                     </Select>
                   </div>
                   <div className='filter'>
@@ -192,55 +198,25 @@ export const Browse = () => {
                       setValues({ sort: 'name-asc' })
                       setSidebarOpen(false)
                     }}>
-                    Reset all filters
-                  </Button>
-                </div>
-              </div>
-              <div className='form-lower'>
-                <div className='search-params'>
-                  {formData.primaryName && (
-                    <Button
-                      className='clear-btn'
-                      onClick={() => {
-                        setValues({ ...values, primaryName: '' })
-                        submitForm()
-                      }}>
-                      {formData.primaryName}
-                      <CloseCircleOutlined />
-                    </Button>
-                  )}
-                  {(formData.toxic === true || formData.toxic === false) && (
-                    <Button
-                      className='clear-btn'
-                      onClick={() => {
-                        setValues({ ...values, toxic: '' })
-                        submitForm()
-                      }}>
-                      {formData.toxic === true && 'Toxic'}
-                      {formData.toxic === false && 'Non-toxic'}
-                      <CloseCircleOutlined />
-                    </Button>
-                  )}
-                  <Button className='clear-btn' disabled>
-                    {formData.sort === 'name-asc' ? 'Name (A-Z)' : 'Name (Z-A)'}
+                    RESET FILTERS
                   </Button>
                 </div>
               </div>
             </Form>
           )}
         </Formik>
-      </section>
-      <Results disabled={sidebarOpen}>
-        {status === 'success' && plants ? (
-          plants.length > 0 ? (
-            plants
+        <Results disabled={sidebarOpen}>
+          {status === 'success' && plants ? (
+            plants.length > 0 ? (
+              plants
+            ) : (
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
+            )
           ) : (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
-          )
-        ) : (
-          <Ellipsis />
-        )}
-      </Results>
+            <Ellipsis />
+          )}
+        </Results>
+      </section>
     </Wrapper>
   )
 }
@@ -280,29 +256,29 @@ const Wrapper = styled.main`
     justify-content: space-around;
     margin: 20px 0;
   }
-  .filter-bar {
+  .browse-content {
     background: #f2f2f2;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    z-index: 10;
-    position: sticky;
-    top: 30px;
-    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-      top: -30px;
-    }
     form {
+      background: #f2f2f2;
+      box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       grid-gap: 10px;
       position: relative;
+      z-index: 10;
+      position: sticky;
+      top: 50px;
+      @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+        top: -30px;
+      }
       .form-upper {
         width: 100%;
         display: flex;
         grid-gap: 10px;
-        margin-top: 10px;
+        margin: 10px 0;
       }
       .search {
         flex: 1;
@@ -384,30 +360,13 @@ const Wrapper = styled.main`
           }
         }
       }
-      .search-params {
-        display: flex;
-        flex-wrap: wrap;
-        button {
-          background: ${COLORS.light};
-          color: #fff;
-          border: 0;
-          border-radius: 5px;
-          padding: 0 5px;
-          font-size: 0.8rem;
-          margin: 0 5px 5px 0;
-          cursor: pointer;
-          z-index: 10;
-          &:hover {
-            opacity: 0.5;
-          }
-        }
-      }
     }
   }
 `
 
 const Results = styled.div`
-  min-height: 300px;
+  background: #e6e6e6;
+  min-height: 400px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -415,14 +374,21 @@ const Results = styled.div`
   opacity: ${props => (props.disabled ? 0.5 : 1)};
   pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
   transition: 0.2s ease-in-out;
+  .ant-empty {
+    display: grid;
+    place-content: center;
+  }
 `
 
 const Info = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  margin: 20px;
+  margin: 10px;
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    flex-direction: column;
+    text-align: center;
+    margin: 20px;
+  }
 `
 
 const Icon = styled.div`

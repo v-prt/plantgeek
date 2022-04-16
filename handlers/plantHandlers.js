@@ -159,6 +159,25 @@ const getUserPlants = async (req, res) => {
   client.close()
 }
 
+const getUserContributions = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  try {
+    const contributions = await db
+      .collection('plants')
+      .find({ contributorId: req.params.userId })
+      .toArray()
+    if (contributions) {
+      res.status(200).json({ status: 200, contributions: contributions })
+    } else {
+      res.status(404).json({ status: 404, message: 'No contributions found' })
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 // (UPDATE/PUT) ADDS COMMENT TO A PLANT BY ID
 const addComment = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
@@ -231,6 +250,7 @@ module.exports = {
   getPlant,
   getRandomPlants,
   getUserPlants,
+  getUserContributions,
   addComment,
   updatePlant,
   deletePlant,

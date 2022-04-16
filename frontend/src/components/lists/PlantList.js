@@ -53,7 +53,7 @@ export const PlantList = ({ list, title }) => {
                   title === 'wishlist' && <AiOutlineStar />
                 )}
               </span>
-              {title}
+              my {title}
             </h2>
           </div>
           <Plants>{plants ? plants : <Ellipsis />}</Plants>
