@@ -30,9 +30,9 @@ export const PlantProfile = () => {
   })
 
   // makes window scroll to top between renders
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  })
+  // useEffect(() => {
+  //   window.scrollTo(0, 0)
+  // })
 
   // setting plant care difficulty
   useEffect(() => {

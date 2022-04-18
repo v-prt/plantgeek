@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import moment from 'moment'
@@ -7,6 +7,7 @@ import axios from 'axios'
 import styled from 'styled-components/macro'
 import { Empty } from 'antd'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
+import { Button } from 'antd'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
 import { ListWrapper, PlantList } from '../components/lists/PlantList'
@@ -89,13 +90,21 @@ export const UserProfile = () => {
                     <span className='icon'>
                       <RiPlantLine />
                     </span>
-                    my collection
+                    collection
                   </h2>
                   <div className='info'>
                     <span className='num-plants'>0 plants</span>
                   </div>
                 </div>
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No plants in collection' />
+                <div className='empty'>
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description='No plants in collection'
+                  />
+                  <Link to='/browse'>
+                    <Button type='secondary'>BROWSE</Button>
+                  </Link>
+                </div>
               </div>
             </FadeIn>
           </ListWrapper>
@@ -113,13 +122,18 @@ export const UserProfile = () => {
                     <span className='icon'>
                       <TiHeartOutline />
                     </span>
-                    my wishlist
+                    wishlist
                   </h2>
                   <div className='info'>
                     <span className='num-plants'>0 plants</span>
                   </div>
                 </div>
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No plants in wishlist' />
+                <div className='empty'>
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No plants in wishlist' />
+                  <Link to='/browse'>
+                    <Button type='secondary'>BROWSE</Button>
+                  </Link>
+                </div>
               </div>
             </FadeIn>
           </ListWrapper>
@@ -137,13 +151,21 @@ export const UserProfile = () => {
                     <span className='icon'>
                       <AiOutlineStar />
                     </span>
-                    my favorites
+                    favorites
                   </h2>
                   <div className='info'>
                     <span className='num-plants'>0 plants</span>
                   </div>
                 </div>
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No plants in favorities' />
+                <div className='empty'>
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description='No plants in favorites'
+                  />
+                  <Link to='/browse'>
+                    <Button type='secondary'>BROWSE</Button>
+                  </Link>
+                </div>
               </div>
             </FadeIn>
           </ListWrapper>
@@ -151,7 +173,7 @@ export const UserProfile = () => {
       </FadeIn>
       <FadeIn delay={500}>
         <Contributions>
-          <h2>my contributions</h2>
+          <h2>contributions</h2>
           {contributionsStatus === 'loading' ? (
             <Ellipsis />
           ) : contributions?.length > 0 ? (
@@ -173,13 +195,13 @@ export const UserProfile = () => {
                   <h3>approved ({approvedContributions.length})</h3>
                   <div className='plants'>
                     {approvedContributions.map(plant => (
-                      <div className='contribution-card'>
+                      <Link className='contribution-card' to={`/plant/${plant._id}`}>
                         <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
                         <div className='info'>
                           <p className='primary-name'>{plant.primaryName}</p>
                           <p className='secondary-name'>{plant.secondaryName}</p>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -189,13 +211,13 @@ export const UserProfile = () => {
                   <h3>pending review ({pendingContributions.length})</h3>
                   <div className='plants'>
                     {pendingContributions.map(plant => (
-                      <div className='contribution-card'>
+                      <Link className='contribution-card' to={`/plant/${plant._id}`}>
                         <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
                         <div className='info'>
                           <p className='primary-name'>{plant.primaryName}</p>
                           <p className='secondary-name'>{plant.secondaryName}</p>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -313,7 +335,9 @@ const Contributions = styled.section`
       grid-gap: 20px;
       flex-wrap: wrap;
       align-items: center;
+      margin: 10px 0;
       .contribution-card {
+        width: 100%;
         border: 1px solid #e6e6e6;
         border-radius: 10px;
         padding: 10px;
@@ -333,12 +357,24 @@ const Contributions = styled.section`
           .primary-name {
             font-size: 1.1rem;
             font-weight: bold;
+            color: #222;
           }
           .secondary-name {
             color: #999;
             font-size: 0.8rem;
           }
         }
+        &:hover {
+          border: 1px solid ${COLORS.accent};
+          .info .primary-name {
+            color: #222;
+          }
+        }
+      }
+    }
+    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+      .contribution-card {
+        max-width: 300px;
       }
     }
   }

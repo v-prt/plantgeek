@@ -53,7 +53,7 @@ export const PlantList = ({ list, title }) => {
                   title === 'wishlist' && <AiOutlineStar />
                 )}
               </span>
-              my {title}
+              {title}
             </h2>
           </div>
           <Plants>{plants ? plants : <Ellipsis />}</Plants>
@@ -93,8 +93,15 @@ export const ListWrapper = styled.section`
       }
     }
     .empty {
+      display: grid;
+      place-content: center;
       text-align: center;
-      margin-top: 20px;
+      .ant-empty {
+        margin: 20px 0;
+      }
+      .ant-btn {
+        margin: auto;
+      }
     }
   }
 `

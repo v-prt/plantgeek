@@ -21,7 +21,6 @@ import { PlantCard } from '../components/PlantCard'
 const { Option } = Select
 
 export const Contribute = () => {
-  // TODO: reward users with badges for approved submissions (display in profile)
   const { currentUser } = useContext(UserContext)
   const [status, setStatus] = useState(undefined)
   const [newPlant, setNewPlant] = useState(null)

@@ -76,15 +76,9 @@ export const Browse = () => {
             and sort to quickly find any plant.
           </p>
           <p>
-            Can't find a specific plant? Please contribute it to our database. You'll earn badges
-            for approved submissions. If you notice any corrupt or duplicate information please
-            report it.
+            Can't find a specific plant? Contribute it to our database - you'll earn stickers for
+            approved submissions! Please report any duplicate or incorrect information.
           </p>
-          <Link to='/contribute'>
-            <Button type='primary'>
-              <PlusCircleOutlined /> Contribute
-            </Button>
-          </Link>
         </section>
       </FadeIn>
       <FadeIn delay={200}>
@@ -236,9 +230,6 @@ const Wrapper = styled.main`
     p {
       max-width: 600px;
       margin: 10px;
-    }
-    a {
-      font-weight: bold;
     }
     @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
       h1 {

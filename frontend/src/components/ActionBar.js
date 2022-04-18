@@ -31,12 +31,10 @@ export const ActionBar = ({ plantId }) => {
       // REMOVES PLANT
       axios.put(`/${currentUser.username}/remove`, data).then(res => {
         if (res.status === 200) {
-          console.log(res)
-          console.log(`Removed ${plantId} from user's list!`)
           queryClient.invalidateQueries('current-user')
           setSubmitting(false)
         } else if (res.status === 404) {
-          console.log('Something went wrong')
+          console.log('Error removing plant from list')
           setSubmitting(false)
         }
       })
@@ -44,12 +42,10 @@ export const ActionBar = ({ plantId }) => {
       // ADDS PLANT
       axios.put(`/${currentUser.username}/add`, data).then(res => {
         if (res.status === 200) {
-          console.log(res)
-          console.log(`Added ${plantId} to user's list!`)
           queryClient.invalidateQueries('current-user')
           setSubmitting(false)
         } else if (res.status === 404) {
-          console.log('Something went wrong')
+          console.log('Error adding plant to list')
           setSubmitting(false)
         }
       })
