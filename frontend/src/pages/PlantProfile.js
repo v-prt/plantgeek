@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
+import { API_URL } from '../constants'
 import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
@@ -25,7 +26,7 @@ export const PlantProfile = () => {
   const [difficulty, setDifficulty] = useState()
 
   const { data: plant } = useQuery(['plant', id], async () => {
-    const { data } = await axios.get(`/plant/${id}`)
+    const { data } = await axios.get(`${API_URL}/plant/${id}`)
     return data.plant
   })
 
@@ -94,7 +95,7 @@ export const PlantProfile = () => {
       )
     ) {
       window.location.replace('/browse')
-      axios.delete(`/plants/${plantId}`).catch(err => console.log(err))
+      axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
     }
   }
 

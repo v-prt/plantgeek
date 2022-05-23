@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useInfiniteQuery } from 'react-query'
+import { API_URL } from '../../constants'
 import axios from 'axios'
 import styled from 'styled-components/macro'
 import { COLORS } from '../../GlobalStyles'
@@ -16,7 +17,7 @@ export const PlantList = ({ list, title }) => {
   const { data } = useInfiniteQuery(
     [`'user-${title}`, { ids: list }],
     async ({ pageParam, queryKey }) => {
-      const { data } = await axios.get(`/user-plants/${pageParam ? pageParam : 0}`, {
+      const { data } = await axios.get(`${API_URL}/user-plants/${pageParam ? pageParam : 0}`, {
         params: queryKey[1],
       })
       return data.plants

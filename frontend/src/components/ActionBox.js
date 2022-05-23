@@ -1,5 +1,6 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { API_URL } from '../constants'
 import { useQueryClient } from 'react-query'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
@@ -30,7 +31,7 @@ export const ActionBox = ({ plantId }) => {
     }
     if (list && list.find(id => id === plantId)) {
       // REMOVES PLANT
-      axios.put(`/${currentUser.username}/remove`, data).then(res => {
+      axios.put(`${API_URL}/${currentUser.username}/remove`, data).then(res => {
         if (res.status === 200) {
           queryClient.invalidateQueries('current-user')
           setSubmitting(false)
@@ -41,7 +42,7 @@ export const ActionBox = ({ plantId }) => {
       })
     } else {
       // ADDS PLANT
-      axios.put(`/${currentUser.username}/add`, data).then(res => {
+      axios.put(`${API_URL}/${currentUser.username}/add`, data).then(res => {
         if (res.status === 200) {
           queryClient.invalidateQueries('current-user')
           setSubmitting(false)

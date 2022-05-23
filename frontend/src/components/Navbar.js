@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
+import { API_URL } from '../constants'
 import { useQuery } from 'react-query'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
@@ -22,7 +23,7 @@ export const Navbar = () => {
   const { handleLogout, currentUser } = useContext(UserContext)
 
   const { data: plantsToReview } = useQuery(['plants-to-review'], async () => {
-    const { data } = await axios.get(`/plants-to-review`)
+    const { data } = await axios.get(`${API_URL}/plants-to-review`)
     return data.plants
   })
 

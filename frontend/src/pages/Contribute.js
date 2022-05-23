@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
+import { API_URL } from '../constants'
 // import axios from 'axios'
 import { useDropzone } from 'react-dropzone'
 import { UserContext } from '../contexts/UserContext'
@@ -101,7 +102,7 @@ export const Contribute = () => {
         // submit data to mongodb
         const review = currentUser.role === 'admin' ? 'approved' : 'pending'
         // TODO: axios
-        await fetch('/plants', {
+        await fetch(`${API_URL}/plants`, {
           method: 'POST',
           body: JSON.stringify({
             primaryName: values.primaryName,

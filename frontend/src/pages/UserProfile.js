@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
+import { API_URL } from '../constants'
 import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import moment from 'moment'
@@ -43,7 +44,7 @@ export const UserProfile = () => {
   const { data: contributions, status: contributionsStatus } = useQuery(
     ['contributions', currentUser._id],
     async () => {
-      const { data } = await axios.get(`/contributions/${currentUser._id}`)
+      const { data } = await axios.get(`${API_URL}/contributions/${currentUser._id}`)
       return data.contributions
     }
   )

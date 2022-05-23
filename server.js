@@ -33,6 +33,7 @@ const {
 
 // run on whatever port heroku has available or 4000 (local)
 const PORT = process.env.PORT || 4000
+const API_URL = process.env.API_URL
 
 const app = express()
 
@@ -46,27 +47,27 @@ app
   .use(express.json())
 
   // ENDPOINTS
-  .post('/users', createUser)
+  .post(`${API_URL}/users`, createUser)
   // FIXME: change /login endpoint to use noun instead of verb
-  .post('/login', authenticateUser)
-  .post('/token', verifyToken)
-  .get('/users', getUsers)
-  .get('/users/:id', getUser)
+  .post(`${API_URL}/login`, authenticateUser)
+  .post(`${API_URL}/token`, verifyToken)
+  .get(`${API_URL}/users`, getUsers)
+  .get(`${API_URL}/users/:id`, getUser)
   // FIXME: change /add and /remove endpoints to use nouns instead of verb (eg: /:username/collection ?) & update handler function(s)
-  .put('/users/:id', updateUser)
-  .put('/:username/add', addToUser)
-  .put('/:username/remove', removeFromUser)
-  .delete('/users/:_id', deleteUser)
-  .post('/plants', createPlant)
-  .get('/plants/:page', getPlants)
-  .get('/plants-to-review', getPlantsToReview)
-  .get('/plant/:_id', getPlant)
-  .get('/random-plants', getRandomPlants)
-  .get('/user-plants/:page', getUserPlants)
-  .get('/contributions/:userId', getUserContributions)
-  .put('/plants/:_id', updatePlant)
-  .put('/plants/:_id/comments', addComment)
-  .delete('/plants/:_id', deletePlant)
+  .put(`${API_URL}/users/:id`, updateUser)
+  .put(`${API_URL}/:username/add`, addToUser)
+  .put(`${API_URL}/:username/remove`, removeFromUser)
+  .delete(`${API_URL}/users/:_id`, deleteUser)
+  .post(`${API_URL}/plants`, createPlant)
+  .get(`${API_URL}/plants/:page`, getPlants)
+  .get(`${API_URL}/plants-to-review`, getPlantsToReview)
+  .get(`${API_URL}/plant/:_id`, getPlant)
+  .get(`${API_URL}/random-plants`, getRandomPlants)
+  .get(`${API_URL}/user-plants/:page`, getUserPlants)
+  .get(`${API_URL}/contributions/:userId`, getUserContributions)
+  .put(`${API_URL}/plants/:_id`, updatePlant)
+  .put(`${API_URL}/plants/:_id/comments`, addComment)
+  .delete(`${API_URL}/plants/:_id`, deletePlant)
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'frontend', 'build')))

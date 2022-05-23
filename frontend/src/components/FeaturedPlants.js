@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { API_URL } from '../constants'
 import { useInfiniteQuery } from 'react-query'
 import axios from 'axios'
 import styled from 'styled-components/macro'
@@ -16,7 +17,7 @@ export const FeaturedPlants = ({ currentUser }) => {
   const [plants, setPlants] = useState([])
 
   const { data, status } = useInfiniteQuery('random-plants', async () => {
-    const { data } = await axios.get('/random-plants')
+    const { data } = await axios.get(`${API_URL}/random-plants`)
     return data.plants
   })
 

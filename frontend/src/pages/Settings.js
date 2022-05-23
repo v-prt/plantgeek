@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
 import moment from 'moment'
+import { API_URL } from '../constants'
 
 import { Formik, Form, useFormikContext } from 'formik'
 import { FormItem } from '../components/forms/FormItem'
@@ -135,7 +136,7 @@ export const Settings = () => {
     if (window.confirm('Are you sure you want to delete your account? This cannot be undone!')) {
       localStorage.removeItem('plantgeekToken')
       window.location.replace('/login')
-      axios.delete(`/users/${currentUser._id}`).catch(err => console.log(err))
+      axios.delete(`${API_URL}/users/${currentUser._id}`).catch(err => console.log(err))
     }
   }
   // #endregion

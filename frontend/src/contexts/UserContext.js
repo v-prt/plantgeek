@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
 import axios from 'axios'
+import { API_URL } from '../constants'
 
 export const UserContext = createContext(null)
 export const UserProvider = ({ children }) => {
@@ -11,7 +12,7 @@ export const UserProvider = ({ children }) => {
   const [currentUserId, setCurrentUserId] = useState(undefined)
 
   const { data: userData } = useQuery(['current-user', currentUserId], async () => {
-    const { data } = await axios.get(`/users/${currentUserId}`)
+    const { data } = await axios.get(`${API_URL}/users/${currentUserId}`)
     return data.user
   })
 
@@ -24,7 +25,7 @@ export const UserProvider = ({ children }) => {
   // SIGNUP
   const handleSignup = async values => {
     try {
-      const res = await axios.post('/users', values)
+      const res = await axios.post(`${API_URL}/users`, values)
       setToken(res.data.token)
       return res.data
     } catch (err) {
@@ -35,7 +36,7 @@ export const UserProvider = ({ children }) => {
   // LOGIN
   const handleLogin = async values => {
     try {
-      const res = await axios.post('/login', values)
+      const res = await axios.post(`${API_URL}/login`, values)
       setToken(res.data.token)
       return res.data
     } catch (err) {
@@ -53,7 +54,7 @@ export const UserProvider = ({ children }) => {
   // VERIFY TOKEN AND SET CURRENT USER ID
   const verifyToken = async token => {
     try {
-      const res = await axios.post('/token', { token })
+      const res = await axios.post(`${API_URL}/token`, { token })
       if (res.status === 200) {
         setCurrentUser(res.data.user)
         setCurrentUserId(res.data.user._id)
@@ -83,7 +84,7 @@ export const UserProvider = ({ children }) => {
   // GET USER BY ID
   const getUserById = async id => {
     await axios
-      .get(`/users/${id}`)
+      .get(`${API_URL}/users/${id}`)
       .then(res => res.data.user)
       .catch(err => console.log(err))
   }
@@ -91,7 +92,7 @@ export const UserProvider = ({ children }) => {
   // UPDATE CURRENT USER DATA
   const updateCurrentUser = async data => {
     try {
-      const res = await axios.put(`users/${currentUser._id}`, data)
+      const res = await axios.put(`${API_URL}/users/${currentUser._id}`, data)
       queryClient.invalidateQueries('current-user')
       return res.data
     } catch (err) {

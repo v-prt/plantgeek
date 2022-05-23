@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { API_URL } from '../constants'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
@@ -64,7 +65,7 @@ export const UpdatePlant = ({ currentUser, plant }) => {
         })
         const cloudinaryResponse = await response.json()
         // submit data to mongodb
-        await fetch(`/plants/${plant._id}`, {
+        await fetch(`${API_URL}/plants/${plant._id}`, {
           method: 'PUT',
           body: JSON.stringify({
             primaryName: values.primaryName,

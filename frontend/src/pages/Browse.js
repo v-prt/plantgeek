@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import { useInfiniteQuery } from 'react-query'
-import { Link } from 'react-router-dom'
+import { API_URL } from '../constants'
 import axios from 'axios'
 import { PlantContext } from '../contexts/PlantContext'
 
@@ -16,13 +16,7 @@ import { BiSearch } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import { RiPlantLine } from 'react-icons/ri'
-import {
-  FilterOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-  CloseCircleOutlined,
-  PlusCircleOutlined,
-} from '@ant-design/icons'
+import { FilterOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons'
 const { Option } = Select
 
 export const Browse = () => {
@@ -34,7 +28,7 @@ export const Browse = () => {
   const { data, status } = useInfiniteQuery(
     ['plants', formData],
     async ({ pageParam, queryKey }) => {
-      const { data } = await axios.get(`/plants/${pageParam ? pageParam : 0}`, {
+      const { data } = await axios.get(`${API_URL}/plants/${pageParam ? pageParam : 0}`, {
         params: queryKey[1],
       })
       return data.plants

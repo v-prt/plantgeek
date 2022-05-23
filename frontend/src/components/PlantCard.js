@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { API_URL } from '../constants'
 import { useQueryClient } from 'react-query'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
@@ -27,7 +28,7 @@ export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
       )
     ) {
       try {
-        axios.put(`/plants/${plant._id}`, { review: 'approved' })
+        axios.put(`${API_URL}/plants/${plant._id}`, { review: 'approved' })
         queryClient.invalidateQueries('plants-to-review')
       } catch (err) {
         console.log(err)
@@ -38,7 +39,7 @@ export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
   const handleReject = plantId => {
     if (window.confirm('Are you sure you want to reject and permanently delete this plant?')) {
       try {
-        axios.delete(`/plants/${plantId}`).catch(err => console.log(err))
+        axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
         queryClient.invalidateQueries('plants-to-review')
       } catch (err) {
         console.log(err)
