@@ -10,7 +10,7 @@
     "express": "^4.17.1",
     "file-system": "^2.2.2",
     "jsonwebtoken": "^8.5.1",
-    "mongodb": "^3.6.6",
+    "mongodb": "^3.7.3",
     "morgan": "^1.10.0"
   },
   "devDependencies": {

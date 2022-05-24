@@ -24,7 +24,7 @@ import GlobalStyles, { BREAKPOINTS } from './GlobalStyles'
 import { BeatingHeart } from './components/loaders/BeatingHeart'
 
 export const App = () => {
-  const { checkedToken } = useContext(UserContext)
+  const { checkedToken, userStatus } = useContext(UserContext)
 
   // makes window scroll to top between renders
   useEffect(() => {
@@ -34,7 +34,7 @@ export const App = () => {
   return (
     <BrowserRouter>
       <GlobalStyles />
-      {checkedToken ? (
+      {checkedToken && userStatus === 'success' ? (
         <>
           <Navbar />
           <Body>

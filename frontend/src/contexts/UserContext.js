@@ -8,13 +8,18 @@ export const UserProvider = ({ children }) => {
   const queryClient = new useQueryClient()
   const [token, setToken] = useState(localStorage.getItem('plantgeekToken'))
   const [checkedToken, setCheckedToken] = useState(false)
-  const [currentUser, setCurrentUser] = useState(undefined)
-  const [currentUserId, setCurrentUserId] = useState(undefined)
+  const [currentUser, setCurrentUser] = useState()
+  const [currentUserId, setCurrentUserId] = useState()
 
-  const { data: userData } = useQuery(['current-user', currentUserId], async () => {
-    const { data } = await axios.get(`${API_URL}/users/${currentUserId}`)
-    return data.user
-  })
+  const { data: userData, status: userStatus } = useQuery(
+    ['current-user', currentUserId],
+    async () => {
+      if (currentUserId) {
+        const { data } = await axios.get(`${API_URL}/users/${currentUserId}`)
+        return data.user
+      } else return null
+    }
+  )
 
   useEffect(() => {
     if (userData) {
@@ -104,6 +109,7 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider
       value={{
+        userStatus,
         token,
         checkedToken,
         handleSignup,

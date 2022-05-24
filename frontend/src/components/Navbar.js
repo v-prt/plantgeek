@@ -69,7 +69,7 @@ export const Navbar = () => {
                     <BiBadgeCheck />
                   </div>
                   <span className='label'>review</span>
-                  {plantsToReview.length > 0 && <Pulser color='orange' />}
+                  {plantsToReview?.length > 0 && <Pulser color='orange' />}
                 </NavLink>
               )}
               <button className='logout-btn' onClick={handleLogout}>

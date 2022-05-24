@@ -46,7 +46,6 @@ const getPlants = async (req, res) => {
   }
   let order
   if (sort) {
-    // FIXME: doesn't sort properly
     if (sort === 'name-asc') {
       order = { primaryName: 1 }
     } else if (sort === 'name-desc') {
@@ -61,7 +60,8 @@ const getPlants = async (req, res) => {
       .collection('plants')
       .find(filters)
       .sort(order)
-      // TODO:
+      .collation({ locale: 'en' })
+      // TODO: pagination
       // .skip(24 * page)
       // .limit(24)
       .toArray()
