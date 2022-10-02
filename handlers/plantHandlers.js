@@ -32,13 +32,18 @@ const createPlant = async (req, res) => {
 // (READ/GET) GETS ALL PLANTS
 const getPlants = async (req, res) => {
   const page = req.params.page ? parseInt(req.params.page) : 0
-  const { toxic, primaryName, sort } = req.query
+  const { toxic, image, primaryName, sort } = req.query
   // don't include any plants which are pending review ($ne = not equal)
   let filters = { review: { $ne: 'pending' } }
   if (toxic === 'true') {
     filters = { ...filters, toxic: true }
   } else if (toxic === 'false') {
     filters = { ...filters, toxic: false }
+  }
+  if (image === 'broken') {
+    filters = { ...filters, imageUrl: 'broken' }
+  } else if (image === 'good') {
+    filters = { ...filters, imageUrl: { $ne: 'broken' } }
   }
   if (primaryName) {
     const regex = new RegExp(primaryName, 'i') // "i" for case insensitive
@@ -243,6 +248,77 @@ const deletePlant = async (req, res) => {
   client.close()
 }
 
+// taking all plants and saving images to cloudinary, then updating the plant with the cloudinary image url
+const uploadToCloudinary = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+
+  try {
+    const plants = await db.collection('plants').find().toArray()
+
+    if (plants) {
+      const cloudinary = require('cloudinary').v2
+      cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_KEY,
+        api_secret: process.env.CLOUDINARY_SECRET,
+      })
+
+      const promises = plants.map(async plant => {
+        // skipping plants where images are broken
+        if (plant.imageUrl.includes('broken')) return
+        try {
+          const url = `${plant.imageUrl}`
+          const result = await cloudinary.uploader.upload(url, {
+            // moving to different folder
+            folder: 'plantgeek-plants',
+          })
+          // updating plant with new image url
+          const filter = { _id: ObjectId(plant._id) }
+          const update = {
+            $set: {
+              imageUrl: result.secure_url,
+            },
+          }
+          const result2 = await db.collection('plants').updateOne(filter, update)
+          console.log(result2)
+        } catch (err) {
+          console.error(err)
+        }
+      })
+      await Promise.all(promises)
+      res.status(200).json({ status: 200, message: 'done' })
+    } else {
+      res.status(404).json({ status: 404, message: 'No plants found' })
+    }
+  } catch (err) {
+    console.error(err)
+  }
+  client.close()
+}
+
+const uploadPlantImage = async (req, res) => {
+  const { imageUrl, plantId } = req.body
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+
+  try {
+    // update plant with new image url
+    const filter = { _id: ObjectId(plantId) }
+    const update = {
+      $set: {
+        imageUrl,
+      },
+    }
+    await db.collection('plants').updateOne(filter, update)
+    res.status(200).json({ status: 200, message: 'image uploaded' })
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 module.exports = {
   createPlant,
   getPlants,
@@ -253,5 +329,7 @@ module.exports = {
   getUserContributions,
   addComment,
   updatePlant,
+  uploadToCloudinary,
+  uploadPlantImage,
   deletePlant,
 }

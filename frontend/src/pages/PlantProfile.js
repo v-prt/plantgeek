@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { API_URL } from '../constants'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
+import { message, Upload } from 'antd'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
@@ -24,11 +26,19 @@ export const PlantProfile = () => {
   const { id } = useParams()
   const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
+  const queryClient = new useQueryClient()
+  const [image, setImage] = useState(undefined)
 
   const { data: plant } = useQuery(['plant', id], async () => {
     const { data } = await axios.get(`${API_URL}/plant/${id}`)
     return data.plant
   })
+
+  useEffect(() => {
+    if (plant) {
+      setImage(plant.imageUrl)
+    }
+  }, [plant])
 
   // makes window scroll to top between renders
   // useEffect(() => {
@@ -87,6 +97,56 @@ export const PlantProfile = () => {
     }
   }, [plant])
 
+  // IMAGE UPLOAD (ADMIN ONLY)
+  const [uploading, setUploading] = useState(false)
+  const fileList = []
+  const uploadButton = <div>{uploading ? <LoadingOutlined /> : <PlusOutlined />}</div>
+  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`
+
+  // checking file size before upload
+  const checkSize = file => {
+    const underLimit = file.size / 1024 / 1024 < 1
+    if (!underLimit) {
+      message.error('Image must be under 1 MB.')
+    }
+    return underLimit
+  }
+
+  // handling image upload
+  const handleImageUpload = async fileData => {
+    setUploading(true)
+
+    const formData = new FormData()
+    formData.append('file', fileData.file)
+    formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
+
+    await axios
+      // uploading image to cloudinary
+      .post(cloudinaryUrl, formData)
+      .then(res => {
+        const imageUrl = res.data.secure_url
+        // updating plant with new image url
+        axios
+          .put(`${API_URL}/plants/${id}`, { imageUrl })
+          .then(() => {
+            setImage(imageUrl)
+            queryClient.invalidateQueries('plant')
+            queryClient.invalidateQueries('plants')
+            setUploading(false)
+          })
+          .catch(err => {
+            console.log(err)
+            message.error('Something went wrong on the server. Please try again.')
+            setUploading(false)
+          })
+      })
+      .catch(err => {
+        console.log(err)
+        message.error('Something went wrong with cloudinary. Please try again.')
+        setUploading(false)
+      })
+  }
+
   // DELETE PLANT (ADMINS ONLY)
   const handleDelete = plantId => {
     if (
@@ -120,7 +180,29 @@ export const PlantProfile = () => {
           <FadeIn>
             <section className='plant-info'>
               <div className='primary-image'>
-                <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+                {currentUser?.role === 'admin' ? (
+                  <Upload
+                    multiple={false}
+                    maxCount={1}
+                    name='plantImage'
+                    beforeUpload={checkSize}
+                    customRequest={handleImageUpload}
+                    fileList={fileList}
+                    listType='picture-card'
+                    accept='.png, .jpg, .jpeg'
+                    showUploadList={{
+                      showPreviewIcon: false,
+                      showRemoveIcon: false,
+                    }}>
+                    {!uploading && image ? (
+                      <ImageLoader src={image} alt={''} placeholder={placeholder} />
+                    ) : (
+                      uploadButton
+                    )}
+                  </Upload>
+                ) : (
+                  <ImageLoader src={image} alt={''} placeholder={placeholder} />
+                )}
               </div>
               <Needs>
                 <h2>Care information</h2>
@@ -205,7 +287,7 @@ export const PlantProfile = () => {
           )}
           {currentUser?.role === 'admin' && (
             <DangerZone>
-              <p>DANGER ZONE</p>
+              <p>DANGER ZONE (ADMIN)</p>
               <Button type='danger' onClick={() => handleDelete(plant._id)}>
                 DELETE PLANT
               </Button>
@@ -213,6 +295,7 @@ export const PlantProfile = () => {
           )}
         </>
       ) : (
+        // FIXME: should be right in center
         <BeatingHeart />
       )}
     </Wrapper>
@@ -236,22 +319,31 @@ const Wrapper = styled.main`
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
+    gap: 20px;
     .primary-image {
       display: flex;
-      justify-content: center;
       flex: 1;
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1 / 1;
+      margin: auto;
+      .ant-upload-list {
+        height: 100%;
+        width: 100%;
+        .ant-upload-select-picture-card {
+          border-radius: 50%;
+          margin: auto;
+          height: 100%;
+          width: 100%;
+          overflow: hidden;
+        }
+      }
       img {
-        margin: auto;
+        object-fit: cover;
         width: 100%;
         border-radius: 50%;
         &.placeholder {
           border-radius: 0;
-        }
-        @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-          width: 400px;
-          &.placeholder {
-            width: 300px;
-          }
         }
       }
     }
@@ -266,6 +358,9 @@ const Wrapper = styled.main`
         font-size: 1rem;
       }
     }
+    .plant-info {
+      gap: 40px;
+    }
   }
   @media only screen and (min-width: 1200px) {
     .plant-info {
@@ -278,7 +373,6 @@ const Needs = styled.div`
   background: #f2f2f2;
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
   padding: 20px 30px;
   border-radius: 20px;
   flex: 1;
@@ -347,9 +441,6 @@ const Needs = styled.div`
         }
       }
     }
-  }
-  @media only screen and (min-width: 1200px) {
-    margin-top: 0;
   }
 `
 

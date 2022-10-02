@@ -58,7 +58,10 @@ export const ImageLoader = ({ src, alt, placeholder }) => {
 }
 
 const Wrapper = styled.div`
-  display: grid;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
   .smooth-image {
     transition: opacity 1s;
   }

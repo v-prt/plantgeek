@@ -28,6 +28,7 @@ const {
   getUserContributions,
   addComment,
   updatePlant,
+  uploadToCloudinary,
   deletePlant,
 } = require('./handlers/plantHandlers.js')
 
@@ -67,6 +68,7 @@ app
   .get(`${API_URL}/contributions/:userId`, getUserContributions)
   .put(`${API_URL}/plants/:_id`, updatePlant)
   .put(`${API_URL}/plants/:_id/comments`, addComment)
+  .post(`${API_URL}/cloud-upload`, uploadToCloudinary)
   .delete(`${API_URL}/plants/:_id`, deletePlant)
 
 if (process.env.NODE_ENV === 'production') {

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import { API_URL } from '../constants'
 import axios from 'axios'
+import { UserContext } from '../contexts/UserContext'
 import { PlantContext } from '../contexts/PlantContext'
 
 import styled from 'styled-components/macro'
@@ -24,6 +25,7 @@ export const Browse = () => {
   const { formData, setFormData, viewNeeds, setViewNeeds } = useContext(PlantContext)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [plants, setPlants] = useState(null)
+  const { currentUser } = useContext(UserContext)
 
   const { data, status } = useInfiniteQuery(
     ['plants', formData],
@@ -177,6 +179,21 @@ export const Browse = () => {
                       </Toggle>
                     </div>
                   </div>
+                  {currentUser?.role === 'admin' && (
+                    <div className='filter'>
+                      <p>For admins</p>
+                      <Select
+                        getPopupContainer={trigger => trigger.parentNode}
+                        name='image'
+                        onChange={submitForm}
+                        placeholder='Image URL'
+                        style={{ width: '100%' }}
+                        allowClear>
+                        <Option value='broken'>Broken image</Option>
+                        <Option value='good'>Working image</Option>
+                      </Select>
+                    </div>
+                  )}
                   <Button
                     type='secondary'
                     className='reset-filters'

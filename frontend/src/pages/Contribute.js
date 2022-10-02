@@ -88,6 +88,7 @@ export const Contribute = () => {
     } else {
       // upload image to cloudinary via dropzone
       images.forEach(async image => {
+        // FIXME: make sure plant image is upload to plantgeek-plants folder on cloudinary
         const formData = new FormData()
         formData.append('file', image)
         formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
