@@ -3,12 +3,21 @@ import { useParams } from 'react-router-dom'
 import { API_URL } from '../constants'
 import { useQuery, useQueryClient } from 'react-query'
 import { message, Upload } from 'antd'
+import { Formik, Form } from 'formik'
+import { FormItem } from '../components/forms/FormItem'
+import { Input, Select } from 'formik-antd'
+import * as Yup from 'yup'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
-
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  SaveOutlined,
+  CloseCircleOutlined,
+  LoadingOutlined,
+  PlusOutlined,
+} from '@ant-design/icons'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
@@ -19,8 +28,8 @@ import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
-
 import { ActionBox } from '../components/ActionBox'
+const { Option } = Select
 
 export const PlantProfile = () => {
   const { id } = useParams()
@@ -159,127 +168,278 @@ export const PlantProfile = () => {
     }
   }
 
+  // UPDATE PLANT (ADMINS ONLY)
+  const [editMode, setEditMode] = useState(false)
+
+  const initialValues = {
+    primaryName: plant?.primaryName,
+    secondaryName: plant?.secondaryName,
+    light: plant?.light,
+    water: plant?.water,
+    temperature: plant?.temperature,
+    humidity: plant?.humidity,
+    toxic: plant?.toxic,
+  }
+
+  const schema = Yup.object().shape({
+    primaryName: Yup.string().min(2, 'Too short').required('Required'),
+    secondaryName: Yup.string().min(2, 'Too short').required('Required'),
+    light: Yup.string().required('Required'),
+    water: Yup.string().required('Required'),
+    temperature: Yup.string().required('Required'),
+    humidity: Yup.string().required('Required'),
+    toxic: Yup.string().required('Required'),
+  })
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    // TODO: show when new info is loading after changes saved
+    setSubmitting(true)
+    try {
+      await axios.put(`${API_URL}/plants/${id}`, values)
+      queryClient.invalidateQueries('plant')
+      queryClient.invalidateQueries('plants')
+      message.success('Plant updated successfully!')
+      setEditMode(false)
+    } catch (err) {
+      console.log(err)
+      message.error('Something went wrong on the server. Please try again.')
+    }
+    setSubmitting(false)
+  }
+
   return (
     <Wrapper>
       {plant ? (
         <>
-          <FadeIn>
-            {plant.review === 'pending' && (
-              <Alert type='warning' message='This plant is pending review' showIcon />
-            )}
-            <section className='heading'>
-              <h1>{plant.primaryName?.toLowerCase()}</h1>
-              <div className='secondary-name-wrapper'>
-                <b className='aka'>Also known as: </b>
-                <span className='secondary-name'>
-                  {plant.secondaryName ? plant.secondaryName : 'N/A'}
-                </span>
-              </div>
-            </section>
-          </FadeIn>
-          <FadeIn>
-            <section className='plant-info'>
-              <div className='primary-image'>
-                {currentUser?.role === 'admin' ? (
-                  <Upload
-                    multiple={false}
-                    maxCount={1}
-                    name='plantImage'
-                    beforeUpload={checkSize}
-                    customRequest={handleImageUpload}
-                    fileList={fileList}
-                    listType='picture-card'
-                    accept='.png, .jpg, .jpeg'
-                    showUploadList={{
-                      showPreviewIcon: false,
-                      showRemoveIcon: false,
-                    }}>
-                    {!uploading && image ? (
-                      <ImageLoader src={image} alt={''} placeholder={placeholder} />
-                    ) : (
-                      uploadButton
-                    )}
-                  </Upload>
-                ) : (
-                  <ImageLoader src={image} alt={''} placeholder={placeholder} />
-                )}
-              </div>
-              <Needs>
-                <h2>Care information</h2>
-                <div className='row'>
-                  <img src={sun} alt='' />
-                  <div className='column'>
-                    <p>{plant.light} light</p>
-                    <Bar>
-                      {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
-                      {plant.light === 'medium indirect' && <Indicator level={'1-2'} />}
-                      {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
-                      {plant.light === 'bright indirect' && <Indicator level={'2-3'} />}
-                      {plant.light === 'bright' && <Indicator level={'3'} />}
-                    </Bar>
-                  </div>
-                </div>
-                <div className='row'>
-                  <img src={water} alt='' />
-                  <div className='column'>
-                    <p>{plant.water} water</p>
-                    <Bar>
-                      {plant.water === 'low' && <Indicator level={'1'} />}
-                      {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
-                      {plant.water === 'medium' && <Indicator level={'2'} />}
-                      {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
-                      {plant.water === 'high' && <Indicator level={'3'} />}
-                    </Bar>
-                  </div>
-                </div>
-                <div className='row'>
-                  <img src={temp} alt='' />
-                  <div className='column'>
-                    <p>{plant.temperature} temperature</p>
-                    <Bar>
-                      {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                      {plant.temperature === 'warm' && <Indicator level={'3'} />}
-                    </Bar>
-                  </div>
-                </div>
-                <div className='row'>
-                  <img src={humidity} alt='' />
-                  <div className='column'>
-                    <p>{plant.humidity} humidity</p>
-                    <Bar>
-                      {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-                      {plant.humidity === 'high' && <Indicator level={'3'} />}
-                    </Bar>
-                  </div>
-                </div>
-                <div className='misc-info'>
-                  <p className='difficulty'>
-                    Difficulty: <span className={difficulty?.toLowerCase()}>{difficulty}</span>
-                  </p>
-                  <p className='toxicity'>
-                    Toxicity:{' '}
-                    {plant.toxic ? (
-                      <span className='toxic'>
-                        <WarningOutlined /> Not pet friendly
-                      </span>
-                    ) : (
-                      <span className='nontoxic'>
-                        <SafetyOutlined /> Pet friendly
-                      </span>
-                    )}
-                  </p>
-                  {plant.sourceUrl && (
-                    <p className='sources'>
-                      Source(s):{' '}
-                      <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
-                        [1]
-                      </a>
-                    </p>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={schema}
+            validateOnChange={false}
+            validateOnBlur={false}
+            onSubmit={handleSubmit}>
+            {({ submitForm, isSubmitting }) => (
+              <Form>
+                <FadeIn>
+                  {plant.review === 'pending' && (
+                    <Alert type='warning' message='This plant is pending review' showIcon />
                   )}
-                </div>
-              </Needs>
-            </section>
-          </FadeIn>
+                  <section className='heading'>
+                    {editMode ? (
+                      <>
+                        <FormItem
+                          label='Primary / Latin name'
+                          sublabel='(genus and species)'
+                          name='primaryName'>
+                          <Input
+                            name='primaryName'
+                            placeholder='Monstera deliciosa'
+                            prefix={<EditOutlined />}
+                          />
+                        </FormItem>
+                        <FormItem label='Secondary / Common name' name='secondaryName'>
+                          <Input
+                            name='secondaryName'
+                            placeholder='Swiss cheese plant'
+                            prefix={<EditOutlined />}
+                          />
+                        </FormItem>
+                      </>
+                    ) : (
+                      <>
+                        <h1>{plant.primaryName?.toLowerCase()}</h1>
+                        <div className='secondary-name-wrapper'>
+                          <b className='aka'>Also known as: </b>
+                          <span className='secondary-name'>
+                            {plant.secondaryName ? plant.secondaryName : 'N/A'}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                    {currentUser?.role === 'admin' &&
+                      (editMode ? (
+                        <div className='buttons'>
+                          <Button
+                            type='primary'
+                            icon={<SaveOutlined />}
+                            loading={isSubmitting}
+                            onClick={() => submitForm()}>
+                            Save
+                          </Button>
+                          <Button
+                            type='secondary'
+                            icon={<CloseCircleOutlined />}
+                            onClick={() => setEditMode(false)}>
+                            Cancel
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          type='primary'
+                          icon={<EditOutlined />}
+                          onClick={() => setEditMode(true)}>
+                          Edit Plant
+                        </Button>
+                      ))}
+                  </section>
+                </FadeIn>
+
+                <FadeIn>
+                  <section className='plant-info'>
+                    <div className='primary-image'>
+                      {currentUser?.role === 'admin' ? (
+                        <Upload
+                          multiple={false}
+                          maxCount={1}
+                          name='plantImage'
+                          beforeUpload={checkSize}
+                          customRequest={handleImageUpload}
+                          fileList={fileList}
+                          listType='picture-card'
+                          accept='.png, .jpg, .jpeg'
+                          showUploadList={{
+                            showPreviewIcon: false,
+                            showRemoveIcon: false,
+                          }}>
+                          {!uploading && image ? (
+                            <ImageLoader src={image} alt={''} placeholder={placeholder} />
+                          ) : (
+                            uploadButton
+                          )}
+                          {!uploading && (
+                            <div className='overlay'>
+                              <EditOutlined />
+                            </div>
+                          )}
+                        </Upload>
+                      ) : (
+                        <ImageLoader src={image} alt={''} placeholder={placeholder} />
+                      )}
+                    </div>
+                    <Needs>
+                      <h2>Care information</h2>
+                      <div className='row'>
+                        <img src={sun} alt='' />
+                        <div className='column'>
+                          {editMode ? (
+                            <Select name='light' placeholder='Select'>
+                              <Option value='low to bright indirect'>
+                                light: low to bright indirect
+                              </Option>
+                              <Option value='medium indirect'>light: medium indirect</Option>
+                              <Option value='medium to bright indirect'>
+                                light: medium to bright indirect
+                              </Option>
+                              <Option value='bright indirect'>light: bright indirect</Option>
+                              <Option value='bright'>light: bright</Option>
+                            </Select>
+                          ) : (
+                            <p>light: {plant.light}</p>
+                          )}
+                          <Bar>
+                            {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
+                            {plant.light === 'medium indirect' && <Indicator level={'1-2'} />}
+                            {plant.light === 'medium to bright indirect' && (
+                              <Indicator level={'2'} />
+                            )}
+                            {plant.light === 'bright indirect' && <Indicator level={'2-3'} />}
+                            {plant.light === 'bright' && <Indicator level={'3'} />}
+                          </Bar>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <img src={water} alt='' />
+                        <div className='column'>
+                          {editMode ? (
+                            <Select name='water' placeholder='Select'>
+                              <Option value='low'>water: low</Option>
+                              <Option value='low to medium'>water: low to medium</Option>
+                              <Option value='medium'>water: medium</Option>
+                              <Option value='medium to high'>water: medium to high</Option>
+                              <Option value='high'>water: high</Option>
+                            </Select>
+                          ) : (
+                            <p>water: {plant.water}</p>
+                          )}
+                          <Bar>
+                            {plant.water === 'low' && <Indicator level={'1'} />}
+                            {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+                            {plant.water === 'medium' && <Indicator level={'2'} />}
+                            {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+                            {plant.water === 'high' && <Indicator level={'3'} />}
+                          </Bar>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <img src={temp} alt='' />
+                        <div className='column'>
+                          {editMode ? (
+                            <Select name='temperature' placeholder='Select'>
+                              <Option value='average'>temperature: average</Option>
+                              <Option value='warm'>temperature: warm</Option>
+                            </Select>
+                          ) : (
+                            <p>temperature: {plant.temperature}</p>
+                          )}
+                          <Bar>
+                            {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+                            {plant.temperature === 'warm' && <Indicator level={'3'} />}
+                          </Bar>
+                        </div>
+                      </div>
+                      <div className='row'>
+                        <img src={humidity} alt='' />
+                        <div className='column'>
+                          {editMode ? (
+                            <Select name='humidity' placeholder='Select'>
+                              <Option value='average'>humidity: average</Option>
+                              <Option value='high'>humidity: high</Option>
+                            </Select>
+                          ) : (
+                            <p>humidity: {plant.humidity}</p>
+                          )}
+                          <Bar>
+                            {plant.humidity === 'average' && <Indicator level={'1-2'} />}
+                            {plant.humidity === 'high' && <Indicator level={'3'} />}
+                          </Bar>
+                        </div>
+                      </div>
+                      <div className='misc-info'>
+                        <div className='difficulty'>
+                          Difficulty:{' '}
+                          <span className={difficulty?.toLowerCase()}>{difficulty}</span>
+                        </div>
+                        <div className='toxicity'>
+                          Toxicity:{' '}
+                          {editMode ? (
+                            <Select name='toxic' placeholder='Select'>
+                              <Option value={true}>toxic</Option>
+                              <Option value={false}>nontoxic</Option>
+                            </Select>
+                          ) : plant.toxic ? (
+                            <span className='toxic'>
+                              <WarningOutlined /> Not pet friendly
+                            </span>
+                          ) : (
+                            <span className='nontoxic'>
+                              <SafetyOutlined /> Pet friendly
+                            </span>
+                          )}
+                        </div>
+                        {plant.sourceUrl && (
+                          <div className='sources'>
+                            Source(s):{' '}
+                            <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
+                              [1]
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </Needs>
+                  </section>
+                </FadeIn>
+              </Form>
+            )}
+          </Formik>
           {currentUser && (
             <FadeIn>
               <ActionBox plantId={plant._id} />
@@ -303,6 +463,16 @@ export const PlantProfile = () => {
 }
 
 const Wrapper = styled.main`
+  form {
+    width: 100%;
+    .ant-input-affix-wrapper {
+      width: 100%;
+      max-width: 300px;
+    }
+    .ant-select {
+      width: 100%;
+    }
+  }
   .heading {
     background: ${COLORS.light};
     h1 {
@@ -312,6 +482,13 @@ const Wrapper = styled.main`
     }
     .secondary-name-wrapper {
       font-size: 0.8rem;
+    }
+    .buttons {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      margin-top: 20px;
     }
   }
   .plant-info {
@@ -330,6 +507,28 @@ const Wrapper = styled.main`
       .ant-upload-list {
         height: 100%;
         width: 100%;
+        position: relative;
+        overflow: hidden;
+        .overlay {
+          height: 100%;
+          width: 100%;
+          background: rgba(0, 0, 0, 0.2);
+          color: #fff;
+          visibility: hidden;
+          opacity: 0;
+          transition: 0.2s ease-in-out;
+          position: absolute;
+          display: grid;
+          place-content: center;
+          border-radius: 50%;
+          font-size: 1.5rem;
+        }
+        &:hover {
+          .overlay {
+            visibility: visible;
+            opacity: 1;
+          }
+        }
         .ant-upload-select-picture-card {
           border-radius: 50%;
           margin: auto;
@@ -350,7 +549,6 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
-      text-align: right;
       h1 {
         font-size: 2rem;
       }
@@ -401,13 +599,22 @@ const Needs = styled.div`
   .misc-info {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
+    gap: 20px;
     font-size: 0.9rem;
     color: #999;
     font-weight: bold;
     margin-top: 10px;
     p {
       margin-right: 20px;
+    }
+    .difficulty,
+    .toxicity,
+    .sources {
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
     .difficulty {
       .easy {
@@ -421,6 +628,9 @@ const Needs = styled.div`
       }
     }
     .toxicity {
+      .ant-select {
+        width: 150px;
+      }
       .toxic {
         color: orange;
       }
@@ -445,17 +655,19 @@ const Needs = styled.div`
 `
 
 const Bar = styled.div`
-  background: white;
+  /* background: white; */
+  background: rgba(0, 0, 0, 0.1);
   height: 15px;
   border-radius: 10px;
-  margin: 5px 0;
+  margin-top: 5px;
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     height: 20px;
   }
 `
 
 const Indicator = styled.div`
-  background: linear-gradient(to right, ${COLORS.lightest}, ${COLORS.light});
+  /* background: linear-gradient(to right, ${COLORS.lightest}, ${COLORS.light}); */
+  background: ${COLORS.light};
   height: 100%;
   border-radius: 10px;
   width: ${props => props.level === '1' && '25%'};

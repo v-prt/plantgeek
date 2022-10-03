@@ -71,7 +71,9 @@ export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
           </Stamp>
         )}
         <InfoLink to={`/plant/${plant._id}`}>
-          <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+          <div className='thumbnail'>
+            <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+          </div>
           <Name>
             {plant.primaryName.length > 25
               ? plant.primaryName.toLowerCase().substring(0, 23) + '...'
@@ -196,13 +198,19 @@ const InfoLink = styled(Link)`
     width: 200px;
     border-radius: 50%;
   }
+  .thumbnail {
+    width: 100%;
+    max-width: 200px;
+    aspect-ratio: 1;
+  }
   img {
-    height: 200px;
-    width: 200px;
+    width: 100%;
     border-radius: 50%;
+    object-fit: cover;
     &.placeholder {
       height: 200px;
       width: 150px;
+      object-fit: contain;
     }
   }
   &:hover {

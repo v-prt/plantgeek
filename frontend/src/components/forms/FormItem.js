@@ -63,6 +63,7 @@ export const FormItem = ({
 }
 
 const Wrapper = styled.div`
+  width: 100%;
   margin: 10px 0;
   .item-label {
     display: block;
@@ -71,14 +72,14 @@ const Wrapper = styled.div`
     }
     .sublabel {
       font-size: 0.8rem;
-      color: #828282;
+      color: rgba(0, 0, 0, 0.5);
       font-weight: normal;
     }
   }
   .subtext {
   }
   .info-text {
-    color: #666;
+    color: rgba(0, 0, 0, 0.7);
     font-size: 0.8rem;
   }
   .ant-input,
@@ -86,7 +87,7 @@ const Wrapper = styled.div`
   .ant-select .ant-select-selector {
     color: black;
     &.ant-input-disabled {
-      color: gray;
+      color: rgba(0, 0, 0, 0.7);
       cursor: auto;
       resize: none;
     }
