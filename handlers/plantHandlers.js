@@ -298,27 +298,6 @@ const uploadToCloudinary = async (req, res) => {
   client.close()
 }
 
-const uploadPlantImage = async (req, res) => {
-  const { imageUrl, plantId } = req.body
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
-
-  try {
-    // update plant with new image url
-    const filter = { _id: ObjectId(plantId) }
-    const update = {
-      $set: {
-        imageUrl,
-      },
-    }
-    await db.collection('plants').updateOne(filter, update)
-    res.status(200).json({ status: 200, message: 'image uploaded' })
-  } catch (err) {
-    console.error(err)
-  }
-}
-
 module.exports = {
   createPlant,
   getPlants,
@@ -330,6 +309,5 @@ module.exports = {
   addComment,
   updatePlant,
   uploadToCloudinary,
-  uploadPlantImage,
   deletePlant,
 }

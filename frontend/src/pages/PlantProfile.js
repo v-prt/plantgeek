@@ -2,7 +2,8 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { API_URL } from '../constants'
 import { useQuery, useQueryClient } from 'react-query'
-import { message, Upload } from 'antd'
+import { message, Upload, Modal, Alert, Button } from 'antd'
+import moment from 'moment'
 import { Formik, Form } from 'formik'
 import { FormItem } from '../components/forms/FormItem'
 import { Input, Select } from 'formik-antd'
@@ -17,13 +18,15 @@ import {
   CloseCircleOutlined,
   LoadingOutlined,
   PlusOutlined,
+  ClockCircleOutlined,
+  LikeOutlined,
+  DislikeOutlined,
 } from '@ant-design/icons'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
 import placeholder from '../assets/plant-placeholder.svg'
-import { Alert, Button } from 'antd'
-import { WarningOutlined, SafetyOutlined } from '@ant-design/icons'
+import { WarningOutlined, SafetyOutlined, MailOutlined } from '@ant-design/icons'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
@@ -37,10 +40,16 @@ export const PlantProfile = () => {
   const [difficulty, setDifficulty] = useState()
   const queryClient = new useQueryClient()
   const [image, setImage] = useState(undefined)
+  const [suggestionModal, setSuggestionModal] = useState(false)
 
   const { data: plant } = useQuery(['plant', id], async () => {
     const { data } = await axios.get(`${API_URL}/plant/${id}`)
     return data.plant
+  })
+
+  const { data: suggestions } = useQuery(['suggestions', id], async () => {
+    const { data } = await axios.get(`${API_URL}/suggestions/${id}`)
+    return data.suggestions
   })
 
   useEffect(() => {
@@ -263,13 +272,13 @@ export const PlantProfile = () => {
                             icon={<SaveOutlined />}
                             loading={isSubmitting}
                             onClick={() => submitForm()}>
-                            Save
+                            SAVE
                           </Button>
                           <Button
                             type='secondary'
                             icon={<CloseCircleOutlined />}
                             onClick={() => setEditMode(false)}>
-                            Cancel
+                            CANCEL
                           </Button>
                         </div>
                       ) : (
@@ -277,7 +286,7 @@ export const PlantProfile = () => {
                           type='primary'
                           icon={<EditOutlined />}
                           onClick={() => setEditMode(true)}>
-                          Edit Plant
+                          EDIT
                         </Button>
                       ))}
                   </section>
@@ -441,17 +450,168 @@ export const PlantProfile = () => {
             )}
           </Formik>
           {currentUser && (
-            <FadeIn>
-              <ActionBox plantId={plant._id} />
-            </FadeIn>
+            <>
+              <FadeIn>
+                <ActionBox plantId={plant._id} />
+              </FadeIn>
+              <FadeIn>
+                <section className='suggestions-section-user'>
+                  <h3>Have a suggestion?</h3>
+                  <p>
+                    If you have a suggestion for a change to this plant's information, please let us
+                    know!
+                  </p>
+                  <Button type='primary' onClick={() => setSuggestionModal(true)}>
+                    <MailOutlined /> SEND SUGGESTION
+                  </Button>
+                  <Modal
+                    visible={suggestionModal}
+                    footer={null}
+                    onCancel={() => setSuggestionModal(false)}>
+                    <SuggestionSubmission>
+                      <Formik
+                        initialValues={{
+                          suggestion: '',
+                          sourceUrl: '',
+                        }}
+                        validationSchema={Yup.object({
+                          suggestion: Yup.string().required('Required'),
+                          sourceUrl: Yup.string().url('Invalid URL'),
+                        })}
+                        onSubmit={async (values, { setSubmitting }) => {
+                          try {
+                            await axios.post(`${API_URL}/suggestions/${plant._id}`, {
+                              suggestion: values.suggestion,
+                              sourceUrl: values.sourceUrl,
+                              userId: currentUser._id,
+                            })
+                            message.success('Suggestion submitted! Thank you.')
+                            setSuggestionModal(false)
+                          } catch (err) {
+                            console.log(err)
+                            message.error(
+                              'Oops, something went wrong when submitting your suggestion.'
+                            )
+                          }
+                        }}>
+                        {({ isSubmitting, submitForm }) => (
+                          <Form>
+                            <h3>Submit a suggestion</h3>
+                            <div className='instructions'>
+                              <p>
+                                Please note any incorrect information on this plant and include your
+                                suggested change. If possible, include a source to help us validate
+                                your information.
+                              </p>
+                              <p>
+                                We also welcome suggestions for additional information to add to
+                                this plant's page. Thank you for your contribution!
+                              </p>
+                            </div>
+
+                            <FormItem name='suggestion'>
+                              <Input.TextArea
+                                name='suggestion'
+                                placeholder='Enter your suggestion'
+                                rows={4}
+                                style={{ resize: 'none' }}
+                              />
+                            </FormItem>
+                            <FormItem name='source'>
+                              <Input name='sourceUrl' placeholder='Source URL' />
+                            </FormItem>
+                            <Button
+                              type='primary'
+                              disabled={isSubmitting}
+                              loading={isSubmitting}
+                              onClick={() => submitForm()}>
+                              SUBMIT
+                            </Button>
+                          </Form>
+                        )}
+                      </Formik>
+                    </SuggestionSubmission>
+                  </Modal>
+                </section>
+              </FadeIn>
+            </>
           )}
           {currentUser?.role === 'admin' && (
-            <DangerZone>
-              <p>DANGER ZONE (ADMIN)</p>
-              <Button type='danger' onClick={() => handleDelete(plant._id)}>
-                DELETE PLANT
-              </Button>
-            </DangerZone>
+            <AdminSection>
+              <h3>Admin</h3>
+              <div className='suggestions-admin'>
+                <h4>Suggestions from users</h4>
+                {/* TODO: filter suggestions by status */}
+                <div className='suggestions-list'>
+                  {suggestions?.length > 0 ? (
+                    suggestions.map((suggestion, i) => (
+                      <div className='suggestion' key={i}>
+                        <p className='user'>
+                          {suggestion.user?.username}{' '}
+                          <span className='id'>- User ID {suggestion.userId}</span>
+                        </p>
+                        <p className='date'>{moment(suggestion.dateSubmitted).format('lll')}</p>
+                        <p className='text'>"{suggestion.suggestion}"</p>
+                        {suggestion.sourceUrl ? (
+                          <a
+                            className='source'
+                            href={suggestion.sourceUrl}
+                            target='_blank'
+                            rel='noopener noreferrer'>
+                            Source
+                          </a>
+                        ) : (
+                          <p style={{ color: '#999' }}>No source.</p>
+                        )}
+                        <Formik
+                          initialValues={{ status: suggestion.status }}
+                          onSubmit={async (values, { setSubmitting }) => {
+                            try {
+                              await axios.put(`${API_URL}/suggestions/${suggestion._id}`, {
+                                status: values.status,
+                              })
+                              message.success('Suggestion status updated!')
+                              setSubmitting(false)
+                            } catch (err) {
+                              console.log(err)
+                              message.error('Oops, something went wrong.')
+                            }
+                          }}>
+                          {({ submitForm }) => (
+                            <Form>
+                              <FormItem name='status'>
+                                <Select
+                                  name='status'
+                                  placeholder='Set status'
+                                  onChange={() => submitForm()}>
+                                  <Option value='pending'>
+                                    <ClockCircleOutlined /> Pending
+                                  </Option>
+                                  <Option value='approved'>
+                                    <LikeOutlined /> Approved
+                                  </Option>
+                                  <Option value='rejected'>
+                                    <DislikeOutlined /> Rejected
+                                  </Option>
+                                </Select>
+                              </FormItem>
+                            </Form>
+                          )}
+                        </Formik>
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ color: '#999' }}>No suggestions.</p>
+                  )}
+                </div>
+              </div>
+              <div className='danger-zone'>
+                <p>DANGER ZONE</p>
+                <Button type='danger' onClick={() => handleDelete(plant._id)}>
+                  DELETE PLANT
+                </Button>
+              </div>
+            </AdminSection>
           )}
         </>
       ) : (
@@ -545,6 +705,12 @@ const Wrapper = styled.main`
           border-radius: 0;
         }
       }
+    }
+  }
+  .suggestions-section-user {
+    background: #cee1bc;
+    button {
+      margin-top: 20px;
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
@@ -678,17 +844,70 @@ const Indicator = styled.div`
   width: ${props => props.level === '3' && '100%'};
 `
 
-const DangerZone = styled.div`
+const SuggestionSubmission = styled.div`
+  padding: 20px 0;
+  h3 {
+    margin-bottom: 20px;
+  }
+  .instructions {
+    p {
+      margin-bottom: 20px;
+    }
+  }
+  .info-text {
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    opacity: 0.7;
+  }
+  button {
+    margin: 20px auto 0 auto;
+  }
+`
+
+const AdminSection = styled.section`
   background: #fff;
-  width: 100%;
-  margin: 30px 0;
-  border: 1px dotted red;
-  border-radius: 20px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  p {
-    color: red;
+  .suggestions-admin {
+    margin: 20px 0;
+  }
+  .suggestions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .suggestion {
+      font-size: 0.8rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      padding: 10px 0;
+      .user {
+        color: ${COLORS.accent};
+        font-weight: bold;
+        .id {
+          color: #999;
+          font-weight: normal;
+        }
+      }
+      .text {
+        font-size: 1rem;
+      }
+      .source {
+        color: ${COLORS.accent};
+        text-decoration: underline;
+      }
+      .ant-select {
+        max-width: 200px;
+      }
+    }
+  }
+  .danger-zone {
+    background: #fff;
+    width: 100%;
+    margin-top: 30px;
+    padding: 20px 0;
+    border-top: 1px dotted red;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    p {
+      color: red;
+    }
   }
 `

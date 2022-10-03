@@ -31,6 +31,11 @@ const {
   uploadToCloudinary,
   deletePlant,
 } = require('./handlers/plantHandlers.js')
+const {
+  createSuggestion,
+  getSuggestions,
+  updateSuggestion,
+} = require('./handlers/suggestionHandlers.js')
 
 // run on whatever port heroku has available or 4000 (local)
 const PORT = process.env.PORT || 4000
@@ -48,17 +53,18 @@ app
   .use(express.json())
 
   // ENDPOINTS
+  // users
   .post(`${API_URL}/users`, createUser)
-  // FIXME: change /login endpoint to use noun instead of verb
   .post(`${API_URL}/login`, authenticateUser)
   .post(`${API_URL}/token`, verifyToken)
   .get(`${API_URL}/users`, getUsers)
   .get(`${API_URL}/users/:id`, getUser)
-  // FIXME: change /add and /remove endpoints to use nouns instead of verb (eg: /:username/collection ?) & update handler function(s)
   .put(`${API_URL}/users/:id`, updateUser)
   .put(`${API_URL}/:username/add`, addToUser)
   .put(`${API_URL}/:username/remove`, removeFromUser)
   .delete(`${API_URL}/users/:_id`, deleteUser)
+
+  // plants
   .post(`${API_URL}/plants`, createPlant)
   .get(`${API_URL}/plants/:page`, getPlants)
   .get(`${API_URL}/plants-to-review`, getPlantsToReview)
@@ -70,6 +76,11 @@ app
   .put(`${API_URL}/plants/:_id/comments`, addComment)
   .post(`${API_URL}/cloud-upload`, uploadToCloudinary)
   .delete(`${API_URL}/plants/:_id`, deletePlant)
+
+  // suggestions
+  .post(`${API_URL}/suggestions/:plantId`, createSuggestion)
+  .get(`${API_URL}/suggestions/:plantId`, getSuggestions)
+  .put(`${API_URL}/suggestions/:id`, updateSuggestion)
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'frontend', 'build')))
