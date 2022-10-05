@@ -21,6 +21,7 @@ import {
   ClockCircleOutlined,
   LikeOutlined,
   DislikeOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
@@ -216,6 +217,22 @@ export const PlantProfile = () => {
     setSubmitting(false)
   }
 
+  const removeImage = async () => {
+    // set to default placeholder image url from cloudinary
+    try {
+      await axios.put(`${API_URL}/plants/${id}`, {
+        imageUrl:
+          'https://res.cloudinary.com/plantgeek/image/upload/v1664931643/plantgeek-plants/plant-placeholder_z8s1n7.png',
+      })
+      queryClient.invalidateQueries('plant')
+      queryClient.invalidateQueries('plants')
+      message.success('Image removed.')
+    } catch (err) {
+      console.log(err)
+      message.error('Something went wrong on the server. Please try again.')
+    }
+  }
+
   return (
     <Wrapper>
       {plant ? (
@@ -294,36 +311,46 @@ export const PlantProfile = () => {
 
                 <FadeIn>
                   <section className='plant-info'>
-                    <div className='primary-image'>
-                      {currentUser?.role === 'admin' ? (
-                        <Upload
-                          multiple={false}
-                          maxCount={1}
-                          name='plantImage'
-                          beforeUpload={checkSize}
-                          customRequest={handleImageUpload}
-                          fileList={fileList}
-                          listType='picture-card'
-                          accept='.png, .jpg, .jpeg'
-                          showUploadList={{
-                            showPreviewIcon: false,
-                            showRemoveIcon: false,
-                          }}>
-                          {!uploading && image ? (
-                            <ImageLoader src={image} alt={''} placeholder={placeholder} />
-                          ) : (
-                            uploadButton
-                          )}
-                          {!uploading && (
-                            <div className='overlay'>
-                              <EditOutlined />
-                            </div>
-                          )}
-                        </Upload>
-                      ) : (
+                    {currentUser?.role === 'admin' && editMode ? (
+                      <div className='upload-wrapper'>
+                        <div className='primary-image'>
+                          <Upload
+                            multiple={false}
+                            maxCount={1}
+                            name='plantImage'
+                            beforeUpload={checkSize}
+                            customRequest={handleImageUpload}
+                            fileList={fileList}
+                            listType='picture-card'
+                            accept='.png, .jpg, .jpeg'
+                            showUploadList={{
+                              showPreviewIcon: false,
+                              showRemoveIcon: false,
+                            }}>
+                            {!uploading && image ? (
+                              <ImageLoader src={image} alt={''} placeholder={placeholder} />
+                            ) : (
+                              uploadButton
+                            )}
+                            {!uploading && (
+                              <div className='overlay'>
+                                <EditOutlined />
+                              </div>
+                            )}
+                          </Upload>
+                        </div>
+                        <button
+                          type='button'
+                          onClick={() => removeImage()}
+                          style={{ color: 'red' }}>
+                          <DeleteOutlined /> Remove Image
+                        </button>
+                      </div>
+                    ) : (
+                      <div className='primary-image'>
                         <ImageLoader src={image} alt={''} placeholder={placeholder} />
-                      )}
-                    </div>
+                      </div>
+                    )}
                     <Needs>
                       <h2>Care information</h2>
                       <div className='row'>
@@ -657,6 +684,11 @@ const Wrapper = styled.main`
     display: flex;
     flex-direction: column;
     gap: 20px;
+    .upload-wrapper {
+      display: grid;
+      place-content: center;
+      gap: 20px;
+    }
     .primary-image {
       display: flex;
       flex: 1;
@@ -737,7 +769,7 @@ const Needs = styled.div`
   background: #f2f2f2;
   display: flex;
   flex-direction: column;
-  padding: 20px 30px;
+  padding: 20px;
   border-radius: 20px;
   flex: 1;
   h2 {
