@@ -6,6 +6,10 @@ export const ImageLoader = ({ src, alt, placeholder }) => {
   const [validUrl, setValidUrl] = useState(undefined)
 
   useEffect(() => {
+    // resetting default values
+    setImageLoaded(false)
+    setValidUrl(undefined)
+    // validating src/url
     if (src) {
       fetch(src, { method: 'HEAD' })
         .then(res => {
@@ -15,11 +19,10 @@ export const ImageLoader = ({ src, alt, placeholder }) => {
             setValidUrl(false)
           }
         })
-        .catch(err => {
-          // FIXME: prevent errs showing in console
-          console.log(err)
+        .catch(() => {
+          setValidUrl(false)
         })
-    }
+    } else setValidUrl(false)
   }, [src])
 
   return (
