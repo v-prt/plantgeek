@@ -260,7 +260,7 @@ export const PlantProfile = () => {
                     {editMode ? (
                       <>
                         <FormItem
-                          label='Primary / Latin name'
+                          label='Latin name'
                           sublabel='(genus and species)'
                           name='primaryName'>
                           <Input
@@ -269,7 +269,7 @@ export const PlantProfile = () => {
                             prefix={<EditOutlined />}
                           />
                         </FormItem>
-                        <FormItem label='Secondary / Common name' name='secondaryName'>
+                        <FormItem label='Common name' name='secondaryName'>
                           <Input
                             name='secondaryName'
                             placeholder='Swiss cheese plant'
@@ -695,9 +695,13 @@ const Wrapper = styled.main`
     flex-direction: column;
     gap: 20px;
     .upload-wrapper {
-      display: grid;
-      place-content: center;
-      gap: 20px;
+      flex: 1;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      button {
+        margin-top: 20px;
+      }
     }
     .primary-image {
       display: flex;
@@ -743,8 +747,11 @@ const Wrapper = styled.main`
         object-fit: cover;
         width: 100%;
         border-radius: 50%;
+        aspect-ratio: 1 / 1;
         &.placeholder {
           border-radius: 0;
+          width: 80%;
+          object-fit: contain;
         }
       }
     }

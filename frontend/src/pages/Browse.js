@@ -26,6 +26,7 @@ import {
   CloseCircleOutlined,
   PlusCircleOutlined,
 } from '@ant-design/icons'
+import placeholder from '../assets/plant-placeholder.svg'
 import numeral from 'numeral'
 const { Option } = Select
 
@@ -272,17 +273,21 @@ export const Browse = () => {
           )}
         </Results>
       </section>
-      <section className='misc-info'>
-        <h2>contribute to our database</h2>
-        <p>
-          Can't find a specific plant? Contribute it to our database - you'll earn stickers for
-          approved submissions! Please help us by reporting any duplicate or incorrect information.
-        </p>
-        <Link to='contribute'>
-          <Button type='secondary' icon={<PlusCircleOutlined />}>
-            CONTRIBUTE
-          </Button>
-        </Link>
+      <section className='contributions-info'>
+        <div>
+          <h2>contribute to our database</h2>
+          <p>
+            Can't find a specific plant? Contribute it to our database - you'll earn stickers for
+            approved submissions! Please help us by reporting any duplicate or incorrect
+            information.
+          </p>
+          <Link to='contribute'>
+            <Button type='secondary' icon={<PlusCircleOutlined />}>
+              CONTRIBUTE
+            </Button>
+          </Link>
+        </div>
+        <img src={placeholder} alt='' />
       </section>
     </Wrapper>
   )
@@ -291,8 +296,7 @@ export const Browse = () => {
 const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
-  .heading,
-  .misc-info {
+  .heading {
     background: ${COLORS.light};
     display: flex;
     flex-direction: column;
@@ -311,10 +315,26 @@ const Wrapper = styled.main`
       }
     }
   }
-  .misc-info {
+  .contributions-info {
     background: #cee1bc;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
     h2 {
-      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    p {
+      max-width: 600px;
+      margin-bottom: 50px;
+    }
+    img {
+      width: 100px;
+      align-self: flex-end;
+      margin-top: 20px;
+      margin-left: auto;
+      filter: invert(1);
+      opacity: 0.2;
     }
   }
   .info-box {

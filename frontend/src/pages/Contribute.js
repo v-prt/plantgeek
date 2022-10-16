@@ -64,7 +64,7 @@ export const Contribute = () => {
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
     accept: 'image/*',
     minSize: 0,
-    maxSize: 5242880, // up to 5mb
+    maxSize: 1242880, // up to 1mb
     multiple: false, // accepts only 1 image
     onDrop: acceptedFiles => {
       setImages(
@@ -213,7 +213,7 @@ export const Contribute = () => {
                   <Input name='secondaryName' placeholder='Swiss cheese plant' />
                 </FormItem>
 
-                <FormItem label='Upload image' sublabel='(max 5mb)' name=''>
+                <FormItem label='Upload image' sublabel='(max 1mb)' name=''>
                   <DropZone>
                     {/* TODO:
                   - set up signed uploads with cloudinary
@@ -330,6 +330,9 @@ const Wrapper = styled.main`
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      h2 {
+        margin-bottom: 10px;
+      }
       p {
         max-width: 600px;
         margin-bottom: 50px;
@@ -337,6 +340,7 @@ const Wrapper = styled.main`
       img {
         width: 100px;
         align-self: flex-end;
+        margin-top: 20px;
         margin-left: auto;
       }
     }

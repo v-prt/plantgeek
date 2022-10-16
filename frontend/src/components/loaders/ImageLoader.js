@@ -67,6 +67,7 @@ const Wrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  overflow: hidden;
   .smooth-image {
     transition: opacity 1s;
   }
