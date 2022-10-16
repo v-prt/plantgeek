@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { API_URL } from '../constants'
 import { useQuery } from 'react-query'
@@ -15,12 +15,14 @@ import {
   BiBadgeCheck,
 } from 'react-icons/bi'
 import { CgProfile } from 'react-icons/cg'
+import { MoreOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { Pulser } from '../components/general/Pulser'
 
 export const Navbar = () => {
   const { handleLogout, currentUser } = useContext(UserContext)
+  const [menuExpanded, setMenuExpanded] = useState(false)
 
   const { data: plantsToReview } = useQuery(['plants-to-review'], async () => {
     const { data } = await axios.get(`${API_URL}/plants-to-review`)
@@ -30,13 +32,18 @@ export const Navbar = () => {
   return (
     <Wrapper>
       <div className='inner'>
-        <div className='logo'>
+        <div className='logo' onClick={() => setMenuExpanded(false)}>
           <NavLink to='/'>
             <img src={plantgeekLogo} alt='' />
             <span className='label'>plantgeek</span>
           </NavLink>
         </div>
-        <div className='nav-links'>
+        <div className='mobile-menu-icon' onClick={() => setMenuExpanded(!menuExpanded)}>
+          {menuExpanded ? <CloseCircleOutlined /> : <MoreOutlined />}
+        </div>
+        <div
+          className={`nav-links ${menuExpanded && 'expanded'}`}
+          onClick={() => setMenuExpanded(false)}>
           <NavLink to='/browse'>
             <div className='icon'>
               <BiSearch />
@@ -109,44 +116,82 @@ const Wrapper = styled.nav`
     padding: 0 20px;
     a,
     .logout-btn {
-      position: relative;
       color: #fff;
       display: flex;
       align-items: center;
+      gap: 10px;
       margin: 10px;
-      &:hover:not(.active) {
-        transform: scale(1.1);
-      }
       &.active {
         color: ${COLORS.light};
       }
     }
-    .label {
-      display: none;
+    .logout-btn {
+      margin-top: 30px;
+      border-top: 1px dotted rgba(255, 255, 255, 0.4);
+      padding-top: 30px;
     }
     .logo {
       img {
         height: 30px;
         filter: invert(1);
       }
+      .label {
+        display: none;
+      }
     }
     .nav-links {
+      background: #222;
+      position: absolute;
+      top: 50px;
+      left: 100%;
+      height: 100vh;
+      width: 100vw;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 10px;
+      padding: 20px;
+      transition: 0.2s ease-in-out;
+      &.expanded {
+        left: 0;
+      }
+    }
+    .label {
+      color: #fff;
+      font-size: 1rem;
     }
     .icon {
       display: grid;
       font-size: 1.5rem;
     }
   }
+  .mobile-menu-icon {
+    color: #fff;
+    font-size: 1.2rem;
+  }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     left: 0;
     height: 100%;
     width: 55px;
+    .label {
+      display: none;
+    }
     .inner {
       flex-direction: column;
       justify-content: flex-start;
       padding: 20px;
+      .mobile-menu-icon {
+        display: none;
+      }
+      .nav-links {
+        background: transparent;
+        position: relative;
+        height: auto;
+        width: auto;
+        padding: 0;
+        gap: 0;
+        top: 0;
+        left: 0;
+      }
       a,
       .logout-btn {
         margin: 20px 0;
@@ -168,11 +213,12 @@ const Wrapper = styled.nav`
       }
       .logo {
         width: 100%;
+        gap: 10px;
         img {
           height: 40px;
-          margin-right: 10px;
         }
         .label {
+          display: block;
           color: #fff;
           font-size: 1.5rem;
         }
@@ -183,7 +229,7 @@ const Wrapper = styled.nav`
         .logout-btn {
           width: 100%;
           .icon {
-            margin: 0 15px 0 7px;
+            margin: 0 10px 0 7px;
             font-size: 1.6rem;
           }
           .label {
