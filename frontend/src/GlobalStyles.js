@@ -6,6 +6,7 @@ export const COLORS = {
   dark: '#112211',
   medium: '#224422',
   mediumLight: '#5d9e2e',
+  mutedMedium: '#cee1bc',
   light: '#92d265',
   lightest: '#e5efdc',
   accent: '#966fd1',
@@ -14,7 +15,7 @@ export const COLORS = {
 }
 
 export const BREAKPOINTS = {
-  tablet: '500px',
+  tablet: '768px',
   desktop: '1000px',
 }
 

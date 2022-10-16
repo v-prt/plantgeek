@@ -757,7 +757,7 @@ const Wrapper = styled.main`
     }
   }
   .suggestions-section-user {
-    background: #cee1bc;
+    background: ${COLORS.mutedMedium};
     button {
       margin-top: 20px;
     }

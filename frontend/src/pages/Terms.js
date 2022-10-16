@@ -248,10 +248,10 @@ export const Terms = () => {
           If you have any questions about these Terms and Conditions, You can contact us by visiting
           this page on our website:{' '}
           <a
-            href='https://www.plantgeek.co/contact'
+            href='https://www.plantgeek.co/about'
             rel='external nofollow noopener noreferrer'
             target='_blank'>
-            https://www.plantgeek.co/contact
+            https://www.plantgeek.co/about
           </a>
         </p>
       </div>

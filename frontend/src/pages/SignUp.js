@@ -11,10 +11,11 @@ import { Button, Alert } from 'antd'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
-import { BiSearch, BiPlusCircle } from 'react-icons/bi'
-import { TiHeartOutline } from 'react-icons/ti'
-import { AiOutlineStar } from 'react-icons/ai'
-import { RiPlantLine } from 'react-icons/ri'
+import plantgeekLogo from '../assets/logo.webp'
+// import { BiSearch, BiPlusCircle } from 'react-icons/bi'
+// import { TiHeartOutline } from 'react-icons/ti'
+// import { AiOutlineStar } from 'react-icons/ai'
+// import { RiPlantLine } from 'react-icons/ri'
 
 YupPassword(Yup) // extend yup
 
@@ -69,7 +70,8 @@ export const SignUp = () => {
         <Card>
           <div className='header'>
             <h1>welcome!</h1>
-            <ul>
+            <img src={plantgeekLogo} alt='' />
+            {/* <ul>
               <li>
                 <Icon>
                   <BiSearch />
@@ -100,7 +102,7 @@ export const SignUp = () => {
                 </Icon>
                 contribute to our database
               </li>
-            </ul>
+            </ul> */}
           </div>
           <Formik
             initialValues={{
@@ -126,16 +128,10 @@ export const SignUp = () => {
                 <FormItem name='email' label='Email'>
                   <Input name='email' type='text' placeholder='janedoe@gmail.com' />
                 </FormItem>
-                <FormItem
-                  name='username'
-                  label='Username'
-                  sublabel=' - must be between 4-20 characters long, with no symbols or spaces.'>
+                <FormItem name='username' label='Username'>
                   <Input name='username' type='text' placeholder='JaneDoe' />
                 </FormItem>
-                <FormItem
-                  name='password'
-                  label='Password'
-                  sublabel=' - must be at least 6 characters long, and include 1 number and 1 symbol.'>
+                <FormItem name='password' label='Password'>
                   <Input.Password name='password' type='password' placeholder='********' />
                 </FormItem>
                 <FormItem name='acceptedTerms'>
@@ -165,10 +161,7 @@ export const SignUp = () => {
 }
 
 export const Wrapper = styled.main`
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    display: flex;
-    place-content: center;
-  }
+  justify-content: center;
 `
 
 export const Card = styled.div`

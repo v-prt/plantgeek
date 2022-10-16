@@ -316,7 +316,7 @@ const Wrapper = styled.main`
     }
   }
   .contributions-info {
-    background: #cee1bc;
+    background: ${COLORS.mutedMedium};
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;

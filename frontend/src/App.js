@@ -12,6 +12,7 @@ import { SignUp } from './pages/SignUp'
 import { Welcome } from './pages/Welcome'
 import { Terms } from './pages/Terms'
 import { Privacy } from './pages/Privacy'
+import { About } from './pages/About'
 import { Settings } from './pages/Settings'
 import { Contribute } from './pages/Contribute'
 import { Review } from './pages/Review'
@@ -64,6 +65,9 @@ export const App = () => {
               <Route exact path='/privacy'>
                 <Privacy />
               </Route>
+              <Route exact path='/About'>
+                <About />
+              </Route>
               <Route exact path='/settings'>
                 <Settings />
               </Route>
@@ -103,6 +107,7 @@ const Body = styled.div`
     align-items: center;
     margin: 50px auto 0 auto;
     padding: 10px 0;
+    flex: 1;
     section {
       margin: 10px auto;
       padding: 20px;
@@ -114,7 +119,7 @@ const Body = styled.div`
     margin-left: 55px;
     main {
       padding: 20px 0;
-      margin: auto;
+      margin: 0 auto;
       section {
         margin: 20px auto;
         padding: 30px;

@@ -105,7 +105,7 @@ export const Homepage = () => {
         <FeaturedPlants currentUser={currentUser} />
       </FadeIn>
       <FadeIn delay={400}>
-        <InfoCard>
+        <InfoCard className='tips'>
           <h2>general tips</h2>
           <h3>tropical</h3>
           <p>
@@ -199,6 +199,9 @@ const Wrapper = styled.main`
 
 const InfoCard = styled.section`
   background: #fff;
+  &.tips {
+    background: ${COLORS.mutedMedium};
+  }
   h2,
   h3 {
     width: fit-content;
