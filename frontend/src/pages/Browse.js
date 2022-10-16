@@ -471,7 +471,6 @@ const Wrapper = styled.main`
 `
 
 const Results = styled.div`
-  background: #e6e6e6;
   min-height: 400px;
   max-height: 600px;
   overflow: auto;

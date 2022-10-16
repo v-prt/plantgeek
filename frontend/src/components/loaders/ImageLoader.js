@@ -61,6 +61,8 @@ export const ImageLoader = ({ src, alt, placeholder }) => {
 }
 
 const Wrapper = styled.div`
+  background: #eee;
+  border-radius: 50%;
   height: 100%;
   width: 100%;
   display: flex;

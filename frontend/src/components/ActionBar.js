@@ -88,7 +88,7 @@ export const ActionBar = ({ plantId }) => {
 }
 
 const Wrapper = styled.div`
-  background: #f2f2f2;
+  background: #f7f7f7;
   width: 90%;
   display: flex;
   justify-content: space-evenly;
