@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
+import { Link } from 'react-router-dom'
 import { useInfiniteQuery } from 'react-query'
 import { API_URL } from '../constants'
 import axios from 'axios'
@@ -17,15 +18,32 @@ import { BiSearch } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import { RiPlantLine } from 'react-icons/ri'
-import { FilterOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons'
+import {
+  FilterOutlined,
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  LoadingOutlined,
+  CloseCircleOutlined,
+  PlusCircleOutlined,
+} from '@ant-design/icons'
+import numeral from 'numeral'
 const { Option } = Select
 
 export const Browse = () => {
   const submitRef = useRef(0)
+  const scrollRef = useRef()
   const { formData, setFormData, viewNeeds, setViewNeeds } = useContext(PlantContext)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [plants, setPlants] = useState(null)
   const { currentUser } = useContext(UserContext)
+
+  // makes window scroll to top between renders
+  const pathname = window.location.pathname
+  useEffect(() => {
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   const { data, status } = useInfiniteQuery(
     ['plants', formData],
@@ -37,10 +55,37 @@ export const Browse = () => {
     }
   )
 
-  // makes window scroll to top between renders
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+  // TODO: PAGINATION (wip)
+  // const { data, status, fetchNextPage, isFetchingNextPage, isFetchingMore, hasNextPage } =
+  //   useInfiniteQuery(
+  //     ['plants', formData],
+  //     async ({ pageParam = 0, queryKey }) => {
+  //       console.log('queryKey', queryKey)
+  //       const { data } = await axios.get(`${API_URL}/plants/${pageParam}`, {
+  //         params: queryKey[1],
+  //       })
+  //       return data.plants
+  //     },
+  //     {
+  //       getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+  //     }
+  //   )
+
+  // console.log('data: ', data)
+  // console.log('has next page: ', hasNextPage)
+  // console.log('fetching next page: ', isFetchingNextPage)
+
+  // const handleScroll = () => {
+  //   console.log('scrolling')
+  //   const scrollDistance = scrollRef.current.scrollTop
+  //   const outerHeight = scrollRef.current.offsetHeight
+  //   const innerHeight = scrollRef.current.scrollHeight
+  //   const actualDistance = innerHeight - (scrollDistance + outerHeight)
+  //   // if (actualDistance < 400 && !isFetchingMore && scrollRef.current && hasNextPage) {
+  //   if (actualDistance < 400 && !isFetchingMore && scrollRef.current && hasNextPage) {
+  //     fetchNextPage()
+  //   }
+  // }
 
   useEffect(() => {
     if (data) {
@@ -71,41 +116,37 @@ export const Browse = () => {
             Search hundreds of houseplants by name or genus. Use the filters to refine your results
             and sort to quickly find any plant.
           </p>
-          <p>
-            Can't find a specific plant? Contribute it to our database - you'll earn stickers for
-            approved submissions! Please report any duplicate or incorrect information.
-          </p>
         </section>
       </FadeIn>
       <FadeIn delay={200}>
         <div className='info-box'>
-          <Info>
-            <Icon className='collection'>
+          <div>
+            <span className='icon collection'>
               <RiPlantLine />
-            </Icon>
-            <div>
+            </span>
+            <span>
               <b>Have a plant?</b>
               <p>Add it to your collection</p>
-            </div>
-          </Info>
-          <Info>
-            <Icon className='wishlist'>
+            </span>
+          </div>
+          <div>
+            <span className='icon wishlist'>
               <AiOutlineStar />
-            </Icon>
-            <div>
+            </span>
+            <span>
               <b>Want a plant?</b>
               <p>Add it to your wishlist</p>
-            </div>
-          </Info>
-          <Info>
-            <Icon className='favorite'>
+            </span>
+          </div>
+          <div>
+            <span className='icon favorites'>
               <TiHeartOutline />
-            </Icon>
-            <div>
+            </span>
+            <span>
               <b>Love a plant?</b>
               <p>Add it to your favorites</p>
-            </div>
-          </Info>
+            </span>
+          </div>
         </div>
       </FadeIn>
       <section className='browse-content'>
@@ -128,16 +169,17 @@ export const Browse = () => {
                   className='filter-menu-btn'
                   type='primary'
                   onClick={() => setSidebarOpen(!sidebarOpen)}>
-                  <FilterOutlined />
                   <span className='label'> SORT & FILTER</span>
+                  {sidebarOpen ? <CloseCircleOutlined /> : <FilterOutlined />}
                 </Button>
               </div>
               <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
                 <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
                 <div className='filter-menu-inner'>
-                  <p className='num-results'>{plants?.length} results</p>
+                  <p className='num-results'>{numeral(plants?.length).format('0a')} results</p>
                   <div className='filter'>
                     <p>Sort by</p>
+                    {/* TODO: most/least liked/owned/wanted */}
                     <Select
                       getPopupContainer={trigger => trigger.parentNode}
                       name='sort'
@@ -154,6 +196,7 @@ export const Browse = () => {
                   </div>
                   <div className='filter'>
                     <p>Filter by</p>
+                    {/* TODO: filter by light, water, humidity, temperature */}
                     <Select
                       getPopupContainer={trigger => trigger.parentNode}
                       name='toxic'
@@ -166,9 +209,8 @@ export const Browse = () => {
                     </Select>
                   </div>
                   <div className='filter'>
-                    <p>Display</p>
                     <div className='toggle-wrapper'>
-                      <span className='toggle-option'>Need levels</span>
+                      <span className='toggle-option'>Show details</span>
                       <Toggle>
                         <input
                           id='needs-toggle'
@@ -211,9 +253,17 @@ export const Browse = () => {
           )}
         </Formik>
         <Results disabled={sidebarOpen}>
+          {/* <Results disabled={sidebarOpen} onScroll={handleScroll} ref={scrollRef}> */}
           {status === 'success' && plants ? (
             plants.length > 0 ? (
-              plants
+              <>
+                {plants}
+                {/* {isFetchingNextPage && (
+                  <div className='fetching-more'>
+                    <LoadingOutlined spin />
+                  </div>
+                )} */}
+              </>
             ) : (
               <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
             )
@@ -222,6 +272,18 @@ export const Browse = () => {
           )}
         </Results>
       </section>
+      <section className='misc-info'>
+        <h2>contribute to our database</h2>
+        <p>
+          Can't find a specific plant? Contribute it to our database - you'll earn stickers for
+          approved submissions! Please help us by reporting any duplicate or incorrect information.
+        </p>
+        <Link to='contribute'>
+          <Button type='secondary' icon={<PlusCircleOutlined />}>
+            CONTRIBUTE
+          </Button>
+        </Link>
+      </section>
     </Wrapper>
   )
 }
@@ -229,7 +291,8 @@ export const Browse = () => {
 const Wrapper = styled.main`
   display: flex;
   flex-direction: column;
-  .heading {
+  .heading,
+  .misc-info {
     background: ${COLORS.light};
     display: flex;
     flex-direction: column;
@@ -248,15 +311,50 @@ const Wrapper = styled.main`
       }
     }
   }
+  .misc-info {
+    background: #cee1bc;
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
   .info-box {
     background: #fff;
     border: 1px dotted #ccc;
     border-radius: 20px;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-around;
+    flex-direction: column;
+    gap: 20px;
     margin: 20px 0;
+    padding: 20px;
+    div {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .icon {
+      display: flex;
+      align-items: center;
+      font-size: 2rem;
+      border-radius: 50%;
+      padding: 10px;
+      &.collection {
+        background: ${COLORS.light};
+      }
+      &.wishlist {
+        background: #ffd24d;
+      }
+      &.favorites {
+        background: #b493e6;
+      }
+    }
+    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+      flex-direction: row;
+      justify-content: space-around;
+      div {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
   }
   .browse-content {
     background: #f2f2f2;
@@ -286,6 +384,12 @@ const Wrapper = styled.main`
         flex: 1;
       }
       .filter-menu-btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        .anticon {
+          margin: 0;
+        }
         .label {
           display: none;
         }
@@ -369,44 +473,18 @@ const Wrapper = styled.main`
 const Results = styled.div`
   background: #e6e6e6;
   min-height: 400px;
+  max-height: 600px;
+  overflow: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 10px 0;
+  gap: 20px;
+  padding: 20px;
   opacity: ${props => (props.disabled ? 0.5 : 1)};
   pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
   transition: 0.2s ease-in-out;
   .ant-empty {
     display: grid;
     place-content: center;
-  }
-`
-
-const Info = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 10px;
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    flex-direction: column;
-    text-align: center;
-    margin: 20px;
-  }
-`
-
-const Icon = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 2rem;
-  margin: 10px;
-  border-radius: 50%;
-  padding: 10px;
-  &.collection {
-    background: ${COLORS.light};
-  }
-  &.wishlist {
-    background: #ffd24d;
-  }
-  &.favorite {
-    background: #b493e6;
   }
 `

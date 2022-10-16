@@ -31,7 +31,6 @@ const createPlant = async (req, res) => {
 
 // (READ/GET) GETS ALL PLANTS
 const getPlants = async (req, res) => {
-  const page = req.params.page ? parseInt(req.params.page) : 0
   const { toxic, image, primaryName, sort } = req.query
   // don't include any plants which are pending review ($ne = not equal)
   let filters = { review: { $ne: 'pending' } }
@@ -61,17 +60,31 @@ const getPlants = async (req, res) => {
   await client.connect()
   const db = client.db('plantgeekdb')
   try {
+    // pagination
+    // console.log(req.params.page)
+    // const page = parseInt(req.params.page ? req.params.page : 0)
+    // const resultsPerPage = 24
+
     const plants = await db
       .collection('plants')
       .find(filters)
       .sort(order)
       .collation({ locale: 'en' })
       // TODO: pagination
-      // .skip(24 * page)
-      // .limit(24)
+      // pagination
+      // .skip(page * resultsPerPage)
+      // .limit(resultsPerPage)
       .toArray()
     if (plants) {
-      res.status(200).json({ status: 200, plants: plants })
+      // console.log('page: ', page)
+      // const totalResults = plants.length
+      // console.log('total results: ', plants.length)
+      // console.log('next cursor: ', page < totalResults / resultsPerPage ? page + 1 : false)
+      res.status(200).json({
+        plants: plants,
+        // page: page,
+        // nextCursor: page < totalResults / resultsPerPage ? page + 1 : false,
+      })
     } else {
       res.status(404).json({ status: 404, message: 'No plants found' })
     }

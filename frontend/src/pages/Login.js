@@ -21,9 +21,12 @@ export const Login = () => {
   const [loading, setLoading] = useState(false)
 
   // makes window scroll to top between renders
+  const pathname = window.location.pathname
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   const handleSubmit = async (values, { setStatus }) => {
     setLoading(true)

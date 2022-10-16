@@ -140,7 +140,7 @@ const Wrapper = styled.nav`
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    right: 0;
+    left: 0;
     height: 100%;
     width: 55px;
     .inner {

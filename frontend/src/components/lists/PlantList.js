@@ -3,13 +3,14 @@ import { useInfiniteQuery } from 'react-query'
 import { API_URL } from '../../constants'
 import axios from 'axios'
 import styled from 'styled-components/macro'
-import { COLORS } from '../../GlobalStyles'
+import { BREAKPOINTS, COLORS } from '../../GlobalStyles'
 import { FadeIn } from '../loaders/FadeIn'
 import { PlantCard } from '../PlantCard'
 import { Ellipsis } from '../loaders/Ellipsis'
 import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
+import numeral from 'numeral'
 
 export const PlantList = ({ list, title }) => {
   const [plants, setPlants] = useState(null)
@@ -35,9 +36,12 @@ export const PlantList = ({ list, title }) => {
   }, [data])
 
   // makes window scroll to top between renders
+  const pathname = window.location.pathname
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   return (
     <ListWrapper className={title}>
@@ -45,7 +49,7 @@ export const PlantList = ({ list, title }) => {
         <div className='inner'>
           <div className='header'>
             <h2>
-              <span className='icon'>
+              <span className={`icon ${title}`}>
                 {title === 'collection' ? (
                   <RiPlantLine />
                 ) : title === 'favorites' ? (
@@ -56,6 +60,7 @@ export const PlantList = ({ list, title }) => {
               </span>
               {title}
             </h2>
+            {plants && <p>{numeral(plants.length).format('0a')} plants</p>}
           </div>
           <Plants>{plants ? plants : <Ellipsis />}</Plants>
         </div>
@@ -67,29 +72,42 @@ export const PlantList = ({ list, title }) => {
 export const ListWrapper = styled.section`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  /* &.collection {
-    border: 2px solid ${COLORS.light};
-  }
-  &.wishlist {
-    border: 2px solid #ffd24d;
-  }
-  &.favorites {
-    border: 2px solid #b493e6;
-  } */
   .inner {
     .header {
+      background: #f2f2f2;
       display: flex;
       align-items: center;
       justify-content: space-between;
       box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
-      padding: 0 20px 10px 20px;
+      padding: 10px 20px;
       margin-bottom: 10px;
+      position: sticky;
+      top: 50px;
+      z-index: 1;
       h2 {
         display: flex;
         align-items: center;
+        gap: 10px;
+        font-size: 1.2rem;
         .icon {
           display: grid;
-          margin-right: 10px;
+          border-radius: 50%;
+          padding: 10px;
+          &.collection {
+            background: ${COLORS.light};
+          }
+          &.wishlist {
+            background: #ffd24d;
+          }
+          &.favorites {
+            background: #b493e6;
+          }
+        }
+      }
+      @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+        top: 0;
+        h2 {
+          font-size: 1.4rem;
         }
       }
     }
@@ -112,4 +130,6 @@ const Plants = styled.div`
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+  gap: 20px;
+  padding: 20px;
 `

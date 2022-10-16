@@ -23,9 +23,12 @@ export const SignUp = () => {
   const [loading, setLoading] = useState(false)
 
   // makes window scroll to top between renders
+  const pathname = window.location.pathname
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   const SignUpSchema = Yup.object().shape({
     firstName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('First name required'),

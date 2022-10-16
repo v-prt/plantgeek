@@ -27,9 +27,12 @@ export const Contribute = () => {
   const [newPlant, setNewPlant] = useState(null)
 
   // makes window scroll to top between renders
+  const pathname = window.location.pathname
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   const initialValues = {
     primaryName: '',
@@ -343,6 +346,7 @@ const Wrapper = styled.main`
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-evenly;
+      gap: 20px;
       .msg {
         h2 {
           display: flex;

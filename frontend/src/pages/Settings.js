@@ -14,6 +14,7 @@ import * as Yup from 'yup'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { Button, Alert } from 'antd'
+import { DeleteOutlined } from '@ant-design/icons'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Image } from './UserProfile'
@@ -41,9 +42,12 @@ export const Settings = () => {
   const [successStatus, setSuccessStatus] = useState('')
 
   // makes window scroll to top between renders
+  const pathname = window.location.pathname
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   // #region Initial Values
   const accountInitialValues = {
@@ -58,7 +62,7 @@ export const Settings = () => {
     newPassword: '',
     confirmNewPassword: '',
   }
-  // #endregion
+  // #endregion Initial Values
 
   // #region Schemas
   const accountSchema = Yup.object().shape({
@@ -83,7 +87,7 @@ export const Settings = () => {
       .oneOf([Yup.ref('newPassword')], "Passwords don't match")
       .required('You must confirm your new password'),
   })
-  // #endregion
+  // #endregion Schemas
 
   // #region Functions
   const updateAccount = (values, { setStatus }) => {
@@ -139,7 +143,7 @@ export const Settings = () => {
       axios.delete(`${API_URL}/users/${currentUser._id}`).catch(err => console.log(err))
     }
   }
-  // #endregion
+  // #endregion Functions
 
   return !currentUser ? (
     <Redirect to='/signup' />
@@ -242,7 +246,7 @@ export const Settings = () => {
           <div className='zone'>
             <div className='danger'>
               <p>Danger zone</p>
-              <Button type='danger' onClick={handleDelete}>
+              <Button type='danger' onClick={handleDelete} icon={<DeleteOutlined />}>
                 DELETE ACCOUNT
               </Button>
             </div>

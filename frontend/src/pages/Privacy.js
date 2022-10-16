@@ -3,9 +3,12 @@ import styled from 'styled-components/macro'
 
 export const Privacy = () => {
   // makes window scroll to top between renders
+  const pathname = window.location.pathname
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   return (
     <Wrapper>

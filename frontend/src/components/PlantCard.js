@@ -128,7 +128,6 @@ const Wrapper = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  margin: 10px;
   border-radius: 20px;
   padding: 10px;
   transition: 0.2s ease-in-out;

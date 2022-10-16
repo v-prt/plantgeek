@@ -52,10 +52,11 @@ const Wrapper = styled.main`
     .plants {
       background: #f2f2f2;
       margin: 20px 0;
-      padding: 10px;
+      padding: 20px;
       border-radius: 20px;
       display: flex;
       flex-wrap: wrap;
+      gap: 20px;
     }
   }
 `

@@ -1,4 +1,4 @@
-// npm run dev to start development server
+// 'npm run dev' to start development server
 
 'use strict' // helps write more secure javascript
 

@@ -60,9 +60,12 @@ export const PlantProfile = () => {
   }, [plant])
 
   // makes window scroll to top between renders
-  // useEffect(() => {
-  //   window.scrollTo(0, 0)
-  // })
+  const pathname = window.location.pathname
+  useEffect(() => {
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   // setting plant care difficulty
   useEffect(() => {
@@ -116,7 +119,9 @@ export const PlantProfile = () => {
     }
   }, [plant])
 
-  // IMAGE UPLOAD (ADMIN ONLY)
+  // #region ADMIN ACTIONS
+
+  // IMAGE UPLOAD
   const [uploading, setUploading] = useState(false)
   const fileList = []
   const uploadButton = <div>{uploading ? <LoadingOutlined /> : <PlusOutlined />}</div>
@@ -166,19 +171,7 @@ export const PlantProfile = () => {
       })
   }
 
-  // DELETE PLANT (ADMINS ONLY)
-  const handleDelete = plantId => {
-    if (
-      window.confirm(
-        'Are you sure you want to delete this plant from the database? This cannot be undone!'
-      )
-    ) {
-      window.location.replace('/browse')
-      axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
-    }
-  }
-
-  // UPDATE PLANT (ADMINS ONLY)
+  // UPDATE PLANT
   const [editMode, setEditMode] = useState(false)
 
   const initialValues = {
@@ -232,6 +225,20 @@ export const PlantProfile = () => {
       message.error('Something went wrong on the server. Please try again.')
     }
   }
+
+  // DELETE PLANT
+  const handleDelete = plantId => {
+    if (
+      window.confirm(
+        'Are you sure you want to delete this plant from the database? This cannot be undone!'
+      )
+    ) {
+      window.location.replace('/browse')
+      axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
+    }
+  }
+
+  // #endregion ADMIN ACTIONS
 
   return (
     <Wrapper>
@@ -634,7 +641,10 @@ export const PlantProfile = () => {
               </div>
               <div className='danger-zone'>
                 <p>DANGER ZONE</p>
-                <Button type='danger' onClick={() => handleDelete(plant._id)}>
+                <Button
+                  type='danger'
+                  onClick={() => handleDelete(plant._id)}
+                  icon={<DeleteOutlined />}>
                   DELETE PLANT
                 </Button>
               </div>
@@ -934,7 +944,7 @@ const AdminSection = styled.section`
     width: 100%;
     margin-top: 30px;
     padding: 20px 0;
-    border-top: 1px dotted red;
+    border-top: 1px dotted #ccc;
     display: flex;
     align-items: center;
     justify-content: space-between;

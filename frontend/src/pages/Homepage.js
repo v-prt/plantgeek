@@ -14,9 +14,12 @@ export const Homepage = () => {
   const { currentUser } = useContext(UserContext)
 
   // makes window scroll to top between renders
+  const pathname = window.location.pathname
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   return (
     <Wrapper>
@@ -24,7 +27,7 @@ export const Homepage = () => {
         <section className='heading'>
           {currentUser ? (
             <div className='inner'>
-              <h1>welcome back, {currentUser.username}</h1>
+              <h1>welcome back, {currentUser.firstName}</h1>
               <img src={currentUser.image ? currentUser.image[0] : placeholder} alt='' />
             </div>
           ) : (
@@ -36,10 +39,10 @@ export const Homepage = () => {
         <InfoCard>
           <h2>
             <Link to='/browse'>
+              browse houseplants
               <span className='icon'>
                 <FaArrowAltCircleRight />
               </span>
-              browse houseplants
             </Link>
           </h2>
           <ul>
@@ -51,10 +54,10 @@ export const Homepage = () => {
             <>
               <h2>
                 <Link to='/profile'>
+                  view your profile
                   <span className='icon'>
                     <FaArrowAltCircleRight />
                   </span>
-                  view your profile
                 </Link>
               </h2>
               <ul>
@@ -65,10 +68,10 @@ export const Homepage = () => {
               </ul>
               <h2>
                 <Link to='/contribute'>
+                  contribute
                   <span className='icon'>
                     <FaArrowAltCircleRight />
                   </span>
-                  contribute
                 </Link>
               </h2>
               <ul>
@@ -125,10 +128,10 @@ export const Homepage = () => {
           </p>
           <h3>
             <Link to='/browse'>
+              learn more
               <span className='icon'>
                 <FaArrowAltCircleRight />
               </span>
-              learn more
             </Link>
           </h3>
         </InfoCard>
@@ -173,7 +176,7 @@ const Wrapper = styled.main`
   }
   .icon {
     font-size: 1.1rem;
-    margin-right: 10px;
+    margin-left: 10px;
     display: grid;
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {

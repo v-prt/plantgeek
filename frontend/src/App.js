@@ -27,9 +27,12 @@ export const App = () => {
   const { checkedToken, userStatus } = useContext(UserContext)
 
   // makes window scroll to top between renders
+  const pathname = window.location.pathname
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   return (
     <BrowserRouter>
@@ -108,7 +111,7 @@ const Body = styled.div`
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    margin-right: 55px;
+    margin-left: 55px;
     main {
       padding: 20px 0;
       margin: auto;
@@ -119,7 +122,7 @@ const Body = styled.div`
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    margin-right: 240px;
+    margin-left: 240px;
     main {
       max-width: 1200px;
       section {

@@ -36,44 +36,43 @@ export const FeaturedPlants = ({ currentUser }) => {
       {status === 'success' ? (
         <FadeIn>
           <Heading>featured houseplants</Heading>
-          {currentUser && (
-            <div className='info-box'>
-              <Info>
-                <Icon className='collection'>
-                  <RiPlantLine />
-                </Icon>
-                <div>
-                  <b>Have a plant?</b>
-                  <p>Add it to your collection</p>
-                </div>
-              </Info>
-              <Info>
-                <Icon className='wishlist'>
-                  <AiOutlineStar />
-                </Icon>
-                <div>
-                  <b>Want a plant?</b>
-                  <p>Add it to your wishlist</p>
-                </div>
-              </Info>
-              <Info>
-                <Icon className='favorite'>
-                  <TiHeartOutline />
-                </Icon>
-                <div>
-                  <b>Love a plant?</b>
-                  <p>Add it to your favorites</p>
-                </div>
-              </Info>
+          <div className='info-box'>
+            <div>
+              <span className='icon collection'>
+                <RiPlantLine />
+              </span>
+              <span>
+                <b>Have a plant?</b>
+                <p>Add it to your collection</p>
+              </span>
             </div>
-          )}
+            <div>
+              <span className='icon wishlist'>
+                <AiOutlineStar />
+              </span>
+              <span>
+                <b>Want a plant?</b>
+                <p>Add it to your wishlist</p>
+              </span>
+            </div>
+            <div>
+              <span className='icon favorites'>
+                <TiHeartOutline />
+              </span>
+              <span>
+                <b>Love a plant?</b>
+                <p>Add it to your favorites</p>
+              </span>
+            </div>
+          </div>
+          {/* TODO: carousel */}
           <Plants>{plants}</Plants>
           <h3>
             <Link to='/browse'>
+              browse all plants
               <span className='icon'>
                 <FaArrowAltCircleRight />
               </span>
-              browse more
             </Link>
           </h3>
         </FadeIn>
@@ -97,10 +96,39 @@ const Wrapper = styled.section`
     border: 1px dotted #ccc;
     border-radius: 20px;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-around;
+    flex-direction: column;
+    gap: 20px;
     margin: 20px 0;
+    padding: 20px;
+    div {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .icon {
+      display: flex;
+      align-items: center;
+      font-size: 2rem;
+      border-radius: 50%;
+      padding: 10px;
+      &.collection {
+        background: ${COLORS.light};
+      }
+      &.wishlist {
+        background: #ffd24d;
+      }
+      &.favorites {
+        background: #b493e6;
+      }
+    }
+    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+      flex-direction: row;
+      justify-content: space-around;
+      div {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
   }
   h3 {
     width: fit-content;
@@ -120,33 +148,5 @@ const Plants = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-`
-
-const Info = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 10px;
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    flex-direction: column;
-    text-align: center;
-    margin: 20px;
-  }
-`
-
-const Icon = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 2rem;
-  margin: 10px;
-  border-radius: 50%;
-  padding: 10px;
-  &.collection {
-    background: ${COLORS.light};
-  }
-  &.wishlist {
-    background: #ffd24d;
-  }
-  &.favorite {
-    background: #b493e6;
-  }
+  gap: 20px;
 `

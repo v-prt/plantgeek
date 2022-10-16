@@ -50,9 +50,12 @@ export const UserProfile = () => {
   )
 
   // makes window scroll to top between renders
+  const pathname = window.location.pathname
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    if (pathname) {
+      window.scrollTo(0, 0)
+    }
+  }, [pathname])
 
   useEffect(() => {
     if (contributions) {
