@@ -58,7 +58,7 @@ Full-stack live website built 100% by me - including concept, design, and implem
 - [x] upload new plant data to help grow database
 - [x] cloudinary media library image storage (urls stored in database)
 - [x] admins can review and approve or reject submissions
-- [x] earn stickers for approved submissions
+- [x] earn badges for approved submissions
 
 ### account settings (wip)
 

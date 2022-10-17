@@ -277,7 +277,7 @@ export const Browse = () => {
         <div>
           <h2>contribute to our database</h2>
           <p>
-            Can't find a specific plant? Contribute it to our database - you'll earn stickers for
+            Can't find a specific plant? Contribute it to our database - you'll earn badges for
             approved submissions! Please help us by reporting any duplicate or incorrect
             information.
           </p>

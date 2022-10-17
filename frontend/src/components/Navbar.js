@@ -116,6 +116,7 @@ const Wrapper = styled.nav`
     padding: 0 20px;
     a,
     .logout-btn {
+      position: relative;
       color: #fff;
       display: flex;
       align-items: center;

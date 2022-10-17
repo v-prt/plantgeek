@@ -253,10 +253,12 @@ export const PlantProfile = () => {
             {({ submitForm, isSubmitting }) => (
               <Form>
                 <FadeIn>
-                  {plant.review === 'pending' && (
-                    <Alert type='warning' message='This plant is pending review' showIcon />
-                  )}
                   <section className='heading'>
+                    {plant.review === 'pending' && (
+                      <div className='review-pending'>
+                        <Alert type='warning' message='This plant is pending review' showIcon />
+                      </div>
+                    )}
                     {editMode ? (
                       <>
                         <FormItem
@@ -315,7 +317,6 @@ export const PlantProfile = () => {
                       ))}
                   </section>
                 </FadeIn>
-
                 <FadeIn>
                   <section className='plant-info'>
                     {currentUser?.role === 'admin' && editMode ? (
@@ -672,6 +673,9 @@ const Wrapper = styled.main`
   .heading {
     background: ${COLORS.light};
     margin-bottom: 10px;
+    .review-pending {
+      margin-bottom: 20px;
+    }
     h1 {
       line-height: 1;
       font-size: 1.5rem;

@@ -30,7 +30,7 @@ export const UserProfile = () => {
   const { currentUser } = useContext(UserContext)
   const [approvedContributions, setApprovedContributions] = useState([])
   const [pendingContributions, setPendingContributions] = useState([])
-  const stickers = [
+  const badges = [
     { name: leaf, value: 1 },
     { name: flower, value: 3 },
     { name: bee, value: 10 },
@@ -178,19 +178,18 @@ export const UserProfile = () => {
       <FadeIn delay={500}>
         <Contributions>
           <h2>contributions</h2>
+          <p>Earn badges by submitting new houseplant information to our database!</p>
           {contributionsStatus === 'loading' ? (
             <Ellipsis />
           ) : contributions?.length > 0 ? (
             <div className='inner'>
-              <div className='stickers'>
-                {stickers.map(sticker => (
+              <div className='badges'>
+                {badges.map(badge => (
                   <div
-                    className={`sticker ${
-                      approvedContributions.length >= sticker.value && 'earned'
-                    } `}
-                    key={sticker.name}>
-                    <img src={sticker.name} alt='' />
-                    <span className='value'>{sticker.value}</span>
+                    className={`badge ${approvedContributions.length >= badge.value && 'earned'} `}
+                    key={badge.name}>
+                    <img src={badge.name} alt='' />
+                    <span className='value'>{badge.value}</span>
                   </div>
                 ))}
               </div>
@@ -200,7 +199,9 @@ export const UserProfile = () => {
                   <div className='plants'>
                     {approvedContributions.map(plant => (
                       <Link className='contribution-card' to={`/plant/${plant._id}`}>
-                        <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+                        <div className='thumbnail'>
+                          <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+                        </div>{' '}
                         <div className='info'>
                           <p className='primary-name'>{plant.primaryName}</p>
                           <p className='secondary-name'>{plant.secondaryName}</p>
@@ -215,8 +216,10 @@ export const UserProfile = () => {
                   <h3>pending review ({pendingContributions.length})</h3>
                   <div className='plants'>
                     {pendingContributions.map(plant => (
-                      <Link className='contribution-card' to={`/plant/${plant._id}`}>
-                        <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+                      <Link className='contribution-card pending' to={`/plant/${plant._id}`}>
+                        <div className='thumbnail'>
+                          <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+                        </div>
                         <div className='info'>
                           <p className='primary-name'>{plant.primaryName}</p>
                           <p className='secondary-name'>{plant.secondaryName}</p>
@@ -228,7 +231,7 @@ export const UserProfile = () => {
               )}
             </div>
           ) : (
-            <p>No contributions yet.</p>
+            <p className='no-contributions'>No contributions yet.</p>
           )}
         </Contributions>
       </FadeIn>
@@ -279,13 +282,12 @@ const Contributions = styled.section`
     display: flex;
     flex-direction: column;
   }
-  .stickers {
+  .badges {
     margin: 10px 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    grid-gap: 10px;
-    .sticker {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    .badge {
       opacity: 0.5;
       filter: grayscale(1);
       background: #e6e6e6;
@@ -301,7 +303,7 @@ const Contributions = styled.section`
         filter: grayscale(0);
       }
       img {
-        height: 40px;
+        height: 60px;
         filter: drop-shadow(0 0 2px rgba(55, 73, 87, 0.15))
           drop-shadow(0 2px 5px rgba(55, 73, 87, 0.2));
       }
@@ -319,8 +321,9 @@ const Contributions = styled.section`
       }
     }
     @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-      grid-gap: 20px;
-      .sticker {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      .badge {
         padding: 20px;
         img {
           height: 80px;
@@ -347,6 +350,9 @@ const Contributions = styled.section`
         padding: 10px;
         display: flex;
         align-items: center;
+        &.pending {
+          border: 1px dotted #e6e6e6;
+        }
         img {
           height: 100px;
           width: 100px;
@@ -369,7 +375,10 @@ const Contributions = styled.section`
           }
         }
         &:hover {
-          border: 1px solid ${COLORS.accent};
+          border-color: ${COLORS.accent};
+          &.pending {
+            border-color: orange;
+          }
           .info .primary-name {
             color: #222;
           }
@@ -381,5 +390,9 @@ const Contributions = styled.section`
         max-width: 300px;
       }
     }
+  }
+  .no-contributions {
+    margin-top: 20px;
+    opacity: 0.5;
   }
 `
