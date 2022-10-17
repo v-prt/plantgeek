@@ -84,10 +84,10 @@ export const Homepage = () => {
             <>
               <h2>
                 <Link to='/signup'>
+                  create an account
                   <span className='icon'>
                     <FaArrowAltCircleRight />
                   </span>
-                  create an account
                 </Link>
               </h2>
               <ul>
@@ -172,10 +172,6 @@ const Wrapper = styled.main`
     display: grid;
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    /* section {
-      margin: 20px;
-      padding: 40px;
-    } */
     .heading {
       justify-content: flex-end;
       .inner {
