@@ -101,27 +101,27 @@ const Body = styled.div`
   display: flex;
   flex-direction: column;
   main {
-    width: 90%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
     margin: 50px auto 0 auto;
-    padding: 10px 0;
+    padding: 10px;
     flex: 1;
     section {
-      margin: 10px auto;
+      width: 100%;
       padding: 20px;
       border-radius: 20px;
-      width: 100%;
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     margin-left: 55px;
     main {
-      padding: 20px 0;
+      gap: 20px;
       margin: 0 auto;
+      padding: 20px;
       section {
-        margin: 20px auto;
         padding: 30px;
       }
     }
@@ -130,6 +130,8 @@ const Body = styled.div`
     margin-left: 240px;
     main {
       max-width: 1200px;
+      gap: 30px;
+      padding: 30px;
       section {
         padding: 40px;
       }

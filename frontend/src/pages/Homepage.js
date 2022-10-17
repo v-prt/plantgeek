@@ -141,14 +141,6 @@ export const Homepage = () => {
 }
 
 const Wrapper = styled.main`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  section {
-    margin: 10px 0;
-    padding: 20px;
-    border-radius: 20px;
-  }
   .heading {
     background: ${COLORS.light};
     display: flex;
@@ -180,10 +172,10 @@ const Wrapper = styled.main`
     display: grid;
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    section {
+    /* section {
       margin: 20px;
       padding: 40px;
-    }
+    } */
     .heading {
       justify-content: flex-end;
       .inner {

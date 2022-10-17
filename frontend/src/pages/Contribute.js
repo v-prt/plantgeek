@@ -91,7 +91,6 @@ export const Contribute = () => {
     } else {
       // upload image to cloudinary via dropzone
       images.forEach(async image => {
-        // FIXME: make sure plant image is upload to plantgeek-plants folder on cloudinary
         const formData = new FormData()
         formData.append('file', image)
         formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
@@ -151,8 +150,8 @@ export const Contribute = () => {
     <Redirect to='/signup' />
   ) : (
     <Wrapper>
-      <FadeIn>
-        {newPlant && (
+      {newPlant && (
+        <FadeIn>
           <section className='confirmation'>
             <div className='msg'>
               <h2>
@@ -178,8 +177,8 @@ export const Contribute = () => {
               viewNeeds={true}
             />
           </section>
-        )}
-      </FadeIn>
+        </FadeIn>
+      )}
       <FadeIn>
         <section className='introduction'>
           <div>
@@ -318,13 +317,7 @@ export const Contribute = () => {
 }
 
 const Wrapper = styled.main`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   section {
-    margin: 10px 0;
-    padding: 20px;
-    border-radius: 20px;
     &.introduction {
       background: #fff;
       display: flex;
@@ -370,18 +363,13 @@ const Wrapper = styled.main`
       }
     }
   }
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    section {
-      margin: 20px;
-      padding: 40px;
-    }
-  }
 `
 
 export const FormWrapper = styled.section`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   max-width: 600px;
+  margin: auto;
   h2 {
     box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
     padding: 0 20px 10px 20px;

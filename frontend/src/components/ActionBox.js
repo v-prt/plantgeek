@@ -111,15 +111,11 @@ export const ActionBox = ({ plantId }) => {
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.section`
   display: flex;
-  flex-wrap: wrap;
-  place-content: center;
-  grid-gap: 20px;
-  margin: 20px;
+  flex-direction: column;
+  gap: 20px;
   .action-wrapper {
-    min-width: 200px;
-    max-width: 300px;
     background: #fff;
     flex: 1;
     padding: 20px;
@@ -137,11 +133,14 @@ const Wrapper = styled.div`
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    grid-gap: 30px;
-  }
-  @media only screen and (min-width: 1200px) {
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr 1fr 1fr;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    .action-wrapper {
+      min-width: 250px;
+      max-width: 300px;
+    }
   }
 `
 

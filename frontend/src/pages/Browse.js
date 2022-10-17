@@ -120,7 +120,7 @@ export const Browse = () => {
         </section>
       </FadeIn>
       <FadeIn delay={200}>
-        <div className='info-box'>
+        <section className='info-box'>
           <div>
             <span className='icon collection'>
               <RiPlantLine />
@@ -148,7 +148,7 @@ export const Browse = () => {
               <p>Add it to your favorites</p>
             </span>
           </div>
-        </div>
+        </section>
       </FadeIn>
       <section className='browse-content'>
         <Formik initialValues={formData} onSubmit={handleSubmit}>
@@ -294,8 +294,6 @@ export const Browse = () => {
 }
 
 const Wrapper = styled.main`
-  display: flex;
-  flex-direction: column;
   .heading {
     background: ${COLORS.light};
     display: flex;
@@ -340,12 +338,9 @@ const Wrapper = styled.main`
   .info-box {
     background: #fff;
     border: 1px dotted #ccc;
-    border-radius: 20px;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    margin: 20px 0;
-    padding: 20px;
     div {
       display: flex;
       align-items: center;

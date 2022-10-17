@@ -88,7 +88,7 @@ export const Navbar = () => {
             </>
           ) : (
             <>
-              <NavLink to='/login'>
+              <NavLink to='/login' className='login-link'>
                 <div className='icon'>
                   <BiLogInCircle />
                 </div>
@@ -108,7 +108,7 @@ const Wrapper = styled.nav`
   width: 100%;
   position: fixed;
   top: 0;
-  z-index: 9999;
+  z-index: 99;
   .inner {
     display: flex;
     align-items: center;
@@ -125,7 +125,8 @@ const Wrapper = styled.nav`
         color: ${COLORS.light};
       }
     }
-    .logout-btn {
+    .logout-btn,
+    .login-link {
       margin-top: 30px;
       border-top: 1px dotted rgba(255, 255, 255, 0.4);
       padding-top: 30px;

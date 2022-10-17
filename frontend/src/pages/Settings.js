@@ -258,9 +258,6 @@ export const Settings = () => {
 }
 
 const Wrapper = styled.main`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   .user-info {
     background: ${COLORS.light};
     display: flex;
@@ -280,6 +277,7 @@ const Wrapper = styled.main`
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     max-width: 600px;
+    margin: auto;
     display: flex;
     flex-direction: column;
     form {

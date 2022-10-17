@@ -652,7 +652,6 @@ export const PlantProfile = () => {
           )}
         </>
       ) : (
-        // FIXME: should be right in center
         <BeatingHeart />
       )}
     </Wrapper>
@@ -672,6 +671,7 @@ const Wrapper = styled.main`
   }
   .heading {
     background: ${COLORS.light};
+    margin-bottom: 10px;
     h1 {
       line-height: 1;
       font-size: 1.5rem;
@@ -764,6 +764,7 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
+      margin-bottom: 20px;
       h1 {
         font-size: 2rem;
       }
@@ -775,7 +776,10 @@ const Wrapper = styled.main`
       gap: 40px;
     }
   }
-  @media only screen and (min-width: 1200px) {
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    .heading {
+      margin-bottom: 30px;
+    }
     .plant-info {
       flex-direction: row;
     }
@@ -870,7 +874,6 @@ const Needs = styled.div`
 `
 
 const Bar = styled.div`
-  /* background: white; */
   background: rgba(0, 0, 0, 0.1);
   height: 15px;
   border-radius: 10px;

@@ -74,11 +74,7 @@ export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
           <div className='thumbnail'>
             <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
           </div>
-          <Name>
-            {plant.primaryName.length > 25
-              ? plant.primaryName.toLowerCase().substring(0, 23) + '...'
-              : plant.primaryName.toLowerCase()}
-          </Name>
+          <Name>{plant.primaryName.toLowerCase()}</Name>
         </InfoLink>
       </Div>
       <Needs expanded={viewNeeds}>
@@ -124,16 +120,15 @@ export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
 
 const Wrapper = styled.div`
   background: #fff;
-  height: fit-content;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   border-radius: 20px;
   padding: 10px;
   transition: 0.2s ease-in-out;
-  min-height: 250px;
-  width: 250px;
   position: relative;
+  width: 100%;
+  max-width: 300px;
   &:hover {
     color: ${COLORS.darkest};
   }
@@ -191,24 +186,17 @@ const Stamp = styled.div`
 const InfoLink = styled(Link)`
   display: grid;
   place-items: center;
-  .image-loading {
-    background: #f2f2f2;
-    height: 200px;
-    width: 200px;
-    border-radius: 50%;
-  }
   .thumbnail {
     width: 100%;
-    max-width: 200px;
-    aspect-ratio: 1;
+    max-width: 250px;
+    aspect-ratio: 1 / 1;
   }
   img {
     width: 100%;
     border-radius: 50%;
     object-fit: cover;
     &.placeholder {
-      height: 200px;
-      width: 150px;
+      width: 80%;
       object-fit: contain;
     }
   }
@@ -219,7 +207,7 @@ const InfoLink = styled(Link)`
   }
 `
 
-const Name = styled.p`
+const Name = styled.div`
   color: ${COLORS.darkest};
   align-self: center;
   text-align: center;
@@ -227,6 +215,12 @@ const Name = styled.p`
   margin: 5px;
   font-weight: bold;
   transition: 0.2s ease-in-out;
+  /* min-height: 47px; */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 const Needs = styled.div`

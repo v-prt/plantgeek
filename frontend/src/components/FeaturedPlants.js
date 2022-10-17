@@ -86,11 +86,8 @@ export const FeaturedPlants = ({ currentUser }) => {
 const Wrapper = styled.section`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  padding: 30px;
   display: grid;
   place-content: center;
-  margin: 20px;
-  border-radius: 20px;
   .info-box {
     background: #fff;
     border: 1px dotted #ccc;
