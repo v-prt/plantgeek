@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { useInfiniteQuery } from 'react-query'
-import { API_URL } from '../constants'
-import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
 import { PlantContext } from '../contexts/PlantContext'
 
@@ -22,7 +20,6 @@ import {
   FilterOutlined,
   ArrowUpOutlined,
   ArrowDownOutlined,
-  LoadingOutlined,
   CloseCircleOutlined,
   PlusCircleOutlined,
 } from '@ant-design/icons'
@@ -33,10 +30,10 @@ const { Option } = Select
 export const Browse = () => {
   const submitRef = useRef(0)
   const scrollRef = useRef()
-  const { formData, setFormData, viewNeeds, setViewNeeds } = useContext(PlantContext)
+  const { formData, setFormData, viewNeeds, setViewNeeds, fetchPlants } = useContext(PlantContext)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [plants, setPlants] = useState(null)
   const { currentUser } = useContext(UserContext)
+  const [totalResults, setTotalResults] = useState(undefined)
 
   // makes window scroll to top between renders
   const pathname = window.location.pathname
@@ -46,57 +43,21 @@ export const Browse = () => {
     }
   }, [pathname])
 
-  const { data, status } = useInfiniteQuery(
-    ['plants', formData],
-    async ({ pageParam, queryKey }) => {
-      const { data } = await axios.get(`${API_URL}/plants/${pageParam ? pageParam : 0}`, {
-        params: queryKey[1],
-      })
-      return data.plants
+  // fetch plants with pagination
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } =
+    useInfiniteQuery(['plants', formData], fetchPlants, {
+      getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+    })
+
+  const handleScroll = () => {
+    const scrollDistance = scrollRef.current.scrollTop
+    const outerHeight = scrollRef.current.offsetHeight
+    const innerHeight = scrollRef.current.scrollHeight
+    const actualDistance = innerHeight - (scrollDistance + outerHeight)
+    if (actualDistance < 400 && hasNextPage && !isFetching) {
+      fetchNextPage()
     }
-  )
-
-  // TODO: PAGINATION (wip)
-  // const { data, status, fetchNextPage, isFetchingNextPage, isFetchingMore, hasNextPage } =
-  //   useInfiniteQuery(
-  //     ['plants', formData],
-  //     async ({ pageParam = 0, queryKey }) => {
-  //       console.log('queryKey', queryKey)
-  //       const { data } = await axios.get(`${API_URL}/plants/${pageParam}`, {
-  //         params: queryKey[1],
-  //       })
-  //       return data.plants
-  //     },
-  //     {
-  //       getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
-  //     }
-  //   )
-
-  // console.log('data: ', data)
-  // console.log('has next page: ', hasNextPage)
-  // console.log('fetching next page: ', isFetchingNextPage)
-
-  // const handleScroll = () => {
-  //   console.log('scrolling')
-  //   const scrollDistance = scrollRef.current.scrollTop
-  //   const outerHeight = scrollRef.current.offsetHeight
-  //   const innerHeight = scrollRef.current.scrollHeight
-  //   const actualDistance = innerHeight - (scrollDistance + outerHeight)
-  //   // if (actualDistance < 400 && !isFetchingMore && scrollRef.current && hasNextPage) {
-  //   if (actualDistance < 400 && !isFetchingMore && scrollRef.current && hasNextPage) {
-  //     fetchNextPage()
-  //   }
-  // }
-
-  useEffect(() => {
-    if (data) {
-      let pages = data.pages
-      const array = Array.prototype.concat.apply([], pages)
-      setPlants(
-        [array][0].map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />)
-      )
-    }
-  }, [data, viewNeeds])
+  }
 
   const handleSubmit = async values => {
     submitRef.current++
@@ -107,6 +68,12 @@ export const Browse = () => {
       }
     }, 400)
   }
+
+  useEffect(() => {
+    if (data) {
+      setTotalResults(data.pages[0].totalResults)
+    }
+  }, [data])
 
   return (
     <Wrapper>
@@ -177,7 +144,7 @@ export const Browse = () => {
               <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
                 <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
                 <div className='filter-menu-inner'>
-                  <p className='num-results'>{numeral(plants?.length).format('0a')} results</p>
+                  <p className='num-results'>{numeral(totalResults || 0).format('0a')} results</p>
                   <div className='filter'>
                     <p>Sort by</p>
                     {/* TODO: most/least liked/owned/wanted */}
@@ -253,17 +220,22 @@ export const Browse = () => {
             </Form>
           )}
         </Formik>
-        <Results disabled={sidebarOpen}>
-          {/* <Results disabled={sidebarOpen} onScroll={handleScroll} ref={scrollRef}> */}
-          {status === 'success' && plants ? (
-            plants.length > 0 ? (
+        <Results disabled={sidebarOpen} onScroll={handleScroll} ref={scrollRef}>
+          {status === 'success' ? (
+            data && totalResults > 0 ? (
               <>
-                {plants}
-                {/* {isFetchingNextPage && (
+                <div className='plants'>
+                  {data.pages.map((group, i) =>
+                    group.plants.map(plant => (
+                      <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
+                    ))
+                  )}
+                </div>
+                {isFetchingNextPage && (
                   <div className='fetching-more'>
-                    <LoadingOutlined spin />
+                    <Ellipsis />
                   </div>
-                )} */}
+                )}
               </>
             ) : (
               <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
@@ -490,13 +462,23 @@ const Results = styled.div`
   max-height: 600px;
   overflow: auto;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
   opacity: ${props => (props.disabled ? 0.5 : 1)};
   pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
   transition: 0.2s ease-in-out;
+  .plants {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  .fetching-more {
+    display: grid;
+    place-content: center;
+    padding: 10px;
+  }
   .ant-empty {
     display: grid;
     place-content: center;

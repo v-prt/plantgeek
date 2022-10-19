@@ -61,29 +61,26 @@ const getPlants = async (req, res) => {
   const db = client.db('plantgeekdb')
   try {
     // pagination
-    // console.log(req.params.page)
-    // const page = parseInt(req.params.page ? req.params.page : 0)
-    // const resultsPerPage = 24
+    const page = req.params.page ? parseInt(req.params.page) : 1
+    const resultsPerPage = 24
 
     const plants = await db
       .collection('plants')
       .find(filters)
       .sort(order)
       .collation({ locale: 'en' })
-      // TODO: pagination
-      // pagination
-      // .skip(page * resultsPerPage)
-      // .limit(resultsPerPage)
+      .skip(resultsPerPage * (page - 1))
+      .limit(resultsPerPage)
       .toArray()
+
+    const totalResults = await db.collection('plants').countDocuments(filters)
+
     if (plants) {
-      // console.log('page: ', page)
-      // const totalResults = plants.length
-      // console.log('total results: ', plants.length)
-      // console.log('next cursor: ', page < totalResults / resultsPerPage ? page + 1 : false)
       res.status(200).json({
         plants: plants,
-        // page: page,
-        // nextCursor: page < totalResults / resultsPerPage ? page + 1 : false,
+        page: page,
+        totalResults,
+        nextCursor: totalResults > 24 * page ? page + 1 : null,
       })
     } else {
       res.status(404).json({ status: 404, message: 'No plants found' })
