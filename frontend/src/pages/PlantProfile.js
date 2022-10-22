@@ -335,7 +335,7 @@ export const PlantProfile = () => {
                       ))}
                   </section>
                 </FadeIn>
-                <FadeIn>
+                <FadeIn delay={200}>
                   <section className='plant-info'>
                     {currentUser?.role === 'admin' && editMode ? (
                       <div className='upload-wrapper'>
@@ -505,10 +505,10 @@ export const PlantProfile = () => {
           </Formik>
           {currentUser && (
             <>
-              <FadeIn>
+              <FadeIn delay={300}>
                 <ActionBox plantId={plant._id} />
               </FadeIn>
-              <FadeIn>
+              <FadeIn delay={400}>
                 <section className='suggestions-section-user'>
                   <h3>Have a suggestion?</h3>
                   <p>
@@ -591,84 +591,86 @@ export const PlantProfile = () => {
             </>
           )}
           {currentUser?.role === 'admin' && (
-            <AdminSection>
-              <h3>Admin</h3>
-              <div className='suggestions-admin'>
-                <h4>Suggestions from users</h4>
-                {/* TODO: filter suggestions by status */}
-                <div className='suggestions-list'>
-                  {suggestions?.length > 0 ? (
-                    suggestions.map((suggestion, i) => (
-                      <div className='suggestion' key={i}>
-                        <p className='user'>
-                          {suggestion.user?.username}{' '}
-                          <span className='id'>- User ID {suggestion.userId}</span>
-                        </p>
-                        <p className='date'>{moment(suggestion.dateSubmitted).format('lll')}</p>
-                        <p className='text'>"{suggestion.suggestion}"</p>
-                        {suggestion.sourceUrl ? (
-                          <a
-                            className='source'
-                            href={suggestion.sourceUrl}
-                            target='_blank'
-                            rel='noopener noreferrer'>
-                            Source
-                          </a>
-                        ) : (
-                          <p style={{ color: '#999' }}>No source.</p>
-                        )}
-                        <Formik
-                          initialValues={{ status: suggestion.status }}
-                          onSubmit={async (values, { setSubmitting }) => {
-                            try {
-                              await axios.put(`${API_URL}/suggestions/${suggestion._id}`, {
-                                status: values.status,
-                              })
-                              message.success('Suggestion status updated!')
-                              setSubmitting(false)
-                            } catch (err) {
-                              console.log(err)
-                              message.error('Oops, something went wrong.')
-                            }
-                          }}>
-                          {({ submitForm }) => (
-                            <Form>
-                              <FormItem name='status'>
-                                <Select
-                                  name='status'
-                                  placeholder='Set status'
-                                  onChange={() => submitForm()}>
-                                  <Option value='pending'>
-                                    <ClockCircleOutlined /> Pending
-                                  </Option>
-                                  <Option value='approved'>
-                                    <LikeOutlined /> Approved
-                                  </Option>
-                                  <Option value='rejected'>
-                                    <DislikeOutlined /> Rejected
-                                  </Option>
-                                </Select>
-                              </FormItem>
-                            </Form>
+            <FadeIn delay={500}>
+              <AdminSection>
+                <h3>Admin</h3>
+                <div className='suggestions-admin'>
+                  <h4>Suggestions from users</h4>
+                  {/* TODO: filter suggestions by status */}
+                  <div className='suggestions-list'>
+                    {suggestions?.length > 0 ? (
+                      suggestions.map((suggestion, i) => (
+                        <div className='suggestion' key={i}>
+                          <p className='user'>
+                            {suggestion.user?.username}{' '}
+                            <span className='id'>- User ID {suggestion.userId}</span>
+                          </p>
+                          <p className='date'>{moment(suggestion.dateSubmitted).format('lll')}</p>
+                          <p className='text'>"{suggestion.suggestion}"</p>
+                          {suggestion.sourceUrl ? (
+                            <a
+                              className='source'
+                              href={suggestion.sourceUrl}
+                              target='_blank'
+                              rel='noopener noreferrer'>
+                              Source
+                            </a>
+                          ) : (
+                            <p style={{ color: '#999' }}>No source.</p>
                           )}
-                        </Formik>
-                      </div>
-                    ))
-                  ) : (
-                    <p style={{ color: '#999' }}>No suggestions.</p>
-                  )}
+                          <Formik
+                            initialValues={{ status: suggestion.status }}
+                            onSubmit={async (values, { setSubmitting }) => {
+                              try {
+                                await axios.put(`${API_URL}/suggestions/${suggestion._id}`, {
+                                  status: values.status,
+                                })
+                                message.success('Suggestion status updated!')
+                                setSubmitting(false)
+                              } catch (err) {
+                                console.log(err)
+                                message.error('Oops, something went wrong.')
+                              }
+                            }}>
+                            {({ submitForm }) => (
+                              <Form>
+                                <FormItem name='status'>
+                                  <Select
+                                    name='status'
+                                    placeholder='Set status'
+                                    onChange={() => submitForm()}>
+                                    <Option value='pending'>
+                                      <ClockCircleOutlined /> Pending
+                                    </Option>
+                                    <Option value='approved'>
+                                      <LikeOutlined /> Approved
+                                    </Option>
+                                    <Option value='rejected'>
+                                      <DislikeOutlined /> Rejected
+                                    </Option>
+                                  </Select>
+                                </FormItem>
+                              </Form>
+                            )}
+                          </Formik>
+                        </div>
+                      ))
+                    ) : (
+                      <p style={{ color: '#999' }}>No suggestions.</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className='danger-zone'>
-                <p>DANGER ZONE</p>
-                <Button
-                  type='danger'
-                  onClick={() => handleDelete(plant._id)}
-                  icon={<DeleteOutlined />}>
-                  DELETE PLANT
-                </Button>
-              </div>
-            </AdminSection>
+                <div className='danger-zone'>
+                  <p>DANGER ZONE</p>
+                  <Button
+                    type='danger'
+                    onClick={() => handleDelete(plant._id)}
+                    icon={<DeleteOutlined />}>
+                    DELETE PLANT
+                  </Button>
+                </div>
+              </AdminSection>
+            </FadeIn>
           )}
         </>
       ) : (

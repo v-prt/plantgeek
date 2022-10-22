@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components/macro'
+import { FadeIn } from '../components/loaders/FadeIn'
 
 export const About = () => {
   // makes window scroll to top between renders
@@ -12,28 +13,30 @@ export const About = () => {
 
   return (
     <Wrapper>
-      <section className='introduction'>
-        <h1>about plantgeek</h1>
-        <p>
-          Hey! I'm Victoria, the creator of plantgeek. I'm a web developer based in West Kelowna,
-          BC. I created plantgeek as a way to share my love for plants with the world. I hope you
-          enjoy it!
-        </p>
-        <p>
-          If you would like to get in touch, connect with me on{' '}
-          <a
-            href='https://www.linkedin.com/in/victoria-peart'
-            target='_blank'
-            rel='noopener noreferrer'>
-            LinkedIn
-          </a>{' '}
-          or learn more about me and my projects by viewing{' '}
-          <a href='https://victoriapeart.com' target='_blank' rel='noopener noreferrer'>
-            my portfolio
-          </a>
-          .
-        </p>
-      </section>
+      <FadeIn>
+        <section className='introduction'>
+          <h1>about plantgeek</h1>
+          <p>
+            Hey! I'm Victoria, the creator of plantgeek. I'm a web developer based in West Kelowna,
+            BC. I created plantgeek as a way to share my love for plants with the world. I hope you
+            enjoy it!
+          </p>
+          <p>
+            If you would like to get in touch, connect with me on{' '}
+            <a
+              href='https://www.linkedin.com/in/victoria-peart'
+              target='_blank'
+              rel='noopener noreferrer'>
+              LinkedIn
+            </a>{' '}
+            or learn more about me and my projects by viewing{' '}
+            <a href='https://victoriapeart.com' target='_blank' rel='noopener noreferrer'>
+              my portfolio
+            </a>
+            .
+          </p>
+        </section>
+      </FadeIn>
     </Wrapper>
   )
 }

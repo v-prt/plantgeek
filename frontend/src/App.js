@@ -106,7 +106,7 @@ const Body = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    margin: 55px auto 0 auto;
+    margin: 53px auto 0 auto;
     padding: 10px;
     flex: 1;
     section {
@@ -116,10 +116,8 @@ const Body = styled.div`
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    margin-left: 74px;
     main {
       gap: 20px;
-      margin: 0 auto;
       padding: 20px;
       section {
         padding: 30px;
@@ -131,6 +129,7 @@ const Body = styled.div`
     main {
       max-width: 1200px;
       gap: 30px;
+      margin: 0 auto;
       padding: 30px;
       section {
         padding: 40px;
@@ -144,7 +143,7 @@ const Banner = styled.div`
   height: 110px;
   width: 100%;
   display: none;
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     display: block;
   }
 `

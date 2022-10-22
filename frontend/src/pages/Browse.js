@@ -55,7 +55,7 @@ export const Browse = () => {
     const outerHeight = scrollRef.current.offsetHeight
     const innerHeight = scrollRef.current.scrollHeight
     const actualDistance = innerHeight - (scrollDistance + outerHeight)
-    if (actualDistance < 400 && hasNextPage && !isFetching) {
+    if (actualDistance < 300 && hasNextPage && !isFetching) {
       fetchNextPage()
     }
   }
@@ -118,146 +118,150 @@ export const Browse = () => {
           </div>
         </section>
       </FadeIn>
-      <section className='browse-content'>
-        <Formik initialValues={formData} onSubmit={handleSubmit}>
-          {({ values, setValues, submitForm, resetForm }) => (
-            <Form className='filter-bar'>
-              <div className='form-upper'>
-                <div className='search'>
-                  <Input
-                    name='search'
-                    placeholder='Search by name or genus'
-                    value={values.search}
-                    prefix={<BiSearch />}
-                    onChange={submitForm}
-                    style={{ width: '100%' }}
-                    allowClear
-                  />
-                </div>
-                <Button
-                  className='filter-menu-btn'
-                  type='primary'
-                  onClick={() => setSidebarOpen(!sidebarOpen)}>
-                  <span className='label'> SORT & FILTER</span>
-                  {sidebarOpen ? <CloseCircleOutlined /> : <FilterOutlined />}
-                </Button>
-              </div>
-              <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
-                <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
-                <div className='filter-menu-inner'>
-                  <p className='num-results'>{numeral(totalResults || 0).format('0a')} results</p>
-                  {/* TODO: most/least liked/owned/wanted */}
-                  <FormItem label='Sort'>
-                    <Select
-                      getPopupContainer={trigger => trigger.parentNode}
-                      name='sort'
+      <FadeIn delay={300}>
+        <section className='browse-content'>
+          <Formik initialValues={formData} onSubmit={handleSubmit}>
+            {({ values, setValues, submitForm, resetForm }) => (
+              <Form className='filter-bar'>
+                <div className='form-upper'>
+                  <div className='search'>
+                    <Input
+                      name='search'
+                      placeholder='Search by name or genus'
+                      value={values.search}
+                      prefix={<BiSearch />}
                       onChange={submitForm}
-                      placeholder='Select'
-                      style={{ width: '100%' }}>
-                      <Option value='name-asc'>
-                        <ArrowDownOutlined /> Name (A-Z)
-                      </Option>
-                      <Option value='name-desc'>
-                        <ArrowUpOutlined /> Name (Z-A)
-                      </Option>
-                    </Select>
-                  </FormItem>
-                  {/* TODO: filter by light, water, humidity, temperature */}
-                  <FormItem label='Toxicity'>
-                    <Select
-                      getPopupContainer={trigger => trigger.parentNode}
-                      name='toxic'
-                      onChange={submitForm}
-                      placeholder='Select'
                       style={{ width: '100%' }}
-                      allowClear>
-                      <Option value={true}>Toxic</Option>
-                      <Option value={false}>Non-toxic</Option>
-                    </Select>
-                  </FormItem>
-                  {currentUser?.role === 'admin' && (
-                    <FormItem label='Review status' sublabel='(Admin)'>
+                      allowClear
+                    />
+                  </div>
+                  <Button
+                    className='filter-menu-btn'
+                    type='primary'
+                    onClick={() => setSidebarOpen(!sidebarOpen)}>
+                    <span className='label'> SORT & FILTER</span>
+                    {sidebarOpen ? <CloseCircleOutlined /> : <FilterOutlined />}
+                  </Button>
+                </div>
+                <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
+                  <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
+                  <div className='filter-menu-inner'>
+                    <p className='num-results'>{numeral(totalResults || 0).format('0a')} results</p>
+                    {/* TODO: most/least liked/owned/wanted */}
+                    <FormItem label='Sort'>
                       <Select
                         getPopupContainer={trigger => trigger.parentNode}
-                        name='review'
+                        name='sort'
+                        onChange={submitForm}
+                        placeholder='Select'
+                        style={{ width: '100%' }}>
+                        <Option value='name-asc'>
+                          <ArrowDownOutlined /> Name (A-Z)
+                        </Option>
+                        <Option value='name-desc'>
+                          <ArrowUpOutlined /> Name (Z-A)
+                        </Option>
+                      </Select>
+                    </FormItem>
+                    {/* TODO: filter by light, water, humidity, temperature */}
+                    <FormItem label='Toxicity'>
+                      <Select
+                        getPopupContainer={trigger => trigger.parentNode}
+                        name='toxic'
                         onChange={submitForm}
                         placeholder='Select'
                         style={{ width: '100%' }}
                         allowClear>
-                        <Option value='approved'>Approved</Option>
-                        <Option value='pending'>Pending</Option>
-                        <Option value='rejected'>Rejected</Option>
+                        <Option value={true}>Toxic</Option>
+                        <Option value={false}>Non-toxic</Option>
                       </Select>
                     </FormItem>
-                  )}
-                  <div className='toggle-wrapper'>
-                    <span className='toggle-option'>Show details</span>
-                    <Toggle>
-                      <input
-                        id='needs-toggle'
-                        type='checkbox'
-                        onChange={ev => setViewNeeds(ev.target.checked)}
-                      />
-                      <span className='slider'></span>
-                    </Toggle>
+                    {currentUser?.role === 'admin' && (
+                      <FormItem label='Review status' sublabel='(Admin)'>
+                        <Select
+                          getPopupContainer={trigger => trigger.parentNode}
+                          name='review'
+                          onChange={submitForm}
+                          placeholder='Select'
+                          style={{ width: '100%' }}
+                          allowClear>
+                          <Option value='approved'>Approved</Option>
+                          <Option value='pending'>Pending</Option>
+                          <Option value='rejected'>Rejected</Option>
+                        </Select>
+                      </FormItem>
+                    )}
+                    <div className='toggle-wrapper'>
+                      <span className='toggle-option'>Show details</span>
+                      <Toggle>
+                        <input
+                          id='needs-toggle'
+                          type='checkbox'
+                          onChange={ev => setViewNeeds(ev.target.checked)}
+                        />
+                        <span className='slider'></span>
+                      </Toggle>
+                    </div>
+                    <Button
+                      type='secondary'
+                      className='reset-filters'
+                      onClick={() => {
+                        resetForm()
+                        setFormData({ sort: 'name-asc' })
+                        setValues({ sort: 'name-asc' })
+                        setSidebarOpen(false)
+                      }}>
+                      RESET FILTERS
+                    </Button>
                   </div>
-                  <Button
-                    type='secondary'
-                    className='reset-filters'
-                    onClick={() => {
-                      resetForm()
-                      setFormData({ sort: 'name-asc' })
-                      setValues({ sort: 'name-asc' })
-                      setSidebarOpen(false)
-                    }}>
-                    RESET FILTERS
-                  </Button>
                 </div>
-              </div>
-            </Form>
-          )}
-        </Formik>
-        <Results disabled={sidebarOpen} onScroll={handleScroll} ref={scrollRef}>
-          {status === 'success' ? (
-            data && totalResults > 0 ? (
-              <>
-                <div className='plants'>
-                  {data.pages.map((group, i) =>
-                    group.plants.map(plant => (
-                      <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
-                    ))
-                  )}
-                </div>
-                {isFetchingNextPage && (
-                  <div className='fetching-more'>
-                    <Ellipsis />
+              </Form>
+            )}
+          </Formik>
+          <Results disabled={sidebarOpen} onScroll={handleScroll} ref={scrollRef}>
+            {status === 'success' ? (
+              data && totalResults > 0 ? (
+                <>
+                  <div className='plants'>
+                    {data.pages.map((group, i) =>
+                      group.plants.map(plant => (
+                        <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
+                      ))
+                    )}
                   </div>
-                )}
-              </>
+                  {isFetchingNextPage && (
+                    <div className='fetching-more'>
+                      <Ellipsis />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
+              )
             ) : (
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
-            )
-          ) : (
-            <Ellipsis />
-          )}
-        </Results>
-      </section>
-      <section className='contributions-info'>
-        <div>
-          <h2>contribute to our database</h2>
-          <p>
-            Can't find a specific plant? Contribute it to our database - you'll earn badges for
-            approved submissions! Please help us by reporting any duplicate or incorrect
-            information.
-          </p>
-          <Link to='contribute'>
-            <Button type='secondary' icon={<PlusCircleOutlined />}>
-              CONTRIBUTE
-            </Button>
-          </Link>
-        </div>
-        <img src={placeholder} alt='' />
-      </section>
+              <Ellipsis />
+            )}
+          </Results>
+        </section>
+      </FadeIn>
+      <FadeIn delay={400}>
+        <section className='contributions-info'>
+          <div>
+            <h2>contribute to our database</h2>
+            <p>
+              Can't find a specific plant? Contribute it to our database - you'll earn badges for
+              approved submissions! Please help us by reporting any duplicate or incorrect
+              information.
+            </p>
+            <Link to='contribute'>
+              <Button type='secondary' icon={<PlusCircleOutlined />}>
+                CONTRIBUTE
+              </Button>
+            </Link>
+          </div>
+          <img src={placeholder} alt='' />
+        </section>
+      </FadeIn>
     </Wrapper>
   )
 }
@@ -456,15 +460,27 @@ const Wrapper = styled.main`
 
 const Results = styled.div`
   min-height: 400px;
-  max-height: 600px;
+  max-height: 1000px;
   overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 20px 10px;
   opacity: ${props => (props.disabled ? 0.5 : 1)};
   pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
   transition: 0.2s ease-in-out;
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: #eee;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+  }
   .plants {
     width: 100%;
     display: flex;
@@ -481,8 +497,5 @@ const Results = styled.div`
     display: grid;
     place-content: center;
     margin: auto;
-  }
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    max-height: 800px;
   }
 `

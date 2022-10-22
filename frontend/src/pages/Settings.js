@@ -161,7 +161,7 @@ export const Settings = () => {
           </div>
         </section>
       </FadeIn>
-      <FadeIn>
+      <FadeIn delay={200}>
         <section className='settings'>
           <Heading>
             account details <Saving savingStatus={savingStatus} />

@@ -18,6 +18,7 @@ import {
   BiBadgeCheck,
 } from 'react-icons/bi'
 import { CgProfile } from 'react-icons/cg'
+import { IoIosHelpCircleOutline } from 'react-icons/io'
 import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
 
 export const Navbar = () => {
@@ -38,8 +39,7 @@ export const Navbar = () => {
           </div>
         </NavLink>
         <NavLink to='/' className='logo' onClick={() => setMenuExpanded(false)}>
-          <img src={plantgeekLogo} alt='' />
-          <span className='label'>plantgeek</span>
+          plantgeek
         </NavLink>
         <div className='hamburger' onClick={() => setMenuExpanded(!menuExpanded)}>
           {menuExpanded ? <CloseOutlined /> : <MenuOutlined />}
@@ -48,65 +48,78 @@ export const Navbar = () => {
         <div
           className={`nav-links ${menuExpanded && 'expanded'}`}
           onClick={() => setMenuExpanded(false)}>
-          <NavLink to='/browse' className='browse'>
-            <div className='icon'>
-              <BiSearch />
-            </div>
-            <span className='label'>browse</span>
-          </NavLink>
-          {currentUser ? (
-            <>
-              <NavLink to='/profile'>
-                <div className='icon'>
-                  <CgProfile />
-                </div>
-                <span className='label'>profile</span>
-              </NavLink>
-              <NavLink to='/contribute'>
-                <div className='icon'>
-                  <BiPlusCircle />
-                </div>
-                <span className='label'>contribute</span>
-              </NavLink>
-              {currentUser.role === 'admin' && (
-                <NavLink to='/review'>
+          <div className='nav-links-inner'>
+            <NavLink to='/'>
+              <div className='icon'>
+                <img src={plantgeekLogo} alt='' />
+              </div>
+              <span className='label'>home</span>
+            </NavLink>
+            <NavLink to='/browse'>
+              <div className='icon'>
+                <BiSearch />
+              </div>
+              <span className='label'>browse</span>
+            </NavLink>
+            {currentUser ? (
+              <>
+                <NavLink to='/profile'>
                   <div className='icon'>
-                    <BiBadgeCheck />
+                    <CgProfile />
                   </div>
-                  <span className='label'>
-                    review
-                    {plantsToReview?.length > 0 && (
-                      // FIXME: not visible on tablet
-                      <span className='review-notification-badge'>
-                        {numeral(plantsToReview.length).format('0a')}
-                      </span>
-                    )}
-                  </span>
+                  <span className='label'>profile</span>
                 </NavLink>
-              )}
-              <NavLink to='/settings'>
-                <div className='icon'>
-                  <BiCog />
-                </div>
-                <span className='label'>settings</span>
-              </NavLink>
-              <button className='logout-btn' onClick={handleLogout}>
-                <div className='icon'>
-                  <BiLogOutCircle />
-                </div>
-                <span className='label'>log out</span>
-              </button>
-            </>
-          ) : (
-            <>
-              <NavLink to='/login' className='login-link'>
-                <div className='icon'>
-                  <BiLogInCircle />
-                </div>
-                <span className='label'>log in</span>
-              </NavLink>
-            </>
-          )}
+                <NavLink to='/contribute'>
+                  <div className='icon'>
+                    <BiPlusCircle />
+                  </div>
+                  <span className='label'>contribute</span>
+                </NavLink>
+                {currentUser.role === 'admin' && (
+                  <NavLink to='/review'>
+                    <div className='icon'>
+                      <BiBadgeCheck />
+                    </div>
+                    <span className='label'>
+                      review
+                      {plantsToReview?.length > 0 && (
+                        <span className='review-notification-badge'>
+                          {numeral(plantsToReview.length).format('0a')}
+                        </span>
+                      )}
+                    </span>
+                  </NavLink>
+                )}
+                <NavLink to='/settings'>
+                  <div className='icon'>
+                    <BiCog />
+                  </div>
+                  <span className='label'>settings</span>
+                </NavLink>
+                <button className='logout-btn' onClick={handleLogout}>
+                  <div className='icon'>
+                    <BiLogOutCircle />
+                  </div>
+                  <span className='label'>log out</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <NavLink to='/about'>
+                  <div className='icon'>
+                    <IoIosHelpCircleOutline />
+                  </div>
+                  <span className='label'>about</span>
+                </NavLink>
+                <NavLink to='/login' className='login-link'>
+                  <div className='icon'>
+                    <BiLogInCircle />
+                  </div>
+                  <span className='label'>log in</span>
+                </NavLink>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </Wrapper>
@@ -126,13 +139,10 @@ const Wrapper = styled.nav`
     align-items: center;
     justify-content: space-between;
     .logo {
-      img {
-        height: 35px;
-        filter: invert(1);
-      }
-      .label {
-        display: none;
-      }
+      font-family: 'Lobster Two', cursive;
+      font-size: 1.8rem;
+      line-height: 1;
+      padding-bottom: 5px;
     }
     .hamburger {
       color: #fff;
@@ -162,23 +172,27 @@ const Wrapper = styled.nav`
       padding-top: 30px;
     }
     .nav-links {
-      background: #222;
+      background: rgba(0, 0, 0, 0.5);
       position: absolute;
-      top: 55px;
-      left: 100%;
+      top: 54px;
+      right: -100%;
       height: 100vh;
       width: 100vw;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 40px;
-      transition: 0.2s ease-in-out;
+      transition: 0.4s ease-in-out;
+      .nav-links-inner {
+        background: #222;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 40px;
+      }
       a,
       .logout-btn {
         margin: 10px;
       }
       &.expanded {
-        left: 0;
+        right: 0;
       }
     }
     .icon {
@@ -186,6 +200,11 @@ const Wrapper = styled.nav`
       place-content: center;
       width: 25px;
       font-size: 1.5rem;
+      img {
+        height: 25px;
+        width: 25px;
+        filter: invert(1);
+      }
     }
     .label {
       color: #fff;
@@ -204,76 +223,62 @@ const Wrapper = styled.nav`
       font-weight: bold;
     }
   }
-
+  /* FIXME: can't scroll within nav links on mobile landscape */
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    .nav-links {
+      transition: 0.6s ease-in-out;
+      .nav-links-inner {
+        max-width: 300px;
+        margin-left: auto;
+      }
+    }
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     left: 0;
     width: auto;
     height: 100vh;
-    padding: 40px 10px;
-
+    padding: 30px 50px;
     .inner {
       flex-direction: column;
       justify-content: flex-start;
       a {
         &.browse {
-          display: flex;
           &.mobile {
             display: none;
           }
         }
       }
       .logo {
-        margin-bottom: 30px;
+        width: 100%;
+        gap: 10px;
+        font-size: 2.5rem;
+        margin-bottom: 50px;
       }
       .hamburger {
         display: none;
       }
+      .label {
+        display: flex;
+      }
       .nav-links {
+        width: 100%;
         background: transparent;
         position: relative;
         height: auto;
         width: auto;
-        padding: 0;
-        gap: 0;
         top: 0;
-        left: 0;
-        flex-direction: column;
-        a,
-        .logout-btn {
-          margin: 15px;
+        right: 0;
+        margin-right: auto;
+        .nav-links-inner {
+          background: transparent;
+          padding: 0;
+          gap: 0;
         }
-      }
-      .label {
-        display: none;
-      }
-    }
-  }
-  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    padding: 40px;
-    .inner {
-      .label {
-        display: flex;
-      }
-      .logo {
-        width: 100%;
-        gap: 10px;
-        img {
-          height: 40px;
-        }
-        .label {
-          display: flex;
-          color: #fff;
-          font-size: 1.5rem;
-        }
-      }
-      .nav-links {
-        width: 100%;
         a,
         .logout-btn {
           width: 100%;
           margin: 20px 0;
           .icon {
-            margin: 0 10px 0 7px;
             font-size: 1.6rem;
           }
           .label {
