@@ -31,15 +31,9 @@ const createPlant = async (req, res) => {
 
 // (READ/GET) GETS ALL PLANTS
 const getPlants = async (req, res) => {
-  const { toxic, review, search, sort } = req.query
-  // dont'include any plants which are pending review or rejected
-  let filters = { review: { $ne: 'pending' }, review: { $ne: 'rejected' } }
+  const { search, sort, toxic, review } = req.query
+  let filters = {}
 
-  if (toxic === 'true') {
-    filters = { ...filters, toxic: true }
-  } else if (toxic === 'false') {
-    filters = { ...filters, toxic: false }
-  }
   if (search) {
     const regex = new RegExp(search, 'i') // "i" for case insensitive
     filters = {
@@ -47,12 +41,25 @@ const getPlants = async (req, res) => {
       $or: [{ primaryName: { $regex: regex } }, { secondaryName: { $regex: regex } }],
     }
   }
+
+  if (toxic === 'true') {
+    filters = { ...filters, toxic: true }
+  } else if (toxic === 'false') {
+    filters = { ...filters, toxic: false }
+  }
+
   if (review) {
     filters = {
       ...filters,
-      review: 'pending',
+      review,
+    }
+  } else {
+    filters = {
+      ...filters,
+      $and: [{ review: { $ne: 'pending' } }, { review: { $ne: 'rejected' } }],
     }
   }
+
   let order
   if (sort) {
     if (sort === 'name-asc') {
@@ -61,9 +68,11 @@ const getPlants = async (req, res) => {
       order = { primaryName: -1 }
     }
   }
+
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
+
   try {
     // pagination
     const page = req.params.page ? parseInt(req.params.page) : 1

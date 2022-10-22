@@ -12,7 +12,7 @@ import { Input, Select } from 'formik-antd'
 import { Button, Alert } from 'antd'
 
 import styled from 'styled-components/macro'
-import { COLORS, BREAKPOINTS, DropZone, DropBox } from '../GlobalStyles'
+import { COLORS, DropZone, DropBox } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
 import checkmark from '../assets/checkmark.svg'
 import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
@@ -165,17 +165,12 @@ export const Contribute = () => {
               ) : (
                 <p>
                   Thank you! Your submission will be reviewed shortly and, if approved, you will see
-                  the new plant on site soon. In the meantime, you may submit additional plant
-                  information below.
+                  the new plant on site soon. In the meantime, you may submit additional plants
+                  below.
                 </p>
               )}
             </div>
-            <PlantCard
-              key={newPlant._id}
-              plant={newPlant}
-              pendingReview={newPlant.review === 'pending'}
-              viewNeeds={true}
-            />
+            <PlantCard key={newPlant._id} plant={newPlant} viewNeeds={true} />
           </section>
         </FadeIn>
       )}
@@ -204,7 +199,7 @@ export const Contribute = () => {
             onSubmit={handleSubmit}>
             {({ isSubmitting, resetForm }) => (
               <Form>
-                <FormItem label='Latin name' sublabel='(genus and species)' name='primaryName'>
+                <FormItem label='Scientific name' name='primaryName'>
                   <Input name='primaryName' placeholder='Monstera deliciosa' />
                 </FormItem>
 

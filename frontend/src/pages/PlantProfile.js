@@ -258,20 +258,25 @@ export const PlantProfile = () => {
                   <section className='heading'>
                     {plant.review === 'pending' && (
                       <div className='review-pending'>
-                        <Alert type='warning' message='This plant is pending review.' showIcon />
+                        <Alert
+                          type='warning'
+                          message='This plant is pending review by an admin.'
+                          showIcon
+                        />
                       </div>
                     )}
                     {plant.review === 'rejected' && (
                       <div className='review-pending'>
-                        <Alert type='error' message='This plant has been rejected.' showIcon />
+                        <Alert
+                          type='error'
+                          message='This plant has been rejected by an admin. The information may be incorrect or is a duplicate.'
+                          showIcon
+                        />
                       </div>
                     )}
                     {editMode ? (
                       <div className='basic-info-form'>
-                        <FormItem
-                          label='Latin name'
-                          sublabel='(genus and species)'
-                          name='primaryName'>
+                        <FormItem label='Scientific name' name='primaryName'>
                           <Input
                             name='primaryName'
                             placeholder='Monstera deliciosa'
@@ -288,10 +293,7 @@ export const PlantProfile = () => {
                           />
                         </FormItem>
                         <FormItem label='Review status' name='review'>
-                          <Select
-                            name='review'
-                            placeholder='Review status'
-                            style={{ width: '100%' }}>
+                          <Select name='review' placeholder='Select' style={{ width: '100%' }}>
                             <Option value='pending'>Pending</Option>
                             <Option value='approved'>Approved</Option>
                             <Option value='rejected'>Rejected</Option>
@@ -381,19 +383,17 @@ export const PlantProfile = () => {
                         <img src={sun} alt='' />
                         <div className='column'>
                           {editMode ? (
-                            <Select name='light' placeholder='Select'>
-                              <Option value='low to bright indirect'>
-                                light: low to bright indirect
-                              </Option>
-                              <Option value='medium indirect'>light: medium indirect</Option>
+                            <Select name='light' placeholder='Select' style={{ width: '100%' }}>
+                              <Option value='low to bright indirect'>low to bright indirect</Option>
+                              <Option value='medium indirect'>medium indirect</Option>
                               <Option value='medium to bright indirect'>
-                                light: medium to bright indirect
+                                medium to bright indirect
                               </Option>
-                              <Option value='bright indirect'>light: bright indirect</Option>
-                              <Option value='bright'>light: bright</Option>
+                              <Option value='bright indirect'>bright indirect</Option>
+                              <Option value='bright'>bright</Option>
                             </Select>
                           ) : (
-                            <p>light: {plant.light}</p>
+                            <p>{plant.light}</p>
                           )}
                           <Bar>
                             {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
@@ -410,15 +410,15 @@ export const PlantProfile = () => {
                         <img src={water} alt='' />
                         <div className='column'>
                           {editMode ? (
-                            <Select name='water' placeholder='Select'>
-                              <Option value='low'>water: low</Option>
-                              <Option value='low to medium'>water: low to medium</Option>
-                              <Option value='medium'>water: medium</Option>
-                              <Option value='medium to high'>water: medium to high</Option>
-                              <Option value='high'>water: high</Option>
+                            <Select name='water' placeholder='Select' style={{ width: '100%' }}>
+                              <Option value='low'>low</Option>
+                              <Option value='low to medium'>low to medium</Option>
+                              <Option value='medium'>medium</Option>
+                              <Option value='medium to high'>medium to high</Option>
+                              <Option value='high'>high</Option>
                             </Select>
                           ) : (
-                            <p>water: {plant.water}</p>
+                            <p>{plant.water}</p>
                           )}
                           <Bar>
                             {plant.water === 'low' && <Indicator level={'1'} />}
@@ -433,12 +433,15 @@ export const PlantProfile = () => {
                         <img src={temp} alt='' />
                         <div className='column'>
                           {editMode ? (
-                            <Select name='temperature' placeholder='Select'>
-                              <Option value='average'>temperature: average</Option>
-                              <Option value='warm'>temperature: warm</Option>
+                            <Select
+                              name='temperature'
+                              placeholder='Select'
+                              style={{ width: '100%' }}>
+                              <Option value='average'>average</Option>
+                              <Option value='warm'>warm</Option>
                             </Select>
                           ) : (
-                            <p>temperature: {plant.temperature}</p>
+                            <p>{plant.temperature}</p>
                           )}
                           <Bar>
                             {plant.temperature === 'average' && <Indicator level={'1-2'} />}
@@ -450,12 +453,12 @@ export const PlantProfile = () => {
                         <img src={humidity} alt='' />
                         <div className='column'>
                           {editMode ? (
-                            <Select name='humidity' placeholder='Select'>
-                              <Option value='average'>humidity: average</Option>
-                              <Option value='high'>humidity: high</Option>
+                            <Select name='humidity' placeholder='Select' style={{ width: '100%' }}>
+                              <Option value='average'>average</Option>
+                              <Option value='high'>high</Option>
                             </Select>
                           ) : (
-                            <p>humidity: {plant.humidity}</p>
+                            <p>{plant.humidity}</p>
                           )}
                           <Bar>
                             {plant.humidity === 'average' && <Indicator level={'1-2'} />}
@@ -471,7 +474,7 @@ export const PlantProfile = () => {
                         <div className='toxicity'>
                           Toxicity:{' '}
                           {editMode ? (
-                            <Select name='toxic' placeholder='Select'>
+                            <Select name='toxic' placeholder='Select' style={{ width: '100%' }}>
                               <Option value={true}>toxic</Option>
                               <Option value={false}>nontoxic</Option>
                             </Select>
@@ -711,6 +714,7 @@ const Wrapper = styled.main`
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 20px;
     .upload-wrapper {
       flex: 1;
@@ -806,6 +810,7 @@ const Wrapper = styled.main`
 
 const Needs = styled.div`
   background: #f2f2f2;
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -835,14 +840,14 @@ const Needs = styled.div`
   }
   .misc-info {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
+    flex-direction: column;
+    gap: 10px;
     font-size: 0.9rem;
     color: #999;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
     p {
       margin-right: 20px;
     }
@@ -858,10 +863,10 @@ const Needs = styled.div`
         color: ${COLORS.light};
       }
       .moderate {
-        color: orange;
+        color: ${COLORS.alert};
       }
       .hard {
-        color: red;
+        color: ${COLORS.danger};
       }
     }
     .toxicity {
@@ -869,7 +874,7 @@ const Needs = styled.div`
         width: 150px;
       }
       .toxic {
-        color: orange;
+        color: ${COLORS.alert};
       }
       .nontoxic {
         color: ${COLORS.light};
@@ -902,8 +907,7 @@ const Bar = styled.div`
 `
 
 const Indicator = styled.div`
-  /* background: linear-gradient(to right, ${COLORS.lightest}, ${COLORS.light}); */
-  background: ${COLORS.light};
+  background: linear-gradient(to right, ${COLORS.light}, ${COLORS.mediumLight});
   height: 100%;
   border-radius: 10px;
   width: ${props => props.level === '1' && '25%'};

@@ -83,7 +83,7 @@ export const ListWrapper = styled.section`
       margin-bottom: 10px;
       position: sticky;
       top: 50px;
-      z-index: 1;
+      z-index: 2;
       h2 {
         display: flex;
         align-items: center;

@@ -236,16 +236,3 @@ export const Card = styled.div`
     }
   }
 `
-
-const Icon = styled.div`
-  background: ${COLORS.lightest};
-  color: #000;
-  height: 30px;
-  width: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 10px;
-  border-radius: 50%;
-  font-size: 1.3rem;
-`

@@ -136,6 +136,9 @@ const Wrapper = styled.nav`
     }
     .hamburger {
       color: #fff;
+      display: grid;
+      place-content: center;
+      width: 25px;
       font-size: 1.2rem;
     }
     a,
@@ -168,7 +171,7 @@ const Wrapper = styled.nav`
       display: flex;
       flex-direction: column;
       gap: 10px;
-      padding: 20px;
+      padding: 40px;
       transition: 0.2s ease-in-out;
       a,
       .logout-btn {
@@ -180,6 +183,8 @@ const Wrapper = styled.nav`
     }
     .icon {
       display: grid;
+      place-content: center;
+      width: 25px;
       font-size: 1.5rem;
     }
     .label {

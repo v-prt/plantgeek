@@ -1,68 +1,27 @@
-import { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { API_URL } from '../constants'
-import { useQueryClient } from 'react-query'
-import axios from 'axios'
-import { UserContext } from '../contexts/UserContext'
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
 import { ImageLoader } from './loaders/ImageLoader'
 import { ActionBar } from './ActionBar'
-import { LikeOutlined, DislikeOutlined } from '@ant-design/icons'
+import { ExclamationCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { FaPaw } from 'react-icons/fa'
 import placeholder from '../assets/plant-placeholder.svg'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
-// import { FadeIn } from './loaders/FadeIn'
 
-export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
-  const queryClient = new useQueryClient()
-  const { currentUser } = useContext(UserContext)
-
-  const handleApprove = () => {
-    if (
-      window.confirm(
-        'Are you sure you want to approve this plant? It will become publicly visible.'
-      )
-    ) {
-      try {
-        axios.put(`${API_URL}/plants/${plant._id}`, { review: 'approved' })
-        queryClient.invalidateQueries('plants-to-review')
-      } catch (err) {
-        console.log(err)
-      }
-    }
-  }
-
-  const handleReject = plantId => {
-    if (window.confirm('Are you sure you want to reject this plant?')) {
-      try {
-        axios.put(`${API_URL}/plants/${plant._id}`, { review: 'rejected' })
-        queryClient.invalidateQueries('plants-to-review')
-      } catch (err) {
-        console.log(err)
-      }
-    }
-  }
-
+export const PlantCard = ({ plant, viewNeeds }) => {
   return (
     <Wrapper key={plant._id}>
-      {/* TODO: rejected indicator */}
       {plant.review === 'pending' && (
-        <div className='pending-review'>
-          {currentUser.role === 'admin' && (
-            <button onClick={handleApprove}>
-              <LikeOutlined />
-            </button>
-          )}
-          <span className='label'>PENDING REVIEW</span>
-          {currentUser.role === 'admin' && (
-            <button onClick={() => handleReject(plant._id)}>
-              <DislikeOutlined />
-            </button>
-          )}
+        <div className='review-status pending'>
+          PENDING <ExclamationCircleOutlined />
+        </div>
+      )}
+      {plant.review === 'rejected' && (
+        <div className='review-status rejected'>
+          REJECTED <CloseCircleOutlined />
         </div>
       )}
       <Div>
@@ -133,36 +92,27 @@ const Wrapper = styled.div`
   position: relative;
   width: 100%;
   max-width: 300px;
+  transition: 0.2s ease-in-out;
   &:hover {
-    color: ${COLORS.darkest};
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
-  .pending-review {
-    background: orange;
-    color: #fff;
+  .review-status {
+    background: #fff;
+    color: ${COLORS.alert};
+    border: 1px dotted;
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    z-index: 1;
-    font-size: 0.8rem;
-    padding: 5px 20px;
+    top: 20px;
+    right: 20px;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    gap: 8px;
+    z-index: 1;
+    font-size: 0.8rem;
+    padding: 3px 10px;
     font-weight: bold;
-    button {
-      background: #fff;
-      color: orange;
-      margin: 0 5px;
-      display: grid;
-      place-content: center;
-      padding: 5px;
-      border-radius: 50%;
-      &:hover,
-      &:focus {
-        color: #000;
-      }
+    border-radius: 20px;
+    &.rejected {
+      color: ${COLORS.danger};
     }
   }
 `
@@ -229,11 +179,6 @@ const InfoLink = styled(Link)`
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  &:hover {
-    p {
-      color: ${COLORS.mediumLight};
-    }
-  }
 `
 
 const Needs = styled.div`
@@ -262,7 +207,7 @@ const Bar = styled.div`
 `
 
 const Indicator = styled.div`
-  background: linear-gradient(to right, ${COLORS.lightest}, ${COLORS.light});
+  background: linear-gradient(to right, ${COLORS.light}, ${COLORS.mediumLight});
   height: 100%;
   border-radius: 10px;
   width: ${props => props.level === '1' && '20%'};

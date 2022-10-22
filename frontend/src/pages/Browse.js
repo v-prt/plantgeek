@@ -9,8 +9,9 @@ import { BREAKPOINTS, COLORS, Toggle } from '../GlobalStyles'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
+import { FormItem } from '../components/forms/FormItem'
 import { Formik, Form } from 'formik'
-import { Input, Select, Checkbox } from 'formik-antd'
+import { Input, Select } from 'formik-antd'
 import { Button, Empty } from 'antd'
 import { BiSearch } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
@@ -145,14 +146,13 @@ export const Browse = () => {
                 <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
                 <div className='filter-menu-inner'>
                   <p className='num-results'>{numeral(totalResults || 0).format('0a')} results</p>
-                  <div className='filter'>
-                    <p className='label'>Sort by</p>
-                    {/* TODO: most/least liked/owned/wanted */}
+                  {/* TODO: most/least liked/owned/wanted */}
+                  <FormItem label='Sort'>
                     <Select
                       getPopupContainer={trigger => trigger.parentNode}
                       name='sort'
                       onChange={submitForm}
-                      placeholder='Sort'
+                      placeholder='Select'
                       style={{ width: '100%' }}>
                       <Option value='name-asc'>
                         <ArrowDownOutlined /> Name (A-Z)
@@ -161,46 +161,46 @@ export const Browse = () => {
                         <ArrowUpOutlined /> Name (Z-A)
                       </Option>
                     </Select>
-                  </div>
-                  <div className='filter'>
-                    <p className='label'>Filter by</p>
-                    {/* TODO: filter by light, water, humidity, temperature */}
+                  </FormItem>
+                  {/* TODO: filter by light, water, humidity, temperature */}
+                  <FormItem label='Toxicity'>
                     <Select
                       getPopupContainer={trigger => trigger.parentNode}
                       name='toxic'
                       onChange={submitForm}
-                      placeholder='Toxicity'
+                      placeholder='Select'
                       style={{ width: '100%' }}
                       allowClear>
                       <Option value={true}>Toxic</Option>
                       <Option value={false}>Non-toxic</Option>
                     </Select>
-                  </div>
-                  <div className='filter'>
-                    <div className='toggle-wrapper'>
-                      <span className='toggle-option'>Show details</span>
-                      <Toggle>
-                        <input
-                          id='needs-toggle'
-                          type='checkbox'
-                          onChange={ev => setViewNeeds(ev.target.checked)}
-                        />
-                        <span className='slider'></span>
-                      </Toggle>
-                    </div>
-                  </div>
+                  </FormItem>
                   {currentUser?.role === 'admin' && (
-                    <div className='filter'>
-                      <p className='label'>For admins</p>
-                      <Checkbox name='review' onChange={submitForm}>
-                        Pending review
-                      </Checkbox>
-                      {/* TODO: */}
-                      {/* <Checkbox name='review' onChange={submitForm}>
-                        Rejected
-                      </Checkbox> */}
-                    </div>
+                    <FormItem label='Review status' sublabel='(Admin)'>
+                      <Select
+                        getPopupContainer={trigger => trigger.parentNode}
+                        name='review'
+                        onChange={submitForm}
+                        placeholder='Select'
+                        style={{ width: '100%' }}
+                        allowClear>
+                        <Option value='approved'>Approved</Option>
+                        <Option value='pending'>Pending</Option>
+                        <Option value='rejected'>Rejected</Option>
+                      </Select>
+                    </FormItem>
                   )}
+                  <div className='toggle-wrapper'>
+                    <span className='toggle-option'>Show details</span>
+                    <Toggle>
+                      <input
+                        id='needs-toggle'
+                        type='checkbox'
+                        onChange={ev => setViewNeeds(ev.target.checked)}
+                      />
+                      <span className='slider'></span>
+                    </Toggle>
+                  </div>
                   <Button
                     type='secondary'
                     className='reset-filters'
@@ -422,10 +422,6 @@ const Wrapper = styled.main`
           font-size: 0.8rem;
           color: #999;
         }
-        .filter {
-          margin: 10px 0;
-          flex: 1;
-        }
         .label {
           font-weight: bold;
         }
@@ -436,6 +432,7 @@ const Wrapper = styled.main`
           border: 1px solid #ccc;
           border-radius: 5px;
           justify-content: space-between;
+          margin: 10px 0;
           .toggle-option {
             margin-right: 10px;
             line-height: 1;

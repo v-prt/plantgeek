@@ -28,7 +28,11 @@ export const Homepage = () => {
           {currentUser ? (
             <div className='inner'>
               <h1>welcome back, {currentUser.firstName}</h1>
-              <img src={currentUser.image ? currentUser.image[0] : placeholder} alt='' />
+              <img
+                className='profile-img'
+                src={currentUser.image ? currentUser.image[0] : placeholder}
+                alt=''
+              />
             </div>
           ) : (
             <h1>welcome to plantgeek</h1>
@@ -156,13 +160,12 @@ const Wrapper = styled.main`
       font-size: 1.8rem;
       text-align: center;
     }
-    img {
+    .profile-img {
       background: ${COLORS.lightest};
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
       height: 80px;
       width: 80px;
       border-radius: 50%;
-      margin-left: 20px;
       padding: 3px;
     }
   }
@@ -180,6 +183,9 @@ const Wrapper = styled.main`
       h1 {
         text-align: right;
         font-size: 2rem;
+      }
+      .profile-img {
+        margin-left: 20px;
       }
     }
   }

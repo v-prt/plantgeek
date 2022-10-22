@@ -29,7 +29,7 @@ export const Review = () => {
           <section className='inner'>
             {data.length > 0 ? (
               <>
-                <Alert message='New plant submissions to review' type='warning' showIcon />
+                <Alert message='New plant submissions to review.' type='warning' showIcon />
                 <div className='plants'>
                   {data.map(plant => (
                     <PlantCard key={plant.id} plant={plant} viewNeeds={true} />
