@@ -469,6 +469,7 @@ const Results = styled.div`
   pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
   transition: 0.2s ease-in-out;
   .plants {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

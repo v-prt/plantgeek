@@ -302,7 +302,7 @@ export const PlantProfile = () => {
                       <>
                         <h1>{plant.primaryName?.toLowerCase()}</h1>
                         <p className='secondary-name'>
-                          {plant.secondaryName ? plant.secondaryName : 'N/A'}
+                          {plant.secondaryName ? plant.secondaryName.toLowerCase() : 'N/A'}
                         </p>
                       </>
                     )}

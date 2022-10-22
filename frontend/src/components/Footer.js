@@ -10,8 +10,8 @@ export const Footer = () => {
     <Wrapper>
       <div className='inner'>
         <div className='links'>
-          <Link to='/terms'>Terms and Conditions</Link>•<Link to='/privacy'>Privacy Policy</Link>•
-          <Link to='/about'>About</Link>
+          <Link to='/about'>About</Link>•<Link to='/privacy'>Privacy Policy</Link>•
+          <Link to='/terms'>Terms and Conditions</Link>
         </div>
         <p>&copy; 2021 - {currentYear} plantgeek. All rights reserved.</p>
       </div>

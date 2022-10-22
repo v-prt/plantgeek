@@ -1,10 +1,13 @@
 import React, { useContext, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { API_URL } from '../constants'
 import { useQuery } from 'react-query'
+import { API_URL } from '../constants'
 import axios from 'axios'
+import numeral from 'numeral'
 import { UserContext } from '../contexts/UserContext'
 
+import styled from 'styled-components/macro'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import plantgeekLogo from '../assets/logo.webp'
 import {
   BiSearch,
@@ -15,10 +18,7 @@ import {
   BiBadgeCheck,
 } from 'react-icons/bi'
 import { CgProfile } from 'react-icons/cg'
-import { MoreOutlined, CloseCircleOutlined } from '@ant-design/icons'
-import styled from 'styled-components/macro'
-import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import { Pulser } from '../components/general/Pulser'
+import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
 
 export const Navbar = () => {
   const { handleLogout, currentUser } = useContext(UserContext)
@@ -32,19 +32,23 @@ export const Navbar = () => {
   return (
     <Wrapper>
       <div className='inner'>
-        <div className='logo' onClick={() => setMenuExpanded(false)}>
-          <NavLink to='/'>
-            <img src={plantgeekLogo} alt='' />
-            <span className='label'>plantgeek</span>
-          </NavLink>
+        <NavLink to='/browse' className='browse mobile' onClick={() => setMenuExpanded(false)}>
+          <div className='icon'>
+            <BiSearch />
+          </div>
+        </NavLink>
+        <NavLink to='/' className='logo' onClick={() => setMenuExpanded(false)}>
+          <img src={plantgeekLogo} alt='' />
+          <span className='label'>plantgeek</span>
+        </NavLink>
+        <div className='hamburger' onClick={() => setMenuExpanded(!menuExpanded)}>
+          {menuExpanded ? <CloseOutlined /> : <MenuOutlined />}
         </div>
-        <div className='mobile-menu-icon' onClick={() => setMenuExpanded(!menuExpanded)}>
-          {menuExpanded ? <CloseCircleOutlined /> : <MoreOutlined />}
-        </div>
+
         <div
           className={`nav-links ${menuExpanded && 'expanded'}`}
           onClick={() => setMenuExpanded(false)}>
-          <NavLink to='/browse'>
+          <NavLink to='/browse' className='browse'>
             <div className='icon'>
               <BiSearch />
             </div>
@@ -58,12 +62,6 @@ export const Navbar = () => {
                 </div>
                 <span className='label'>profile</span>
               </NavLink>
-              <NavLink to='/settings'>
-                <div className='icon'>
-                  <BiCog />
-                </div>
-                <span className='label'>settings</span>
-              </NavLink>
               <NavLink to='/contribute'>
                 <div className='icon'>
                   <BiPlusCircle />
@@ -75,10 +73,23 @@ export const Navbar = () => {
                   <div className='icon'>
                     <BiBadgeCheck />
                   </div>
-                  <span className='label'>review</span>
-                  {plantsToReview?.length > 0 && <Pulser color='orange' />}
+                  <span className='label'>
+                    review
+                    {plantsToReview?.length > 0 && (
+                      // FIXME: not visible on tablet
+                      <span className='review-notification-badge'>
+                        {numeral(plantsToReview.length).format('0a')}
+                      </span>
+                    )}
+                  </span>
                 </NavLink>
               )}
+              <NavLink to='/settings'>
+                <div className='icon'>
+                  <BiCog />
+                </div>
+                <span className='label'>settings</span>
+              </NavLink>
               <button className='logout-btn' onClick={handleLogout}>
                 <div className='icon'>
                   <BiLogOutCircle />
@@ -109,11 +120,24 @@ const Wrapper = styled.nav`
   position: fixed;
   top: 0;
   z-index: 99;
+  padding: 10px 20px;
   .inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
+    .logo {
+      img {
+        height: 35px;
+        filter: invert(1);
+      }
+      .label {
+        display: none;
+      }
+    }
+    .hamburger {
+      color: #fff;
+      font-size: 1.2rem;
+    }
     a,
     .logout-btn {
       position: relative;
@@ -121,9 +145,11 @@ const Wrapper = styled.nav`
       display: flex;
       align-items: center;
       gap: 10px;
-      margin: 10px;
-      &.active {
-        color: ${COLORS.light};
+      &.browse {
+        display: none;
+        &.mobile {
+          display: block;
+        }
       }
     }
     .logout-btn,
@@ -132,19 +158,10 @@ const Wrapper = styled.nav`
       border-top: 1px dotted rgba(255, 255, 255, 0.4);
       padding-top: 30px;
     }
-    .logo {
-      img {
-        height: 30px;
-        filter: invert(1);
-      }
-      .label {
-        display: none;
-      }
-    }
     .nav-links {
       background: #222;
       position: absolute;
-      top: 50px;
+      top: 55px;
       left: 100%;
       height: 100vh;
       width: 100vw;
@@ -153,35 +170,57 @@ const Wrapper = styled.nav`
       gap: 10px;
       padding: 20px;
       transition: 0.2s ease-in-out;
+      a,
+      .logout-btn {
+        margin: 10px;
+      }
       &.expanded {
         left: 0;
       }
-    }
-    .label {
-      color: #fff;
-      font-size: 1rem;
     }
     .icon {
       display: grid;
       font-size: 1.5rem;
     }
+    .label {
+      color: #fff;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .review-notification-badge {
+      font-size: 0.7rem;
+      border-radius: 10px;
+      background: ${COLORS.light};
+      color: ${COLORS.darkest};
+      margin-top: 2px;
+      padding: 0 5px;
+      font-weight: bold;
+    }
   }
-  .mobile-menu-icon {
-    color: #fff;
-    font-size: 1.2rem;
-  }
+
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     left: 0;
-    height: 100%;
-    width: 55px;
-    .label {
-      display: none;
-    }
+    width: auto;
+    height: 100vh;
+    padding: 40px 10px;
+
     .inner {
       flex-direction: column;
       justify-content: flex-start;
-      padding: 20px;
-      .mobile-menu-icon {
+      a {
+        &.browse {
+          display: flex;
+          &.mobile {
+            display: none;
+          }
+        }
+      }
+      .logo {
+        margin-bottom: 30px;
+      }
+      .hamburger {
         display: none;
       }
       .nav-links {
@@ -193,25 +232,22 @@ const Wrapper = styled.nav`
         gap: 0;
         top: 0;
         left: 0;
-      }
-      a,
-      .logout-btn {
-        margin: 20px 0;
-      }
-      .logo {
-        margin-bottom: 30px;
-      }
-      .nav-links {
         flex-direction: column;
+        a,
+        .logout-btn {
+          margin: 15px;
+        }
+      }
+      .label {
+        display: none;
       }
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    width: 240px;
+    padding: 40px;
     .inner {
-      padding: 20px 40px;
       .label {
-        display: block;
+        display: flex;
       }
       .logo {
         width: 100%;
@@ -220,7 +256,7 @@ const Wrapper = styled.nav`
           height: 40px;
         }
         .label {
-          display: block;
+          display: flex;
           color: #fff;
           font-size: 1.5rem;
         }
@@ -230,6 +266,7 @@ const Wrapper = styled.nav`
         a,
         .logout-btn {
           width: 100%;
+          margin: 20px 0;
           .icon {
             margin: 0 10px 0 7px;
             font-size: 1.6rem;

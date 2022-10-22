@@ -201,10 +201,10 @@ export const UserProfile = () => {
                       <Link className='contribution-card' to={`/plant/${plant._id}`}>
                         <div className='thumbnail'>
                           <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
-                        </div>{' '}
+                        </div>
                         <div className='info'>
-                          <p className='primary-name'>{plant.primaryName}</p>
-                          <p className='secondary-name'>{plant.secondaryName}</p>
+                          <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>
+                          <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
                         </div>
                       </Link>
                     ))}
@@ -221,8 +221,8 @@ export const UserProfile = () => {
                           <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
                         </div>
                         <div className='info'>
-                          <p className='primary-name'>{plant.primaryName}</p>
-                          <p className='secondary-name'>{plant.secondaryName}</p>
+                          <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>
+                          <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
                         </div>
                       </Link>
                     ))}

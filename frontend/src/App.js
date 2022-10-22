@@ -106,7 +106,7 @@ const Body = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    margin: 50px auto 0 auto;
+    margin: 55px auto 0 auto;
     padding: 10px;
     flex: 1;
     section {
@@ -116,7 +116,7 @@ const Body = styled.div`
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    margin-left: 55px;
+    margin-left: 74px;
     main {
       gap: 20px;
       margin: 0 auto;
@@ -127,7 +127,7 @@ const Body = styled.div`
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    margin-left: 240px;
+    margin-left: 241px;
     main {
       max-width: 1200px;
       gap: 30px;
