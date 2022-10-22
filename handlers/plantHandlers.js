@@ -31,22 +31,27 @@ const createPlant = async (req, res) => {
 
 // (READ/GET) GETS ALL PLANTS
 const getPlants = async (req, res) => {
-  const { toxic, image, primaryName, sort } = req.query
-  // don't include any plants which are pending review ($ne = not equal)
-  let filters = { review: { $ne: 'pending' } }
+  const { toxic, review, search, sort } = req.query
+  // dont'include any plants which are pending review or rejected
+  let filters = { review: { $ne: 'pending' }, review: { $ne: 'rejected' } }
+
   if (toxic === 'true') {
     filters = { ...filters, toxic: true }
   } else if (toxic === 'false') {
     filters = { ...filters, toxic: false }
   }
-  if (image === 'broken') {
-    filters = { ...filters, imageUrl: 'broken' }
-  } else if (image === 'good') {
-    filters = { ...filters, imageUrl: { $ne: 'broken' } }
+  if (search) {
+    const regex = new RegExp(search, 'i') // "i" for case insensitive
+    filters = {
+      ...filters,
+      $or: [{ primaryName: { $regex: regex } }, { secondaryName: { $regex: regex } }],
+    }
   }
-  if (primaryName) {
-    const regex = new RegExp(primaryName, 'i') // "i" for case insensitive
-    filters = { ...filters, primaryName: { $regex: regex } }
+  if (review) {
+    filters = {
+      ...filters,
+      review: 'pending',
+    }
   }
   let order
   if (sort) {

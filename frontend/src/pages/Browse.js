@@ -10,7 +10,7 @@ import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
 import { Formik, Form } from 'formik'
-import { Input, Select } from 'formik-antd'
+import { Input, Select, Checkbox } from 'formik-antd'
 import { Button, Empty } from 'antd'
 import { BiSearch } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
@@ -124,9 +124,9 @@ export const Browse = () => {
               <div className='form-upper'>
                 <div className='search'>
                   <Input
-                    name='primaryName'
+                    name='search'
                     placeholder='Search by name or genus'
-                    value={values.primaryName}
+                    value={values.search}
                     prefix={<BiSearch />}
                     onChange={submitForm}
                     style={{ width: '100%' }}
@@ -146,7 +146,7 @@ export const Browse = () => {
                 <div className='filter-menu-inner'>
                   <p className='num-results'>{numeral(totalResults || 0).format('0a')} results</p>
                   <div className='filter'>
-                    <p>Sort by</p>
+                    <p className='label'>Sort by</p>
                     {/* TODO: most/least liked/owned/wanted */}
                     <Select
                       getPopupContainer={trigger => trigger.parentNode}
@@ -163,7 +163,7 @@ export const Browse = () => {
                     </Select>
                   </div>
                   <div className='filter'>
-                    <p>Filter by</p>
+                    <p className='label'>Filter by</p>
                     {/* TODO: filter by light, water, humidity, temperature */}
                     <Select
                       getPopupContainer={trigger => trigger.parentNode}
@@ -191,17 +191,14 @@ export const Browse = () => {
                   </div>
                   {currentUser?.role === 'admin' && (
                     <div className='filter'>
-                      <p>For admins</p>
-                      <Select
-                        getPopupContainer={trigger => trigger.parentNode}
-                        name='image'
-                        onChange={submitForm}
-                        placeholder='Image URL'
-                        style={{ width: '100%' }}
-                        allowClear>
-                        <Option value='broken'>Broken image</Option>
-                        <Option value='good'>Working image</Option>
-                      </Select>
+                      <p className='label'>For admins</p>
+                      <Checkbox name='review' onChange={submitForm}>
+                        Pending review
+                      </Checkbox>
+                      {/* TODO: */}
+                      {/* <Checkbox name='review' onChange={submitForm}>
+                        Rejected
+                      </Checkbox> */}
                     </div>
                   )}
                   <Button
@@ -429,6 +426,9 @@ const Wrapper = styled.main`
           margin: 10px 0;
           flex: 1;
         }
+        .label {
+          font-weight: bold;
+        }
         .toggle-wrapper {
           display: flex;
           align-items: center;
@@ -482,5 +482,9 @@ const Results = styled.div`
   .ant-empty {
     display: grid;
     place-content: center;
+    margin: auto;
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    max-height: 800px;
   }
 `

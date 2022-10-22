@@ -37,9 +37,9 @@ export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
   }
 
   const handleReject = plantId => {
-    if (window.confirm('Are you sure you want to reject and permanently delete this plant?')) {
+    if (window.confirm('Are you sure you want to reject this plant?')) {
       try {
-        axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
+        axios.put(`${API_URL}/plants/${plant._id}`, { review: 'rejected' })
         queryClient.invalidateQueries('plants-to-review')
       } catch (err) {
         console.log(err)
@@ -49,6 +49,7 @@ export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
 
   return (
     <Wrapper key={plant._id}>
+      {/* TODO: rejected indicator */}
       {plant.review === 'pending' && (
         <div className='pending-review'>
           {currentUser.role === 'admin' && (
@@ -74,7 +75,10 @@ export const PlantCard = ({ plant, pendingReview, viewNeeds }) => {
           <div className='thumbnail'>
             <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
           </div>
-          <Name>{plant.primaryName.toLowerCase()}</Name>
+          <div className='name'>
+            <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>
+            <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
+          </div>
         </InfoLink>
       </Div>
       <Needs expanded={viewNeeds}>
@@ -200,27 +204,36 @@ const InfoLink = styled(Link)`
       object-fit: contain;
     }
   }
+  .name {
+    color: ${COLORS.darkest};
+    max-width: 230px;
+    margin: 5px;
+    text-align: center;
+    align-self: center;
+    transition: 0.2s ease-in-out;
+  }
+  .primary-name {
+    font-weight: bold;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .secondary-name {
+    font-style: italic;
+    font-size: 0.8rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   &:hover {
     p {
       color: ${COLORS.mediumLight};
     }
   }
-`
-
-const Name = styled.div`
-  color: ${COLORS.darkest};
-  align-self: center;
-  text-align: center;
-  max-width: 230px;
-  margin: 5px;
-  font-weight: bold;
-  transition: 0.2s ease-in-out;
-  /* min-height: 47px; */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `
 
 const Needs = styled.div`

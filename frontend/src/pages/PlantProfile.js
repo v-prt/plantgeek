@@ -182,6 +182,8 @@ export const PlantProfile = () => {
     temperature: plant?.temperature,
     humidity: plant?.humidity,
     toxic: plant?.toxic,
+    review: plant?.review,
+    sourceUrl: plant?.sourceUrl,
   }
 
   const schema = Yup.object().shape({
@@ -256,11 +258,16 @@ export const PlantProfile = () => {
                   <section className='heading'>
                     {plant.review === 'pending' && (
                       <div className='review-pending'>
-                        <Alert type='warning' message='This plant is pending review' showIcon />
+                        <Alert type='warning' message='This plant is pending review.' showIcon />
+                      </div>
+                    )}
+                    {plant.review === 'rejected' && (
+                      <div className='review-pending'>
+                        <Alert type='error' message='This plant has been rejected.' showIcon />
                       </div>
                     )}
                     {editMode ? (
-                      <>
+                      <div className='basic-info-form'>
                         <FormItem
                           label='Latin name'
                           sublabel='(genus and species)'
@@ -268,6 +275,7 @@ export const PlantProfile = () => {
                           <Input
                             name='primaryName'
                             placeholder='Monstera deliciosa'
+                            style={{ width: '100%' }}
                             prefix={<EditOutlined />}
                           />
                         </FormItem>
@@ -275,19 +283,27 @@ export const PlantProfile = () => {
                           <Input
                             name='secondaryName'
                             placeholder='Swiss cheese plant'
+                            style={{ width: '100%' }}
                             prefix={<EditOutlined />}
                           />
                         </FormItem>
-                      </>
+                        <FormItem label='Review status' name='review'>
+                          <Select
+                            name='review'
+                            placeholder='Review status'
+                            style={{ width: '100%' }}>
+                            <Option value='pending'>Pending</Option>
+                            <Option value='approved'>Approved</Option>
+                            <Option value='rejected'>Rejected</Option>
+                          </Select>
+                        </FormItem>
+                      </div>
                     ) : (
                       <>
                         <h1>{plant.primaryName?.toLowerCase()}</h1>
-                        <div className='secondary-name-wrapper'>
-                          <b className='aka'>Also known as: </b>
-                          <span className='secondary-name'>
-                            {plant.secondaryName ? plant.secondaryName : 'N/A'}
-                          </span>
-                        </div>
+                        <p className='secondary-name'>
+                          {plant.secondaryName ? plant.secondaryName : 'N/A'}
+                        </p>
                       </>
                     )}
                     {currentUser?.role === 'admin' &&
@@ -662,12 +678,9 @@ export const PlantProfile = () => {
 const Wrapper = styled.main`
   form {
     width: 100%;
-    .ant-input-affix-wrapper {
+    .basic-info-form {
       width: 100%;
-      max-width: 300px;
-    }
-    .ant-select {
-      width: 100%;
+      max-width: 400px;
     }
   }
   .heading {
@@ -681,8 +694,9 @@ const Wrapper = styled.main`
       font-size: 1.5rem;
       margin-bottom: 10px;
     }
-    .secondary-name-wrapper {
-      font-size: 0.8rem;
+    .secondary-name {
+      font-size: 1rem;
+      font-style: italic;
     }
     .buttons {
       display: flex;
