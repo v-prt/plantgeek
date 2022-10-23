@@ -36,10 +36,11 @@ const getPlants = async (req, res) => {
   let filters = {}
 
   if (search) {
-    const regex = new RegExp(search, 'i') // "i" for case insensitive
+    // create a regex for each string in search array
+    const regex = search.map(str => new RegExp(str, 'i'))
     filters = {
       ...filters,
-      $or: [{ primaryName: { $regex: regex } }, { secondaryName: { $regex: regex } }],
+      $or: [{ primaryName: { $in: regex } }, { secondaryName: { $in: regex } }],
     }
   }
 
@@ -125,14 +126,49 @@ const getPlantsToReview = async (req, res) => {
 
 // (READ/GET) GETS PLANT BY ID
 const getPlant = async (req, res) => {
+  const id = req.params._id
+
   const client = await MongoClient(MONGO_URI, options)
-  const _id = req.params._id
   await client.connect()
   const db = client.db('plantgeekdb')
+
   try {
-    const plant = await db.collection('plants').findOne({ _id: ObjectId(_id) })
+    const plant = await db.collection('plants').findOne({ _id: ObjectId(id) })
     if (plant) {
       res.status(200).json({ status: 200, plant: plant })
+    } else {
+      res.status(404).json({ status: 404, message: 'Plant not found' })
+    }
+  } catch (err) {
+    console.error(err)
+  }
+  client.close()
+}
+
+const getSimilarPlants = async (req, res) => {
+  const { plantId } = req.params
+
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+
+  try {
+    const plant = await db.collection('plants').findOne({ _id: ObjectId(plantId) })
+    if (plant) {
+      // take words from plant's primary name and secondary name
+      const words = plant.primaryName.split(' ').concat(plant.secondaryName.split(' '))
+
+      // for each word, create a regex and search for similar plants
+      const regex = words.map(str => new RegExp(str, 'i'))
+      let filters = {
+        // not this plant
+        _id: { $ne: ObjectId(plantId) },
+        $or: [{ primaryName: { $in: regex } }, { secondaryName: { $in: regex } }],
+      }
+
+      const similarPlants = await db.collection('plants').find(filters).limit(6).toArray()
+
+      res.status(200).json({ status: 200, similarPlants: similarPlants })
     } else {
       res.status(404).json({ status: 404, message: 'Plant not found' })
     }
@@ -378,16 +414,69 @@ const importPlantData = async () => {
   }
 }
 
+const getSearchTerms = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+
+  // TODO: update this function to clean up search terms for regular users
+  try {
+    // get all unique words from plant names in db
+    const plants = await db.collection('plants').find().toArray()
+    const words = plants
+      .map(plant => {
+        const primaryName = plant.primaryName.split(' ')
+        const secondaryName = plant.secondaryName.split(' ')
+        return [...primaryName, ...secondaryName]
+      })
+      // remove short words or words with special characters
+      .flat()
+    // .filter(
+    //   word => word.length > 2 && !word.includes("'") && !word.includes('(') && !word.includes(')')
+    // )
+
+    // count and set the number of times each word appears
+    // const wordCounts = {}
+    // words.forEach(word => {
+    //   if (wordCounts[word]) {
+    //     wordCounts[word]++
+    //   } else wordCounts[word] = 1
+    // })
+
+    // remove duplicates
+    const uniqueWords = [...new Set(words)]
+    // sort words alphabetically
+    const sortedWords = uniqueWords.sort((a, b) => a.localeCompare(b))
+
+    // sort words by order of frequency from most to least
+    // const sortedWords = Object.keys(wordCounts)
+    //   .sort((a, b) => {
+    //     return wordCounts[b] - wordCounts[a]
+    //   })
+    //   .filter(
+    //     // remove words with less than 4 occurrences
+    //     word => wordCounts[word] > 3
+    //   )
+    //   .map(word => word.toLowerCase())
+
+    res.status(200).json({ status: 200, data: sortedWords, totalResults: sortedWords.length })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ status: 500, data: req.body, message: err.message })
+  }
+}
+
 module.exports = {
   createPlant,
   getPlants,
   getPlantsToReview,
   getPlant,
+  getSimilarPlants,
   getRandomPlants,
   getUserPlants,
   getUserContributions,
   addComment,
   updatePlant,
-  uploadToCloudinary,
   deletePlant,
+  getSearchTerms,
 }

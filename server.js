@@ -18,19 +18,22 @@ const {
   removeFromUser,
   deleteUser,
 } = require('./handlers/userHandlers.js')
+
 const {
   createPlant,
   getPlants,
   getPlantsToReview,
   getPlant,
+  getSimilarPlants,
   getRandomPlants,
   getUserPlants,
   getUserContributions,
   addComment,
   updatePlant,
-  uploadToCloudinary,
   deletePlant,
+  getSearchTerms,
 } = require('./handlers/plantHandlers.js')
+
 const {
   createSuggestion,
   getSuggestions,
@@ -69,13 +72,14 @@ app
   .get(`${API_URL}/plants/:page`, getPlants)
   .get(`${API_URL}/plants-to-review`, getPlantsToReview)
   .get(`${API_URL}/plant/:_id`, getPlant)
+  .get(`${API_URL}/similar-plants/:plantId`, getSimilarPlants)
   .get(`${API_URL}/random-plants`, getRandomPlants)
   .get(`${API_URL}/user-plants/:page`, getUserPlants)
   .get(`${API_URL}/contributions/:userId`, getUserContributions)
   .put(`${API_URL}/plants/:_id`, updatePlant)
   .put(`${API_URL}/plants/:_id/comments`, addComment)
-  .post(`${API_URL}/cloud-upload`, uploadToCloudinary)
   .delete(`${API_URL}/plants/:_id`, deletePlant)
+  .get(`${API_URL}/search-terms`, getSearchTerms)
 
   // suggestions
   .post(`${API_URL}/suggestions/:plantId`, createSuggestion)

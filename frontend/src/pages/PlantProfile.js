@@ -34,6 +34,8 @@ import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
 import { ActionBox } from '../components/ActionBox'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { PlantCard } from '../components/PlantCard'
+import { Ellipsis } from '../components/loaders/Ellipsis'
 const { Option } = Select
 
 export const PlantProfile = () => {
@@ -53,6 +55,14 @@ export const PlantProfile = () => {
     const { data } = await axios.get(`${API_URL}/suggestions/${id}`)
     return data.suggestions
   })
+
+  const { data: similarPlants, status: similarPlantsStatus } = useQuery(
+    ['similar-plants', id],
+    async () => {
+      const { data } = await axios.get(`${API_URL}/similar-plants/${id}`)
+      return data.similarPlants
+    }
+  )
 
   useEffect(() => {
     if (plant) {
@@ -378,6 +388,8 @@ export const PlantProfile = () => {
                         <ImageLoader src={image} alt={''} placeholder={placeholder} />
                       </div>
                     )}
+
+                    {/* PLANT NEEDS */}
                     <Needs>
                       <h2>Care information</h2>
                       <div className='row'>
@@ -504,11 +516,14 @@ export const PlantProfile = () => {
               </Form>
             )}
           </Formik>
+
           {currentUser && (
             <>
+              {/* LIST ACTIONS */}
               <FadeIn delay={300}>
                 <ActionBox plantId={plant._id} />
               </FadeIn>
+              {/* SUGGESTION SUBMISSION */}
               <FadeIn delay={400}>
                 <section className='suggestions-section-user'>
                   <h3>Have a suggestion?</h3>
@@ -591,8 +606,31 @@ export const PlantProfile = () => {
               </FadeIn>
             </>
           )}
+
+          {/* SIMILAR PLANTS */}
+          <FadeIn delay={500}>
+            <section className='similar-plants'>
+              <h2>similar plants</h2>
+              {/* TODO: carousel (1 at a time on mobile, 2 on tablet, 3 on desktop) */}
+              <div className='similar-plants-container'>
+                {similarPlantsStatus === 'success' ? (
+                  similarPlants?.length > 0 ? (
+                    similarPlants.map(plant => <PlantCard key={plant._id} plant={plant} />)
+                  ) : (
+                    <p>No similar plants found.</p>
+                  )
+                ) : (
+                  <div className='loading'>
+                    <Ellipsis />
+                  </div>
+                )}
+              </div>
+            </section>
+          </FadeIn>
+
+          {/* ADMIN ONLY */}
           {currentUser?.role === 'admin' && (
-            <FadeIn delay={500}>
+            <FadeIn delay={600}>
               <AdminSection>
                 <h3>Admin</h3>
                 <div className='suggestions-admin'>
@@ -785,6 +823,20 @@ const Wrapper = styled.main`
     background: ${COLORS.mutedMedium};
     button {
       margin-top: 20px;
+    }
+  }
+  .similar-plants {
+    background: #f2f2f2;
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .similar-plants-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {

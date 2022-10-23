@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { useInfiniteQuery } from 'react-query'
+import { useInfiniteQuery, useQuery } from 'react-query'
+import axios from 'axios'
+import { API_URL } from '../constants'
 import { UserContext } from '../contexts/UserContext'
 import { PlantContext } from '../contexts/PlantContext'
 
@@ -11,9 +13,8 @@ import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
 import { FormItem } from '../components/forms/FormItem'
 import { Formik, Form } from 'formik'
-import { Input, Select } from 'formik-antd'
+import { Select } from 'formik-antd'
 import { Button, Empty } from 'antd'
-import { BiSearch } from 'react-icons/bi'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
 import { RiPlantLine } from 'react-icons/ri'
@@ -52,6 +53,11 @@ export const Browse = () => {
     useInfiniteQuery(['plants', formData], fetchPlants, {
       getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
     })
+
+  const { data: searchTerms, status: searchTermsStatus } = useQuery('search-terms', async () => {
+    const { data } = await axios.get(`${API_URL}/search-terms`)
+    return data.data
+  })
 
   const handleScroll = () => {
     const scrollDistance = scrollRef.current.scrollTop
@@ -128,15 +134,25 @@ export const Browse = () => {
               <Form className='filter-bar'>
                 <div className='form-upper'>
                   <div className='search'>
-                    <Input
+                    <Select
+                      getPopupContainer={trigger => trigger.parentNode}
                       name='search'
-                      placeholder='Search by name or genus'
-                      value={values.search}
-                      prefix={<BiSearch />}
-                      onChange={submitForm}
-                      style={{ width: '100%' }}
+                      showSearch
+                      showArrow
                       allowClear
-                    />
+                      mode='tags'
+                      placeholder='Search plants'
+                      onChange={submitForm}
+                      autoFocus={true}
+                      loading={searchTermsStatus === 'loading'}
+                      style={{ width: '100%' }}>
+                      {searchTermsStatus === 'success' &&
+                        searchTerms.map(term => (
+                          <Option key={term} value={term}>
+                            {term}
+                          </Option>
+                        ))}
+                    </Select>
                   </div>
                   <Button
                     className='filter-menu-btn'
@@ -242,6 +258,7 @@ export const Browse = () => {
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
               )
             ) : (
+              // TODO: loading skeleton
               <Ellipsis />
             )}
           </Results>
@@ -462,8 +479,7 @@ const Wrapper = styled.main`
 `
 
 const Results = styled.div`
-  min-height: 400px;
-  max-height: 1000px;
+  height: 500px;
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -500,5 +516,11 @@ const Results = styled.div`
     display: grid;
     place-content: center;
     margin: auto;
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    height: 800px;
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    height: 1000px;
   }
 `
