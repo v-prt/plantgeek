@@ -12,6 +12,7 @@ import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import plantgeekLogo from '../assets/logo.webp'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 // import { BiSearch, BiPlusCircle } from 'react-icons/bi'
 // import { TiHeartOutline } from 'react-icons/ti'
 // import { AiOutlineStar } from 'react-icons/ai'
@@ -20,6 +21,8 @@ import plantgeekLogo from '../assets/logo.webp'
 YupPassword(Yup) // extend yup
 
 export const SignUp = () => {
+  useDocumentTitle('plantgeek | Sign up')
+
   const { currentUser, handleSignup } = useContext(UserContext)
   const [loading, setLoading] = useState(false)
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
-
 import { Formik, Form } from 'formik'
 import { Input } from 'formik-antd'
 import { Button, Alert } from 'antd'
@@ -10,6 +9,7 @@ import { FormItem } from '../components/forms/FormItem'
 import { Wrapper, Card } from './SignUp'
 import { FadeIn } from '../components/loaders/FadeIn'
 import plantgeekLogo from '../assets/logo.webp'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const LoginSchema = Yup.object().shape({
   username: Yup.string().required('Username required'),
@@ -17,6 +17,8 @@ const LoginSchema = Yup.object().shape({
 })
 
 export const Login = () => {
+  useDocumentTitle('plantgeek | Log in')
+
   const { handleLogin, currentUser } = useContext(UserContext)
   const [loading, setLoading] = useState(false)
 

@@ -1,16 +1,17 @@
 import React, { useContext, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
-
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { FaArrowAltCircleRight } from 'react-icons/fa'
 import placeholder from '../assets/avatar-placeholder.png'
-
 import { FeaturedPlants } from '../components/FeaturedPlants'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const Homepage = () => {
+  useDocumentTitle('plantgeek | Home')
+
   const { currentUser } = useContext(UserContext)
 
   // makes window scroll to top between renders

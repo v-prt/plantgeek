@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { FadeIn } from '../components/loaders/FadeIn'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const About = () => {
+  useDocumentTitle('plantgeek | About')
+
   // makes window scroll to top between renders
   const pathname = window.location.pathname
   useEffect(() => {

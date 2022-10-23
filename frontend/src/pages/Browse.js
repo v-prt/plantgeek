@@ -26,9 +26,12 @@ import {
 } from '@ant-design/icons'
 import placeholder from '../assets/plant-placeholder.svg'
 import numeral from 'numeral'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 const { Option } = Select
 
 export const Browse = () => {
+  useDocumentTitle('plantgeek | Browse')
+
   const submitRef = useRef(0)
   const scrollRef = useRef()
   const { formData, setFormData, viewNeeds, setViewNeeds, fetchPlants } = useContext(PlantContext)

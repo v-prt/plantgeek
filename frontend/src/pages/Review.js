@@ -9,8 +9,10 @@ import { Alert, Empty } from 'antd'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const Review = () => {
+  useDocumentTitle('plantgeek | Review submissions')
   const { currentUser } = useContext(UserContext)
 
   const { data, status } = useQuery(['plants-to-review'], async () => {

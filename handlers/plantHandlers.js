@@ -1,3 +1,4 @@
+const plantData = require('../plantData2.json')
 const { MongoClient, ObjectId } = require('mongodb')
 const assert = require('assert')
 require('dotenv').config()
@@ -273,13 +274,17 @@ const deletePlant = async (req, res) => {
 }
 
 // taking all plants and saving images to cloudinary, then updating the plant with the cloudinary image url
-const uploadToCloudinary = async (req, res) => {
+const uploadToCloudinary = async () => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
 
   try {
-    const plants = await db.collection('plants').find().toArray()
+    // finding plants where imageUrl includes 'shopify'
+    const plants = await db
+      .collection('plants')
+      .find({ imageUrl: { $regex: 'shopify' } })
+      .toArray()
 
     if (plants) {
       const cloudinary = require('cloudinary').v2
@@ -289,37 +294,88 @@ const uploadToCloudinary = async (req, res) => {
         api_secret: process.env.CLOUDINARY_SECRET,
       })
 
+      let plantsUpdated = 0
       const promises = plants.map(async plant => {
-        // skipping plants where images are broken
-        if (plant.imageUrl.includes('broken')) return
         try {
-          const url = `${plant.imageUrl}`
-          const result = await cloudinary.uploader.upload(url, {
-            // moving to different folder
+          const url = `https://${plant.imageUrl}`
+          const res = await cloudinary.uploader.upload(url, {
             folder: 'plantgeek-plants',
           })
           // updating plant with new image url
           const filter = { _id: ObjectId(plant._id) }
           const update = {
             $set: {
-              imageUrl: result.secure_url,
+              imageUrl: res.secure_url,
             },
           }
-          const result2 = await db.collection('plants').updateOne(filter, update)
-          console.log(result2)
+          await db.collection('plants').updateOne(filter, update)
+          plantsUpdated++
         } catch (err) {
-          console.error(err)
+          console.error('error uploading to cloudinary', err)
         }
       })
       await Promise.all(promises)
-      res.status(200).json({ status: 200, message: 'done' })
+      console.log('done with image upload', 'plants updated: ', plantsUpdated)
     } else {
-      res.status(404).json({ status: 404, message: 'No plants found' })
+      console.log('no plants found with shopify image url')
     }
   } catch (err) {
-    console.error(err)
+    console.error('error with image upload', err)
   }
   client.close()
+}
+
+const importPlantData = async () => {
+  // for each plant in json file, check if plant already exists in db by primaryName and secondaryName
+
+  const cloudinary = require('cloudinary').v2
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET,
+  })
+
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+
+  try {
+    const plants = await db.collection('plants').find().toArray()
+    let existingPlants = 0
+    let newPlants = 0
+    const promises = plantData.map(async plant => {
+      const plantExists = plants.find(
+        p =>
+          p.primaryName.toLowerCase() === plant.primaryName.toLowerCase() ||
+          p.secondaryName.toLowerCase() === plant.secondaryName.toLowerCase() ||
+          p.primaryName.toLowerCase() === plant.secondaryName.toLowerCase() ||
+          p.secondaryName.toLowerCase() === plant.primaryName.toLowerCase()
+      )
+      // if it's new, upload image by imageUrl to cloudinary and change the imageUrl to the cloudinary url
+      if (!plantExists) {
+        try {
+          const url = plant.imageUrl
+          const result = await cloudinary.uploader.upload(url, {
+            folder: 'plantgeek-plants',
+          })
+          plant.imageUrl = result.secure_url
+        } catch (err) {
+          console.error('Error uploading image to cloudinary', err)
+        }
+        // add plant to db
+        await db.collection('plants').insertOne(plant)
+        console.log('plant imported', plant.primaryName)
+        newPlants++
+      } else {
+        console.log('plant already exists', plant.primaryName)
+        existingPlants++
+      }
+    })
+    await Promise.all(promises)
+    console.log('done', `existing plants: ${existingPlants}`, `new plants: ${newPlants}`)
+  } catch (err) {
+    console.error('Error importing plant data', err)
+  }
 }
 
 module.exports = {

@@ -18,8 +18,11 @@ import { DeleteOutlined } from '@ant-design/icons'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { Image } from './UserProfile'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const AutoSave = () => {
+  useDocumentTitle('plantgeek | Settings')
+
   const { dirty, values, errors, submitForm } = useFormikContext()
 
   useEffect(() => {

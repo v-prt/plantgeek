@@ -33,6 +33,7 @@ import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
 import { ActionBox } from '../components/ActionBox'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 const { Option } = Select
 
 export const PlantProfile = () => {
@@ -58,6 +59,8 @@ export const PlantProfile = () => {
       setImage(plant.imageUrl)
     }
   }, [plant])
+
+  useDocumentTitle(plant?.primaryName ? `plantgeek | ${plant?.primaryName}` : 'plantgeek')
 
   // makes window scroll to top between renders
   const pathname = window.location.pathname

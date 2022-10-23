@@ -19,9 +19,12 @@ import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
 import { ImCross } from 'react-icons/im'
 import placeholder from '../assets/plant-placeholder.svg'
 import { PlantCard } from '../components/PlantCard'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 const { Option } = Select
 
 export const Contribute = () => {
+  useDocumentTitle('plantgeek | Contribute')
+
   const { currentUser } = useContext(UserContext)
   const [status, setStatus] = useState(undefined)
   const [newPlant, setNewPlant] = useState(null)
@@ -49,7 +52,6 @@ export const Contribute = () => {
   const schema = Yup.object().shape({
     primaryName: Yup.string().min(2, 'Too short').required('Required'),
     secondaryName: Yup.string().min(2, 'Too short'),
-    // TODO: validate image (check if in array)
     light: Yup.string().required('Required'),
     water: Yup.string().required('Required'),
     temperature: Yup.string().required('Required'),

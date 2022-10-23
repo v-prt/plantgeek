@@ -25,9 +25,12 @@ import flowers from '../assets/stickers/flowers.svg'
 import leaf from '../assets/stickers/leaf.svg'
 import potted1 from '../assets/stickers/potted1.svg'
 import potted2 from '../assets/stickers/potted2.svg'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const UserProfile = () => {
   const { currentUser } = useContext(UserContext)
+  useDocumentTitle(`plantgeek | ${currentUser?.username || 'Profile'}`)
+
   const [approvedContributions, setApprovedContributions] = useState([])
   const [pendingContributions, setPendingContributions] = useState([])
   const badges = [
