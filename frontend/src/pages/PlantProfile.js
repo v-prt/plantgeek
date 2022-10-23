@@ -27,7 +27,7 @@ import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
 import placeholder from '../assets/plant-placeholder.svg'
-import { WarningOutlined, SafetyOutlined, MailOutlined } from '@ant-design/icons'
+import { MailOutlined } from '@ant-design/icons'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
@@ -216,11 +216,12 @@ export const PlantProfile = () => {
       await axios.put(`${API_URL}/plants/${id}`, values)
       queryClient.invalidateQueries('plant')
       queryClient.invalidateQueries('plants')
+      queryClient.invalidateQueries('similar-plants')
       message.success('Plant updated successfully!')
       setEditMode(false)
     } catch (err) {
       console.log(err)
-      message.error('Something went wrong on the server. Please try again.')
+      message.error('Sorry, something went wrong.')
     }
     setSubmitting(false)
   }
@@ -237,7 +238,7 @@ export const PlantProfile = () => {
       message.success('Image removed.')
     } catch (err) {
       console.log(err)
-      message.error('Something went wrong on the server. Please try again.')
+      message.error('Sorry, something went wrong.')
     }
   }
 
@@ -492,13 +493,9 @@ export const PlantProfile = () => {
                               <Option value={false}>nontoxic</Option>
                             </Select>
                           ) : plant.toxic ? (
-                            <span className='toxic'>
-                              <WarningOutlined /> Not pet friendly
-                            </span>
+                            <span className='toxic'>Not pet friendly</span>
                           ) : (
-                            <span className='nontoxic'>
-                              <SafetyOutlined /> Pet friendly
-                            </span>
+                            <span className='nontoxic'>Pet friendly</span>
                           )}
                         </div>
                         {plant.sourceUrl && (
@@ -915,7 +912,7 @@ const Needs = styled.div`
     }
     .difficulty {
       .easy {
-        color: ${COLORS.light};
+        color: ${COLORS.mediumLight};
       }
       .moderate {
         color: ${COLORS.alert};
