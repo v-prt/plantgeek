@@ -188,7 +188,7 @@ export const PlantProfile = () => {
 
   const schema = Yup.object().shape({
     primaryName: Yup.string().min(2, 'Too short').required('Required'),
-    secondaryName: Yup.string().min(2, 'Too short').required('Required'),
+    secondaryName: Yup.string().min(2, 'Too short'),
     light: Yup.string().required('Required'),
     water: Yup.string().required('Required'),
     temperature: Yup.string().required('Required'),
@@ -284,7 +284,7 @@ export const PlantProfile = () => {
                             prefix={<EditOutlined />}
                           />
                         </FormItem>
-                        <FormItem label='Common name' name='secondaryName'>
+                        <FormItem label='Common name' sublabel='(optional)' name='secondaryName'>
                           <Input
                             name='secondaryName'
                             placeholder='Swiss cheese plant'
@@ -303,9 +303,7 @@ export const PlantProfile = () => {
                     ) : (
                       <>
                         <h1>{plant.primaryName?.toLowerCase()}</h1>
-                        <p className='secondary-name'>
-                          {plant.secondaryName ? plant.secondaryName.toLowerCase() : 'N/A'}
-                        </p>
+                        <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
                       </>
                     )}
                     {currentUser?.role === 'admin' &&

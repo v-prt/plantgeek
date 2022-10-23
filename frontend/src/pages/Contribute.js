@@ -48,7 +48,7 @@ export const Contribute = () => {
 
   const schema = Yup.object().shape({
     primaryName: Yup.string().min(2, 'Too short').required('Required'),
-    secondaryName: Yup.string().min(2, 'Too short').required('Required'),
+    secondaryName: Yup.string().min(2, 'Too short'),
     // TODO: validate image (check if in array)
     light: Yup.string().required('Required'),
     water: Yup.string().required('Required'),
@@ -203,7 +203,7 @@ export const Contribute = () => {
                   <Input name='primaryName' placeholder='Monstera deliciosa' />
                 </FormItem>
 
-                <FormItem label='Common name' name='secondaryName'>
+                <FormItem label='Common name' sublabel='(optional)' name='secondaryName'>
                   <Input name='secondaryName' placeholder='Swiss cheese plant' />
                 </FormItem>
 
