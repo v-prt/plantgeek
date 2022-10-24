@@ -33,17 +33,17 @@ export const Navbar = () => {
   return (
     <Wrapper>
       <div className='inner'>
+        <div className='hamburger' onClick={() => setMenuExpanded(!menuExpanded)}>
+          {menuExpanded ? <CloseOutlined /> : <MenuOutlined />}
+        </div>
+        <NavLink to='/' className='logo' onClick={() => setMenuExpanded(false)}>
+          plantgeek
+        </NavLink>
         <NavLink to='/browse' className='browse mobile' onClick={() => setMenuExpanded(false)}>
           <div className='icon'>
             <BiSearch />
           </div>
         </NavLink>
-        <NavLink to='/' className='logo' onClick={() => setMenuExpanded(false)}>
-          plantgeek
-        </NavLink>
-        <div className='hamburger' onClick={() => setMenuExpanded(!menuExpanded)}>
-          {menuExpanded ? <CloseOutlined /> : <MenuOutlined />}
-        </div>
 
         <div
           className={`nav-links ${menuExpanded && 'expanded'}`}
@@ -175,7 +175,7 @@ const Wrapper = styled.nav`
       background: rgba(0, 0, 0, 0.5);
       position: absolute;
       top: 54px;
-      right: -100%;
+      left: -100%;
       height: 100vh;
       width: 100vw;
       transition: 0.4s ease-in-out;
@@ -192,7 +192,7 @@ const Wrapper = styled.nav`
         margin: 10px;
       }
       &.expanded {
-        right: 0;
+        left: 0;
       }
     }
     .icon {
@@ -229,7 +229,7 @@ const Wrapper = styled.nav`
       transition: 0.6s ease-in-out;
       .nav-links-inner {
         max-width: 300px;
-        margin-left: auto;
+        margin-right: auto;
       }
     }
   }
@@ -267,7 +267,7 @@ const Wrapper = styled.nav`
         height: auto;
         width: auto;
         top: 0;
-        right: 0;
+        left: 0;
         margin-right: auto;
         .nav-links-inner {
           background: transparent;

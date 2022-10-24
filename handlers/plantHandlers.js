@@ -15,6 +15,7 @@ const createPlant = async (req, res) => {
   try {
     await client.connect()
     const db = client.db('plantgeekdb')
+    // TODO: test with special characters
     const regex = new RegExp(req.body.primaryName, 'i') // "i" for case insensitive
     const existingPlant = await db.collection('plants').findOne({ primaryName: { $regex: regex } })
     if (existingPlant) {
@@ -159,9 +160,10 @@ const getSimilarPlants = async (req, res) => {
     if (plant) {
       // take words from plant's primary name and secondary name
       const words = plant.primaryName.split(' ').concat(plant.secondaryName.split(' '))
-
+      // clean the words (remove special characters)
+      const cleanedWords = words.map(word => word.replace(/[^a-zA-Z ]/g, ''))
       // for each word, create a regex and search for similar plants
-      const regex = words.map(str => new RegExp(str, 'i'))
+      const regex = cleanedWords.map(str => new RegExp(str, 'i'))
       let filters = {
         // not this plant
         _id: { $ne: ObjectId(plantId) },
