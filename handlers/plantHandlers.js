@@ -36,8 +36,10 @@ const getPlants = async (req, res) => {
   let filters = {}
 
   if (search) {
+    // for each string in search array, clean the string (remove special characters)
+    const cleanedStrings = search.map(str => str.replace(/[^a-zA-Z ]/g, ''))
     // create a regex for each string in search array
-    const regex = search.map(str => new RegExp(str, 'i'))
+    const regex = cleanedStrings.map(str => new RegExp(str, 'i'))
     filters = {
       ...filters,
       $or: [{ primaryName: { $in: regex } }, { secondaryName: { $in: regex } }],
