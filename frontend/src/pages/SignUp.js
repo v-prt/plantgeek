@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 
@@ -27,12 +27,12 @@ export const SignUp = () => {
   const [loading, setLoading] = useState(false)
 
   // makes window scroll to top between renders
-  const pathname = window.location.pathname
-  useEffect(() => {
-    if (pathname) {
-      window.scrollTo(0, 0)
-    }
-  }, [pathname])
+  // const pathname = window.location.pathname
+  // useEffect(() => {
+  //   if (pathname) {
+  //     window.scrollTo(0, 0)
+  //   }
+  // }, [pathname])
 
   const SignUpSchema = Yup.object().shape({
     firstName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('First name required'),

@@ -1,13 +1,19 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
+import { Button } from 'antd'
+import { PlusCircleOutlined } from '@ant-design/icons'
 import { FaArrowAltCircleRight } from 'react-icons/fa'
-import placeholder from '../assets/avatar-placeholder.png'
 import { FeaturedPlants } from '../components/FeaturedPlants'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { TiHeartOutline } from 'react-icons/ti'
+import { AiOutlineStar } from 'react-icons/ai'
+import { RiPlantLine } from 'react-icons/ri'
+import userPlaceholder from '../assets/avatar-placeholder.png'
+import plantPlaceholder from '../assets/plant-placeholder.svg'
 
 export const Homepage = () => {
   useDocumentTitle('plantgeek | Home')
@@ -15,12 +21,12 @@ export const Homepage = () => {
   const { currentUser } = useContext(UserContext)
 
   // makes window scroll to top between renders
-  const pathname = window.location.pathname
-  useEffect(() => {
-    if (pathname) {
-      window.scrollTo(0, 0)
-    }
-  }, [pathname])
+  // const pathname = window.location.pathname
+  // useEffect(() => {
+  //   if (pathname) {
+  //     window.scrollTo(0, 0)
+  //   }
+  // }, [pathname])
 
   return (
     <Wrapper>
@@ -31,7 +37,7 @@ export const Homepage = () => {
               <h1>welcome back, {currentUser.firstName}</h1>
               <img
                 className='profile-img'
-                src={currentUser.image ? currentUser.image[0] : placeholder}
+                src={currentUser.image ? currentUser.image[0] : userPlaceholder}
                 alt=''
               />
             </div>
@@ -107,9 +113,40 @@ export const Homepage = () => {
         </InfoCard>
       </FadeIn>
       <FadeIn delay={300}>
-        <FeaturedPlants currentUser={currentUser} />
+        <InfoBox>
+          <div>
+            <span className='icon collection'>
+              <RiPlantLine />
+            </span>
+            <span>
+              <b>Have a plant?</b>
+              <p>Add it to your collection</p>
+            </span>
+          </div>
+          <div>
+            <span className='icon wishlist'>
+              <AiOutlineStar />
+            </span>
+            <span>
+              <b>Want a plant?</b>
+              <p>Add it to your wishlist</p>
+            </span>
+          </div>
+          <div>
+            <span className='icon favorites'>
+              <TiHeartOutline />
+            </span>
+            <span>
+              <b>Love a plant?</b>
+              <p>Add it to your favorites</p>
+            </span>
+          </div>
+        </InfoBox>
       </FadeIn>
       <FadeIn delay={400}>
+        <FeaturedPlants currentUser={currentUser} />
+      </FadeIn>
+      <FadeIn delay={500}>
         <InfoCard className='tips'>
           <h2>general tips</h2>
           <h3>tropical</h3>
@@ -140,6 +177,24 @@ export const Homepage = () => {
             </Link>
           </h3>
         </InfoCard>
+      </FadeIn>
+      <FadeIn delay={600}>
+        <section className='contributions-info'>
+          <div>
+            <h2>contribute to our database</h2>
+            <p>
+              Can't find a specific plant? Contribute it to our database - you'll earn badges for
+              approved submissions! Please help us by reporting any duplicate or incorrect
+              information.
+            </p>
+            <Link to='contribute'>
+              <Button type='secondary' icon={<PlusCircleOutlined />}>
+                CONTRIBUTE
+              </Button>
+            </Link>
+          </div>
+          <img src={plantPlaceholder} alt='' />
+        </section>
       </FadeIn>
     </Wrapper>
   )
@@ -175,6 +230,28 @@ const Wrapper = styled.main`
     margin-left: 10px;
     display: grid;
   }
+  .contributions-info {
+    background: ${COLORS.mutedMedium};
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    h2 {
+      margin-bottom: 10px;
+    }
+    p {
+      max-width: 600px;
+      margin-bottom: 50px;
+    }
+    img {
+      width: 100px;
+      align-self: flex-end;
+      margin-top: 20px;
+      margin-left: auto;
+      filter: invert(1);
+      opacity: 0.2;
+    }
+  }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
       justify-content: flex-end;
@@ -194,9 +271,6 @@ const Wrapper = styled.main`
 
 const InfoCard = styled.section`
   background: #fff;
-  &.tips {
-    background: ${COLORS.mutedMedium};
-  }
   h2,
   h3 {
     width: fit-content;
@@ -214,6 +288,43 @@ const InfoCard = styled.section`
     margin-left: 3px;
     li {
       margin-left: 20px;
+    }
+  }
+`
+
+const InfoBox = styled.section`
+  background: #fff;
+  border: 1px dotted #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  div {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .icon {
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    border-radius: 50%;
+    padding: 10px;
+    &.collection {
+      background: ${COLORS.light};
+    }
+    &.wishlist {
+      background: #ffd24d;
+    }
+    &.favorites {
+      background: #b493e6;
+    }
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    flex-direction: row;
+    justify-content: space-around;
+    div {
+      flex-direction: column;
+      text-align: center;
     }
   }
 `

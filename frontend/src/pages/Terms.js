@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react'
 import styled from 'styled-components/macro'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
@@ -6,12 +5,12 @@ export const Terms = () => {
   useDocumentTitle('plantgeek | Terms & Conditions')
 
   // makes window scroll to top between renders
-  const pathname = window.location.pathname
-  useEffect(() => {
-    if (pathname) {
-      window.scrollTo(0, 0)
-    }
-  }, [pathname])
+  // const pathname = window.location.pathname
+  // useEffect(() => {
+  //   if (pathname) {
+  //     window.scrollTo(0, 0)
+  //   }
+  // }, [pathname])
 
   return (
     <Wrapper>

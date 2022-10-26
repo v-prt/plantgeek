@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import { Link } from 'react-router-dom'
 import { useInfiniteQuery, useQuery } from 'react-query'
 import axios from 'axios'
 import { API_URL } from '../constants'
@@ -15,17 +14,12 @@ import { FormItem } from '../components/forms/FormItem'
 import { Formik, Form } from 'formik'
 import { Select } from 'formik-antd'
 import { Button, Empty } from 'antd'
-import { TiHeartOutline } from 'react-icons/ti'
-import { AiOutlineStar } from 'react-icons/ai'
-import { RiPlantLine } from 'react-icons/ri'
 import {
   FilterOutlined,
   ArrowUpOutlined,
   ArrowDownOutlined,
   CloseCircleOutlined,
-  PlusCircleOutlined,
 } from '@ant-design/icons'
-import placeholder from '../assets/plant-placeholder.svg'
 import numeral from 'numeral'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 const { Option } = Select
@@ -41,12 +35,12 @@ export const Browse = () => {
   const [totalResults, setTotalResults] = useState(undefined)
 
   // makes window scroll to top between renders
-  const pathname = window.location.pathname
-  useEffect(() => {
-    if (pathname) {
-      window.scrollTo(0, 0)
-    }
-  }, [pathname])
+  // const pathname = window.location.pathname
+  // useEffect(() => {
+  //   if (pathname) {
+  //     window.scrollTo(0, 0)
+  //   }
+  // }, [pathname])
 
   // fetch plants with pagination
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } =
@@ -64,7 +58,7 @@ export const Browse = () => {
     const outerHeight = scrollRef.current.offsetHeight
     const innerHeight = scrollRef.current.scrollHeight
     const actualDistance = innerHeight - (scrollDistance + outerHeight)
-    if (actualDistance < 300 && hasNextPage && !isFetching) {
+    if (actualDistance < 400 && hasNextPage && !isFetching) {
       fetchNextPage()
     }
   }
@@ -88,80 +82,39 @@ export const Browse = () => {
   return (
     <Wrapper>
       <FadeIn>
-        <section className='heading'>
-          <h1>browse houseplants</h1>
-          <p>
-            Search hundreds of houseplants by name or genus. Use the filters to refine your results
-            and sort to quickly find any plant.
-          </p>
-        </section>
-      </FadeIn>
-      <FadeIn delay={200}>
-        <section className='info-box'>
-          <div>
-            <span className='icon collection'>
-              <RiPlantLine />
-            </span>
-            <span>
-              <b>Have a plant?</b>
-              <p>Add it to your collection</p>
-            </span>
-          </div>
-          <div>
-            <span className='icon wishlist'>
-              <AiOutlineStar />
-            </span>
-            <span>
-              <b>Want a plant?</b>
-              <p>Add it to your wishlist</p>
-            </span>
-          </div>
-          <div>
-            <span className='icon favorites'>
-              <TiHeartOutline />
-            </span>
-            <span>
-              <b>Love a plant?</b>
-              <p>Add it to your favorites</p>
-            </span>
-          </div>
-        </section>
-      </FadeIn>
-      <FadeIn delay={300}>
-        <section className='browse-content'>
+        <main className='browse-content'>
           <Formik initialValues={formData} onSubmit={handleSubmit}>
             {({ values, setValues, submitForm, resetForm }) => (
               <Form className='filter-bar'>
-                <div className='form-upper'>
-                  <div className='search'>
-                    <Select
-                      getPopupContainer={trigger => trigger.parentNode}
-                      name='search'
-                      showSearch
-                      showArrow
-                      allowClear
-                      mode='tags'
-                      placeholder='Search plants'
-                      onChange={submitForm}
-                      autoFocus={true}
-                      loading={searchTermsStatus === 'loading'}
-                      style={{ width: '100%' }}>
-                      {searchTermsStatus === 'success' &&
-                        searchTerms.map(term => (
-                          <Option key={term} value={term}>
-                            {term}
-                          </Option>
-                        ))}
-                    </Select>
-                  </div>
-                  <Button
-                    className='filter-menu-btn'
-                    type='primary'
-                    onClick={() => setSidebarOpen(!sidebarOpen)}>
-                    <span className='label'> SORT & FILTER</span>
-                    {sidebarOpen ? <CloseCircleOutlined /> : <FilterOutlined />}
-                  </Button>
+                <div className='search'>
+                  <Select
+                    getPopupContainer={trigger => trigger.parentNode}
+                    name='search'
+                    showSearch
+                    showArrow
+                    allowClear
+                    mode='tags'
+                    placeholder='Search plants'
+                    onChange={submitForm}
+                    autoFocus={true}
+                    loading={searchTermsStatus === 'loading'}
+                    style={{ width: '100%' }}>
+                    {searchTermsStatus === 'success' &&
+                      searchTerms.map(term => (
+                        <Option key={term} value={term}>
+                          {term}
+                        </Option>
+                      ))}
+                  </Select>
                 </div>
+                <button
+                  className='filter-menu-btn'
+                  type='primary'
+                  onClick={() => setSidebarOpen(!sidebarOpen)}>
+                  {/* <span className='label'> SORT & FILTER</span> */}
+                  {sidebarOpen ? <CloseCircleOutlined /> : <FilterOutlined />}
+                </button>
+                {/* TODO: display filter sidebar on right side on desktop */}
                 <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
                   <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
                   <div className='filter-menu-inner'>
@@ -262,139 +215,40 @@ export const Browse = () => {
               <Ellipsis />
             )}
           </Results>
-        </section>
-      </FadeIn>
-      <FadeIn delay={400}>
-        <section className='contributions-info'>
-          <div>
-            <h2>contribute to our database</h2>
-            <p>
-              Can't find a specific plant? Contribute it to our database - you'll earn badges for
-              approved submissions! Please help us by reporting any duplicate or incorrect
-              information.
-            </p>
-            <Link to='contribute'>
-              <Button type='secondary' icon={<PlusCircleOutlined />}>
-                CONTRIBUTE
-              </Button>
-            </Link>
-          </div>
-          <img src={placeholder} alt='' />
-        </section>
+        </main>
       </FadeIn>
     </Wrapper>
   )
 }
 
-const Wrapper = styled.main`
-  .heading {
-    background: ${COLORS.light};
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    h1 {
-      font-size: 1.8rem;
-    }
-    p {
-      max-width: 600px;
-      margin: 10px;
-    }
-    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-      h1 {
-        font-size: 2rem;
-      }
-    }
-  }
-  .contributions-info {
-    background: ${COLORS.mutedMedium};
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    h2 {
-      margin-bottom: 10px;
-    }
-    p {
-      max-width: 600px;
-      margin-bottom: 50px;
-    }
-    img {
-      width: 100px;
-      align-self: flex-end;
-      margin-top: 20px;
-      margin-left: auto;
-      filter: invert(1);
-      opacity: 0.2;
-    }
-  }
-  .info-box {
-    background: #fff;
-    border: 1px dotted #ccc;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    div {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .icon {
-      display: flex;
-      align-items: center;
-      font-size: 2rem;
-      border-radius: 50%;
-      padding: 10px;
-      &.collection {
-        background: ${COLORS.light};
-      }
-      &.wishlist {
-        background: #ffd24d;
-      }
-      &.favorites {
-        background: #b493e6;
-      }
-    }
-    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-      flex-direction: row;
-      justify-content: space-around;
-      div {
-        flex-direction: column;
-        text-align: center;
-      }
-    }
-  }
+const Wrapper = styled.div`
   .browse-content {
     background: #f2f2f2;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    form {
+    gap: 0;
+    padding: 0;
+    height: calc(100vh - 53px);
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    .filter-bar {
       background: #f2f2f2;
       box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
+      width: 100%;
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      grid-gap: 10px;
-      position: relative;
+      gap: 10px;
+      padding: 10px;
       z-index: 10;
-      position: sticky;
-      top: 50px;
-      @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-        top: -30px;
-      }
-      .form-upper {
-        width: 100%;
-        display: flex;
-        grid-gap: 10px;
-        margin: 10px 0;
-      }
       .search {
         flex: 1;
       }
       .filter-menu-btn {
-        display: flex;
-        align-items: center;
-        gap: 5px;
+        background: ${COLORS.mediumLight};
+        color: #fff;
+        display: grid;
+        place-content: center;
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
         .anticon {
           margin: 0;
         }
@@ -407,7 +261,7 @@ const Wrapper = styled.main`
         max-width: 300px;
         position: absolute;
         top: 50px;
-        right: 0;
+        right: 10px;
         visibility: hidden;
         opacity: 0;
         transition: 0.2s ease-in-out;
@@ -466,20 +320,19 @@ const Wrapper = styled.main`
           margin-top: 20px;
         }
       }
-      @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-        top: 0;
-        .filter-menu-btn {
-          .label {
-            display: block;
-          }
-        }
-      }
+    }
+    @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+      height: calc(100vh - 110px);
+      top: 110px;
+      right: 0;
+      max-width: calc(100vw - 241px);
+      padding: 0 40px;
     }
   }
 `
 
 const Results = styled.div`
-  height: 500px;
+  height: 100%;
   overflow: auto;
   display: flex;
   flex-direction: column;
@@ -516,11 +369,5 @@ const Results = styled.div`
     display: grid;
     place-content: center;
     margin: auto;
-  }
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    height: 800px;
-  }
-  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    height: 1000px;
   }
 `

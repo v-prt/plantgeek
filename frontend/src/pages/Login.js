@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Redirect, Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import { Formik, Form } from 'formik'
@@ -23,12 +23,12 @@ export const Login = () => {
   const [loading, setLoading] = useState(false)
 
   // makes window scroll to top between renders
-  const pathname = window.location.pathname
-  useEffect(() => {
-    if (pathname) {
-      window.scrollTo(0, 0)
-    }
-  }, [pathname])
+  // const pathname = window.location.pathname
+  // useEffect(() => {
+  //   if (pathname) {
+  //     window.scrollTo(0, 0)
+  //   }
+  // }, [pathname])
 
   const handleSubmit = async (values, { setStatus }) => {
     setLoading(true)

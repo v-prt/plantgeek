@@ -73,12 +73,12 @@ export const PlantProfile = () => {
   useDocumentTitle(plant?.primaryName ? `plantgeek | ${plant?.primaryName}` : 'plantgeek')
 
   // makes window scroll to top between renders
-  const pathname = window.location.pathname
-  useEffect(() => {
-    if (pathname) {
-      window.scrollTo(0, 0)
-    }
-  }, [pathname])
+  // const pathname = window.location.pathname
+  // useEffect(() => {
+  //   if (pathname) {
+  //     window.scrollTo(0, 0)
+  //   }
+  // }, [pathname])
 
   // setting plant care difficulty
   useEffect(() => {
@@ -525,8 +525,8 @@ export const PlantProfile = () => {
                 <section className='suggestions-section-user'>
                   <h3>Have a suggestion?</h3>
                   <p>
-                    If you have a suggestion for a change to this plant's information, please let us
-                    know!
+                    Please let us know if you have a suggestion for this plant or want to report
+                    incorrect information.
                   </p>
                   <Button type='primary' onClick={() => setSuggestionModal(true)}>
                     <MailOutlined /> SEND SUGGESTION

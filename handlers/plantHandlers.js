@@ -125,6 +125,7 @@ const getPlantsToReview = async (req, res) => {
   } catch (err) {
     console.error(err)
   }
+  client.close()
 }
 
 // (READ/GET) GETS PLANT BY ID
@@ -189,7 +190,7 @@ const getRandomPlants = async (req, res) => {
   try {
     const plants = await db
       .collection('plants')
-      .aggregate([{ $sample: { size: 12 } }])
+      .aggregate([{ $sample: { size: 9 } }])
       .toArray()
     if (plants) {
       res.status(200).json({ status: 200, plants: plants })
@@ -246,6 +247,7 @@ const getUserContributions = async (req, res) => {
   } catch (err) {
     console.error(err)
   }
+  client.close()
 }
 
 // (UPDATE/PUT) ADDS COMMENT TO A PLANT BY ID
@@ -416,6 +418,7 @@ const importPlantData = async () => {
   } catch (err) {
     console.error('Error importing plant data', err)
   }
+  client.close()
 }
 
 const getSearchTerms = async (req, res) => {
@@ -468,6 +471,7 @@ const getSearchTerms = async (req, res) => {
     console.error(err)
     res.status(500).json({ status: 500, data: req.body, message: err.message })
   }
+  client.close()
 }
 
 module.exports = {

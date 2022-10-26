@@ -4,16 +4,12 @@ import { API_URL } from '../constants'
 import { useInfiniteQuery } from 'react-query'
 import axios from 'axios'
 import styled from 'styled-components/macro'
-import { BREAKPOINTS, COLORS } from '../GlobalStyles'
 import { Ellipsis } from './loaders/Ellipsis'
 import { FadeIn } from './loaders/FadeIn.js'
 import { FaArrowAltCircleRight } from 'react-icons/fa'
-import { TiHeartOutline } from 'react-icons/ti'
-import { AiOutlineStar } from 'react-icons/ai'
-import { RiPlantLine } from 'react-icons/ri'
 import { PlantCard } from './PlantCard'
 
-export const FeaturedPlants = ({ currentUser }) => {
+export const FeaturedPlants = () => {
   const [plants, setPlants] = useState([])
 
   const { data, status } = useInfiniteQuery('random-plants', async () => {
@@ -35,36 +31,7 @@ export const FeaturedPlants = ({ currentUser }) => {
     <Wrapper>
       {status === 'success' ? (
         <FadeIn>
-          <Heading>featured houseplants</Heading>
-          <div className='info-box'>
-            <div>
-              <span className='icon collection'>
-                <RiPlantLine />
-              </span>
-              <span>
-                <b>Have a plant?</b>
-                <p>Add it to your collection</p>
-              </span>
-            </div>
-            <div>
-              <span className='icon wishlist'>
-                <AiOutlineStar />
-              </span>
-              <span>
-                <b>Want a plant?</b>
-                <p>Add it to your wishlist</p>
-              </span>
-            </div>
-            <div>
-              <span className='icon favorites'>
-                <TiHeartOutline />
-              </span>
-              <span>
-                <b>Love a plant?</b>
-                <p>Add it to your favorites</p>
-              </span>
-            </div>
-          </div>
+          <h2>featured houseplants</h2>
           {/* TODO: carousel */}
           <Plants>{plants}</Plants>
           <h3>
@@ -88,44 +55,9 @@ const Wrapper = styled.section`
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   display: grid;
   place-content: center;
-  .info-box {
-    background: #fff;
-    border: 1px dotted #ccc;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin: 20px 0;
-    padding: 20px;
-    div {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .icon {
-      display: flex;
-      align-items: center;
-      font-size: 2rem;
-      border-radius: 50%;
-      padding: 10px;
-      &.collection {
-        background: ${COLORS.light};
-      }
-      &.wishlist {
-        background: #ffd24d;
-      }
-      &.favorites {
-        background: #b493e6;
-      }
-    }
-    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-      flex-direction: row;
-      justify-content: space-around;
-      div {
-        flex-direction: column;
-        text-align: center;
-      }
-    }
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
   }
   h3 {
     width: fit-content;
@@ -135,10 +67,6 @@ const Wrapper = styled.section`
       align-items: center;
     }
   }
-`
-
-const Heading = styled.h2`
-  text-align: center;
 `
 
 const Plants = styled.div`
