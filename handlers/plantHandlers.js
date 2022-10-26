@@ -422,14 +422,18 @@ const importPlantData = async () => {
 }
 
 const getSearchTerms = async (req, res) => {
+  // get 25 most common unique words from plant names in db
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
 
   // TODO: update this function to clean up search terms for regular users
   try {
-    // get all unique words from plant names in db
-    const plants = await db.collection('plants').find().toArray()
+    // ignore plants that are pending or rejected
+    filters = {
+      $and: [{ review: { $ne: 'pending' } }, { review: { $ne: 'rejected' } }],
+    }
+    const plants = await db.collection('plants').find(filters).toArray()
     const words = plants
       .map(plant => {
         const primaryName = plant.primaryName.split(' ')
@@ -438,33 +442,56 @@ const getSearchTerms = async (req, res) => {
       })
       // remove short words or words with special characters
       .flat()
-    // .filter(
-    //   word => word.length > 2 && !word.includes("'") && !word.includes('(') && !word.includes(')')
-    // )
+      .filter(
+        word =>
+          word.length > 2 &&
+          !word.includes("'") &&
+          !word.includes('(') &&
+          !word.includes(')') &&
+          // ignore common words & colors
+          word.toLowerCase() !== 'plant' &&
+          word.toLowerCase() !== 'green' &&
+          word.toLowerCase() !== 'blue' &&
+          word.toLowerCase() !== 'red' &&
+          word.toLowerCase() !== 'yellow' &&
+          word.toLowerCase() !== 'orange' &&
+          word.toLowerCase() !== 'purple' &&
+          word.toLowerCase() !== 'pink' &&
+          word.toLowerCase() !== 'white' &&
+          word.toLowerCase() !== 'black' &&
+          word.toLowerCase() !== 'brown' &&
+          word.toLowerCase() !== 'grey' &&
+          word.toLowerCase() !== 'gray' &&
+          word.toLowerCase() !== 'gold' &&
+          word.toLowerCase() !== 'silver'
+      )
 
     // count and set the number of times each word appears
-    // const wordCounts = {}
-    // words.forEach(word => {
-    //   if (wordCounts[word]) {
-    //     wordCounts[word]++
-    //   } else wordCounts[word] = 1
-    // })
+    const wordCounts = {}
+    words.forEach(word => {
+      if (wordCounts[word]) {
+        wordCounts[word]++
+      } else wordCounts[word] = 1
+    })
 
+    // for admin
     // remove duplicates
-    const uniqueWords = [...new Set(words)]
+    // const uniqueWords = [...new Set(words)]
     // sort words alphabetically
-    const sortedWords = uniqueWords.sort((a, b) => a.localeCompare(b))
+    // const sortedWords = uniqueWords.sort((a, b) => a.localeCompare(b))
 
     // sort words by order of frequency from most to least
-    // const sortedWords = Object.keys(wordCounts)
-    //   .sort((a, b) => {
-    //     return wordCounts[b] - wordCounts[a]
-    //   })
-    //   .filter(
-    //     // remove words with less than 4 occurrences
-    //     word => wordCounts[word] > 3
-    //   )
-    //   .map(word => word.toLowerCase())
+    const sortedWords = Object.keys(wordCounts)
+      .sort((a, b) => {
+        return wordCounts[b] - wordCounts[a]
+      })
+      .filter(
+        // remove words with less than 4 occurrences
+        word => wordCounts[word] > 3
+      )
+      .map(word => word.toLowerCase())
+      // return top 25 words
+      .slice(0, 25)
 
     res.status(200).json({ status: 200, data: sortedWords, totalResults: sortedWords.length })
   } catch (err) {
