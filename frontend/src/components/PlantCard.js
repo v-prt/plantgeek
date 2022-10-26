@@ -138,8 +138,11 @@ const Stamp = styled.div`
 `
 
 const InfoLink = styled(Link)`
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
   .thumbnail {
     width: 100%;
     max-width: 250px;
@@ -156,28 +159,15 @@ const InfoLink = styled(Link)`
   }
   .name {
     color: ${COLORS.darkest};
-    max-width: 230px;
-    margin: 5px;
     text-align: center;
-    align-self: center;
     transition: 0.2s ease-in-out;
   }
   .primary-name {
     font-weight: bold;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
   .secondary-name {
     font-style: italic;
     font-size: 0.8rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 `
 

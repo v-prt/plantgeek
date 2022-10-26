@@ -94,7 +94,7 @@ const Wrapper = styled.div`
   justify-content: space-evenly;
   align-items: center;
   align-self: center;
-  margin: 5px 0;
+  margin-top: auto;
   border-radius: 20px;
   padding: 5px;
 `
