@@ -33,7 +33,7 @@ const createPlant = async (req, res) => {
 
 // (READ/GET) GETS ALL PLANTS
 const getPlants = async (req, res) => {
-  const { search, sort, light, water, temperature, humidity, toxic, review } = req.query
+  const { search, sort, light, water, temperature, humidity, toxicity, review } = req.query
   let filters = {}
 
   if (search) {
@@ -99,11 +99,11 @@ const getPlants = async (req, res) => {
     }
   }
 
-  if (toxic === 'true') {
+  if (toxicity === 'toxic') {
     filters = { ...filters, toxic: true }
-  } else if (toxic === 'false') {
+  } else if (toxicity === 'nontoxic') {
     filters = { ...filters, toxic: false }
-  } else if (toxic === 'unknown') {
+  } else if (toxicity === 'unknown') {
     filters = { ...filters, $or: [{ toxic: null }, { toxic: { $exists: false } }] }
   }
 

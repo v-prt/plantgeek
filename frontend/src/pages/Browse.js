@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import { useInfiniteQuery, useQuery } from 'react-query'
 import axios from 'axios'
 import { API_URL } from '../constants'
@@ -13,7 +13,7 @@ import { PlantCard } from '../components/PlantCard'
 import { FormItem } from '../components/forms/FormItem'
 import { Formik, Form } from 'formik'
 import { Select } from 'formik-antd'
-import { Button, Empty, Drawer } from 'antd'
+import { Button, Empty, Drawer, Tag } from 'antd'
 import {
   FilterOutlined,
   ArrowUpOutlined,
@@ -48,10 +48,42 @@ export const Browse = () => {
       getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
     })
 
-  const { data: searchTerms, status: searchTermsStatus } = useQuery('search-terms', async () => {
-    const { data } = await axios.get(`${API_URL}/search-terms`)
-    return data.data
-  })
+  // const { data: searchTerms, status: searchTermsStatus } = useQuery('search-terms', async () => {
+  //   const { data } = await axios.get(`${API_URL}/search-terms`)
+  //   return data.data
+  // })
+
+  const commonGenera = [
+    'Aglaonema',
+    'Alocasia',
+    'Aloe',
+    'Anthurium',
+    'Bromeliad',
+    'Cactus',
+    'Calathea',
+    'Croton',
+    'Dieffenbachia',
+    'Dracaena',
+    'Fern',
+    'Ficus',
+    'Goeppertia',
+    'Homalomena',
+    'Hoya',
+    'Ivy',
+    'Maranta',
+    'Monstera',
+    'Palm',
+    'Peperomia',
+    'Philodendron',
+    'Pilea',
+    'Pothos',
+    'Sansevieria',
+    'Stromanthe',
+    'Syngonium',
+    'Tradescantia',
+    'Spathiphyllum',
+    'Zamioculcas',
+  ]
 
   const { data: filterValues, status: filterValuesStatus } = useQuery('filter-values', async () => {
     const { data } = await axios.get(`${API_URL}/filter-values`)
@@ -83,35 +115,89 @@ export const Browse = () => {
       <FadeIn>
         <main className='browse-content'>
           <Formik initialValues={formData} onSubmit={handleSubmit}>
-            {({ setValues, submitForm, resetForm }) => (
+            {({ values, setValues, submitForm, resetForm }) => (
               <Form className='filter-bar'>
-                <div className='search'>
-                  <Select
-                    getPopupContainer={trigger => trigger.parentNode}
-                    name='search'
-                    showSearch
-                    showArrow
-                    allowClear
-                    mode='tags'
-                    placeholder='Search plants'
-                    onChange={submitForm}
-                    // autoFocus={true}
-                    loading={searchTermsStatus === 'loading'}
-                    style={{ width: '100%' }}>
-                    {searchTermsStatus === 'success' &&
-                      searchTerms.map(term => (
+                {/* FIXME: allowClear doesn't work on mobile */}
+                <div className='filter-bar-upper'>
+                  <div className='search'>
+                    <Select
+                      getPopupContainer={trigger => trigger.parentNode}
+                      // fixes issue with scrolling on mobile moving entire page
+                      virtual={false}
+                      name='search'
+                      showSearch
+                      showArrow
+                      allowClear
+                      mode='tags'
+                      placeholder='Search plants'
+                      onChange={submitForm}
+                      style={{ width: '100%' }}>
+                      {commonGenera.map(term => (
                         <Option key={term} value={term}>
                           {term}
                         </Option>
                       ))}
-                  </Select>
+                    </Select>
+                  </div>
+                  <button
+                    className='filter-menu-btn'
+                    type='primary'
+                    onClick={() => setSidebarOpen(!sidebarOpen)}>
+                    {sidebarOpen ? <CloseCircleOutlined /> : <FilterOutlined />}
+                  </button>
                 </div>
-                <button
-                  className='filter-menu-btn'
-                  type='primary'
-                  onClick={() => setSidebarOpen(!sidebarOpen)}>
-                  {sidebarOpen ? <CloseCircleOutlined /> : <FilterOutlined />}
-                </button>
+                <div className='tags'>
+                  {values?.light && (
+                    <Tag
+                      closable
+                      onClose={() => {
+                        setValues({ ...values, light: '' })
+                        submitForm()
+                      }}>
+                      Light: {values.light}
+                    </Tag>
+                  )}
+                  {values?.water && (
+                    <Tag
+                      closable
+                      onClose={() => {
+                        setValues({ ...values, water: '' })
+                        submitForm()
+                      }}>
+                      Water: {values.water}
+                    </Tag>
+                  )}
+                  {values?.temperature && (
+                    <Tag
+                      closable
+                      onClose={() => {
+                        setValues({ ...values, temperature: '' })
+                        submitForm()
+                      }}>
+                      Temperature: {values.temperature}
+                    </Tag>
+                  )}
+                  {values?.humidity && (
+                    <Tag
+                      closable
+                      onClose={() => {
+                        setValues({ ...values, humidity: '' })
+                        submitForm()
+                      }}>
+                      Humidity: {values.humidity}
+                    </Tag>
+                  )}
+                  {values?.toxicity && (
+                    <Tag
+                      closable
+                      onClose={() => {
+                        setValues({ ...values, toxicity: '' })
+                        submitForm()
+                      }}>
+                      Toxicity: {values.toxicity}
+                    </Tag>
+                  )}
+                </div>
                 {/* TODO: display filter sidebar on right side on desktop */}
                 <Drawer
                   visible={sidebarOpen}
@@ -145,7 +231,6 @@ export const Browse = () => {
                     </div>
                   }>
                   <Filters>
-                    {/* TODO: most/least liked/owned/wanted */}
                     <div className='toggle-wrapper'>
                       <span className='toggle-option'>Show needs</span>
                       <Toggle>
@@ -157,6 +242,7 @@ export const Browse = () => {
                         <span className='slider'></span>
                       </Toggle>
                     </div>
+                    {/* TODO: sort by most/least liked/owned/wanted */}
                     <FormItem label='Sort'>
                       <Select
                         getPopupContainer={trigger => trigger.parentNode}
@@ -243,13 +329,13 @@ export const Browse = () => {
                     <FormItem label='Toxicity'>
                       <Select
                         getPopupContainer={trigger => trigger.parentNode}
-                        name='toxic'
+                        name='toxicity'
                         onChange={submitForm}
                         placeholder='Select'
                         style={{ width: '100%' }}
                         allowClear>
-                        <Option value={true}>Toxic</Option>
-                        <Option value={false}>Nontoxic</Option>
+                        <Option value='toxic'>Toxic</Option>
+                        <Option value='nontoxic'>Nontoxic</Option>
                         <Option value='unknown'>Unknown</Option>
                       </Select>
                     </FormItem>
@@ -317,10 +403,19 @@ const Wrapper = styled.div`
       background: #f2f2f2;
       box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
       width: 100%;
-      display: flex;
-      gap: 10px;
       padding: 10px;
       z-index: 10;
+      .filter-bar-upper {
+        display: flex;
+        gap: 10px;
+      }
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        .ant-tag {
+          margin: 5px 5px 0 0;
+        }
+      }
       .search {
         flex: 1;
       }
@@ -381,7 +476,7 @@ const Results = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 10px;
+  padding: 20px 10px 100px 10px;
   ::-webkit-scrollbar {
     width: 10px;
   }
@@ -404,7 +499,7 @@ const Results = styled.div`
   .fetching-more {
     display: grid;
     place-content: center;
-    padding: 30px 30px 100px 30px;
+    margin-top: 20px;
   }
   .ant-empty {
     display: grid;
