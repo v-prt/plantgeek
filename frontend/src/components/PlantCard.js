@@ -25,7 +25,7 @@ export const PlantCard = ({ plant, viewNeeds }) => {
         </div>
       )}
       <Div>
-        {!plant.toxic && (
+        {plant.toxic === false && (
           <Stamp>
             <FaPaw />
           </Stamp>

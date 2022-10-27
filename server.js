@@ -32,6 +32,7 @@ const {
   updatePlant,
   deletePlant,
   getSearchTerms,
+  getFilterValues,
 } = require('./handlers/plantHandlers.js')
 
 const {
@@ -80,6 +81,7 @@ app
   .put(`${API_URL}/plants/:_id/comments`, addComment)
   .delete(`${API_URL}/plants/:_id`, deletePlant)
   .get(`${API_URL}/search-terms`, getSearchTerms)
+  .get(`${API_URL}/filter-values`, getFilterValues)
 
   // suggestions
   .post(`${API_URL}/suggestions/:plantId`, createSuggestion)

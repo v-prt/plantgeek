@@ -89,14 +89,10 @@ export const PlantProfile = () => {
       let humidityLevel = 0
       if (plant.light === 'low to bright indirect') {
         lightLevel = 0
-      } else if (plant.light === 'medium indirect') {
-        lightLevel = 1
       } else if (plant.light === 'medium to bright indirect') {
-        lightLevel = 2
+        lightLevel = 1
       } else if (plant.light === 'bright indirect') {
         lightLevel = 3
-      } else if (plant.light === 'bright') {
-        lightLevel = 4
       }
       if (plant.water === 'low') {
         waterLevel = 0
@@ -111,12 +107,12 @@ export const PlantProfile = () => {
       }
       if (plant.temperature === 'average') {
         temperatureLevel = 0
-      } else if (plant.temperature === 'warm') {
+      } else if (plant.temperature === 'above average') {
         temperatureLevel = 2
       }
       if (plant.humidity === 'average') {
         humidityLevel = 0
-      } else if (plant.humidity === 'high') {
+      } else if (plant.humidity === 'above average') {
         humidityLevel = 2
       }
       let total = lightLevel + waterLevel + temperatureLevel + humidityLevel
@@ -399,24 +395,20 @@ export const PlantProfile = () => {
                           {editMode ? (
                             <Select name='light' placeholder='Select' style={{ width: '100%' }}>
                               <Option value='low to bright indirect'>low to bright indirect</Option>
-                              <Option value='medium indirect'>medium indirect</Option>
                               <Option value='medium to bright indirect'>
                                 medium to bright indirect
                               </Option>
                               <Option value='bright indirect'>bright indirect</Option>
-                              <Option value='bright'>bright</Option>
                             </Select>
                           ) : (
-                            <p>{plant.light}</p>
+                            <p>{plant.light || 'unknown'}</p>
                           )}
                           <Bar>
                             {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
-                            {plant.light === 'medium indirect' && <Indicator level={'1-2'} />}
                             {plant.light === 'medium to bright indirect' && (
                               <Indicator level={'2'} />
                             )}
-                            {plant.light === 'bright indirect' && <Indicator level={'2-3'} />}
-                            {plant.light === 'bright' && <Indicator level={'3'} />}
+                            {plant.light === 'bright indirect' && <Indicator level={'3'} />}
                           </Bar>
                         </div>
                       </div>
@@ -432,7 +424,7 @@ export const PlantProfile = () => {
                               <Option value='high'>high</Option>
                             </Select>
                           ) : (
-                            <p>{plant.water}</p>
+                            <p>{plant.water || 'unknown'}</p>
                           )}
                           <Bar>
                             {plant.water === 'low' && <Indicator level={'1'} />}
@@ -452,14 +444,14 @@ export const PlantProfile = () => {
                               placeholder='Select'
                               style={{ width: '100%' }}>
                               <Option value='average'>average</Option>
-                              <Option value='warm'>warm</Option>
+                              <Option value='above average'>above average</Option>
                             </Select>
                           ) : (
-                            <p>{plant.temperature}</p>
+                            <p>{plant.temperature || 'unknown'}</p>
                           )}
                           <Bar>
                             {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                            {plant.temperature === 'warm' && <Indicator level={'3'} />}
+                            {plant.temperature === 'above average' && <Indicator level={'3'} />}
                           </Bar>
                         </div>
                       </div>
@@ -469,21 +461,21 @@ export const PlantProfile = () => {
                           {editMode ? (
                             <Select name='humidity' placeholder='Select' style={{ width: '100%' }}>
                               <Option value='average'>average</Option>
-                              <Option value='high'>high</Option>
+                              <Option value='above average'>above average</Option>
                             </Select>
                           ) : (
-                            <p>{plant.humidity}</p>
+                            <p>{plant.humidity || 'unknown'}</p>
                           )}
                           <Bar>
                             {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-                            {plant.humidity === 'high' && <Indicator level={'3'} />}
+                            {plant.humidity === 'above average' && <Indicator level={'3'} />}
                           </Bar>
                         </div>
                       </div>
                       <div className='misc-info'>
                         <div className='difficulty'>
                           Difficulty:{' '}
-                          <span className={difficulty?.toLowerCase()}>{difficulty}</span>
+                          <span className={difficulty?.toLowerCase()}>{difficulty || 'N/A'}</span>
                         </div>
                         <div className='toxicity'>
                           Toxicity:{' '}
@@ -492,10 +484,12 @@ export const PlantProfile = () => {
                               <Option value={true}>toxic</Option>
                               <Option value={false}>nontoxic</Option>
                             </Select>
-                          ) : plant.toxic ? (
+                          ) : plant.toxic === false ? (
+                            <span className='nontoxic'>Pet friendly</span>
+                          ) : plant.toxic === true ? (
                             <span className='toxic'>Not pet friendly</span>
                           ) : (
-                            <span className='nontoxic'>Pet friendly</span>
+                            <span className='unknown'>Unknown</span>
                           )}
                         </div>
                         {plant.sourceUrl && (
@@ -930,6 +924,9 @@ const Needs = styled.div`
       }
       .nontoxic {
         color: ${COLORS.light};
+      }
+      .unknown {
+        color: #999;
       }
     }
   }

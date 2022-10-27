@@ -33,7 +33,7 @@ const createPlant = async (req, res) => {
 
 // (READ/GET) GETS ALL PLANTS
 const getPlants = async (req, res) => {
-  const { search, sort, toxic, review } = req.query
+  const { search, sort, light, water, temperature, humidity, toxic, review } = req.query
   let filters = {}
 
   if (search) {
@@ -47,10 +47,64 @@ const getPlants = async (req, res) => {
     }
   }
 
+  if (light) {
+    if (light === 'unknown') {
+      filters = { ...filters, $or: [{ light: null }, { light: { $exists: false } }] }
+    } else {
+      filters = {
+        ...filters,
+        light,
+      }
+    }
+  }
+
+  if (water) {
+    if (water === 'unknown') {
+      filters = { ...filters, $or: [{ water: null }, { water: { $exists: false } }] }
+    } else {
+      filters = {
+        ...filters,
+        water,
+      }
+    }
+  }
+
+  if (temperature) {
+    if (temperature === 'unknown') {
+      filters = { ...filters, $or: [{ temperature: null }, { temperature: { $exists: false } }] }
+    } else {
+      filters = {
+        ...filters,
+        temperature,
+      }
+    }
+  }
+
+  if (humidity) {
+    if (humidity === 'unknown') {
+      filters = {
+        ...filters,
+        $or: [
+          { humidity: null },
+          { humidity: { $exists: false } },
+          { humidity: { $ne: true } },
+          { humidity: { $ne: false } },
+        ],
+      }
+    } else {
+      filters = {
+        ...filters,
+        humidity,
+      }
+    }
+  }
+
   if (toxic === 'true') {
     filters = { ...filters, toxic: true }
   } else if (toxic === 'false') {
     filters = { ...filters, toxic: false }
+  } else if (toxic === 'unknown') {
+    filters = { ...filters, $or: [{ toxic: null }, { toxic: { $exists: false } }] }
   }
 
   if (review) {
@@ -159,16 +213,18 @@ const getSimilarPlants = async (req, res) => {
   try {
     const plant = await db.collection('plants').findOne({ _id: ObjectId(plantId) })
     if (plant) {
-      // take words from plant's primary name and secondary name
-      const words = plant.primaryName.split(' ').concat(plant.secondaryName.split(' '))
-      // clean the words (remove special characters)
-      const cleanedWords = words.map(word => word.replace(/[^a-zA-Z ]/g, ''))
-      // for each word, create a regex and search for similar plants
-      const regex = cleanedWords.map(str => new RegExp(str, 'i'))
+      const regex = plant.primaryName
+        // take words from plant's primary name
+        .split(' ')
+        // remove special characters
+        .map(word => word.replace(/[^a-zA-Z ]/g, ''))
+        // create case insensitive regex with word boundaries
+        .map(word => new RegExp(`\\b${word}\\b`, 'i'))
+
       let filters = {
         // not this plant
         _id: { $ne: ObjectId(plantId) },
-        $or: [{ primaryName: { $in: regex } }, { secondaryName: { $in: regex } }],
+        primaryName: { $in: regex },
       }
 
       const similarPlants = await db.collection('plants').find(filters).limit(6).toArray()
@@ -501,6 +557,44 @@ const getSearchTerms = async (req, res) => {
   client.close()
 }
 
+const getFilterValues = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  try {
+    const plants = await db.collection('plants').find().toArray()
+
+    const lightValues = plants
+      .map(plant => plant.light || 'unknown')
+      .sort((a, b) => a.localeCompare(b))
+
+    const waterValues = plants
+      .map(plant => plant.water || 'unknown')
+      .sort((a, b) => a.localeCompare(b))
+
+    const temperatureValues = plants
+      .map(plant => plant.temperature || 'unknown')
+      .sort((a, b) => a.localeCompare(b))
+
+    const humidityValues = plants
+      .map(plant => plant.humidity || 'unknown')
+      .sort((a, b) => a.localeCompare(b))
+
+    const filterValues = {
+      light: [...new Set(lightValues)],
+      water: [...new Set(waterValues)],
+      temperature: [...new Set(temperatureValues)],
+      humidity: [...new Set(humidityValues)],
+    }
+
+    res.status(200).json({ status: 200, data: filterValues })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ status: 500, data: req.body, message: err.message })
+  }
+  client.close()
+}
+
 module.exports = {
   createPlant,
   getPlants,
@@ -514,4 +608,5 @@ module.exports = {
   updatePlant,
   deletePlant,
   getSearchTerms,
+  getFilterValues,
 }

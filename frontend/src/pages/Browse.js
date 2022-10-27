@@ -13,12 +13,13 @@ import { PlantCard } from '../components/PlantCard'
 import { FormItem } from '../components/forms/FormItem'
 import { Formik, Form } from 'formik'
 import { Select } from 'formik-antd'
-import { Button, Empty } from 'antd'
+import { Button, Empty, Drawer } from 'antd'
 import {
   FilterOutlined,
   ArrowUpOutlined,
   ArrowDownOutlined,
   CloseCircleOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons'
 import numeral from 'numeral'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
@@ -32,7 +33,6 @@ export const Browse = () => {
   const { formData, setFormData, viewNeeds, setViewNeeds, fetchPlants } = useContext(PlantContext)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { currentUser } = useContext(UserContext)
-  const [totalResults, setTotalResults] = useState(undefined)
 
   // makes window scroll to top between renders
   // const pathname = window.location.pathname
@@ -50,6 +50,11 @@ export const Browse = () => {
 
   const { data: searchTerms, status: searchTermsStatus } = useQuery('search-terms', async () => {
     const { data } = await axios.get(`${API_URL}/search-terms`)
+    return data.data
+  })
+
+  const { data: filterValues, status: filterValuesStatus } = useQuery('filter-values', async () => {
+    const { data } = await axios.get(`${API_URL}/filter-values`)
     return data.data
   })
 
@@ -73,18 +78,12 @@ export const Browse = () => {
     }, 400)
   }
 
-  useEffect(() => {
-    if (data) {
-      setTotalResults(data.pages[0].totalResults)
-    }
-  }, [data])
-
   return (
     <Wrapper>
       <FadeIn>
         <main className='browse-content'>
           <Formik initialValues={formData} onSubmit={handleSubmit}>
-            {({ values, setValues, submitForm, resetForm }) => (
+            {({ setValues, submitForm, resetForm }) => (
               <Form className='filter-bar'>
                 <div className='search'>
                   <Select
@@ -96,7 +95,7 @@ export const Browse = () => {
                     mode='tags'
                     placeholder='Search plants'
                     onChange={submitForm}
-                    autoFocus={true}
+                    // autoFocus={true}
                     loading={searchTermsStatus === 'loading'}
                     style={{ width: '100%' }}>
                     {searchTermsStatus === 'success' &&
@@ -111,15 +110,53 @@ export const Browse = () => {
                   className='filter-menu-btn'
                   type='primary'
                   onClick={() => setSidebarOpen(!sidebarOpen)}>
-                  {/* <span className='label'> SORT & FILTER</span> */}
                   {sidebarOpen ? <CloseCircleOutlined /> : <FilterOutlined />}
                 </button>
                 {/* TODO: display filter sidebar on right side on desktop */}
-                <div className={`filter-menu-wrapper ${sidebarOpen && 'open'}`}>
-                  <div className='overlay' onClick={() => setSidebarOpen(false)}></div>
-                  <div className='filter-menu-inner'>
-                    <p className='num-results'>{numeral(totalResults || 0).format('0a')} results</p>
+                <Drawer
+                  visible={sidebarOpen}
+                  placement='right'
+                  title='Filters'
+                  onClose={() => setSidebarOpen(false)}
+                  extra={
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      {status === 'success' ? (
+                        <p
+                          className='num-results'
+                          style={{
+                            fontWeight: 'bold',
+                            color: data.pages[0].totalResults > 0 ? COLORS.accent : '#999',
+                          }}>
+                          {numeral(data?.pages[0]?.totalResults || 0).format('0a')} result
+                          {data?.pages[0]?.totalResults === 1 ? '' : 's'}
+                        </p>
+                      ) : (
+                        <LoadingOutlined spin />
+                      )}
+                      <Button
+                        type='primary'
+                        onClick={() => {
+                          resetForm()
+                          setFormData({ sort: 'name-asc' })
+                          setValues({ sort: 'name-asc' })
+                        }}>
+                        Reset
+                      </Button>
+                    </div>
+                  }>
+                  <Filters>
                     {/* TODO: most/least liked/owned/wanted */}
+                    <div className='toggle-wrapper'>
+                      <span className='toggle-option'>Show needs</span>
+                      <Toggle>
+                        <input
+                          id='needs-toggle'
+                          type='checkbox'
+                          onChange={ev => setViewNeeds(ev.target.checked)}
+                        />
+                        <span className='slider'></span>
+                      </Toggle>
+                    </div>
                     <FormItem label='Sort'>
                       <Select
                         getPopupContainer={trigger => trigger.parentNode}
@@ -135,7 +172,74 @@ export const Browse = () => {
                         </Option>
                       </Select>
                     </FormItem>
-                    {/* TODO: filter by light, water, humidity, temperature */}
+                    <FormItem label='Light'>
+                      <Select
+                        getPopupContainer={trigger => trigger.parentNode}
+                        name='light'
+                        onChange={submitForm}
+                        placeholder='Select'
+                        style={{ width: '100%' }}
+                        loading={filterValuesStatus === 'loading'}
+                        allowClear>
+                        {filterValuesStatus === 'success' &&
+                          filterValues.light.map(value => (
+                            <Option key={value} value={value}>
+                              {value}
+                            </Option>
+                          ))}
+                      </Select>
+                    </FormItem>
+                    <FormItem label='Water'>
+                      <Select
+                        getPopupContainer={trigger => trigger.parentNode}
+                        name='water'
+                        onChange={submitForm}
+                        placeholder='Select'
+                        style={{ width: '100%' }}
+                        loading={filterValuesStatus === 'loading'}
+                        allowClear>
+                        {filterValuesStatus === 'success' &&
+                          filterValues.water.map(value => (
+                            <Option key={value} value={value}>
+                              {value}
+                            </Option>
+                          ))}
+                      </Select>
+                    </FormItem>
+                    <FormItem label='Temperature'>
+                      <Select
+                        getPopupContainer={trigger => trigger.parentNode}
+                        name='temperature'
+                        onChange={submitForm}
+                        placeholder='Select'
+                        style={{ width: '100%' }}
+                        loading={filterValuesStatus === 'loading'}
+                        allowClear>
+                        {filterValuesStatus === 'success' &&
+                          filterValues.temperature.map(value => (
+                            <Option key={value} value={value}>
+                              {value}
+                            </Option>
+                          ))}
+                      </Select>
+                    </FormItem>
+                    <FormItem label='Humidity'>
+                      <Select
+                        getPopupContainer={trigger => trigger.parentNode}
+                        name='humidity'
+                        onChange={submitForm}
+                        placeholder='Select'
+                        style={{ width: '100%' }}
+                        loading={filterValuesStatus === 'loading'}
+                        allowClear>
+                        {filterValuesStatus === 'success' &&
+                          filterValues.humidity.map(value => (
+                            <Option key={value} value={value}>
+                              {value}
+                            </Option>
+                          ))}
+                      </Select>
+                    </FormItem>
                     <FormItem label='Toxicity'>
                       <Select
                         getPopupContainer={trigger => trigger.parentNode}
@@ -145,7 +249,8 @@ export const Browse = () => {
                         style={{ width: '100%' }}
                         allowClear>
                         <Option value={true}>Toxic</Option>
-                        <Option value={false}>Non-toxic</Option>
+                        <Option value={false}>Nontoxic</Option>
+                        <Option value='unknown'>Unknown</Option>
                       </Select>
                     </FormItem>
                     {currentUser?.role === 'admin' && (
@@ -163,36 +268,14 @@ export const Browse = () => {
                         </Select>
                       </FormItem>
                     )}
-                    <div className='toggle-wrapper'>
-                      <span className='toggle-option'>Show details</span>
-                      <Toggle>
-                        <input
-                          id='needs-toggle'
-                          type='checkbox'
-                          onChange={ev => setViewNeeds(ev.target.checked)}
-                        />
-                        <span className='slider'></span>
-                      </Toggle>
-                    </div>
-                    <Button
-                      type='secondary'
-                      className='reset-filters'
-                      onClick={() => {
-                        resetForm()
-                        setFormData({ sort: 'name-asc' })
-                        setValues({ sort: 'name-asc' })
-                        setSidebarOpen(false)
-                      }}>
-                      RESET FILTERS
-                    </Button>
-                  </div>
-                </div>
+                  </Filters>
+                </Drawer>
               </Form>
             )}
           </Formik>
-          <Results disabled={sidebarOpen} onScroll={handleScroll} ref={scrollRef}>
+          <Results onScroll={handleScroll} ref={scrollRef}>
             {status === 'success' ? (
-              data && totalResults > 0 ? (
+              data?.pages[0]?.totalResults > 0 ? (
                 <>
                   <div className='plants'>
                     {data.pages.map((group, i) =>
@@ -242,7 +325,7 @@ const Wrapper = styled.div`
         flex: 1;
       }
       .filter-menu-btn {
-        background: ${COLORS.mediumLight};
+        background: ${COLORS.accent};
         color: #fff;
         display: grid;
         place-content: center;
@@ -251,73 +334,6 @@ const Wrapper = styled.div`
         border-radius: 50%;
         .anticon {
           margin: 0;
-        }
-        .label {
-          display: none;
-        }
-      }
-      .filter-menu-wrapper {
-        width: 100%;
-        max-width: 300px;
-        position: absolute;
-        top: 50px;
-        right: 10px;
-        visibility: hidden;
-        opacity: 0;
-        transition: 0.2s ease-in-out;
-        z-index: 100;
-        .overlay {
-          background-color: rgba(0, 0, 0, 0.2);
-          position: fixed;
-          visibility: hidden;
-          opacity: 0;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          transition: 0.2s ease-in-out;
-          cursor: pointer;
-          z-index: -1;
-        }
-        &.open {
-          visibility: visible;
-          opacity: 1;
-          .overlay {
-            visibility: visible;
-            opacity: 1;
-          }
-        }
-      }
-      .filter-menu-inner {
-        background: #fff;
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-        .num-results {
-          text-align: center;
-          font-size: 0.8rem;
-          color: #999;
-        }
-        .label {
-          font-weight: bold;
-        }
-        .toggle-wrapper {
-          display: flex;
-          align-items: center;
-          padding: 5px 10px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          justify-content: space-between;
-          margin: 10px 0;
-          .toggle-option {
-            margin-right: 10px;
-            line-height: 1;
-          }
-        }
-        .reset-filters {
-          margin-top: 20px;
         }
       }
     }
@@ -331,16 +347,41 @@ const Wrapper = styled.div`
   }
 `
 
+const Filters = styled.div`
+  display: flex;
+  flex-direction: column;
+  .num-results {
+    color: ${COLORS.accent};
+    text-align: center;
+    font-weight: bold;
+  }
+  .label {
+    font-weight: bold;
+  }
+
+  .toggle-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    justify-content: space-between;
+    margin: 10px 0;
+    .toggle-option {
+      margin-right: 10px;
+      line-height: 1;
+    }
+  }
+`
+
 const Results = styled.div`
+  width: 100%;
   height: 100%;
   overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px 10px;
-  opacity: ${props => (props.disabled ? 0.5 : 1)};
-  pointer-events: ${props => (props.disabled ? 'none' : 'auto')};
-  transition: 0.2s ease-in-out;
   ::-webkit-scrollbar {
     width: 10px;
   }
@@ -363,7 +404,7 @@ const Results = styled.div`
   .fetching-more {
     display: grid;
     place-content: center;
-    padding: 10px;
+    padding: 30px 30px 100px 30px;
   }
   .ant-empty {
     display: grid;

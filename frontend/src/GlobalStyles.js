@@ -16,7 +16,7 @@ export const COLORS = {
 
 export const BREAKPOINTS = {
   tablet: '768px',
-  desktop: '1000px',
+  desktop: '1100px',
 }
 
 export const Button = styled.button`
