@@ -12,6 +12,8 @@ import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
 
 export const PlantCard = ({ plant, viewNeeds }) => {
+  const slug = plant.primaryName.replace(/\s+/g, '-').toLowerCase()
+
   return (
     <Wrapper key={plant._id}>
       {plant.review === 'pending' && (
@@ -30,7 +32,7 @@ export const PlantCard = ({ plant, viewNeeds }) => {
             <FaPaw />
           </Stamp>
         )}
-        <InfoLink to={`/plant/${plant._id}`}>
+        <InfoLink to={`/plant/${slug}`}>
           <div className='thumbnail'>
             <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
           </div>
@@ -161,6 +163,9 @@ const InfoLink = styled(Link)`
     color: ${COLORS.darkest};
     text-align: center;
     transition: 0.2s ease-in-out;
+    min-height: 67px;
+    display: grid;
+    place-content: center;
   }
   .primary-name {
     font-weight: bold;

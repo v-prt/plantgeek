@@ -28,6 +28,8 @@ import potted2 from '../assets/stickers/potted2.svg'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const UserProfile = () => {
+  //  FIXME: window jumps to top when interacting with plants (using action bar)
+
   const { currentUser } = useContext(UserContext)
   useDocumentTitle(`plantgeek | ${currentUser?.username || 'Profile'}`)
 
@@ -201,7 +203,10 @@ export const UserProfile = () => {
                   <h3>approved ({approvedContributions.length})</h3>
                   <div className='plants'>
                     {approvedContributions.map(plant => (
-                      <Link className='contribution-card' to={`/plant/${plant._id}`}>
+                      <Link
+                        className='contribution-card'
+                        to={`/plant/${plant._id}`}
+                        key={plant._id}>
                         <div className='thumbnail'>
                           <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
                         </div>
@@ -219,7 +224,10 @@ export const UserProfile = () => {
                   <h3>pending review ({pendingContributions.length})</h3>
                   <div className='plants'>
                     {pendingContributions.map(plant => (
-                      <Link className='contribution-card pending' to={`/plant/${plant._id}`}>
+                      <Link
+                        className='contribution-card pending'
+                        to={`/plant/${plant._id}`}
+                        key={plant._id}>
                         <div className='thumbnail'>
                           <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
                         </div>

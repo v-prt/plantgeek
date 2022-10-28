@@ -10,6 +10,7 @@ import { Browse } from './pages/Browse'
 import { Login } from './pages/Login'
 import { SignUp } from './pages/SignUp'
 import { Welcome } from './pages/Welcome'
+import { Guidelines } from './pages/Guidelines'
 import { Terms } from './pages/Terms'
 import { Privacy } from './pages/Privacy'
 import { About } from './pages/About'
@@ -59,6 +60,9 @@ export const App = () => {
               <Route exact path='/welcome'>
                 <Welcome />
               </Route>
+              {/* <Route exact path='/guidelines'>
+                <Guidelines />
+              </Route> */}
               <Route exact path='/terms'>
                 <Terms />
               </Route>
@@ -80,7 +84,7 @@ export const App = () => {
               <Route path='/profile'>
                 <UserProfile />
               </Route>
-              <Route path='/plant/:id'>
+              <Route path='/plant/:slug'>
                 <PlantProfile />
               </Route>
               {/* TODO: catchall for non-existing routes (generic "not found" or redirect to homepage) */}

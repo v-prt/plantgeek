@@ -184,14 +184,19 @@ const getPlantsToReview = async (req, res) => {
 
 // (READ/GET) GETS PLANT BY ID
 const getPlant = async (req, res) => {
-  const id = req.params._id
+  const slug = req.params.slug
+  const primaryName = slug.replace(/-/g, ' ')
 
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
 
   try {
-    const plant = await db.collection('plants').findOne({ _id: ObjectId(id) })
+    const plant = await db.collection('plants').findOne({
+      primaryName: {
+        $regex: new RegExp(primaryName, 'i'),
+      },
+    })
     if (plant) {
       res.status(200).json({ status: 200, plant: plant })
     } else {
@@ -200,18 +205,24 @@ const getPlant = async (req, res) => {
   } catch (err) {
     console.error(err)
   }
+
   client.close()
 }
 
 const getSimilarPlants = async (req, res) => {
-  const { plantId } = req.params
+  const { slug } = req.params
+  const primaryName = slug.replace(/-/g, ' ')
 
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
 
   try {
-    const plant = await db.collection('plants').findOne({ _id: ObjectId(plantId) })
+    const plant = await db.collection('plants').findOne({
+      primaryName: {
+        $regex: new RegExp(primaryName, 'i'),
+      },
+    })
     if (plant) {
       const regex = plant.primaryName
         // take words from plant's primary name
@@ -223,7 +234,7 @@ const getSimilarPlants = async (req, res) => {
 
       let filters = {
         // not this plant
-        _id: { $ne: ObjectId(plantId) },
+        _id: { $ne: ObjectId(plant._id) },
         primaryName: { $in: regex },
       }
 
@@ -337,18 +348,34 @@ const addComment = async (req, res) => {
 
 const updatePlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
-  const _id = req.params._id
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  const id = req.params._id
+
   try {
-    await client.connect()
-    const db = client.db('plantgeekdb')
-    const filter = { _id: ObjectId(_id) }
+    // prevent updating primaryName if already taken (should be unique)
+    const { primaryName } = req.body
+
+    if (primaryName) {
+      const nameTaken = await db.collection('plants').findOne({
+        primaryName: {
+          $regex: new RegExp(primaryName, 'i'),
+        },
+        _id: { $ne: ObjectId(id) },
+      })
+      if (nameTaken) {
+        return res.status(400).json({ status: 400, message: 'This name is taken.' })
+      }
+    }
+
+    const filter = { _id: ObjectId(id) }
     const update = {
       $set: req.body,
     }
     const result = await db.collection('plants').updateOne(filter, update)
     res.status(200).json({ status: 200, data: result })
   } catch (err) {
-    res.status(500).json({ status: 500, data: req.body, message: err.message })
+    res.status(500).json({ status: 500, message: 'Sorry, something went wrong.' })
     console.error(err)
   }
   client.close()

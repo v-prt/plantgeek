@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { API_URL } from '../constants'
 import { useQuery, useQueryClient } from 'react-query'
 import { message, Upload, Modal, Alert, Button } from 'antd'
@@ -39,38 +39,46 @@ import { Ellipsis } from '../components/loaders/Ellipsis'
 const { Option } = Select
 
 export const PlantProfile = () => {
-  const { id } = useParams()
+  const { slug } = useParams()
+  const [plantId, setPlantId] = useState('')
   const { currentUser } = useContext(UserContext)
+  const history = useHistory()
   const [difficulty, setDifficulty] = useState()
   const queryClient = new useQueryClient()
   const [image, setImage] = useState(undefined)
   const [suggestionModal, setSuggestionModal] = useState(false)
 
-  const { data: plant } = useQuery(['plant', id], async () => {
-    const { data } = await axios.get(`${API_URL}/plant/${id}`)
+  const { data: plant, status } = useQuery(['plant', slug], async () => {
+    const { data } = await axios.get(`${API_URL}/plant/${slug}`)
     return data.plant
   })
 
-  const { data: suggestions } = useQuery(['suggestions', id], async () => {
-    const { data } = await axios.get(`${API_URL}/suggestions/${id}`)
+  const { data: suggestions } = useQuery(['suggestions', slug], async () => {
+    const { data } = await axios.get(`${API_URL}/suggestions/${slug}`)
     return data.suggestions
   })
 
   const { data: similarPlants, status: similarPlantsStatus } = useQuery(
-    ['similar-plants', id],
+    ['similar-plants', slug],
     async () => {
-      const { data } = await axios.get(`${API_URL}/similar-plants/${id}`)
+      const { data } = await axios.get(`${API_URL}/similar-plants/${slug}`)
       return data.similarPlants
     }
   )
 
   useEffect(() => {
     if (plant) {
+      setPlantId(plant._id)
       setImage(plant.imageUrl)
+    }
+    // cleanup
+    return () => {
+      setPlantId('')
+      setImage(undefined)
     }
   }, [plant])
 
-  useDocumentTitle(plant?.primaryName ? `plantgeek | ${plant?.primaryName}` : 'plantgeek')
+  useDocumentTitle(plant?.primaryName ? `${plant?.primaryName} | plantgeek` : 'plantgeek')
 
   // makes window scroll to top between renders
   // const pathname = window.location.pathname
@@ -133,7 +141,7 @@ export const PlantProfile = () => {
   // IMAGE UPLOAD
   const [uploading, setUploading] = useState(false)
   const fileList = []
-  const uploadButton = <div>{uploading ? <LoadingOutlined /> : <PlusOutlined />}</div>
+  const uploadButton = <div>{uploading ? <Ellipsis /> : <PlusOutlined />}</div>
   const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`
 
   // checking file size before upload
@@ -160,8 +168,9 @@ export const PlantProfile = () => {
         const imageUrl = res.data.secure_url
         // updating plant with new image url
         axios
-          .put(`${API_URL}/plants/${id}`, { imageUrl })
+          .put(`${API_URL}/plants/${plantId}`, { imageUrl })
           .then(() => {
+            message.success('Image uploaded.')
             setImage(imageUrl)
             queryClient.invalidateQueries('plant')
             queryClient.invalidateQueries('plants')
@@ -205,29 +214,38 @@ export const PlantProfile = () => {
     toxic: Yup.string().required('Required'),
   })
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    // TODO: show when new info is loading after changes saved
+  const handleSubmit = async (values, { setStatus, setSubmitting }) => {
+    setStatus('')
     setSubmitting(true)
     try {
-      await axios.put(`${API_URL}/plants/${id}`, values)
-      queryClient.invalidateQueries('plant')
-      queryClient.invalidateQueries('plants')
-      queryClient.invalidateQueries('similar-plants')
+      await axios.put(`${API_URL}/plants/${plantId}`, values)
+
       message.success('Plant updated successfully!')
       setEditMode(false)
+
+      // FIXME: Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. (coming from ImageLoader when image is updated)
+
+      // push to new url/profile via slug if primary name changed
+      if (plant.primaryName !== values.primaryName) {
+        history.push(`/plant/${values.primaryName.replace(/ /g, '-').toLowerCase()}`)
+      } else {
+        queryClient.invalidateQueries('plant')
+        queryClient.invalidateQueries('similar-plants')
+      }
+      queryClient.invalidateQueries('plants')
     } catch (err) {
-      console.log(err)
-      message.error('Sorry, something went wrong.')
+      setStatus(err.response.data.message)
     }
     setSubmitting(false)
   }
 
   const removeImage = async () => {
-    // set to default placeholder image url from cloudinary
     try {
-      await axios.put(`${API_URL}/plants/${id}`, {
+      // TODO: test
+      await axios.put(`${API_URL}/plants/${plantId}`, {
         imageUrl:
-          'https://res.cloudinary.com/plantgeek/image/upload/v1664931643/plantgeek-plants/plant-placeholder_z8s1n7.png',
+          // 'https://res.cloudinary.com/plantgeek/image/upload/v1664931643/plantgeek-plants/plant-placeholder_z8s1n7.png',
+          null,
       })
       queryClient.invalidateQueries('plant')
       queryClient.invalidateQueries('plants')
@@ -254,7 +272,7 @@ export const PlantProfile = () => {
 
   return (
     <Wrapper>
-      {plant ? (
+      {status === 'success' && plant ? (
         <>
           <Formik
             initialValues={initialValues}
@@ -262,7 +280,7 @@ export const PlantProfile = () => {
             validateOnChange={false}
             validateOnBlur={false}
             onSubmit={handleSubmit}>
-            {({ submitForm, isSubmitting }) => (
+            {({ status, submitForm, isSubmitting }) => (
               <Form>
                 <FadeIn>
                   <section className='heading'>
@@ -318,21 +336,24 @@ export const PlantProfile = () => {
                     )}
                     {currentUser?.role === 'admin' &&
                       (editMode ? (
-                        <div className='buttons'>
-                          <Button
-                            type='primary'
-                            icon={<SaveOutlined />}
-                            loading={isSubmitting}
-                            onClick={() => submitForm()}>
-                            SAVE
-                          </Button>
-                          <Button
-                            type='secondary'
-                            icon={<CloseCircleOutlined />}
-                            onClick={() => setEditMode(false)}>
-                            CANCEL
-                          </Button>
-                        </div>
+                        <>
+                          {status && <Alert type='error' message={status} showIcon />}
+                          <div className='buttons'>
+                            <Button
+                              type='primary'
+                              icon={<SaveOutlined />}
+                              loading={isSubmitting}
+                              onClick={() => submitForm()}>
+                              SAVE
+                            </Button>
+                            <Button
+                              type='secondary'
+                              icon={<CloseCircleOutlined />}
+                              onClick={() => setEditMode(false)}>
+                              CANCEL
+                            </Button>
+                          </div>
+                        </>
                       ) : (
                         <Button
                           type='primary'
@@ -512,7 +533,7 @@ export const PlantProfile = () => {
             <>
               {/* LIST ACTIONS */}
               <FadeIn delay={300}>
-                <ActionBox plantId={plant._id} />
+                <ActionBox plantId={plantId} />
               </FadeIn>
               {/* SUGGESTION SUBMISSION */}
               <FadeIn delay={400}>
@@ -541,7 +562,7 @@ export const PlantProfile = () => {
                         })}
                         onSubmit={async (values, { setSubmitting }) => {
                           try {
-                            await axios.post(`${API_URL}/suggestions/${plant._id}`, {
+                            await axios.post(`${API_URL}/suggestions/${plantId}`, {
                               suggestion: values.suggestion,
                               sourceUrl: values.sourceUrl,
                               userId: currentUser._id,
@@ -694,7 +715,7 @@ export const PlantProfile = () => {
                   <p>DANGER ZONE</p>
                   <Button
                     type='danger'
-                    onClick={() => handleDelete(plant._id)}
+                    onClick={() => handleDelete(plantId)}
                     icon={<DeleteOutlined />}>
                     DELETE PLANT
                   </Button>
