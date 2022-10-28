@@ -16,8 +16,12 @@ const createPlant = async (req, res) => {
     await client.connect()
     const db = client.db('plantgeekdb')
     // TODO: test with special characters
-    const regex = new RegExp(req.body.primaryName, 'i') // "i" for case insensitive
-    const existingPlant = await db.collection('plants').findOne({ primaryName: { $regex: regex } })
+    const existingPlant = await db.collection('plants').findOne({
+      primaryName: {
+        // exact match, case insensitive
+        $regex: new RegExp(`^${primaryName}$`, 'i'),
+      },
+    })
     if (existingPlant) {
       res.status(409).json({ status: 409, message: 'Plant already exists' })
     } else {
@@ -194,7 +198,8 @@ const getPlant = async (req, res) => {
   try {
     const plant = await db.collection('plants').findOne({
       primaryName: {
-        $regex: new RegExp(primaryName, 'i'),
+        // exact match, case insensitive
+        $regex: new RegExp(`^${primaryName}$`, 'i'),
       },
     })
     if (plant) {
@@ -220,7 +225,8 @@ const getSimilarPlants = async (req, res) => {
   try {
     const plant = await db.collection('plants').findOne({
       primaryName: {
-        $regex: new RegExp(primaryName, 'i'),
+        // exact match, case insensitive
+        $regex: new RegExp(`^${primaryName}$`, 'i'),
       },
     })
     if (plant) {
@@ -359,7 +365,8 @@ const updatePlant = async (req, res) => {
     if (primaryName) {
       const nameTaken = await db.collection('plants').findOne({
         primaryName: {
-          $regex: new RegExp(primaryName, 'i'),
+          // exact match, case insensitive
+          $regex: new RegExp(`^${primaryName}$`, 'i'),
         },
         _id: { $ne: ObjectId(id) },
       })

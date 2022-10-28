@@ -16,7 +16,6 @@ import {
   EditOutlined,
   SaveOutlined,
   CloseCircleOutlined,
-  LoadingOutlined,
   PlusOutlined,
   ClockCircleOutlined,
   LikeOutlined,
@@ -70,11 +69,6 @@ export const PlantProfile = () => {
     if (plant) {
       setPlantId(plant._id)
       setImage(plant.imageUrl)
-    }
-    // cleanup
-    return () => {
-      setPlantId('')
-      setImage(undefined)
     }
   }, [plant])
 
@@ -223,10 +217,9 @@ export const PlantProfile = () => {
       message.success('Plant updated successfully!')
       setEditMode(false)
 
-      // FIXME: Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. (coming from ImageLoader when image is updated)
-
       // push to new url/profile via slug if primary name changed
       if (plant.primaryName !== values.primaryName) {
+        // FIXME: Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. (coming from ImageLoader)
         history.push(`/plant/${values.primaryName.replace(/ /g, '-').toLowerCase()}`)
       } else {
         queryClient.invalidateQueries('plant')
