@@ -21,18 +21,10 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 YupPassword(Yup) // extend yup
 
 export const SignUp = () => {
-  useDocumentTitle('plantgeek | Sign up')
+  useDocumentTitle('Sign up | plantgeek')
 
   const { currentUser, handleSignup } = useContext(UserContext)
   const [loading, setLoading] = useState(false)
-
-  // makes window scroll to top between renders
-  // const pathname = window.location.pathname
-  // useEffect(() => {
-  //   if (pathname) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [pathname])
 
   const SignUpSchema = Yup.object().shape({
     firstName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('First name required'),

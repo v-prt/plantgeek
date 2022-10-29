@@ -21,7 +21,7 @@ import { Image } from './UserProfile'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const AutoSave = () => {
-  useDocumentTitle('plantgeek | Settings')
+  useDocumentTitle('Settings | plantgeek')
 
   const { dirty, values, errors, submitForm } = useFormikContext()
 
@@ -43,14 +43,6 @@ export const Settings = () => {
   const [passwordEditMode, setPasswordEditMode] = useState(false)
   const [loading, setLoading] = useState(false)
   const [successStatus, setSuccessStatus] = useState('')
-
-  // makes window scroll to top between renders
-  // const pathname = window.location.pathname
-  // useEffect(() => {
-  //   if (pathname) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [pathname])
 
   // #region Initial Values
   const accountInitialValues = {

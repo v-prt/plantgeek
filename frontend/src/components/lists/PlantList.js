@@ -35,14 +35,6 @@ export const PlantList = ({ list, title }) => {
     }
   }, [data])
 
-  // makes window scroll to top between renders
-  const pathname = window.location.pathname
-  useEffect(() => {
-    if (pathname) {
-      window.scrollTo(0, 0)
-    }
-  }, [pathname])
-
   return (
     <ListWrapper className={title}>
       <FadeIn>

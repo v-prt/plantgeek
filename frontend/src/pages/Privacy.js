@@ -2,15 +2,7 @@ import styled from 'styled-components/macro'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const Privacy = () => {
-  useDocumentTitle('plantgeek | Privacy Policy')
-
-  // makes window scroll to top between renders
-  // const pathname = window.location.pathname
-  // useEffect(() => {
-  //   if (pathname) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [pathname])
+  useDocumentTitle('Privacy Policy | plantgeek')
 
   return (
     <Wrapper>

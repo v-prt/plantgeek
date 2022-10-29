@@ -17,18 +17,10 @@ const LoginSchema = Yup.object().shape({
 })
 
 export const Login = () => {
-  useDocumentTitle('plantgeek | Log in')
+  useDocumentTitle('Log in | plantgeek')
 
   const { handleLogin, currentUser } = useContext(UserContext)
   const [loading, setLoading] = useState(false)
-
-  // makes window scroll to top between renders
-  // const pathname = window.location.pathname
-  // useEffect(() => {
-  //   if (pathname) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [pathname])
 
   const handleSubmit = async (values, { setStatus }) => {
     setLoading(true)

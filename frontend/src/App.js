@@ -1,16 +1,17 @@
 import './App.less'
-import React, { useEffect, useContext } from 'react'
+import React, { useContext } from 'react'
 import { UserContext } from './contexts/UserContext'
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import background from './assets/monstera1.jpg'
+import { ScrollToTop } from './components/general/ScrollToTop'
 import { Navbar } from './components/Navbar'
 import { Homepage } from './pages/Homepage'
 import { Browse } from './pages/Browse'
 import { Login } from './pages/Login'
 import { SignUp } from './pages/SignUp'
 import { Welcome } from './pages/Welcome'
-// import { Guidelines } from './pages/Guidelines'
+import { Guidelines } from './pages/Guidelines'
 import { Terms } from './pages/Terms'
 import { Privacy } from './pages/Privacy'
 import { About } from './pages/About'
@@ -31,6 +32,7 @@ export const App = () => {
   return (
     <BrowserRouter>
       <GlobalStyles />
+      <ScrollToTop />
       {checkedToken && userStatus === 'success' ? (
         <>
           <Navbar />
@@ -52,9 +54,9 @@ export const App = () => {
               <Route exact path='/welcome'>
                 <Welcome />
               </Route>
-              {/* <Route exact path='/guidelines'>
+              <Route exact path='/guidelines'>
                 <Guidelines />
-              </Route> */}
+              </Route>
               <Route exact path='/terms'>
                 <Terms />
               </Route>

@@ -28,10 +28,8 @@ import potted2 from '../assets/stickers/potted2.svg'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const UserProfile = () => {
-  //  FIXME: window jumps to top when interacting with plants (using action bar)
-
   const { currentUser } = useContext(UserContext)
-  useDocumentTitle(`plantgeek | ${currentUser?.username || 'Profile'}`)
+  useDocumentTitle(`${currentUser?.username || 'Profile'} | plantgeek`)
 
   const [approvedContributions, setApprovedContributions] = useState([])
   const [pendingContributions, setPendingContributions] = useState([])
@@ -53,14 +51,6 @@ export const UserProfile = () => {
       return data.contributions
     }
   )
-
-  // makes window scroll to top between renders
-  // const pathname = window.location.pathname
-  // useEffect(() => {
-  //   if (pathname) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [pathname])
 
   useEffect(() => {
     if (contributions) {

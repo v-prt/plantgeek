@@ -24,7 +24,7 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 const { Option } = Select
 
 export const Browse = () => {
-  useDocumentTitle('plantgeek | Browse')
+  useDocumentTitle('Browse | plantgeek')
 
   const submitRef = useRef(0)
   const scrollRef = useRef()

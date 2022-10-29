@@ -17,6 +17,7 @@ import {
   BiLogOutCircle,
   BiBadgeCheck,
 } from 'react-icons/bi'
+import { FiHelpCircle } from 'react-icons/fi'
 import { CgProfile } from 'react-icons/cg'
 import { IoIosHelpCircleOutline } from 'react-icons/io'
 import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
@@ -60,6 +61,12 @@ export const Navbar = () => {
                 <BiSearch />
               </div>
               <span className='label'>browse</span>
+            </NavLink>
+            <NavLink to='/guidelines'>
+              <div className='icon'>
+                <FiHelpCircle />
+              </div>
+              <span className='label'>care tips</span>
             </NavLink>
             {currentUser ? (
               <>

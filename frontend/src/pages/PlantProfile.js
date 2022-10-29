@@ -517,6 +517,9 @@ export const PlantProfile = () => {
                             </Bar>
                           </div>
                         </div>
+                        <Link to='/guidelines' className='link'>
+                          <p>Care Tips</p>
+                        </Link>
                         <div className='misc-info'>
                           <div className='difficulty'>
                             Difficulty:{' '}
@@ -954,6 +957,13 @@ const Needs = styled.div`
         font-size: 0.8rem;
       }
     }
+  }
+  .link {
+    font-size: 0.8rem;
+    color: ${COLORS.accent};
+    margin-top: 10px;
+    text-decoration: underline;
+    width: fit-content;
   }
   .misc-info {
     display: flex;

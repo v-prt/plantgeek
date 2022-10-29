@@ -16,17 +16,8 @@ import userPlaceholder from '../assets/avatar-placeholder.png'
 import plantPlaceholder from '../assets/plant-placeholder.svg'
 
 export const Homepage = () => {
-  useDocumentTitle('plantgeek | Home')
-
+  useDocumentTitle('plantgeek')
   const { currentUser } = useContext(UserContext)
-
-  // makes window scroll to top between renders
-  // const pathname = window.location.pathname
-  // useEffect(() => {
-  //   if (pathname) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [pathname])
 
   return (
     <Wrapper>
@@ -169,8 +160,8 @@ export const Homepage = () => {
             from water-logged soil.
           </p>
           <h3>
-            <Link to='/browse'>
-              learn more
+            <Link to='/guidelines'>
+              more houseplant care tips
               <span className='icon'>
                 <FaArrowAltCircleRight />
               </span>

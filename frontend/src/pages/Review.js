@@ -12,7 +12,8 @@ import { PlantCard } from '../components/PlantCard'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const Review = () => {
-  useDocumentTitle('plantgeek | Review submissions')
+  useDocumentTitle('Review contributions | plantgeek')
+
   const { currentUser } = useContext(UserContext)
 
   const { data, status } = useQuery(['plants-to-review'], async () => {

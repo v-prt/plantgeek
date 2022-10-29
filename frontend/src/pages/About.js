@@ -3,15 +3,7 @@ import { FadeIn } from '../components/loaders/FadeIn'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const About = () => {
-  useDocumentTitle('plantgeek | About')
-
-  // makes window scroll to top between renders
-  // const pathname = window.location.pathname
-  // useEffect(() => {
-  //   if (pathname) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [pathname])
+  useDocumentTitle('About | plantgeek')
 
   return (
     <Wrapper>
