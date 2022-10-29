@@ -42,37 +42,37 @@ export const App = () => {
               <Route exact path='/'>
                 <Homepage />
               </Route>
-              <Route exact path='/browse'>
+              <Route path='/browse'>
                 <Browse />
               </Route>
-              <Route exact path='/login'>
+              <Route path='/login'>
                 <Login />
               </Route>
-              <Route exact path='/signup'>
+              <Route path='/signup'>
                 <SignUp />
               </Route>
-              <Route exact path='/welcome'>
+              <Route path='/welcome'>
                 <Welcome />
               </Route>
-              <Route exact path='/guidelines'>
+              <Route path='/guidelines'>
                 <Guidelines />
               </Route>
-              <Route exact path='/terms'>
+              <Route path='/terms'>
                 <Terms />
               </Route>
-              <Route exact path='/privacy'>
+              <Route path='/privacy'>
                 <Privacy />
               </Route>
-              <Route exact path='/About'>
+              <Route path='/About'>
                 <About />
               </Route>
-              <Route exact path='/settings'>
+              <Route path='/settings'>
                 <Settings />
               </Route>
-              <Route exact path='/contribute'>
+              <Route path='/contribute'>
                 <Contribute />
               </Route>
-              <Route exact path='/review'>
+              <Route path='/review'>
                 <Review />
               </Route>
               <Route path='/profile'>

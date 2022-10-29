@@ -8,7 +8,7 @@ import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import plantgeekLogo from '../assets/logo.webp'
+// import logo from '../assets/logo.webp'
 import {
   BiSearch,
   BiCog,
@@ -17,117 +17,174 @@ import {
   BiLogOutCircle,
   BiBadgeCheck,
 } from 'react-icons/bi'
-import { FiHelpCircle } from 'react-icons/fi'
 import { CgProfile } from 'react-icons/cg'
 import { IoIosHelpCircleOutline } from 'react-icons/io'
+import { Button } from 'antd'
 import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
 
 export const Navbar = () => {
   const { handleLogout, currentUser } = useContext(UserContext)
-  const [menuExpanded, setMenuExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(false)
 
   const { data: plantsToReview } = useQuery(['plants-to-review'], async () => {
     const { data } = await axios.get(`${API_URL}/plants-to-review`)
     return data.plants
   })
 
-  return (
-    <Wrapper>
-      <div className='inner'>
-        <div className='hamburger' onClick={() => setMenuExpanded(!menuExpanded)}>
-          {menuExpanded ? <CloseOutlined /> : <MenuOutlined />}
-        </div>
-        <NavLink to='/' className='logo' onClick={() => setMenuExpanded(false)}>
-          plantgeek
-        </NavLink>
-        <NavLink to='/browse' className='browse mobile' onClick={() => setMenuExpanded(false)}>
+  const SidebarMenuLinks = () => {
+    return (
+      <div className='links'>
+        <NavLink to='/browse'>
           <div className='icon'>
             <BiSearch />
           </div>
+          <span className='label'>browse</span>
         </NavLink>
-
-        <div
-          className={`nav-links ${menuExpanded && 'expanded'}`}
-          onClick={() => setMenuExpanded(false)}>
-          <div className='nav-links-inner'>
-            <NavLink to='/'>
+        {currentUser ? (
+          <>
+            <NavLink to='/profile'>
               <div className='icon'>
-                <img src={plantgeekLogo} alt='' />
+                <CgProfile />
               </div>
-              <span className='label'>home</span>
+              <span className='label'>profile</span>
             </NavLink>
-            <NavLink to='/browse'>
+            <NavLink to='/contribute'>
               <div className='icon'>
-                <BiSearch />
+                <BiPlusCircle />
               </div>
-              <span className='label'>browse</span>
+              <span className='label'>contribute</span>
             </NavLink>
-            <NavLink to='/guidelines'>
-              <div className='icon'>
-                <FiHelpCircle />
-              </div>
-              <span className='label'>care tips</span>
-            </NavLink>
-            {currentUser ? (
-              <>
-                <NavLink to='/profile'>
-                  <div className='icon'>
-                    <CgProfile />
-                  </div>
-                  <span className='label'>profile</span>
-                </NavLink>
-                <NavLink to='/contribute'>
-                  <div className='icon'>
-                    <BiPlusCircle />
-                  </div>
-                  <span className='label'>contribute</span>
-                </NavLink>
-                {currentUser.role === 'admin' && (
-                  <NavLink to='/review'>
-                    <div className='icon'>
-                      <BiBadgeCheck />
-                    </div>
-                    <span className='label'>
-                      review
-                      {plantsToReview?.length > 0 && (
-                        <span className='review-notification-badge'>
-                          {numeral(plantsToReview.length).format('0a')}
-                        </span>
-                      )}
+            {currentUser.role === 'admin' && (
+              <NavLink to='/review'>
+                <div className='icon'>
+                  <BiBadgeCheck />
+                </div>
+                <span className='label'>
+                  review
+                  {plantsToReview?.length > 0 && (
+                    <span className='review-notification-badge'>
+                      {numeral(plantsToReview.length).format('0a')}
                     </span>
-                  </NavLink>
-                )}
-                <NavLink to='/settings'>
-                  <div className='icon'>
-                    <BiCog />
-                  </div>
-                  <span className='label'>settings</span>
-                </NavLink>
-                <button className='logout-btn' onClick={handleLogout}>
-                  <div className='icon'>
-                    <BiLogOutCircle />
-                  </div>
-                  <span className='label'>log out</span>
-                </button>
-              </>
-            ) : (
-              <>
-                <NavLink to='/about'>
-                  <div className='icon'>
-                    <IoIosHelpCircleOutline />
-                  </div>
-                  <span className='label'>about</span>
-                </NavLink>
-                <NavLink to='/login' className='login-link'>
-                  <div className='icon'>
-                    <BiLogInCircle />
-                  </div>
-                  <span className='label'>log in</span>
-                </NavLink>
-              </>
+                  )}
+                </span>
+              </NavLink>
             )}
+            <NavLink to='/settings'>
+              <div className='icon'>
+                <BiCog />
+              </div>
+              <span className='label'>settings</span>
+            </NavLink>
+            <button className='logout-btn' onClick={handleLogout}>
+              <div className='icon'>
+                <BiLogOutCircle />
+              </div>
+              <span className='label'>log out</span>
+            </button>
+          </>
+        ) : (
+          <>
+            <NavLink to='/about'>
+              <div className='icon'>
+                <IoIosHelpCircleOutline />
+              </div>
+              <span className='label'>about</span>
+            </NavLink>
+            <NavLink to='/login' className='login-link'>
+              <div className='icon'>
+                <BiLogInCircle />
+              </div>
+              <span className='label'>log in</span>
+            </NavLink>
+          </>
+        )}
+      </div>
+    )
+  }
+
+  const FlyoutMenuLinks = () => {
+    return (
+      <div className='links'>
+        <NavLink to='/profile'>
+          <div className='icon'>
+            <CgProfile />
           </div>
+          <span className='label'>profile</span>
+        </NavLink>
+        <NavLink to='/contribute'>
+          <div className='icon'>
+            <BiPlusCircle />
+          </div>
+          <span className='label'>contribute</span>
+        </NavLink>
+        {currentUser.role === 'admin' && (
+          <NavLink to='/review'>
+            <div className='icon'>
+              <BiBadgeCheck />
+            </div>
+            <span className='label'>
+              review
+              {plantsToReview?.length > 0 && (
+                <span className='review-notification-badge'>
+                  {numeral(plantsToReview.length).format('0a')}
+                </span>
+              )}
+            </span>
+          </NavLink>
+        )}
+        <NavLink to='/settings'>
+          <div className='icon'>
+            <BiCog />
+          </div>
+          <span className='label'>settings</span>
+        </NavLink>
+        <button className='logout-btn' onClick={handleLogout}>
+          <div className='icon'>
+            <BiLogOutCircle />
+          </div>
+          <span className='label'>log out</span>
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <Wrapper>
+      <div className='inner'>
+        {/* NAV HEADER */}
+        <NavLink exact to='/' className='logo' onClick={() => setExpanded(false)}>
+          plantgeek
+        </NavLink>
+        <div className='mobile-ctas'>
+          <NavLink to='/browse' className='browse mobile' onClick={() => setExpanded(false)}>
+            <div className='icon'>
+              <BiSearch />
+            </div>
+          </NavLink>
+          {currentUser ? (
+            <div className='hamburger' onClick={() => setExpanded(!expanded)}>
+              {expanded ? <CloseOutlined /> : <MenuOutlined />}
+            </div>
+          ) : (
+            <NavLink to='/login' className='browse mobile' onClick={() => setExpanded(false)}>
+              <Button type='primary'>Log in</Button>
+            </NavLink>
+          )}
         </div>
+
+        {/* SIDEBAR FOR DESKTOP */}
+        <div className='sidebar-menu'>
+          <SidebarMenuLinks />
+        </div>
+
+        {/* FLYOUT MENU FOR TABLET AND MOBILE */}
+        {currentUser && (
+          <div
+            className={`flyout-menu ${expanded && 'expanded'}`}
+            onClick={() => setExpanded(false)}>
+            <FlyoutMenuLinks />
+          </div>
+        )}
       </div>
     </Wrapper>
   )
@@ -145,6 +202,14 @@ const Wrapper = styled.nav`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    .mobile-ctas {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      button {
+        border-color: #fff;
+      }
+    }
     .logo {
       font-family: 'Lobster Two', cursive;
       font-size: 1.8rem;
@@ -174,32 +239,43 @@ const Wrapper = styled.nav`
     }
     .logout-btn,
     .login-link {
-      margin-top: 30px;
+      padding-top: 20px;
       border-top: 1px dotted rgba(255, 255, 255, 0.4);
-      padding-top: 30px;
     }
-    .nav-links {
+    .sidebar-menu {
+      display: none;
+    }
+    .flyout-menu {
       background: rgba(0, 0, 0, 0.5);
-      position: absolute;
+      position: fixed;
       top: 54px;
-      left: -100%;
-      height: 100vh;
-      width: 100vw;
-      transition: 0.4s ease-in-out;
-      .nav-links-inner {
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 99;
+      transform: translateX(100%);
+      transition: 0.3s ease-in-out;
+      .links {
         background: #222;
-        height: 100%;
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        padding: 40px;
-      }
-      a,
-      .logout-btn {
-        margin: 10px;
+        gap: 20px;
+        padding: 20px 0 20px 20px;
+        height: 100%;
+        margin-left: auto;
+        a {
+          border-radius: 20px 0 0 20px;
+          &.active {
+            background: rgba(255, 255, 255, 0.1);
+          }
+        }
+        a,
+        .logout-btn {
+          padding: 10px 20px 10px 10px;
+        }
       }
       &.expanded {
-        left: 0;
+        transform: translateX(0);
       }
     }
     .icon {
@@ -230,13 +306,11 @@ const Wrapper = styled.nav`
       font-weight: bold;
     }
   }
-  /* FIXME: can't scroll within nav links on mobile landscape */
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    .nav-links {
+    .flyout-menu {
       transition: 0.6s ease-in-out;
-      .nav-links-inner {
+      .links {
         max-width: 300px;
-        margin-right: auto;
       }
     }
   }
@@ -244,7 +318,7 @@ const Wrapper = styled.nav`
     left: 0;
     width: auto;
     height: 100vh;
-    padding: 30px 50px;
+    padding: 0;
     .inner {
       flex-direction: column;
       justify-content: flex-start;
@@ -259,7 +333,8 @@ const Wrapper = styled.nav`
         width: 100%;
         gap: 10px;
         font-size: 2.5rem;
-        margin-bottom: 50px;
+        margin-bottom: 40px;
+        padding: 30px 50px;
       }
       .hamburger {
         display: none;
@@ -267,31 +342,29 @@ const Wrapper = styled.nav`
       .label {
         display: flex;
       }
-      .nav-links {
+      .sidebar-menu {
+        display: block;
         width: 100%;
-        background: transparent;
-        position: relative;
-        height: auto;
-        width: auto;
-        top: 0;
-        left: 0;
-        margin-right: auto;
-        .nav-links-inner {
-          background: transparent;
-          padding: 0;
-          gap: 0;
-        }
-        a,
-        .logout-btn {
-          width: 100%;
-          margin: 20px 0;
-          .icon {
-            font-size: 1.6rem;
+        .links {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          margin-left: 30px;
+          a {
+            border-radius: 20px 0 0 20px;
+            &:hover,
+            &.active {
+              background: rgba(255, 255, 255, 0.1);
+            }
           }
-          .label {
-            font-size: 1.1rem;
+          a,
+          .logout-btn {
+            padding: 10px;
           }
         }
+      }
+      .flyout-menu {
+        display: none;
       }
     }
   }
