@@ -326,11 +326,11 @@ const removeFromUser = async (req, res) => {
 // will need to remove from other users' friends or add a check in case friend user data is missing
 const deleteUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
-  const _id = req.params._id
+  const { id } = req.params
   await client.connect()
   const db = client.db('plantgeekdb')
   try {
-    const filter = { _id: ObjectId(_id) }
+    const filter = { _id: ObjectId(id) }
     const result = await db.collection('users').deleteOne(filter)
     console.log(result)
     res.status(200).json({ status: 200, data: result })

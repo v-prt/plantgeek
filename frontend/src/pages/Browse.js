@@ -85,11 +85,6 @@ export const Browse = () => {
     'Zamioculcas',
   ]
 
-  // const { data: filterValues, status: filterValuesStatus } = useQuery('filter-values', async () => {
-  //   const { data } = await axios.get(`${API_URL}/filter-values`)
-  //   return data.data
-  // })
-
   const handleScroll = () => {
     const scrollDistance = scrollRef.current.scrollTop
     const outerHeight = scrollRef.current.offsetHeight

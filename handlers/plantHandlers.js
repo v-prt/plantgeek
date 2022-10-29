@@ -25,14 +25,14 @@ const createPlant = async (req, res) => {
     })
 
     if (nameTaken) {
-      return res.status(409).json({ status: 409, message: 'This name is taken' })
+      return res.status(400).json({ message: 'A plant already exists with this botanical name.' })
     } else {
       const plant = await db.collection('plants').insertOne(req.body)
       return res.status(201).json({ status: 201, plant: plant.ops[0] })
     }
   } catch (err) {
     console.error(err.stack)
-    res.status(500).json({ status: 500, data: req.body, message: err.message })
+    res.status(500).json({ message: 'Sorry, something went wrong.' })
   }
   client.close()
 }
@@ -162,7 +162,7 @@ const getPlants = async (req, res) => {
         nextCursor: totalResults > 24 * page ? page + 1 : null,
       })
     } else {
-      res.status(404).json({ status: 404, message: 'No plants found' })
+      res.status(404).json({ status: 404, message: 'No plants found.' })
     }
   } catch (err) {
     console.error(err)
@@ -180,7 +180,7 @@ const getPlantsToReview = async (req, res) => {
     if (plants) {
       res.status(200).json({ status: 200, plants: plants })
     } else {
-      res.status(404).json({ status: 404, message: 'No plants found' })
+      res.status(404).json({ status: 404, message: 'No plants found.' })
     }
   } catch (err) {
     console.error(err)
@@ -203,7 +203,7 @@ const getPlant = async (req, res) => {
     if (plant) {
       res.status(200).json({ status: 200, plant: plant })
     } else {
-      res.status(404).json({ status: 404, message: 'Plant not found' })
+      res.status(404).json({ status: 404, message: 'Plant not found.' })
     }
   } catch (err) {
     console.error(err)
@@ -242,7 +242,7 @@ const getSimilarPlants = async (req, res) => {
 
       res.status(200).json({ status: 200, similarPlants: similarPlants })
     } else {
-      res.status(404).json({ status: 404, message: 'Plant not found' })
+      res.status(404).json({ status: 404, message: 'Plant not found.' })
     }
   } catch (err) {
     console.error(err)
@@ -262,7 +262,7 @@ const getRandomPlants = async (req, res) => {
     if (plants) {
       res.status(200).json({ status: 200, plants: plants })
     } else {
-      res.status(404).json({ status: 404, message: 'No plants found' })
+      res.status(404).json({ status: 404, message: 'No plants found.' })
     }
   } catch (err) {
     console.error(err)
@@ -285,11 +285,11 @@ const getUserPlants = async (req, res) => {
       if (plants) {
         res.status(200).json({ status: 200, plants: plants })
       } else {
-        res.status(404).json({ status: 404, message: 'No plants found' })
+        res.status(404).json({ status: 404, message: 'No plants found.' })
       }
     } else {
       console.log('no ids')
-      res.status(404).json({ status: 404, message: 'No plants in list' })
+      res.status(404).json({ status: 404, message: 'No plants in list.' })
     }
   } catch (err) {
     console.error(err)
@@ -309,7 +309,7 @@ const getUserContributions = async (req, res) => {
     if (contributions) {
       res.status(200).json({ status: 200, contributions: contributions })
     } else {
-      res.status(404).json({ status: 404, message: 'No contributions found' })
+      res.status(404).json({ status: 404, message: 'No contributions found.' })
     }
   } catch (err) {
     console.error(err)
@@ -320,12 +320,12 @@ const getUserContributions = async (req, res) => {
 // (UPDATE/PUT) ADDS COMMENT TO A PLANT BY ID
 const addComment = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
-  const _id = req.params._id
+  const { id } = req.params
   try {
     await client.connect()
     const db = client.db('plantgeekdb')
     const plants = db.collection('plants')
-    const filter = { _id: ObjectId(_id) }
+    const filter = { _id: ObjectId(id) }
     let update = undefined
     if (req.body.comments) {
       update = {
@@ -365,7 +365,9 @@ const updatePlant = async (req, res) => {
         _id: { $ne: ObjectId(id) },
       })
       if (nameTaken) {
-        return res.status(400).json({ status: 400, message: 'This name is taken' })
+        return res
+          .status(400)
+          .json({ status: 400, message: 'A plant already exists with this botanical name.' })
       }
     }
 
@@ -374,9 +376,9 @@ const updatePlant = async (req, res) => {
       $set: req.body,
     }
     await db.collection('plants').updateOne(filter, update)
-    res.status(200).json({ status: 200, message: 'Plant updated' })
+    res.status(200).json({ status: 200, message: 'Plant updated.' })
   } catch (err) {
-    res.status(500).json({ status: 500, message: 'Sorry, something went wrong' })
+    res.status(500).json({ status: 500, message: 'Sorry, something went wrong.' })
     console.error(err)
   }
   client.close()
@@ -385,12 +387,23 @@ const updatePlant = async (req, res) => {
 // TODO: will need to remove from users' lists or add a check in case plant data is missing
 const deletePlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
-  const _id = req.params._id
+  const { id } = req.params
   await client.connect()
   const db = client.db('plantgeekdb')
   try {
-    const filter = { _id: ObjectId(_id) }
+    const filter = { _id: ObjectId(id) }
     const result = await db.collection('plants').deleteOne(filter)
+    // find and delete plant from users' collection, favorites, and wishlist
+    await db.collection('users').updateMany(
+      {},
+      {
+        $pull: {
+          favorites: id,
+          wishlist: id,
+          collection: id,
+        },
+      }
+    )
     res.status(200).json({ status: 200, data: result })
   } catch (err) {
     console.error(err)
@@ -400,228 +413,227 @@ const deletePlant = async (req, res) => {
 }
 
 // taking all plants and saving images to cloudinary, then updating the plant with the cloudinary image url
-const uploadToCloudinary = async () => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
+// const uploadToCloudinary = async () => {
+//   const client = await MongoClient(MONGO_URI, options)
+//   await client.connect()
+//   const db = client.db('plantgeekdb')
 
-  try {
-    // finding plants where imageUrl includes 'shopify'
-    const plants = await db
-      .collection('plants')
-      .find({ imageUrl: { $regex: 'shopify' } })
-      .toArray()
+//   try {
+//     // finding plants where imageUrl includes 'shopify'
+//     const plants = await db
+//       .collection('plants')
+//       .find({ imageUrl: { $regex: 'shopify' } })
+//       .toArray()
 
-    if (plants) {
-      const cloudinary = require('cloudinary').v2
-      cloudinary.config({
-        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-        api_key: process.env.CLOUDINARY_KEY,
-        api_secret: process.env.CLOUDINARY_SECRET,
-      })
+//     if (plants) {
+//       const cloudinary = require('cloudinary').v2
+//       cloudinary.config({
+//         cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//         api_key: process.env.CLOUDINARY_KEY,
+//         api_secret: process.env.CLOUDINARY_SECRET,
+//       })
 
-      let plantsUpdated = 0
-      const promises = plants.map(async plant => {
-        try {
-          const url = `https://${plant.imageUrl}`
-          const res = await cloudinary.uploader.upload(url, {
-            folder: 'plantgeek-plants',
-          })
-          // updating plant with new image url
-          const filter = { _id: ObjectId(plant._id) }
-          const update = {
-            $set: {
-              imageUrl: res.secure_url,
-            },
-          }
-          await db.collection('plants').updateOne(filter, update)
-          plantsUpdated++
-        } catch (err) {
-          console.error('error uploading to cloudinary', err)
-        }
-      })
-      await Promise.all(promises)
-      console.log('done with image upload', 'plants updated: ', plantsUpdated)
-    } else {
-      console.log('no plants found with shopify image url')
-    }
-  } catch (err) {
-    console.error('error with image upload', err)
-  }
-  client.close()
-}
+//       let plantsUpdated = 0
+//       const promises = plants.map(async plant => {
+//         try {
+//           const url = `https://${plant.imageUrl}`
+//           const res = await cloudinary.uploader.upload(url, {
+//             folder: 'plantgeek-plants',
+//           })
+//           // updating plant with new image url
+//           const filter = { _id: ObjectId(plant._id) }
+//           const update = {
+//             $set: {
+//               imageUrl: res.secure_url,
+//             },
+//           }
+//           await db.collection('plants').updateOne(filter, update)
+//           plantsUpdated++
+//         } catch (err) {
+//           console.error('error uploading to cloudinary', err)
+//         }
+//       })
+//       await Promise.all(promises)
+//       console.log('done with image upload', 'plants updated: ', plantsUpdated)
+//     } else {
+//       console.log('no plants found with shopify image url')
+//     }
+//   } catch (err) {
+//     console.error('error with image upload', err)
+//   }
+//   client.close()
+// }
 
-const importPlantData = async () => {
-  // for each plant in json file, check if plant already exists in db by primaryName and secondaryName
+// const importPlantData = async () => {
+//   // for each plant in json file, check if plant already exists in db by primaryName and secondaryName
 
-  const cloudinary = require('cloudinary').v2
-  cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_KEY,
-    api_secret: process.env.CLOUDINARY_SECRET,
-  })
+//   const cloudinary = require('cloudinary').v2
+//   cloudinary.config({
+//     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//     api_key: process.env.CLOUDINARY_KEY,
+//     api_secret: process.env.CLOUDINARY_SECRET,
+//   })
 
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
+//   const client = await MongoClient(MONGO_URI, options)
+//   await client.connect()
+//   const db = client.db('plantgeekdb')
 
-  try {
-    const plants = await db.collection('plants').find().toArray()
-    let existingPlants = 0
-    let newPlants = 0
-    const promises = plantData.map(async plant => {
-      const plantExists = plants.find(
-        p =>
-          p.primaryName.toLowerCase() === plant.primaryName.toLowerCase() ||
-          p.secondaryName.toLowerCase() === plant.secondaryName.toLowerCase() ||
-          p.primaryName.toLowerCase() === plant.secondaryName.toLowerCase() ||
-          p.secondaryName.toLowerCase() === plant.primaryName.toLowerCase()
-      )
-      // if it's new, upload image by imageUrl to cloudinary and change the imageUrl to the cloudinary url
-      if (!plantExists) {
-        try {
-          const url = plant.imageUrl
-          const result = await cloudinary.uploader.upload(url, {
-            folder: 'plantgeek-plants',
-          })
-          plant.imageUrl = result.secure_url
-        } catch (err) {
-          console.error('Error uploading image to cloudinary', err)
-        }
-        // add plant to db
-        await db.collection('plants').insertOne(plant)
-        console.log('plant imported', plant.primaryName)
-        newPlants++
-      } else {
-        console.log('plant already exists', plant.primaryName)
-        existingPlants++
-      }
-    })
-    await Promise.all(promises)
-    console.log('done', `existing plants: ${existingPlants}`, `new plants: ${newPlants}`)
-  } catch (err) {
-    console.error('Error importing plant data', err)
-  }
-  client.close()
-}
+//   try {
+//     const plants = await db.collection('plants').find().toArray()
+//     let existingPlants = 0
+//     let newPlants = 0
+//     const promises = plantData.map(async plant => {
+//       const plantExists = plants.find(
+//         p =>
+//           p.primaryName.toLowerCase() === plant.primaryName.toLowerCase() ||
+//           p.secondaryName.toLowerCase() === plant.secondaryName.toLowerCase() ||
+//           p.primaryName.toLowerCase() === plant.secondaryName.toLowerCase() ||
+//           p.secondaryName.toLowerCase() === plant.primaryName.toLowerCase()
+//       )
+//       // if it's new, upload image by imageUrl to cloudinary and change the imageUrl to the cloudinary url
+//       if (!plantExists) {
+//         try {
+//           const url = plant.imageUrl
+//           const result = await cloudinary.uploader.upload(url, {
+//             folder: 'plantgeek-plants',
+//           })
+//           plant.imageUrl = result.secure_url
+//         } catch (err) {
+//           console.error('Error uploading image to cloudinary', err)
+//         }
+//         // add plant to db
+//         await db.collection('plants').insertOne(plant)
+//         console.log('plant imported', plant.primaryName)
+//         newPlants++
+//       } else {
+//         console.log('plant already exists', plant.primaryName)
+//         existingPlants++
+//       }
+//     })
+//     await Promise.all(promises)
+//     console.log('done', `existing plants: ${existingPlants}`, `new plants: ${newPlants}`)
+//   } catch (err) {
+//     console.error('Error importing plant data', err)
+//   }
+//   client.close()
+// }
 
-const getSearchTerms = async (req, res) => {
-  // get 25 most common unique words from plant names in db
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
+// const getSearchTerms = async (req, res) => {
+//   // get 25 most common unique words from plant names in db
+//   const client = await MongoClient(MONGO_URI, options)
+//   await client.connect()
+//   const db = client.db('plantgeekdb')
 
-  // TODO: update this function to clean up search terms for regular users
-  try {
-    // ignore plants that are pending or rejected
-    filters = {
-      $and: [{ review: { $ne: 'pending' } }, { review: { $ne: 'rejected' } }],
-    }
-    const plants = await db.collection('plants').find(filters).toArray()
-    const words = plants
-      .map(plant => {
-        const primaryName = plant.primaryName.split(' ')
-        const secondaryName = plant.secondaryName.split(' ')
-        return [...primaryName, ...secondaryName]
-      })
-      // remove short words or words with special characters
-      .flat()
-      .filter(
-        word =>
-          word.length > 2 &&
-          !word.includes("'") &&
-          !word.includes('(') &&
-          !word.includes(')') &&
-          // ignore common words & colors
-          word.toLowerCase() !== 'plant' &&
-          word.toLowerCase() !== 'green' &&
-          word.toLowerCase() !== 'blue' &&
-          word.toLowerCase() !== 'red' &&
-          word.toLowerCase() !== 'yellow' &&
-          word.toLowerCase() !== 'orange' &&
-          word.toLowerCase() !== 'purple' &&
-          word.toLowerCase() !== 'pink' &&
-          word.toLowerCase() !== 'white' &&
-          word.toLowerCase() !== 'black' &&
-          word.toLowerCase() !== 'brown' &&
-          word.toLowerCase() !== 'grey' &&
-          word.toLowerCase() !== 'gray' &&
-          word.toLowerCase() !== 'gold' &&
-          word.toLowerCase() !== 'silver'
-      )
+//   try {
+//     // ignore plants that are pending or rejected
+//     filters = {
+//       $and: [{ review: { $ne: 'pending' } }, { review: { $ne: 'rejected' } }],
+//     }
+//     const plants = await db.collection('plants').find(filters).toArray()
+//     const words = plants
+//       .map(plant => {
+//         const primaryName = plant.primaryName.split(' ')
+//         const secondaryName = plant.secondaryName.split(' ')
+//         return [...primaryName, ...secondaryName]
+//       })
+//       // remove short words or words with special characters
+//       .flat()
+//       .filter(
+//         word =>
+//           word.length > 2 &&
+//           !word.includes("'") &&
+//           !word.includes('(') &&
+//           !word.includes(')') &&
+//           // ignore common words & colors
+//           word.toLowerCase() !== 'plant' &&
+//           word.toLowerCase() !== 'green' &&
+//           word.toLowerCase() !== 'blue' &&
+//           word.toLowerCase() !== 'red' &&
+//           word.toLowerCase() !== 'yellow' &&
+//           word.toLowerCase() !== 'orange' &&
+//           word.toLowerCase() !== 'purple' &&
+//           word.toLowerCase() !== 'pink' &&
+//           word.toLowerCase() !== 'white' &&
+//           word.toLowerCase() !== 'black' &&
+//           word.toLowerCase() !== 'brown' &&
+//           word.toLowerCase() !== 'grey' &&
+//           word.toLowerCase() !== 'gray' &&
+//           word.toLowerCase() !== 'gold' &&
+//           word.toLowerCase() !== 'silver'
+//       )
 
-    // count and set the number of times each word appears
-    const wordCounts = {}
-    words.forEach(word => {
-      if (wordCounts[word]) {
-        wordCounts[word]++
-      } else wordCounts[word] = 1
-    })
+//     // count and set the number of times each word appears
+//     const wordCounts = {}
+//     words.forEach(word => {
+//       if (wordCounts[word]) {
+//         wordCounts[word]++
+//       } else wordCounts[word] = 1
+//     })
 
-    // for admin
-    // remove duplicates
-    // const uniqueWords = [...new Set(words)]
-    // sort words alphabetically
-    // const sortedWords = uniqueWords.sort((a, b) => a.localeCompare(b))
+//     // for admin
+//     // remove duplicates
+//     // const uniqueWords = [...new Set(words)]
+//     // sort words alphabetically
+//     // const sortedWords = uniqueWords.sort((a, b) => a.localeCompare(b))
 
-    // sort words by order of frequency from most to least
-    const sortedWords = Object.keys(wordCounts)
-      .sort((a, b) => {
-        return wordCounts[b] - wordCounts[a]
-      })
-      .filter(
-        // remove words with less than 4 occurrences
-        word => wordCounts[word] > 3
-      )
-      .map(word => word.toLowerCase())
-      // return top 25 words
-      .slice(0, 25)
+//     // sort words by order of frequency from most to least
+//     const sortedWords = Object.keys(wordCounts)
+//       .sort((a, b) => {
+//         return wordCounts[b] - wordCounts[a]
+//       })
+//       .filter(
+//         // remove words with less than 4 occurrences
+//         word => wordCounts[word] > 3
+//       )
+//       .map(word => word.toLowerCase())
+//       // return top 25 words
+//       .slice(0, 25)
 
-    res.status(200).json({ status: 200, data: sortedWords, totalResults: sortedWords.length })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ status: 500, data: req.body, message: err.message })
-  }
-  client.close()
-}
+//     res.status(200).json({ status: 200, data: sortedWords, totalResults: sortedWords.length })
+//   } catch (err) {
+//     console.error(err)
+//     res.status(500).json({ status: 500, data: req.body, message: err.message })
+//   }
+//   client.close()
+// }
 
-const getFilterValues = async (req, res) => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
-  try {
-    const plants = await db.collection('plants').find().toArray()
+// const getFilterValues = async (req, res) => {
+//   const client = await MongoClient(MONGO_URI, options)
+//   await client.connect()
+//   const db = client.db('plantgeekdb')
+//   try {
+//     const plants = await db.collection('plants').find().toArray()
 
-    const lightValues = plants
-      .map(plant => plant.light || 'unknown')
-      .sort((a, b) => a.localeCompare(b))
+//     const lightValues = plants
+//       .map(plant => plant.light || 'unknown')
+//       .sort((a, b) => a.localeCompare(b))
 
-    const waterValues = plants
-      .map(plant => plant.water || 'unknown')
-      .sort((a, b) => a.localeCompare(b))
+//     const waterValues = plants
+//       .map(plant => plant.water || 'unknown')
+//       .sort((a, b) => a.localeCompare(b))
 
-    const temperatureValues = plants
-      .map(plant => plant.temperature || 'unknown')
-      .sort((a, b) => a.localeCompare(b))
+//     const temperatureValues = plants
+//       .map(plant => plant.temperature || 'unknown')
+//       .sort((a, b) => a.localeCompare(b))
 
-    const humidityValues = plants
-      .map(plant => plant.humidity || 'unknown')
-      .sort((a, b) => a.localeCompare(b))
+//     const humidityValues = plants
+//       .map(plant => plant.humidity || 'unknown')
+//       .sort((a, b) => a.localeCompare(b))
 
-    const filterValues = {
-      light: [...new Set(lightValues)],
-      water: [...new Set(waterValues)],
-      temperature: [...new Set(temperatureValues)],
-      humidity: [...new Set(humidityValues)],
-    }
+//     const filterValues = {
+//       light: [...new Set(lightValues)],
+//       water: [...new Set(waterValues)],
+//       temperature: [...new Set(temperatureValues)],
+//       humidity: [...new Set(humidityValues)],
+//     }
 
-    res.status(200).json({ status: 200, data: filterValues })
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ status: 500, data: req.body, message: err.message })
-  }
-  client.close()
-}
+//     res.status(200).json({ status: 200, data: filterValues })
+//   } catch (err) {
+//     console.error(err)
+//     res.status(500).json({ status: 500, data: req.body, message: err.message })
+//   }
+//   client.close()
+// }
 
 module.exports = {
   createPlant,
@@ -635,6 +647,4 @@ module.exports = {
   addComment,
   updatePlant,
   deletePlant,
-  getSearchTerms,
-  getFilterValues,
 }

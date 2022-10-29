@@ -205,7 +205,7 @@ export const UserProfile = () => {
                     {approvedContributions.map(plant => (
                       <Link
                         className='contribution-card'
-                        to={`/plant/${plant._id}`}
+                        to={`/plant/${plant.slug}`}
                         key={plant._id}>
                         <div className='thumbnail'>
                           <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
@@ -226,7 +226,7 @@ export const UserProfile = () => {
                     {pendingContributions.map(plant => (
                       <Link
                         className='contribution-card pending'
-                        to={`/plant/${plant._id}`}
+                        to={`/plant/${plant.slug}`}
                         key={plant._id}>
                         <div className='thumbnail'>
                           <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />

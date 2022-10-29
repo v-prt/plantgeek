@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import { API_URL } from '../constants'
-// import axios from 'axios'
+import axios from 'axios'
 import { useDropzone } from 'react-dropzone'
 import { UserContext } from '../contexts/UserContext'
 
@@ -29,18 +29,9 @@ export const Contribute = () => {
   const [status, setStatus] = useState(undefined)
   const [newPlant, setNewPlant] = useState(null)
 
-  // makes window scroll to top between renders
-  // const pathname = window.location.pathname
-  // useEffect(() => {
-  //   if (pathname) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [pathname])
-
   const initialValues = {
     primaryName: '',
     secondaryName: '',
-    imageUrl: '',
     light: '',
     water: '',
     temperature: '',
@@ -97,54 +88,37 @@ export const Contribute = () => {
       setStatus('You must upload an image.')
       setSubmitting(false)
     } else {
-      // upload image to cloudinary via dropzone
       images.forEach(async image => {
         const formData = new FormData()
         formData.append('file', image)
         formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
-        // FIXME: Moderation parameter is not allowed when using unsigned upload
-        // formData.append('moderation', 'manual')
-        // TODO: axios
-        const response = await fetch(cloudinaryUrl, {
-          method: 'POST',
-          body: formData,
-        })
-        const cloudinaryResponse = await response.json()
-        // submit data to mongodb
-        const review = currentUser.role === 'admin' ? 'approved' : 'pending'
-        // TODO: axios
-        await fetch(`${API_URL}/plants`, {
-          method: 'POST',
-          body: JSON.stringify({
-            slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
-            toxic: values.toxic === 'toxic' ? true : false,
-            imageUrl: cloudinaryResponse.url,
-            contributorId: currentUser._id,
-            review,
-            ...values,
-          }),
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        })
-          .then(res => res.json())
-          .then(json => {
-            if (json.status === 409) {
-              setStatus('This plant already exists')
+
+        // upload image to cloudinary
+        await axios.post(cloudinaryUrl, formData).then(res => {
+          const imageUrl = res.data.secure_url
+
+          // upload plant to db
+          axios
+            .post(`${API_URL}/plants`, {
+              slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
+              toxic: values.toxic === 'toxic' ? true : false,
+              imageUrl,
+              contributorId: currentUser._id,
+              review: currentUser.role === 'admin' ? 'approved' : 'pending',
+              ...values,
+            })
+            .then(res => {
               setSubmitting(false)
-            } else if (json.status === 201) {
-              setNewPlant(json.plant)
-              setStatus(undefined)
-              setSubmitting(false)
-              setImages()
+              setNewPlant(res.data.plant)
               resetForm()
+              setImages()
               window.scrollTo(0, 0)
-            } else if (json.status === 500) {
-              setStatus('Oops, something went wrong')
+            })
+            .catch(err => {
+              setStatus(err.response.data.message)
               setSubmitting(false)
-            }
-          })
+            })
+        })
       })
     }
   }
@@ -202,7 +176,7 @@ export const Contribute = () => {
             onSubmit={handleSubmit}>
             {({ isSubmitting, resetForm }) => (
               <Form>
-                <FormItem label='Scientific name' name='primaryName'>
+                <FormItem label='Botanical name' name='primaryName'>
                   <Input name='primaryName' placeholder='Monstera deliciosa' />
                 </FormItem>
 

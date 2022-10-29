@@ -31,8 +31,6 @@ const {
   addComment,
   updatePlant,
   deletePlant,
-  getSearchTerms,
-  getFilterValues,
 } = require('./handlers/plantHandlers.js')
 
 const {
@@ -67,7 +65,7 @@ app
   .put(`${API_URL}/users/:id`, updateUser)
   .put(`${API_URL}/:username/add`, addToUser)
   .put(`${API_URL}/:username/remove`, removeFromUser)
-  .delete(`${API_URL}/users/:_id`, deleteUser)
+  .delete(`${API_URL}/users/:id`, deleteUser)
 
   // plants
   .post(`${API_URL}/plants`, createPlant)
@@ -79,10 +77,8 @@ app
   .get(`${API_URL}/user-plants/:page`, getUserPlants)
   .get(`${API_URL}/contributions/:userId`, getUserContributions)
   .put(`${API_URL}/plants/:id`, updatePlant)
-  .put(`${API_URL}/plants/:_id/comments`, addComment)
-  .delete(`${API_URL}/plants/:_id`, deletePlant)
-  .get(`${API_URL}/search-terms`, getSearchTerms)
-  .get(`${API_URL}/filter-values`, getFilterValues)
+  .put(`${API_URL}/plants/:id/comments`, addComment)
+  .delete(`${API_URL}/plants/:id`, deletePlant)
 
   // suggestions
   .post(`${API_URL}/suggestions/:plantId`, createSuggestion)

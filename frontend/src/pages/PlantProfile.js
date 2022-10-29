@@ -261,7 +261,7 @@ export const PlantProfile = () => {
         'Are you sure you want to delete this plant from the database? This cannot be undone!'
       )
     ) {
-      window.location.replace('/browse')
+      history.push('/browse')
       axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
     }
   }
@@ -303,7 +303,7 @@ export const PlantProfile = () => {
                       )}
                       {editMode ? (
                         <div className='basic-info-form'>
-                          <FormItem label='Scientific name' name='primaryName'>
+                          <FormItem label='Botanical name' name='primaryName'>
                             <Input
                               name='primaryName'
                               placeholder='Monstera deliciosa'
