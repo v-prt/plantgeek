@@ -69,8 +69,9 @@ export const PlantCard = ({ plant, viewNeeds }) => {
         <Row>
           <img src={humidity} alt='humidity' />
           <Bar>
-            {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-            {plant.humidity === 'above average' && <Indicator level={'3'} />}
+            {plant.humidity === 'low' && <Indicator level={'1'} />}
+            {plant.humidity === 'medium' && <Indicator level={'2'} />}
+            {plant.humidity === 'high' && <Indicator level={'3'} />}
           </Bar>
         </Row>
       </Needs>

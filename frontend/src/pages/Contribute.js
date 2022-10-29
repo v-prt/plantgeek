@@ -216,10 +216,8 @@ export const Contribute = () => {
                 <FormItem label='Light' name='light'>
                   <Select name='light' placeholder='Select'>
                     <Option value='low to bright indirect'>low to bright indirect</Option>
-                    <Option value='medium indirect'>medium indirect</Option>
                     <Option value='medium to bright indirect'>medium to bright indirect</Option>
                     <Option value='bright indirect'>bright indirect</Option>
-                    <Option value='bright'>bright</Option>
                   </Select>
                 </FormItem>
 
@@ -235,15 +233,16 @@ export const Contribute = () => {
 
                 <FormItem label='Temperature' name='temperature'>
                   <Select name='temperature' placeholder='Select'>
-                    <Option value='average'>average</Option>
-                    <Option value='warm'>warm</Option>
+                    <Option value='average'>average (55-75°F)</Option>
+                    <Option value='above average'>above average (65-85°F)</Option>
                   </Select>
                 </FormItem>
 
                 <FormItem label='Humidity' name='humidity'>
                   <Select name='humidity' placeholder='Select'>
-                    <Option value='average'>average</Option>
-                    <Option value='high'>high</Option>
+                    <Option value='low'>low (30-40%)</Option>
+                    <Option value='medium'>medium (40-50%)</Option>
+                    <Option value='high'>high (50-60%+)</Option>
                   </Select>
                 </FormItem>
 

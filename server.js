@@ -55,7 +55,6 @@ app
   .use(express.json())
 
   // ENDPOINTS
-  // TODO: change all '_id' to 'id'
   // users
   .post(`${API_URL}/users`, createUser)
   .post(`${API_URL}/login`, authenticateUser)

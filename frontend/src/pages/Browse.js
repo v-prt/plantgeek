@@ -1,7 +1,5 @@
 import React, { useState, useRef, useContext } from 'react'
-import { useInfiniteQuery, useQuery } from 'react-query'
-import axios from 'axios'
-import { API_URL } from '../constants'
+import { useInfiniteQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import { PlantContext } from '../contexts/PlantContext'
 
@@ -34,24 +32,10 @@ export const Browse = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { currentUser } = useContext(UserContext)
 
-  // makes window scroll to top between renders
-  // const pathname = window.location.pathname
-  // useEffect(() => {
-  //   if (pathname) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [pathname])
-
-  // fetch plants with pagination
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } =
     useInfiniteQuery(['plants', formData], fetchPlants, {
       getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
     })
-
-  // const { data: searchTerms, status: searchTermsStatus } = useQuery('search-terms', async () => {
-  //   const { data } = await axios.get(`${API_URL}/search-terms`)
-  //   return data.data
-  // })
 
   const commonGenera = [
     'Aglaonema',
@@ -304,9 +288,8 @@ export const Browse = () => {
                         placeholder='Select'
                         style={{ width: '100%' }}
                         allowClear>
-                        <Option value='average'>average</Option>
-                        <Option value='above average'>above average</Option>
-                        {/* TODO: find all plants with 'high' humidity and change to above average then remove this option */}
+                        <Option value='low'>low</Option>
+                        <Option value='medium'>medium</Option>
                         <Option value='high'>high</Option>
                         <Option value='unknown'>unknown</Option>
                       </Select>

@@ -108,10 +108,12 @@ export const PlantProfile = () => {
       } else if (plant.temperature === 'above average') {
         temperatureLevel = 2
       }
-      if (plant.humidity === 'average') {
-        humidityLevel = 0
-      } else if (plant.humidity === 'above average') {
+      if (plant.humidity === 'low') {
+        humidityLevel = 1
+      } else if (plant.humidity === 'medium') {
         humidityLevel = 2
+      } else if (plant.humidity === 'high') {
+        humidityLevel = 3
       }
       let total = lightLevel + waterLevel + temperatureLevel + humidityLevel
       // lowest = 0
@@ -493,21 +495,25 @@ export const PlantProfile = () => {
                                 name='humidity'
                                 placeholder='Select'
                                 style={{ width: '100%' }}>
-                                <Option value='average'>average (30-50%)</Option>
-                                <Option value='above average'>above average (50-80%)</Option>
+                                <Option value='low'>low (30-40%)</Option>
+                                <Option value='medium'>medium (40-50%)</Option>
+                                <Option value='high'>high (50-60%+)</Option>
                               </Select>
                             ) : (
                               <p>
-                                {plant.humidity === 'average'
-                                  ? 'average (30-50%)'
-                                  : plant.humidity === 'above average'
-                                  ? 'above average (50-80%)'
+                                {plant.humidity === 'low'
+                                  ? 'low (30-40%)'
+                                  : plant.humidity === 'medium'
+                                  ? 'medium (40-50%)'
+                                  : plant.humidity === 'high'
+                                  ? 'high (50-60%+)'
                                   : plant.humidity || 'unknown'}
                               </p>
                             )}
                             <Bar>
-                              {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-                              {plant.humidity === 'above average' && <Indicator level={'3'} />}
+                              {plant.humidity === 'low' && <Indicator level={'1'} />}
+                              {plant.humidity === 'medium' && <Indicator level={'2'} />}
+                              {plant.humidity === 'high' && <Indicator level={'3'} />}
                             </Bar>
                           </div>
                         </div>
