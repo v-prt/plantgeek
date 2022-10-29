@@ -466,11 +466,17 @@ export const PlantProfile = () => {
                                 name='temperature'
                                 placeholder='Select'
                                 style={{ width: '100%' }}>
-                                <Option value='average'>average</Option>
-                                <Option value='above average'>above average</Option>
+                                <Option value='average'>average (55-75°F)</Option>
+                                <Option value='above average'>above average (65-85°F)</Option>
                               </Select>
                             ) : (
-                              <p>{plant.temperature || 'unknown'}</p>
+                              <p>
+                                {plant.temperature === 'average'
+                                  ? 'average (55-75°F)'
+                                  : plant.temperature === 'above average'
+                                  ? 'above average (65-85°F)'
+                                  : plant.temperature || 'unknown'}
+                              </p>
                             )}
                             <Bar>
                               {plant.temperature === 'average' && <Indicator level={'1-2'} />}
@@ -486,11 +492,17 @@ export const PlantProfile = () => {
                                 name='humidity'
                                 placeholder='Select'
                                 style={{ width: '100%' }}>
-                                <Option value='average'>average</Option>
-                                <Option value='above average'>above average</Option>
+                                <Option value='average'>average (30-50%)</Option>
+                                <Option value='above average'>above average (50-80%)</Option>
                               </Select>
                             ) : (
-                              <p>{plant.humidity || 'unknown'}</p>
+                              <p>
+                                {plant.humidity === 'average'
+                                  ? 'average (30-50%)'
+                                  : plant.humidity === 'above average'
+                                  ? 'above average (50-80%)'
+                                  : plant.humidity || 'unknown'}
+                              </p>
                             )}
                             <Bar>
                               {plant.humidity === 'average' && <Indicator level={'1-2'} />}

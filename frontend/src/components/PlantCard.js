@@ -47,10 +47,8 @@ export const PlantCard = ({ plant, viewNeeds }) => {
           <img src={sun} alt='light' />
           <Bar>
             {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
-            {plant.light === 'medium indirect' && <Indicator level={'1-2'} />}
             {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
-            {plant.light === 'bright indirect' && <Indicator level={'2-3'} />}
-            {plant.light === 'bright' && <Indicator level={'3'} />}
+            {plant.light === 'bright indirect' && <Indicator level={'3'} />}
           </Bar>
         </Row>
         <Row>
@@ -67,14 +65,14 @@ export const PlantCard = ({ plant, viewNeeds }) => {
           <img src={temp} alt='temperature' />
           <Bar>
             {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-            {plant.temperature === 'warm' && <Indicator level={'3'} />}
+            {plant.temperature === 'above average' && <Indicator level={'3'} />}
           </Bar>
         </Row>
         <Row>
           <img src={humidity} alt='humidity' />
           <Bar>
             {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-            {plant.humidity === 'high' && <Indicator level={'3'} />}
+            {plant.humidity === 'above average' && <Indicator level={'3'} />}
           </Bar>
         </Row>
       </Needs>
