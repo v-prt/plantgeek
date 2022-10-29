@@ -57,6 +57,7 @@ app
   .use(express.json())
 
   // ENDPOINTS
+  // TODO: change all '_id' to 'id'
   // users
   .post(`${API_URL}/users`, createUser)
   .post(`${API_URL}/login`, authenticateUser)
@@ -77,7 +78,7 @@ app
   .get(`${API_URL}/random-plants`, getRandomPlants)
   .get(`${API_URL}/user-plants/:page`, getUserPlants)
   .get(`${API_URL}/contributions/:userId`, getUserContributions)
-  .put(`${API_URL}/plants/:_id`, updatePlant)
+  .put(`${API_URL}/plants/:id`, updatePlant)
   .put(`${API_URL}/plants/:_id/comments`, addComment)
   .delete(`${API_URL}/plants/:_id`, deletePlant)
   .get(`${API_URL}/search-terms`, getSearchTerms)
@@ -85,7 +86,7 @@ app
 
   // suggestions
   .post(`${API_URL}/suggestions/:plantId`, createSuggestion)
-  .get(`${API_URL}/suggestions/:plantId`, getSuggestions)
+  .get(`${API_URL}/suggestions/:slug`, getSuggestions)
   .put(`${API_URL}/suggestions/:id`, updateSuggestion)
 
 if (process.env.NODE_ENV === 'production') {

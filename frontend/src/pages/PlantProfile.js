@@ -78,14 +78,6 @@ export const PlantProfile = () => {
 
   useDocumentTitle(plant?.primaryName ? `${plant?.primaryName} | plantgeek` : 'plantgeek')
 
-  // makes window scroll to top between renders
-  // const pathname = window.location.pathname
-  // useEffect(() => {
-  //   if (pathname) {
-  //     window.scrollTo(0, 0)
-  //   }
-  // }, [pathname])
-
   // setting plant care difficulty
   useEffect(() => {
     if (plant && plant.light && plant.water && plant.temperature && plant.humidity) {
@@ -206,10 +198,11 @@ export const PlantProfile = () => {
     primaryName: Yup.string()
       .min(2, 'Too short')
       .required('Required')
-      .matches(/^[a-zA-Z0-9 ]*$/, 'No special characters'),
+      // no special characters except hyphens and apostrophes
+      .matches(/^[a-zA-Z0-9-'\s]+$/, 'No special characters'),
     secondaryName: Yup.string()
       .min(2, 'Too short')
-      .matches(/^[a-zA-Z0-9 ]*$/, 'No special characters'),
+      .matches(/^[a-zA-Z0-9-'\s]+$/, 'No special characters'),
     light: Yup.string().required('Required'),
     water: Yup.string().required('Required'),
     temperature: Yup.string().required('Required'),
@@ -220,16 +213,19 @@ export const PlantProfile = () => {
   const handleSubmit = async (values, { setStatus, setSubmitting }) => {
     setStatus('')
     setSubmitting(true)
+    const data = {
+      slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
+      ...values,
+    }
     try {
-      await axios.put(`${API_URL}/plants/${plantId}`, values)
+      await axios.put(`${API_URL}/plants/${plantId}`, data)
 
-      message.success('Plant updated successfully!')
+      message.success('Plant updated.')
       setEditMode(false)
 
-      // push to new url/profile via slug if primary name changed
-      if (plant.primaryName !== values.primaryName) {
-        // FIXME: Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. (coming from ImageLoader)
-        history.push(`/plant/${values.primaryName.replace(/\s+/g, '_').toLowerCase()}`)
+      // push to new route if primaryName/slug changed
+      if (data.slug !== slug) {
+        history.push(`/plant/${data.slug}`)
       } else {
         queryClient.invalidateQueries('plant')
         queryClient.invalidateQueries('similar-plants')

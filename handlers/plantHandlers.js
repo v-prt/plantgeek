@@ -12,25 +12,27 @@ const options = {
 // (CREATE/POST) ADDS A NEW PLANT
 const createPlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  const { primaryName } = req.body
+
   try {
-    await client.connect()
-    const db = client.db('plantgeekdb')
-    // TODO: test with special characters
-    const existingPlant = await db.collection('plants').findOne({
+    const nameTaken = await db.collection('plants').findOne({
       primaryName: {
         // exact match, case insensitive
         $regex: new RegExp(`^${primaryName}$`, 'i'),
       },
     })
-    if (existingPlant) {
-      res.status(409).json({ status: 409, message: 'Plant already exists' })
+
+    if (nameTaken) {
+      return res.status(409).json({ status: 409, message: 'This name is taken' })
     } else {
       const plant = await db.collection('plants').insertOne(req.body)
-      res.status(201).json({ status: 201, plant: plant.ops[0] })
+      return res.status(201).json({ status: 201, plant: plant.ops[0] })
     }
   } catch (err) {
-    res.status(500).json({ status: 500, data: req.body, message: err.message })
     console.error(err.stack)
+    res.status(500).json({ status: 500, data: req.body, message: err.message })
   }
   client.close()
 }
@@ -189,7 +191,6 @@ const getPlantsToReview = async (req, res) => {
 // (READ/GET) GETS PLANT BY ID
 const getPlant = async (req, res) => {
   const slug = req.params.slug
-  const primaryName = slug.replace(/_/g, ' ')
 
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
@@ -197,10 +198,7 @@ const getPlant = async (req, res) => {
 
   try {
     const plant = await db.collection('plants').findOne({
-      primaryName: {
-        // exact match, case insensitive
-        $regex: new RegExp(`^${primaryName}$`, 'i'),
-      },
+      slug,
     })
     if (plant) {
       res.status(200).json({ status: 200, plant: plant })
@@ -216,7 +214,6 @@ const getPlant = async (req, res) => {
 
 const getSimilarPlants = async (req, res) => {
   const { slug } = req.params
-  const primaryName = slug.replace(/_/g, ' ')
 
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
@@ -224,10 +221,7 @@ const getSimilarPlants = async (req, res) => {
 
   try {
     const plant = await db.collection('plants').findOne({
-      primaryName: {
-        // exact match, case insensitive
-        $regex: new RegExp(`^${primaryName}$`, 'i'),
-      },
+      slug,
     })
     if (plant) {
       const regex = plant.primaryName
@@ -356,7 +350,7 @@ const updatePlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
-  const id = req.params._id
+  const { id } = req.params
 
   try {
     // prevent updating primaryName if already taken (should be unique)
@@ -371,7 +365,7 @@ const updatePlant = async (req, res) => {
         _id: { $ne: ObjectId(id) },
       })
       if (nameTaken) {
-        return res.status(400).json({ status: 400, message: 'This name is taken.' })
+        return res.status(400).json({ status: 400, message: 'This name is taken' })
       }
     }
 
@@ -379,10 +373,10 @@ const updatePlant = async (req, res) => {
     const update = {
       $set: req.body,
     }
-    const result = await db.collection('plants').updateOne(filter, update)
-    res.status(200).json({ status: 200, data: result })
+    await db.collection('plants').updateOne(filter, update)
+    res.status(200).json({ status: 200, message: 'Plant updated' })
   } catch (err) {
-    res.status(500).json({ status: 500, message: 'Sorry, something went wrong.' })
+    res.status(500).json({ status: 500, message: 'Sorry, something went wrong' })
     console.error(err)
   }
   client.close()

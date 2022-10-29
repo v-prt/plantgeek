@@ -53,10 +53,11 @@ export const Contribute = () => {
     primaryName: Yup.string()
       .min(2, 'Too short')
       .required('Required')
-      .matches(/^[a-zA-Z0-9 ]*$/, 'No special characters'),
+      // no special characters except hyphens and apostrophes
+      .matches(/^[a-zA-Z0-9-'\s]+$/, 'No special characters'),
     secondaryName: Yup.string()
       .min(2, 'Too short')
-      .matches(/^[a-zA-Z0-9 ]*$/, 'No special characters'),
+      .matches(/^[a-zA-Z0-9-'\s]+$/, 'No special characters'),
     light: Yup.string().required('Required'),
     water: Yup.string().required('Required'),
     temperature: Yup.string().required('Required'),
@@ -115,17 +116,12 @@ export const Contribute = () => {
         await fetch(`${API_URL}/plants`, {
           method: 'POST',
           body: JSON.stringify({
-            primaryName: values.primaryName,
-            secondaryName: values.secondaryName,
-            light: values.light,
-            water: values.water,
-            temperature: values.temperature,
-            humidity: values.humidity,
+            slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
             toxic: values.toxic === 'toxic' ? true : false,
             imageUrl: cloudinaryResponse.url,
-            sourceUrl: values.sourceUrl,
             contributorId: currentUser._id,
-            review: review,
+            review,
+            ...values,
           }),
           headers: {
             Accept: 'application/json',
@@ -135,7 +131,7 @@ export const Contribute = () => {
           .then(res => res.json())
           .then(json => {
             if (json.status === 409) {
-              setStatus('This plant already exists.')
+              setStatus('This plant already exists')
               setSubmitting(false)
             } else if (json.status === 201) {
               setNewPlant(json.plant)
@@ -145,7 +141,7 @@ export const Contribute = () => {
               resetForm()
               window.scrollTo(0, 0)
             } else if (json.status === 500) {
-              setStatus('Oops, something went wrong.')
+              setStatus('Oops, something went wrong')
               setSubmitting(false)
             }
           })

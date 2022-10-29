@@ -28,14 +28,6 @@ import { BeatingHeart } from './components/loaders/BeatingHeart'
 export const App = () => {
   const { checkedToken, userStatus } = useContext(UserContext)
 
-  // makes window scroll to top between renders
-  const pathname = window.location.pathname
-  useEffect(() => {
-    if (pathname) {
-      window.scrollTo(0, 0)
-    }
-  }, [pathname])
-
   return (
     <BrowserRouter>
       <GlobalStyles />

@@ -37,10 +37,14 @@ const getSuggestions = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
-  const plantId = req.params.plantId
+  const { slug } = req.params
 
   try {
-    const plantSuggestions = await db.collection('suggestions').find({ plantId }).toArray()
+    const plant = await db.collection('plants').findOne({ slug })
+    const plantSuggestions = await db
+      .collection('suggestions')
+      .find({ plantId: plant._id.toString() })
+      .toArray()
     // find user by userId in each suggestion and include in response
     const result = await Promise.all(
       plantSuggestions.map(async suggestion => {
