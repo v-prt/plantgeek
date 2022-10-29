@@ -12,7 +12,7 @@ import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
 
 export const PlantCard = ({ plant, viewNeeds }) => {
-  const slug = plant.primaryName.replace(/\s+/g, '-').toLowerCase()
+  const slug = plant.primaryName.replace(/\s+/g, '_').toLowerCase()
 
   return (
     <Wrapper key={plant._id}>

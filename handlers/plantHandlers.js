@@ -189,7 +189,7 @@ const getPlantsToReview = async (req, res) => {
 // (READ/GET) GETS PLANT BY ID
 const getPlant = async (req, res) => {
   const slug = req.params.slug
-  const primaryName = slug.replace(/-/g, ' ')
+  const primaryName = slug.replace(/_/g, ' ')
 
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
