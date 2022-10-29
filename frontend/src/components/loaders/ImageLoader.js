@@ -23,6 +23,11 @@ export const ImageLoader = ({ src, alt, placeholder }) => {
           setValidUrl(false)
         })
     } else setValidUrl(false)
+    // cleanup
+    return () => {
+      setImageLoaded(false)
+      setValidUrl(undefined)
+    }
   }, [src])
 
   return (

@@ -85,10 +85,10 @@ export const Browse = () => {
     'Zamioculcas',
   ]
 
-  const { data: filterValues, status: filterValuesStatus } = useQuery('filter-values', async () => {
-    const { data } = await axios.get(`${API_URL}/filter-values`)
-    return data.data
-  })
+  // const { data: filterValues, status: filterValuesStatus } = useQuery('filter-values', async () => {
+  //   const { data } = await axios.get(`${API_URL}/filter-values`)
+  //   return data.data
+  // })
 
   const handleScroll = () => {
     const scrollDistance = scrollRef.current.scrollTop
@@ -265,14 +265,11 @@ export const Browse = () => {
                         onChange={submitForm}
                         placeholder='Select'
                         style={{ width: '100%' }}
-                        loading={filterValuesStatus === 'loading'}
                         allowClear>
-                        {filterValuesStatus === 'success' &&
-                          filterValues.light.map(value => (
-                            <Option key={value} value={value}>
-                              {value}
-                            </Option>
-                          ))}
+                        <Option value='low to bright indirect'>low to bright indirect</Option>
+                        <Option value='medium to bright indirect'>medium to bright indirect</Option>
+                        <Option value='bright indirect'>bright indirect</Option>
+                        <Option value='unknown'>unknown</Option>
                       </Select>
                     </FormItem>
                     <FormItem label='Water'>
@@ -282,14 +279,13 @@ export const Browse = () => {
                         onChange={submitForm}
                         placeholder='Select'
                         style={{ width: '100%' }}
-                        loading={filterValuesStatus === 'loading'}
                         allowClear>
-                        {filterValuesStatus === 'success' &&
-                          filterValues.water.map(value => (
-                            <Option key={value} value={value}>
-                              {value}
-                            </Option>
-                          ))}
+                        <Option value='low'>low</Option>
+                        <Option value='low to medium'>low to medium</Option>
+                        <Option value='medium'>medium</Option>
+                        <Option value='medium to high'>medium to high</Option>
+                        <Option value='high'>high</Option>
+                        <Option value='unknown'>unknown</Option>
                       </Select>
                     </FormItem>
                     <FormItem label='Temperature'>
@@ -299,14 +295,10 @@ export const Browse = () => {
                         onChange={submitForm}
                         placeholder='Select'
                         style={{ width: '100%' }}
-                        loading={filterValuesStatus === 'loading'}
                         allowClear>
-                        {filterValuesStatus === 'success' &&
-                          filterValues.temperature.map(value => (
-                            <Option key={value} value={value}>
-                              {value}
-                            </Option>
-                          ))}
+                        <Option value='average'>average</Option>
+                        <Option value='above average'>above average</Option>
+                        <Option value='unknown'>unknown</Option>
                       </Select>
                     </FormItem>
                     <FormItem label='Humidity'>
@@ -316,14 +308,12 @@ export const Browse = () => {
                         onChange={submitForm}
                         placeholder='Select'
                         style={{ width: '100%' }}
-                        loading={filterValuesStatus === 'loading'}
                         allowClear>
-                        {filterValuesStatus === 'success' &&
-                          filterValues.humidity.map(value => (
-                            <Option key={value} value={value}>
-                              {value}
-                            </Option>
-                          ))}
+                        <Option value='average'>average</Option>
+                        <Option value='above average'>above average</Option>
+                        {/* TODO: find all plants with 'high' humidity and change to above average then remove this option */}
+                        <Option value='high'>high</Option>
+                        <Option value='unknown'>unknown</Option>
                       </Select>
                     </FormItem>
                     <FormItem label='Toxicity'>
@@ -334,9 +324,9 @@ export const Browse = () => {
                         placeholder='Select'
                         style={{ width: '100%' }}
                         allowClear>
-                        <Option value='toxic'>Toxic</Option>
-                        <Option value='nontoxic'>Nontoxic</Option>
-                        <Option value='unknown'>Unknown</Option>
+                        <Option value='toxic'>toxic</Option>
+                        <Option value='nontoxic'>nontoxic</Option>
+                        <Option value='unknown'>unknown</Option>
                       </Select>
                     </FormItem>
                     {currentUser?.role === 'admin' && (
@@ -348,9 +338,9 @@ export const Browse = () => {
                           placeholder='Select'
                           style={{ width: '100%' }}
                           allowClear>
-                          <Option value='approved'>Approved</Option>
-                          <Option value='pending'>Pending</Option>
-                          <Option value='rejected'>Rejected</Option>
+                          <Option value='approved'>approved</Option>
+                          <Option value='pending'>pending</Option>
+                          <Option value='rejected'>rejected</Option>
                         </Select>
                       </FormItem>
                     )}
