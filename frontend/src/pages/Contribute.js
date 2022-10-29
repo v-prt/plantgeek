@@ -50,8 +50,13 @@ export const Contribute = () => {
   }
 
   const schema = Yup.object().shape({
-    primaryName: Yup.string().min(2, 'Too short').required('Required'),
-    secondaryName: Yup.string().min(2, 'Too short'),
+    primaryName: Yup.string()
+      .min(2, 'Too short')
+      .required('Required')
+      .matches(/^[a-zA-Z0-9 ]*$/, 'No special characters'),
+    secondaryName: Yup.string()
+      .min(2, 'Too short')
+      .matches(/^[a-zA-Z0-9 ]*$/, 'No special characters'),
     light: Yup.string().required('Required'),
     water: Yup.string().required('Required'),
     temperature: Yup.string().required('Required'),
