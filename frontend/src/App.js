@@ -10,7 +10,7 @@ import { Browse } from './pages/Browse'
 import { Login } from './pages/Login'
 import { SignUp } from './pages/SignUp'
 import { Welcome } from './pages/Welcome'
-import { Guidelines } from './pages/Guidelines'
+// import { Guidelines } from './pages/Guidelines'
 import { Terms } from './pages/Terms'
 import { Privacy } from './pages/Privacy'
 import { About } from './pages/About'
@@ -93,7 +93,9 @@ export const App = () => {
           </Body>
         </>
       ) : (
-        <BeatingHeart />
+        <div className='loading' style={{ height: '100%', display: 'grid' }}>
+          <BeatingHeart />
+        </div>
       )}
     </BrowserRouter>
   )

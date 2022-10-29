@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { useParams, useHistory, Link } from 'react-router-dom'
 import { API_URL } from '../constants'
 import { useQuery, useQueryClient } from 'react-query'
 import { message, Upload, Modal, Alert, Button } from 'antd'
@@ -48,8 +48,12 @@ export const PlantProfile = () => {
   const [suggestionModal, setSuggestionModal] = useState(false)
 
   const { data: plant, status } = useQuery(['plant', slug], async () => {
-    const { data } = await axios.get(`${API_URL}/plant/${slug}`)
-    return data.plant
+    try {
+      const { data } = await axios.get(`${API_URL}/plant/${slug}`)
+      return data.plant
+    } catch (err) {
+      if (err.response.status === 404) return null
+    }
   })
 
   const { data: suggestions } = useQuery(['suggestions', slug], async () => {
@@ -220,7 +224,7 @@ export const PlantProfile = () => {
       // push to new url/profile via slug if primary name changed
       if (plant.primaryName !== values.primaryName) {
         // FIXME: Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. (coming from ImageLoader)
-        history.push(`/plant/${values.primaryName.replace(/ /g, '-').toLowerCase()}`)
+        history.push(`/plant/${values.primaryName.replace(/\s+/g, '_').toLowerCase()}`)
       } else {
         queryClient.invalidateQueries('plant')
         queryClient.invalidateQueries('similar-plants')
@@ -265,460 +269,479 @@ export const PlantProfile = () => {
 
   return (
     <Wrapper>
-      {status === 'success' && plant ? (
-        <>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={schema}
-            validateOnChange={false}
-            validateOnBlur={false}
-            onSubmit={handleSubmit}>
-            {({ status, submitForm, isSubmitting }) => (
-              <Form>
-                <FadeIn>
-                  <section className='heading'>
-                    {plant.review === 'pending' && (
-                      <div className='review-pending'>
-                        <Alert
-                          type='warning'
-                          message='This plant is pending review by an admin.'
-                          showIcon
-                        />
-                      </div>
-                    )}
-                    {plant.review === 'rejected' && (
-                      <div className='review-pending'>
-                        <Alert
-                          type='error'
-                          message='This plant has been rejected by an admin. The information may be incorrect or is a duplicate.'
-                          showIcon
-                        />
-                      </div>
-                    )}
-                    {editMode ? (
-                      <div className='basic-info-form'>
-                        <FormItem label='Scientific name' name='primaryName'>
-                          <Input
-                            name='primaryName'
-                            placeholder='Monstera deliciosa'
-                            style={{ width: '100%' }}
-                            prefix={<EditOutlined />}
+      {status === 'success' ? (
+        plant ? (
+          <>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={schema}
+              validateOnChange={false}
+              validateOnBlur={false}
+              onSubmit={handleSubmit}>
+              {({ status, submitForm, isSubmitting }) => (
+                <Form>
+                  <FadeIn>
+                    <section className='heading'>
+                      {plant.review === 'pending' && (
+                        <div className='review-pending'>
+                          <Alert
+                            type='warning'
+                            message='This plant is pending review by an admin.'
+                            showIcon
                           />
-                        </FormItem>
-                        <FormItem label='Common name' sublabel='(optional)' name='secondaryName'>
-                          <Input
-                            name='secondaryName'
-                            placeholder='Swiss cheese plant'
-                            style={{ width: '100%' }}
-                            prefix={<EditOutlined />}
+                        </div>
+                      )}
+                      {plant.review === 'rejected' && (
+                        <div className='review-pending'>
+                          <Alert
+                            type='error'
+                            message='This plant has been rejected by an admin. The information may be incorrect or is a duplicate.'
+                            showIcon
                           />
-                        </FormItem>
-                        <FormItem label='Review status' name='review'>
-                          <Select name='review' placeholder='Select' style={{ width: '100%' }}>
-                            <Option value='pending'>Pending</Option>
-                            <Option value='approved'>Approved</Option>
-                            <Option value='rejected'>Rejected</Option>
-                          </Select>
-                        </FormItem>
-                      </div>
-                    ) : (
-                      <>
-                        <h1>{plant.primaryName?.toLowerCase()}</h1>
-                        <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
-                      </>
-                    )}
-                    {currentUser?.role === 'admin' &&
-                      (editMode ? (
-                        <>
-                          {status && <Alert type='error' message={status} showIcon />}
-                          <div className='buttons'>
-                            <Button
-                              type='primary'
-                              icon={<SaveOutlined />}
-                              loading={isSubmitting}
-                              onClick={() => submitForm()}>
-                              SAVE
-                            </Button>
-                            <Button
-                              type='secondary'
-                              icon={<CloseCircleOutlined />}
-                              onClick={() => setEditMode(false)}>
-                              CANCEL
-                            </Button>
-                          </div>
-                        </>
+                        </div>
+                      )}
+                      {editMode ? (
+                        <div className='basic-info-form'>
+                          <FormItem label='Scientific name' name='primaryName'>
+                            <Input
+                              name='primaryName'
+                              placeholder='Monstera deliciosa'
+                              style={{ width: '100%' }}
+                              prefix={<EditOutlined />}
+                            />
+                          </FormItem>
+                          <FormItem label='Common name' sublabel='(optional)' name='secondaryName'>
+                            <Input
+                              name='secondaryName'
+                              placeholder='Swiss cheese plant'
+                              style={{ width: '100%' }}
+                              prefix={<EditOutlined />}
+                            />
+                          </FormItem>
+                          <FormItem label='Review status' name='review'>
+                            <Select name='review' placeholder='Select' style={{ width: '100%' }}>
+                              <Option value='pending'>Pending</Option>
+                              <Option value='approved'>Approved</Option>
+                              <Option value='rejected'>Rejected</Option>
+                            </Select>
+                          </FormItem>
+                        </div>
                       ) : (
-                        <Button
-                          type='primary'
-                          icon={<EditOutlined />}
-                          onClick={() => setEditMode(true)}>
-                          EDIT
-                        </Button>
-                      ))}
-                  </section>
-                </FadeIn>
-                <FadeIn delay={200}>
-                  <section className='plant-info'>
-                    {currentUser?.role === 'admin' && editMode ? (
-                      <div className='upload-wrapper'>
-                        <div className='primary-image'>
-                          <Upload
-                            multiple={false}
-                            maxCount={1}
-                            name='plantImage'
-                            beforeUpload={checkSize}
-                            customRequest={handleImageUpload}
-                            fileList={fileList}
-                            listType='picture-card'
-                            accept='.png, .jpg, .jpeg'
-                            showUploadList={{
-                              showPreviewIcon: false,
-                              showRemoveIcon: false,
-                            }}>
-                            {!uploading && image ? (
-                              <ImageLoader src={image} alt={''} placeholder={placeholder} />
-                            ) : (
-                              uploadButton
-                            )}
-                            {!uploading && (
-                              <div className='overlay'>
-                                <EditOutlined />
-                              </div>
-                            )}
-                          </Upload>
-                        </div>
-                        <button
-                          type='button'
-                          onClick={() => removeImage()}
-                          style={{ color: 'red' }}>
-                          <DeleteOutlined /> Remove Image
-                        </button>
-                      </div>
-                    ) : (
-                      <div className='primary-image'>
-                        <ImageLoader src={image} alt={''} placeholder={placeholder} />
-                      </div>
-                    )}
-
-                    {/* PLANT NEEDS */}
-                    <Needs>
-                      <h2>Care information</h2>
-                      <div className='row'>
-                        <img src={sun} alt='' />
-                        <div className='column'>
-                          {editMode ? (
-                            <Select name='light' placeholder='Select' style={{ width: '100%' }}>
-                              <Option value='low to bright indirect'>low to bright indirect</Option>
-                              <Option value='medium to bright indirect'>
-                                medium to bright indirect
-                              </Option>
-                              <Option value='bright indirect'>bright indirect</Option>
-                            </Select>
-                          ) : (
-                            <p>{plant.light || 'unknown'}</p>
-                          )}
-                          <Bar>
-                            {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
-                            {plant.light === 'medium to bright indirect' && (
-                              <Indicator level={'2'} />
-                            )}
-                            {plant.light === 'bright indirect' && <Indicator level={'3'} />}
-                          </Bar>
-                        </div>
-                      </div>
-                      <div className='row'>
-                        <img src={water} alt='' />
-                        <div className='column'>
-                          {editMode ? (
-                            <Select name='water' placeholder='Select' style={{ width: '100%' }}>
-                              <Option value='low'>low</Option>
-                              <Option value='low to medium'>low to medium</Option>
-                              <Option value='medium'>medium</Option>
-                              <Option value='medium to high'>medium to high</Option>
-                              <Option value='high'>high</Option>
-                            </Select>
-                          ) : (
-                            <p>{plant.water || 'unknown'}</p>
-                          )}
-                          <Bar>
-                            {plant.water === 'low' && <Indicator level={'1'} />}
-                            {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
-                            {plant.water === 'medium' && <Indicator level={'2'} />}
-                            {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
-                            {plant.water === 'high' && <Indicator level={'3'} />}
-                          </Bar>
-                        </div>
-                      </div>
-                      <div className='row'>
-                        <img src={temp} alt='' />
-                        <div className='column'>
-                          {editMode ? (
-                            <Select
-                              name='temperature'
-                              placeholder='Select'
-                              style={{ width: '100%' }}>
-                              <Option value='average'>average</Option>
-                              <Option value='above average'>above average</Option>
-                            </Select>
-                          ) : (
-                            <p>{plant.temperature || 'unknown'}</p>
-                          )}
-                          <Bar>
-                            {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                            {plant.temperature === 'above average' && <Indicator level={'3'} />}
-                          </Bar>
-                        </div>
-                      </div>
-                      <div className='row'>
-                        <img src={humidity} alt='' />
-                        <div className='column'>
-                          {editMode ? (
-                            <Select name='humidity' placeholder='Select' style={{ width: '100%' }}>
-                              <Option value='average'>average</Option>
-                              <Option value='above average'>above average</Option>
-                            </Select>
-                          ) : (
-                            <p>{plant.humidity || 'unknown'}</p>
-                          )}
-                          <Bar>
-                            {plant.humidity === 'average' && <Indicator level={'1-2'} />}
-                            {plant.humidity === 'above average' && <Indicator level={'3'} />}
-                          </Bar>
-                        </div>
-                      </div>
-                      <div className='misc-info'>
-                        <div className='difficulty'>
-                          Difficulty:{' '}
-                          <span className={difficulty?.toLowerCase()}>{difficulty || 'N/A'}</span>
-                        </div>
-                        <div className='toxicity'>
-                          Toxicity:{' '}
-                          {editMode ? (
-                            <Select name='toxic' placeholder='Select' style={{ width: '100%' }}>
-                              <Option value={true}>toxic</Option>
-                              <Option value={false}>nontoxic</Option>
-                            </Select>
-                          ) : plant.toxic === false ? (
-                            <span className='nontoxic'>Pet friendly</span>
-                          ) : plant.toxic === true ? (
-                            <span className='toxic'>Not pet friendly</span>
-                          ) : (
-                            <span className='unknown'>Unknown</span>
-                          )}
-                        </div>
-                        {plant.sourceUrl && (
-                          <div className='sources'>
-                            Source(s):{' '}
-                            <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
-                              [1]
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    </Needs>
-                  </section>
-                </FadeIn>
-              </Form>
-            )}
-          </Formik>
-
-          {currentUser && (
-            <>
-              {/* LIST ACTIONS */}
-              <FadeIn delay={300}>
-                <ActionBox plantId={plantId} />
-              </FadeIn>
-              {/* SUGGESTION SUBMISSION */}
-              <FadeIn delay={400}>
-                <section className='suggestions-section-user'>
-                  <h3>Have a suggestion?</h3>
-                  <p>
-                    Please let us know if you have a suggestion for this plant or want to report
-                    incorrect information.
-                  </p>
-                  <Button type='primary' onClick={() => setSuggestionModal(true)}>
-                    <MailOutlined /> SEND SUGGESTION
-                  </Button>
-                  <Modal
-                    visible={suggestionModal}
-                    footer={null}
-                    onCancel={() => setSuggestionModal(false)}>
-                    <SuggestionSubmission>
-                      <Formik
-                        initialValues={{
-                          suggestion: '',
-                          sourceUrl: '',
-                        }}
-                        validationSchema={Yup.object({
-                          suggestion: Yup.string().required('Required'),
-                          sourceUrl: Yup.string().url('Invalid URL'),
-                        })}
-                        onSubmit={async (values, { setSubmitting }) => {
-                          try {
-                            await axios.post(`${API_URL}/suggestions/${plantId}`, {
-                              suggestion: values.suggestion,
-                              sourceUrl: values.sourceUrl,
-                              userId: currentUser._id,
-                            })
-                            message.success('Suggestion submitted! Thank you.')
-                            setSuggestionModal(false)
-                          } catch (err) {
-                            console.log(err)
-                            message.error(
-                              'Oops, something went wrong when submitting your suggestion.'
-                            )
-                          }
-                        }}>
-                        {({ isSubmitting, submitForm }) => (
-                          <Form>
-                            <h3>Submit a suggestion</h3>
-                            <div className='instructions'>
-                              <p>
-                                Please note any incorrect information on this plant and include your
-                                suggested change. If possible, include a source to help us validate
-                                your information.
-                              </p>
-                              <p>
-                                We also welcome suggestions for additional information to add to
-                                this plant's page. Thank you for your contribution!
-                              </p>
+                        <>
+                          <h1>{plant.primaryName?.toLowerCase()}</h1>
+                          <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
+                        </>
+                      )}
+                      {currentUser?.role === 'admin' &&
+                        (editMode ? (
+                          <>
+                            {status && <Alert type='error' message={status} showIcon />}
+                            <div className='buttons'>
+                              <Button
+                                type='primary'
+                                icon={<SaveOutlined />}
+                                loading={isSubmitting}
+                                onClick={() => submitForm()}>
+                                SAVE
+                              </Button>
+                              <Button
+                                type='secondary'
+                                icon={<CloseCircleOutlined />}
+                                onClick={() => setEditMode(false)}>
+                                CANCEL
+                              </Button>
                             </div>
-
-                            <FormItem name='suggestion'>
-                              <Input.TextArea
-                                name='suggestion'
-                                placeholder='Enter your suggestion'
-                                rows={4}
-                                style={{ resize: 'none' }}
-                              />
-                            </FormItem>
-                            <FormItem name='source'>
-                              <Input name='sourceUrl' placeholder='Source URL' />
-                            </FormItem>
-                            <Button
-                              type='primary'
-                              disabled={isSubmitting}
-                              loading={isSubmitting}
-                              onClick={() => submitForm()}>
-                              SUBMIT
-                            </Button>
-                          </Form>
-                        )}
-                      </Formik>
-                    </SuggestionSubmission>
-                  </Modal>
-                </section>
-              </FadeIn>
-            </>
-          )}
-
-          {/* SIMILAR PLANTS */}
-          <FadeIn delay={500}>
-            <section className='similar-plants'>
-              <h2>similar plants</h2>
-              {/* TODO: carousel (1 at a time on mobile, 2 on tablet, 3 on desktop) */}
-              <div className='similar-plants-container'>
-                {similarPlantsStatus === 'success' ? (
-                  similarPlants?.length > 0 ? (
-                    similarPlants.map(plant => <PlantCard key={plant._id} plant={plant} />)
-                  ) : (
-                    <p>No similar plants found.</p>
-                  )
-                ) : (
-                  <div className='loading'>
-                    <Ellipsis />
-                  </div>
-                )}
-              </div>
-            </section>
-          </FadeIn>
-
-          {/* ADMIN ONLY */}
-          {currentUser?.role === 'admin' && (
-            <FadeIn delay={600}>
-              <AdminSection>
-                <h3>Admin</h3>
-                <div className='suggestions-admin'>
-                  <h4>Suggestions from users</h4>
-                  {/* TODO: filter suggestions by status */}
-                  <div className='suggestions-list'>
-                    {suggestions?.length > 0 ? (
-                      suggestions.map((suggestion, i) => (
-                        <div className='suggestion' key={i}>
-                          <p className='user'>
-                            {suggestion.user?.username}{' '}
-                            <span className='id'>- User ID {suggestion.userId}</span>
-                          </p>
-                          <p className='date'>{moment(suggestion.dateSubmitted).format('lll')}</p>
-                          <p className='text'>"{suggestion.suggestion}"</p>
-                          {suggestion.sourceUrl ? (
-                            <a
-                              className='source'
-                              href={suggestion.sourceUrl}
-                              target='_blank'
-                              rel='noopener noreferrer'>
-                              Source
-                            </a>
-                          ) : (
-                            <p style={{ color: '#999' }}>No source.</p>
-                          )}
-                          <Formik
-                            initialValues={{ status: suggestion.status }}
-                            onSubmit={async (values, { setSubmitting }) => {
-                              try {
-                                await axios.put(`${API_URL}/suggestions/${suggestion._id}`, {
-                                  status: values.status,
-                                })
-                                message.success('Suggestion status updated!')
-                                setSubmitting(false)
-                              } catch (err) {
-                                console.log(err)
-                                message.error('Oops, something went wrong.')
-                              }
-                            }}>
-                            {({ submitForm }) => (
-                              <Form>
-                                <FormItem name='status'>
-                                  <Select
-                                    name='status'
-                                    placeholder='Set status'
-                                    onChange={() => submitForm()}>
-                                    <Option value='pending'>
-                                      <ClockCircleOutlined /> Pending
-                                    </Option>
-                                    <Option value='approved'>
-                                      <LikeOutlined /> Approved
-                                    </Option>
-                                    <Option value='rejected'>
-                                      <DislikeOutlined /> Rejected
-                                    </Option>
-                                  </Select>
-                                </FormItem>
-                              </Form>
-                            )}
-                          </Formik>
+                          </>
+                        ) : (
+                          <Button
+                            type='primary'
+                            icon={<EditOutlined />}
+                            onClick={() => setEditMode(true)}>
+                            EDIT
+                          </Button>
+                        ))}
+                    </section>
+                  </FadeIn>
+                  <FadeIn delay={200}>
+                    <section className='plant-info'>
+                      {currentUser?.role === 'admin' && editMode ? (
+                        <div className='upload-wrapper'>
+                          <div className='primary-image'>
+                            <Upload
+                              multiple={false}
+                              maxCount={1}
+                              name='plantImage'
+                              beforeUpload={checkSize}
+                              customRequest={handleImageUpload}
+                              fileList={fileList}
+                              listType='picture-card'
+                              accept='.png, .jpg, .jpeg'
+                              showUploadList={{
+                                showPreviewIcon: false,
+                                showRemoveIcon: false,
+                              }}>
+                              {!uploading && image ? (
+                                <ImageLoader src={image} alt={''} placeholder={placeholder} />
+                              ) : (
+                                uploadButton
+                              )}
+                              {!uploading && (
+                                <div className='overlay'>
+                                  <EditOutlined />
+                                </div>
+                              )}
+                            </Upload>
+                          </div>
+                          <button
+                            type='button'
+                            onClick={() => removeImage()}
+                            style={{ color: 'red' }}>
+                            <DeleteOutlined /> Remove Image
+                          </button>
                         </div>
-                      ))
+                      ) : (
+                        <div className='primary-image'>
+                          <ImageLoader src={image} alt={''} placeholder={placeholder} />
+                        </div>
+                      )}
+
+                      {/* PLANT NEEDS */}
+                      <Needs>
+                        <h2>Care information</h2>
+                        <div className='row'>
+                          <img src={sun} alt='' />
+                          <div className='column'>
+                            {editMode ? (
+                              <Select name='light' placeholder='Select' style={{ width: '100%' }}>
+                                <Option value='low to bright indirect'>
+                                  low to bright indirect
+                                </Option>
+                                <Option value='medium to bright indirect'>
+                                  medium to bright indirect
+                                </Option>
+                                <Option value='bright indirect'>bright indirect</Option>
+                              </Select>
+                            ) : (
+                              <p>{plant.light || 'unknown'}</p>
+                            )}
+                            <Bar>
+                              {plant.light === 'low to bright indirect' && (
+                                <Indicator level={'1'} />
+                              )}
+                              {plant.light === 'medium to bright indirect' && (
+                                <Indicator level={'2'} />
+                              )}
+                              {plant.light === 'bright indirect' && <Indicator level={'3'} />}
+                            </Bar>
+                          </div>
+                        </div>
+                        <div className='row'>
+                          <img src={water} alt='' />
+                          <div className='column'>
+                            {editMode ? (
+                              <Select name='water' placeholder='Select' style={{ width: '100%' }}>
+                                <Option value='low'>low</Option>
+                                <Option value='low to medium'>low to medium</Option>
+                                <Option value='medium'>medium</Option>
+                                <Option value='medium to high'>medium to high</Option>
+                                <Option value='high'>high</Option>
+                              </Select>
+                            ) : (
+                              <p>{plant.water || 'unknown'}</p>
+                            )}
+                            <Bar>
+                              {plant.water === 'low' && <Indicator level={'1'} />}
+                              {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+                              {plant.water === 'medium' && <Indicator level={'2'} />}
+                              {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+                              {plant.water === 'high' && <Indicator level={'3'} />}
+                            </Bar>
+                          </div>
+                        </div>
+                        <div className='row'>
+                          <img src={temp} alt='' />
+                          <div className='column'>
+                            {editMode ? (
+                              <Select
+                                name='temperature'
+                                placeholder='Select'
+                                style={{ width: '100%' }}>
+                                <Option value='average'>average</Option>
+                                <Option value='above average'>above average</Option>
+                              </Select>
+                            ) : (
+                              <p>{plant.temperature || 'unknown'}</p>
+                            )}
+                            <Bar>
+                              {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+                              {plant.temperature === 'above average' && <Indicator level={'3'} />}
+                            </Bar>
+                          </div>
+                        </div>
+                        <div className='row'>
+                          <img src={humidity} alt='' />
+                          <div className='column'>
+                            {editMode ? (
+                              <Select
+                                name='humidity'
+                                placeholder='Select'
+                                style={{ width: '100%' }}>
+                                <Option value='average'>average</Option>
+                                <Option value='above average'>above average</Option>
+                              </Select>
+                            ) : (
+                              <p>{plant.humidity || 'unknown'}</p>
+                            )}
+                            <Bar>
+                              {plant.humidity === 'average' && <Indicator level={'1-2'} />}
+                              {plant.humidity === 'above average' && <Indicator level={'3'} />}
+                            </Bar>
+                          </div>
+                        </div>
+                        <div className='misc-info'>
+                          <div className='difficulty'>
+                            Difficulty:{' '}
+                            <span className={difficulty?.toLowerCase()}>{difficulty || 'N/A'}</span>
+                          </div>
+                          <div className='toxicity'>
+                            Toxicity:{' '}
+                            {editMode ? (
+                              <Select name='toxic' placeholder='Select' style={{ width: '100%' }}>
+                                <Option value={true}>toxic</Option>
+                                <Option value={false}>nontoxic</Option>
+                              </Select>
+                            ) : plant.toxic === false ? (
+                              <span className='nontoxic'>Pet friendly</span>
+                            ) : plant.toxic === true ? (
+                              <span className='toxic'>Not pet friendly</span>
+                            ) : (
+                              <span className='unknown'>Unknown</span>
+                            )}
+                          </div>
+                          {plant.sourceUrl && (
+                            <div className='sources'>
+                              Source(s):{' '}
+                              <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
+                                [1]
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      </Needs>
+                    </section>
+                  </FadeIn>
+                </Form>
+              )}
+            </Formik>
+
+            {currentUser && (
+              <>
+                {/* LIST ACTIONS */}
+                <FadeIn delay={300}>
+                  <ActionBox plantId={plantId} />
+                </FadeIn>
+                {/* SUGGESTION SUBMISSION */}
+                <FadeIn delay={400}>
+                  <section className='suggestions-section-user'>
+                    <h3>Have a suggestion?</h3>
+                    <p>
+                      Please let us know if you have a suggestion for this plant or want to report
+                      incorrect information.
+                    </p>
+                    <Button type='primary' onClick={() => setSuggestionModal(true)}>
+                      <MailOutlined /> SEND SUGGESTION
+                    </Button>
+                    <Modal
+                      visible={suggestionModal}
+                      footer={null}
+                      onCancel={() => setSuggestionModal(false)}>
+                      <SuggestionSubmission>
+                        <Formik
+                          initialValues={{
+                            suggestion: '',
+                            sourceUrl: '',
+                          }}
+                          validationSchema={Yup.object({
+                            suggestion: Yup.string().required('Required'),
+                            sourceUrl: Yup.string().url('Invalid URL'),
+                          })}
+                          onSubmit={async (values, { setSubmitting }) => {
+                            try {
+                              await axios.post(`${API_URL}/suggestions/${plantId}`, {
+                                suggestion: values.suggestion,
+                                sourceUrl: values.sourceUrl,
+                                userId: currentUser._id,
+                              })
+                              message.success('Suggestion submitted! Thank you.')
+                              setSuggestionModal(false)
+                            } catch (err) {
+                              console.log(err)
+                              message.error(
+                                'Oops, something went wrong when submitting your suggestion.'
+                              )
+                            }
+                          }}>
+                          {({ isSubmitting, submitForm }) => (
+                            <Form>
+                              <h3>Submit a suggestion</h3>
+                              <div className='instructions'>
+                                <p>
+                                  Please note any incorrect information on this plant and include
+                                  your suggested change. If possible, include a source to help us
+                                  validate your information.
+                                </p>
+                                <p>
+                                  We also welcome suggestions for additional information to add to
+                                  this plant's page. Thank you for your contribution!
+                                </p>
+                              </div>
+
+                              <FormItem name='suggestion'>
+                                <Input.TextArea
+                                  name='suggestion'
+                                  placeholder='Enter your suggestion'
+                                  rows={4}
+                                  style={{ resize: 'none' }}
+                                />
+                              </FormItem>
+                              <FormItem name='source'>
+                                <Input name='sourceUrl' placeholder='Source URL' />
+                              </FormItem>
+                              <Button
+                                type='primary'
+                                disabled={isSubmitting}
+                                loading={isSubmitting}
+                                onClick={() => submitForm()}>
+                                SUBMIT
+                              </Button>
+                            </Form>
+                          )}
+                        </Formik>
+                      </SuggestionSubmission>
+                    </Modal>
+                  </section>
+                </FadeIn>
+              </>
+            )}
+
+            {/* SIMILAR PLANTS */}
+            <FadeIn delay={500}>
+              <section className='similar-plants'>
+                <h2>similar plants</h2>
+                {/* TODO: carousel (1 at a time on mobile, 2 on tablet, 3 on desktop) */}
+                <div className='similar-plants-container'>
+                  {similarPlantsStatus === 'success' ? (
+                    similarPlants?.length > 0 ? (
+                      similarPlants.map(plant => <PlantCard key={plant._id} plant={plant} />)
                     ) : (
-                      <p style={{ color: '#999' }}>No suggestions.</p>
-                    )}
-                  </div>
+                      <p>No similar plants found.</p>
+                    )
+                  ) : (
+                    <div className='loading'>
+                      <Ellipsis />
+                    </div>
+                  )}
                 </div>
-                <div className='danger-zone'>
-                  <p>DANGER ZONE</p>
-                  <Button
-                    type='danger'
-                    onClick={() => handleDelete(plantId)}
-                    icon={<DeleteOutlined />}>
-                    DELETE PLANT
-                  </Button>
-                </div>
-              </AdminSection>
+              </section>
             </FadeIn>
-          )}
-        </>
+
+            {/* ADMIN ONLY */}
+            {currentUser?.role === 'admin' && (
+              <FadeIn delay={600}>
+                <AdminSection>
+                  <h3>Admin</h3>
+                  <div className='suggestions-admin'>
+                    <h4>Suggestions from users</h4>
+                    {/* TODO: filter suggestions by status */}
+                    <div className='suggestions-list'>
+                      {suggestions?.length > 0 ? (
+                        suggestions.map((suggestion, i) => (
+                          <div className='suggestion' key={i}>
+                            <p className='user'>
+                              {suggestion.user?.username}{' '}
+                              <span className='id'>- User ID {suggestion.userId}</span>
+                            </p>
+                            <p className='date'>{moment(suggestion.dateSubmitted).format('lll')}</p>
+                            <p className='text'>"{suggestion.suggestion}"</p>
+                            {suggestion.sourceUrl ? (
+                              <a
+                                className='source'
+                                href={suggestion.sourceUrl}
+                                target='_blank'
+                                rel='noopener noreferrer'>
+                                Source
+                              </a>
+                            ) : (
+                              <p style={{ color: '#999' }}>No source.</p>
+                            )}
+                            <Formik
+                              initialValues={{ status: suggestion.status }}
+                              onSubmit={async (values, { setSubmitting }) => {
+                                try {
+                                  await axios.put(`${API_URL}/suggestions/${suggestion._id}`, {
+                                    status: values.status,
+                                  })
+                                  message.success('Suggestion status updated!')
+                                  setSubmitting(false)
+                                } catch (err) {
+                                  console.log(err)
+                                  message.error('Oops, something went wrong.')
+                                }
+                              }}>
+                              {({ submitForm }) => (
+                                <Form>
+                                  <FormItem name='status'>
+                                    <Select
+                                      name='status'
+                                      placeholder='Set status'
+                                      onChange={() => submitForm()}>
+                                      <Option value='pending'>
+                                        <ClockCircleOutlined /> Pending
+                                      </Option>
+                                      <Option value='approved'>
+                                        <LikeOutlined /> Approved
+                                      </Option>
+                                      <Option value='rejected'>
+                                        <DislikeOutlined /> Rejected
+                                      </Option>
+                                    </Select>
+                                  </FormItem>
+                                </Form>
+                              )}
+                            </Formik>
+                          </div>
+                        ))
+                      ) : (
+                        <p style={{ color: '#999' }}>No suggestions.</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className='danger-zone'>
+                    <p>DANGER ZONE</p>
+                    <Button
+                      type='danger'
+                      onClick={() => handleDelete(plantId)}
+                      icon={<DeleteOutlined />}>
+                      DELETE PLANT
+                    </Button>
+                  </div>
+                </AdminSection>
+              </FadeIn>
+            )}
+          </>
+        ) : (
+          <section className='not-found'>
+            <img src={placeholder} alt='' />
+            <p>Plant not found.</p>
+            <Link to='/'>
+              <Button type='primary'>Go Home</Button>
+            </Link>
+          </section>
+        )
       ) : (
-        <BeatingHeart />
+        <section className='loading'>
+          <BeatingHeart />
+        </section>
       )}
     </Wrapper>
   )
@@ -842,6 +865,21 @@ const Wrapper = styled.main`
       align-items: center;
       justify-content: center;
       gap: 20px;
+    }
+  }
+  .loading,
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+  }
+  .not-found {
+    background: #fff;
+    gap: 20px;
+    img {
+      height: 100px;
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {

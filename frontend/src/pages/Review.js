@@ -24,9 +24,7 @@ export const Review = () => {
     <Redirect to='/' />
   ) : (
     <Wrapper>
-      {status === 'loading' ? (
-        <BeatingHeart />
-      ) : (
+      {status === 'success' ? (
         <FadeIn>
           <section className='inner'>
             {data.length > 0 ? (
@@ -43,6 +41,8 @@ export const Review = () => {
             )}
           </section>
         </FadeIn>
+      ) : (
+        <BeatingHeart />
       )}
     </Wrapper>
   )

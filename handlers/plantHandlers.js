@@ -216,7 +216,7 @@ const getPlant = async (req, res) => {
 
 const getSimilarPlants = async (req, res) => {
   const { slug } = req.params
-  const primaryName = slug.replace(/-/g, ' ')
+  const primaryName = slug.replace(/_/g, ' ')
 
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
