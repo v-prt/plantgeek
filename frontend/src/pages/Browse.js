@@ -46,6 +46,7 @@ export const Browse = () => {
     'Cactus',
     'Calathea',
     'Croton',
+    'Ctenanthe',
     'Dieffenbachia',
     'Dracaena',
     'Fern',
