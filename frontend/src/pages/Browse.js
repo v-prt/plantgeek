@@ -10,7 +10,7 @@ import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
 import { FormItem } from '../components/forms/FormItem'
 import { Formik, Form } from 'formik'
-import { Select } from 'formik-antd'
+import { Select, Input } from 'formik-antd'
 import { Button, Empty, Drawer, Tag } from 'antd'
 import {
   FilterOutlined,
@@ -18,6 +18,7 @@ import {
   ArrowDownOutlined,
   CloseCircleOutlined,
   LoadingOutlined,
+  SearchOutlined,
 } from '@ant-design/icons'
 import numeral from 'numeral'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
@@ -63,6 +64,7 @@ export const Browse = () => {
     'Pilea',
     'Pothos',
     'Sansevieria',
+    'Scindapsus',
     'Stromanthe',
     'Syngonium',
     'Tradescantia',
@@ -100,24 +102,14 @@ export const Browse = () => {
                 {/* FIXME: allowClear doesn't work on mobile */}
                 <div className='filter-bar-upper'>
                   <div className='search'>
-                    <Select
-                      getPopupContainer={trigger => trigger.parentNode}
-                      // fixes issue with scrolling on mobile moving entire page
-                      virtual={false}
+                    <Input
                       name='search'
-                      showSearch
-                      showArrow
                       allowClear
-                      mode='tags'
                       placeholder='Search plants'
                       onChange={submitForm}
-                      style={{ width: '100%' }}>
-                      {commonGenera.map(term => (
-                        <Option key={term} value={term}>
-                          {term}
-                        </Option>
-                      ))}
-                    </Select>
+                      style={{ width: '100%' }}
+                      prefix={<SearchOutlined />}
+                    />
                   </div>
                   <button
                     className='filter-menu-btn'
@@ -127,54 +119,69 @@ export const Browse = () => {
                   </button>
                 </div>
                 <div className='tags'>
+                  {values?.genus &&
+                    values.genus.map((genus, i) => (
+                      <Tag
+                        key={i}
+                        closable
+                        onClose={() => {
+                          setValues({
+                            genus: values.genus.filter((g, j) => j !== i),
+                            ...values,
+                          })
+                          submitForm()
+                        }}>
+                        {genus}
+                      </Tag>
+                    ))}
                   {values?.light && (
                     <Tag
                       closable
                       onClose={() => {
-                        setValues({ ...values, light: '' })
+                        setValues({ light: '', ...values })
                         submitForm()
                       }}>
-                      Light: {values.light}
+                      <b>Light:</b> {values.light}
                     </Tag>
                   )}
                   {values?.water && (
                     <Tag
                       closable
                       onClose={() => {
-                        setValues({ ...values, water: '' })
+                        setValues({ water: '', ...values })
                         submitForm()
                       }}>
-                      Water: {values.water}
+                      <b>Water:</b> {values.water}
                     </Tag>
                   )}
                   {values?.temperature && (
                     <Tag
                       closable
                       onClose={() => {
-                        setValues({ ...values, temperature: '' })
+                        setValues({ temperature: '', ...values })
                         submitForm()
                       }}>
-                      Temperature: {values.temperature}
+                      <b>Temp:</b> {values.temperature}
                     </Tag>
                   )}
                   {values?.humidity && (
                     <Tag
                       closable
                       onClose={() => {
-                        setValues({ ...values, humidity: '' })
+                        setValues({ humidity: '', ...values })
                         submitForm()
                       }}>
-                      Humidity: {values.humidity}
+                      <b>Humidity:</b> {values.humidity}
                     </Tag>
                   )}
                   {values?.toxicity && (
                     <Tag
                       closable
                       onClose={() => {
-                        setValues({ ...values, toxicity: '' })
+                        setValues({ toxicity: '', ...values })
                         submitForm()
                       }}>
-                      Toxicity: {values.toxicity}
+                      <b>Toxicity:</b> {values.toxicity}
                     </Tag>
                   )}
                 </div>
@@ -236,6 +243,26 @@ export const Browse = () => {
                         <Option value='name-desc'>
                           <ArrowUpOutlined /> Name (Z-A)
                         </Option>
+                      </Select>
+                    </FormItem>
+                    <FormItem label='Genus'>
+                      <Select
+                        getPopupContainer={trigger => trigger.parentNode}
+                        // fixes issue with scrolling on mobile moving entire page
+                        virtual={false}
+                        name='genus'
+                        showSearch
+                        showArrow
+                        allowClear
+                        mode='tags'
+                        placeholder='Select'
+                        onChange={submitForm}
+                        style={{ width: '100%' }}>
+                        {commonGenera.map(term => (
+                          <Option key={term} value={term}>
+                            {term}
+                          </Option>
+                        ))}
                       </Select>
                     </FormItem>
                     <FormItem label='Light'>
