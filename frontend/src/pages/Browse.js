@@ -8,6 +8,7 @@ import { BREAKPOINTS, COLORS, Toggle } from '../GlobalStyles'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
+import { GhostPlantCard } from '../components/GhostPlantCard'
 import { FormItem } from '../components/forms/FormItem'
 import { Formik, Form } from 'formik'
 import { Select, Input } from 'formik-antd'
@@ -376,8 +377,11 @@ export const Browse = () => {
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
               )
             ) : (
-              // TODO: loading skeleton
-              <Ellipsis />
+              <div className='loading'>
+                {Array.from(Array(12).keys()).map(item => (
+                  <GhostPlantCard key={item} viewNeeds={viewNeeds} />
+                ))}
+              </div>
             )}
           </Results>
         </main>
@@ -485,7 +489,8 @@ const Results = styled.div`
     border-radius: 5px;
     cursor: pointer;
   }
-  .plants {
+  .plants,
+  .loading {
     width: 100%;
     display: flex;
     flex-wrap: wrap;

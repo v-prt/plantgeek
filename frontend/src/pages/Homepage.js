@@ -9,9 +9,6 @@ import { PlusCircleOutlined } from '@ant-design/icons'
 import { FaArrowAltCircleRight } from 'react-icons/fa'
 import { FeaturedPlants } from '../components/FeaturedPlants'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
-import { TiHeartOutline } from 'react-icons/ti'
-import { AiOutlineStar } from 'react-icons/ai'
-import { RiPlantLine } from 'react-icons/ri'
 import userPlaceholder from '../assets/avatar-placeholder.png'
 import plantPlaceholder from '../assets/plant-placeholder.svg'
 
@@ -173,14 +170,13 @@ const Wrapper = styled.main`
       justify-content: flex-end;
     }
     h1 {
-      font-size: 1.8rem;
       text-align: center;
     }
     .profile-img {
       background: ${COLORS.lightest};
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-      height: 80px;
-      width: 80px;
+      height: 75px;
+      width: 75px;
       border-radius: 50%;
       padding: 3px;
     }

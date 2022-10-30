@@ -167,7 +167,7 @@ export const Contribute = () => {
       </FadeIn>
       <FadeIn delay={200}>
         <FormWrapper>
-          <h2>new houseplant info</h2>
+          <h2>new houseplant</h2>
           <Formik
             initialValues={initialValues}
             validationSchema={schema}
@@ -342,10 +342,7 @@ export const FormWrapper = styled.section`
   max-width: 600px;
   margin: auto;
   h2 {
-    box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
-    padding: 0 20px 10px 20px;
-    margin-bottom: 10px;
-    text-align: center;
+    margin-bottom: 20px;
   }
   form {
     display: flex;

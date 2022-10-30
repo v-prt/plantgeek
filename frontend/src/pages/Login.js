@@ -12,8 +12,8 @@ import plantgeekLogo from '../assets/logo.webp'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const LoginSchema = Yup.object().shape({
-  username: Yup.string().required('Username required'),
-  password: Yup.string().required('Password required'),
+  email: Yup.string().required('Required'),
+  password: Yup.string().required('Required'),
 })
 
 export const Login = () => {
@@ -46,7 +46,7 @@ export const Login = () => {
           </div>
           <Formik
             initialValues={{
-              username: '',
+              email: '',
               password: '',
             }}
             validationSchema={LoginSchema}
@@ -55,11 +55,11 @@ export const Login = () => {
             onSubmit={handleSubmit}>
             {({ status, isSubmitting }) => (
               <Form>
-                <FormItem name='username' label='Username'>
-                  <Input name='username' type='text' placeholder='JaneDoe' autoFocus />
+                <FormItem name='email' label='Email'>
+                  <Input name='email' type='text' autoFocus />
                 </FormItem>
                 <FormItem name='password' label='Password' sublabel=' - case sensitive'>
-                  <Input.Password name='password' type='password' placeholder='********' />
+                  <Input.Password name='password' type='password' />
                 </FormItem>
                 <Button
                   htmlType='submit'

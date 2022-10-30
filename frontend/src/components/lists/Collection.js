@@ -31,7 +31,9 @@ export const Collection = ({ user }) => {
                 </div>
               )
             ) : (
-              Array.from(Array(6).keys()).map(item => <GhostPlantCard key={item} />)
+              Array.from(Array(6).keys()).map(item => (
+                <GhostPlantCard key={item} viewNeeds={true} />
+              ))
             )}
           </Plants>
         </div>

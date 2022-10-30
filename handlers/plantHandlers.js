@@ -1,4 +1,3 @@
-const plantData = require('../plantData2.json')
 const { MongoClient, ObjectId } = require('mongodb')
 const assert = require('assert')
 require('dotenv').config()

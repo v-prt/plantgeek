@@ -46,10 +46,10 @@ export const Settings = () => {
 
   // #region Initial Values
   const accountInitialValues = {
-    firstName: currentUser?.firstName ? currentUser?.firstName : '',
-    lastName: currentUser?.lastName ? currentUser?.lastName : '',
-    email: currentUser?.email ? currentUser?.email : '',
-    username: currentUser?.username ? currentUser?.username : '',
+    firstName: currentUser?.firstName,
+    lastName: currentUser?.lastName,
+    email: currentUser?.email,
+    username: currentUser?.username,
   }
 
   const passwordInitialValues = {
@@ -61,9 +61,9 @@ export const Settings = () => {
 
   // #region Schemas
   const accountSchema = Yup.object().shape({
-    firstName: Yup.string().min(2, 'Too short').required('First name required'),
-    lastName: Yup.string().min(2, 'Too short').required('Last name required'),
-    email: Yup.string().email('Invalid email').required('Email required'),
+    firstName: Yup.string().min(2, 'Too short').required('Required'),
+    lastName: Yup.string().min(2, 'Too short').required('Required'),
+    email: Yup.string().email('Invalid email').required('Required'),
     username: Yup.string()
       .min(4, 'Too short')
       .max(20, 'Too long')
@@ -86,10 +86,6 @@ export const Settings = () => {
 
   // #region Functions
   const updateAccount = (values, { setStatus }) => {
-    const data = {
-      ...values,
-      lowerCaseUsername: values.username.toLowerCase(),
-    }
     setSavingStatus('saving')
     // increment submitRef
     submitRef.current++
@@ -99,7 +95,7 @@ export const Settings = () => {
       // check if this is still the latest submit
       if (thisSubmit === submitRef.current) {
         setStatus('')
-        const result = await updateCurrentUser(data)
+        const result = await updateCurrentUser(values)
         if (result.error) {
           setStatus(result.error)
           setSavingStatus('error')
@@ -151,15 +147,15 @@ export const Settings = () => {
             <h1>
               {currentUser.firstName} {currentUser.lastName}
             </h1>
-            <p className='username'>{currentUser.username}</p>
-            <p>Member since {moment(currentUser.joined).format('ll')}</p>
+            <p className='username'>@{currentUser.username}</p>
+            <p className='date'>Joined {moment(currentUser.joined).format('ll')}</p>
           </div>
         </section>
       </FadeIn>
       <FadeIn delay={200}>
         <section className='settings'>
           <Heading>
-            account details <Saving savingStatus={savingStatus} />
+            account settings <Saving savingStatus={savingStatus} />
           </Heading>
           <Formik
             initialValues={accountInitialValues}
@@ -174,11 +170,11 @@ export const Settings = () => {
                 <FormItem name='lastName' label='Last name'>
                   <Input name='lastName' />
                 </FormItem>
-                <FormItem name='email' label='Email address'>
-                  <Input name='email' />
-                </FormItem>
                 <FormItem name='username' label='Username'>
                   <Input name='username' />
+                </FormItem>
+                <FormItem name='email' label='Email address'>
+                  <Input name='email' />
                 </FormItem>
                 {/* TODO: upload profile image */}
                 <AutoSave />
@@ -188,7 +184,7 @@ export const Settings = () => {
           <div className='zone'>
             {successStatus && <Alert type='success' message={successStatus} showIcon closable />}
             <div className='password'>
-              <p>Change password</p>
+              <p>Password</p>
               <Button
                 type='secondary'
                 onClick={() => setPasswordEditMode(!passwordEditMode)}
@@ -256,14 +252,17 @@ const Wrapper = styled.main`
   .user-info {
     background: ${COLORS.light};
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
+    gap: 10px;
     .text {
-      text-align: center;
+      h1 {
+        font-size: 1.2rem;
+      }
       .username {
         font-weight: bold;
-        font-size: 1.2rem;
+      }
+      .date {
+        font-size: 0.8rem;
       }
     }
   }
@@ -275,10 +274,10 @@ const Wrapper = styled.main`
     margin: auto;
     display: flex;
     flex-direction: column;
+    gap: 20px;
     form {
       display: flex;
       flex-direction: column;
-      margin: 20px;
       &.hidden {
         display: none;
       }
@@ -297,7 +296,6 @@ const Wrapper = styled.main`
       padding: 20px;
       border: 1px dotted #ccc;
       border-radius: 5px;
-      margin: 20px;
       .password,
       .danger {
         display: flex;
@@ -329,11 +327,7 @@ const Wrapper = styled.main`
 
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {
-      flex-direction: row;
-      .text {
-        margin-left: 30px;
-        text-align: left;
-      }
+      gap: 20px;
     }
     .settings {
       .zone {
@@ -347,9 +341,6 @@ const Wrapper = styled.main`
 `
 
 const Heading = styled.h2`
-  box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
-  padding: 10px 20px;
-  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;

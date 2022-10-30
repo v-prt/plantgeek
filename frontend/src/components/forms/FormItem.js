@@ -67,6 +67,8 @@ const Wrapper = styled.div`
   margin: 10px 0;
   .item-label {
     display: block;
+    line-height: 1.2;
+    margin-bottom: 2px;
     .info {
       color: ${COLORS.accent};
     }

@@ -19,10 +19,10 @@ const createUser = async (req, res) => {
     const db = client.db('plantgeekdb')
     const hashedPwd = await bcrypt.hash(req.body.password, saltRounds)
     const existingEmail = await db.collection('users').findOne({
-      email: req.body.email,
+      email: { $regex: new RegExp(`^${req.body.email}$`, 'i') },
     })
     const existingUsername = await db.collection('users').findOne({
-      lowerCaseUsername: req.body.username.toLowerCase(),
+      username: { $regex: new RegExp(`^${req.body.username}$`, 'i') },
     })
     if (existingEmail) {
       res.status(409).json({ status: 409, message: 'Email already registered' })
@@ -34,7 +34,6 @@ const createUser = async (req, res) => {
         lastName: req.body.lastName,
         email: req.body.email,
         username: req.body.username,
-        lowerCaseUsername: req.body.username.toLowerCase(),
         password: hashedPwd,
         joined: new Date(),
         friends: [],
@@ -61,9 +60,7 @@ const authenticateUser = async (req, res) => {
   await client.connect()
   try {
     const db = client.db('plantgeekdb')
-    const user = await db
-      .collection('users')
-      .findOne({ lowerCaseUsername: req.body.username.toLowerCase() })
+    const user = await db.collection('users').findOne({ email: req.body.email })
     if (user) {
       const isValid = await bcrypt.compare(req.body.password, user.password)
       if (isValid) {
@@ -212,8 +209,7 @@ const getCollection = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const userId = ObjectId(req.params.id)
-  const { firstName, lastName, email, username, lowerCaseUsername, currentPassword, newPassword } =
-    req.body
+  const { firstName, lastName, email, username, currentPassword, newPassword } = req.body
   const client = await MongoClient(MONGO_URI, options)
   try {
     await client.connect()
@@ -241,11 +237,14 @@ const updateUser = async (req, res) => {
           lastName,
           email,
           username,
-          lowerCaseUsername,
         },
       }
-    const existingEmail = await db.collection('users').findOne({ email: email })
-    const existingUsername = await db.collection('users').findOne({ username: username })
+    const existingEmail = await db.collection('users').findOne({
+      email: { $regex: new RegExp(`^${email}$`, 'i') },
+    })
+    const existingUsername = await db.collection('users').findOne({
+      username: { $regex: new RegExp(`^${username}$`, 'i') },
+    })
     if (existingEmail && !existingEmail._id.equals(userId)) {
       res.status(400).json({ code: 'email_taken', msg: 'Email already in use' })
     } else if (existingUsername && !existingUsername._id.equals(userId)) {
@@ -297,112 +296,6 @@ const updateLists = async (req, res) => {
     return res.status(400).json(err)
   }
 }
-
-// (UPDATE/PUT) ADDS A PLANT, FRIEND, OR IMAGE TO USER'S DATA
-// const addToUser = async (req, res) => {
-//   const client = await MongoClient(MONGO_URI, options)
-//   const username = req.params.username
-//   try {
-//     await client.connect()
-//     const db = client.db('plantgeekdb')
-//     const users = db.collection('users')
-//     const filter = { username: username }
-//     let update = undefined
-//     if (req.body.collection) {
-//       update = {
-//         $push: {
-//           collection: req.body.collection,
-//         },
-//       }
-//     } else if (req.body.favorites) {
-//       update = {
-//         $push: {
-//           favorites: req.body.favorites,
-//         },
-//       }
-//     } else if (req.body.wishlist) {
-//       update = {
-//         $push: {
-//           wishlist: req.body.wishlist,
-//         },
-//       }
-//     } else if (req.body.friends) {
-//       update = {
-//         $push: {
-//           friends: req.body.friends,
-//         },
-//       }
-//     } else if (req.body.image) {
-//       update = {
-//         $push: {
-//           image: req.body.image,
-//         },
-//       }
-//     }
-//     const result = await users.updateOne(filter, update)
-//     res.status(200).json({
-//       status: 200,
-//       message: `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`,
-//     })
-//   } catch (err) {
-//     res.status(404).json({ status: 404, message: err.message })
-//     console.error(err.stack)
-//   }
-//   client.close()
-// }
-
-// (UPDATE/PUT) REMOVES A PLANT, FRIEND, OR IMAGE FROM USER'S DATA
-// const removeFromUser = async (req, res) => {
-//   const client = await MongoClient(MONGO_URI, options)
-//   const username = req.params.username
-//   try {
-//     await client.connect()
-//     const db = client.db('plantgeekdb')
-//     const users = db.collection('users')
-//     const filter = { username: username }
-//     let update = undefined
-//     if (req.body.collection) {
-//       update = {
-//         $pull: {
-//           collection: req.body.collection,
-//         },
-//       }
-//     } else if (req.body.favorites) {
-//       update = {
-//         $pull: {
-//           favorites: req.body.favorites,
-//         },
-//       }
-//     } else if (req.body.wishlist) {
-//       update = {
-//         $pull: {
-//           wishlist: req.body.wishlist,
-//         },
-//       }
-//     } else if (req.body.friends) {
-//       update = {
-//         $pull: {
-//           friends: req.body.friends,
-//         },
-//       }
-//     } else if (req.body.image) {
-//       update = {
-//         $pull: {
-//           image: req.body.image,
-//         },
-//       }
-//     }
-//     const result = await users.updateOne(filter, update)
-//     res.status(200).json({
-//       status: 200,
-//       message: `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`,
-//     })
-//   } catch (err) {
-//     res.status(404).json({ status: 404, message: err.message })
-//     console.error(err.stack)
-//   }
-//   client.close()
-// }
 
 // (DELETE) REMOVE A USER
 // TODO: remove from other users' friends

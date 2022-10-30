@@ -6,7 +6,7 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import YupPassword from 'yup-password'
 import { FormItem } from '../components/forms/FormItem.js'
-import { Input, Checkbox } from 'formik-antd'
+import { Input } from 'formik-antd'
 import { Button, Alert } from 'antd'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
@@ -36,9 +36,6 @@ export const SignUp = () => {
       .minNumbers(1, 'Must include at least 1 number')
       .minSymbols(1, 'Must include at least 1 symbol')
       .required('Password required'),
-    acceptedTerms: Yup.boolean()
-      .required('Required')
-      .oneOf([true], 'You must accept the Terms and Conditions'),
   })
 
   const handleSubmit = async (values, { setStatus }) => {
@@ -70,7 +67,6 @@ export const SignUp = () => {
               email: '',
               username: '',
               password: '',
-              acceptedTerms: false,
             }}
             validationSchema={SignUpSchema}
             validateOnChange={false}
@@ -90,14 +86,17 @@ export const SignUp = () => {
                 <FormItem name='username' label='Username'>
                   <Input name='username' type='text' placeholder='JaneDoe' />
                 </FormItem>
-                <FormItem name='password' label='Password'>
+                <FormItem
+                  name='password'
+                  label='Password'
+                  sublabel='- minimum 6 characters, 1 number, and 1 symbol'>
                   <Input.Password name='password' type='password' placeholder='********' />
                 </FormItem>
-                <FormItem name='acceptedTerms'>
-                  <Checkbox name='acceptedTerms'>
-                    I have read and agree to the <Link to='/terms'>Terms and Conditions</Link>
-                  </Checkbox>
-                </FormItem>
+                <p className='subtext'>
+                  By creating an account, you agree to our{' '}
+                  <Link to='/terms'>Terms and Conditions</Link> and
+                  <Link to='/privacy'> Privacy Policy</Link>.
+                </p>
                 <Button
                   htmlType='submit'
                   type='primary'

@@ -70,8 +70,8 @@ export const UserProfile = () => {
             <h1>
               {currentUser.firstName} {currentUser.lastName}
             </h1>
-            <p className='username'>{currentUser.username}</p>
-            <p>Member since {moment(currentUser.joined).format('ll')}</p>
+            <p className='username'>@{currentUser.username}</p>
+            <p className='date'>Joined {moment(currentUser.joined).format('ll')}</p>
           </div>
         </section>
       </FadeIn>
@@ -171,14 +171,17 @@ const Wrapper = styled.main`
   .user-info {
     background: ${COLORS.light};
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
+    gap: 10px;
     .text {
-      text-align: center;
+      h1 {
+        font-size: 1.2rem;
+      }
       .username {
         font-weight: bold;
-        font-size: 1.2rem;
+      }
+      .date {
+        font-size: 0.8rem;
       }
     }
   }
@@ -214,11 +217,7 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {
-      flex-direction: row;
-      .text {
-        margin-left: 30px;
-        text-align: left;
-      }
+      gap: 20px;
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
@@ -231,11 +230,11 @@ const Wrapper = styled.main`
 `
 
 export const Image = styled.img`
-  border: 5px solid #fff;
-  height: 200px;
-  width: 200px;
+  border: 2px solid #fff;
+  height: 75px;
+  width: 75px;
   border-radius: 50%;
-  padding: 5px;
+  padding: 2px;
 `
 
 const Contributions = styled.section`

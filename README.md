@@ -42,7 +42,8 @@ Full-stack live website built 100% by me - including concept, design, and implem
 - [x] find pet friendly (non-toxic) plants
 - [x] add/remove plants to your collection and wishlist
 - [x] toggle detailed view
-- [ ] pagination
+- [x] pagination
+- [x] loading skeleton
 
 ### plant profiles (wip)
 
