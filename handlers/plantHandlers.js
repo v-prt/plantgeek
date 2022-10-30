@@ -90,12 +90,7 @@ const getPlants = async (req, res) => {
     if (humidity === 'unknown') {
       filters = {
         ...filters,
-        $or: [
-          { humidity: null },
-          { humidity: { $exists: false } },
-          { humidity: { $ne: true } },
-          { humidity: { $ne: false } },
-        ],
+        $or: [{ humidity: null }, { humidity: { $exists: false } }],
       }
     } else {
       filters = {
