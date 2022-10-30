@@ -13,7 +13,7 @@ import humidity from '../assets/humidity.svg'
 
 export const PlantCard = ({ plant, viewNeeds }) => {
   return (
-    <Wrapper key={plant._id}>
+    <Wrapper key={plant._id} className='plant-card'>
       {plant.review === 'pending' && (
         <div className='review-status pending'>
           PENDING <ExclamationCircleOutlined />

@@ -3,19 +3,20 @@ import { useInfiniteQuery } from 'react-query'
 import { API_URL } from '../../constants'
 import axios from 'axios'
 import styled from 'styled-components/macro'
-import { BREAKPOINTS, COLORS } from '../../GlobalStyles'
+import { BREAKPOINTS } from '../../GlobalStyles'
 import { FadeIn } from '../loaders/FadeIn'
 import { PlantCard } from '../PlantCard'
-import { Ellipsis } from '../loaders/Ellipsis'
 import { RiPlantLine } from 'react-icons/ri'
 import { TiHeartOutline } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
+import { DownOutlined, LoadingOutlined } from '@ant-design/icons'
 import numeral from 'numeral'
 
 export const PlantList = ({ list, title }) => {
   const [plants, setPlants] = useState(null)
+  const [expanded, setExpanded] = useState(false)
 
-  const { data } = useInfiniteQuery(
+  const { data, status } = useInfiniteQuery(
     [`'user-${title}`, { ids: list }],
     async ({ pageParam, queryKey }) => {
       const { data } = await axios.get(`${API_URL}/user-plants/${pageParam ? pageParam : 0}`, {
@@ -39,7 +40,9 @@ export const PlantList = ({ list, title }) => {
     <ListWrapper className={title}>
       <FadeIn>
         <div className='inner'>
-          <div className='header'>
+          <div
+            className={`header ${expanded && 'expanded'}`}
+            onClick={() => setExpanded(!expanded)}>
             <h2>
               <span className={`icon ${title}`}>
                 {title === 'collection' ? (
@@ -52,55 +55,77 @@ export const PlantList = ({ list, title }) => {
               </span>
               {title}
             </h2>
-            {plants && <p>{numeral(plants.length).format('0a')} plants</p>}
+            <div className='num-plants'>
+              {status === 'success' ? (
+                <>
+                  <p>{numeral(plants?.length).format('0a')} plants</p>
+                  <span className={`arrow ${expanded && 'expanded'}`}>
+                    <DownOutlined />
+                  </span>
+                </>
+              ) : (
+                <LoadingOutlined spin />
+              )}
+            </div>
           </div>
-          <Plants>{plants ? plants : <Ellipsis />}</Plants>
+          <Plants className={expanded && 'expanded'}>{plants}</Plants>
         </div>
       </FadeIn>
     </ListWrapper>
   )
 }
 
-export const ListWrapper = styled.section`
-  background: #f2f2f2;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+export const ListWrapper = styled.div`
   .inner {
     .header {
       background: #f2f2f2;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
+      margin: 5px;
       padding: 10px 20px;
-      margin-bottom: 10px;
+      border-radius: 20px;
       position: sticky;
       top: 50px;
       z-index: 2;
+      cursor: pointer;
+      transition: 0.2s ease-in-out;
+      &:hover:not(.expanded) {
+        background: #e6e6e6;
+      }
+      &.expanded {
+        margin: 5px 5px 0 5px;
+        box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
+        border-radius: 20px 20px 0 0;
+      }
       h2 {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
         font-size: 1.2rem;
         .icon {
           display: grid;
-          border-radius: 50%;
-          padding: 10px;
-          &.collection {
-            background: ${COLORS.light};
-          }
-          &.wishlist {
-            background: #ffd24d;
-          }
-          &.favorites {
-            background: #b493e6;
+        }
+      }
+      .num-plants {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.8rem;
+        .arrow {
+          transition: 0.2s ease-in-out;
+          &.expanded {
+            transform: rotate(-180deg);
           }
         }
       }
       @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-        top: 0;
         h2 {
           font-size: 1.4rem;
         }
+      }
+      @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+        top: 0;
       }
     }
     .empty {
@@ -118,10 +143,25 @@ export const ListWrapper = styled.section`
 `
 
 const Plants = styled.div`
+  background: #eee;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-  padding: 20px;
+  padding: 0 20px;
+  transition: 0.4s ease-in-out;
+  grid-column-gap: 20px;
+  .plant-card {
+    max-height: 0;
+    padding: 0 10px;
+    transition: 0.4s ease-in-out;
+  }
+  &.expanded {
+    gap: 20px;
+    padding: 20px;
+    .plant-card {
+      padding: 10px;
+      max-height: 1000px;
+    }
+  }
 `

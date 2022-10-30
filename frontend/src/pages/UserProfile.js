@@ -6,15 +6,10 @@ import { UserContext } from '../contexts/UserContext'
 import moment from 'moment'
 import axios from 'axios'
 import styled from 'styled-components/macro'
-import { Empty } from 'antd'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import { Button } from 'antd'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
-import { ListWrapper, PlantList } from '../components/lists/PlantList'
-import { RiPlantLine } from 'react-icons/ri'
-import { TiHeartOutline } from 'react-icons/ti'
-import { AiOutlineStar } from 'react-icons/ai'
+import { PlantList } from '../components/lists/PlantList'
 import placeholder from '../assets/avatar-placeholder.png'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import bee from '../assets/stickers/bee.svg'
@@ -78,97 +73,11 @@ export const UserProfile = () => {
         </section>
       </FadeIn>
       <FadeIn delay={200}>
-        {currentUser.collection.length > 0 ? (
+        <div className='lists'>
           <PlantList user={currentUser} list={currentUser.collection} title='collection' />
-        ) : (
-          <ListWrapper>
-            <FadeIn>
-              <div className='inner'>
-                <div className='header'>
-                  <h2>
-                    <span className='icon'>
-                      <RiPlantLine />
-                    </span>
-                    collection
-                  </h2>
-                  <div className='info'>
-                    <span className='num-plants'>0 plants</span>
-                  </div>
-                </div>
-                <div className='empty'>
-                  <Empty
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    description='No plants in collection'
-                  />
-                  <Link to='/browse'>
-                    <Button type='secondary'>BROWSE</Button>
-                  </Link>
-                </div>
-              </div>
-            </FadeIn>
-          </ListWrapper>
-        )}
-      </FadeIn>
-      <FadeIn delay={300}>
-        {currentUser.wishlist.length > 0 ? (
           <PlantList user={currentUser} list={currentUser.wishlist} title='wishlist' />
-        ) : (
-          <ListWrapper>
-            <FadeIn>
-              <div className='inner'>
-                <div className='header'>
-                  <h2>
-                    <span className='icon'>
-                      <TiHeartOutline />
-                    </span>
-                    wishlist
-                  </h2>
-                  <div className='info'>
-                    <span className='num-plants'>0 plants</span>
-                  </div>
-                </div>
-                <div className='empty'>
-                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No plants in wishlist' />
-                  <Link to='/browse'>
-                    <Button type='secondary'>BROWSE</Button>
-                  </Link>
-                </div>
-              </div>
-            </FadeIn>
-          </ListWrapper>
-        )}
-      </FadeIn>
-      <FadeIn delay={400}>
-        {currentUser.favorites.length > 0 ? (
           <PlantList user={currentUser} list={currentUser.favorites} title='favorites' />
-        ) : (
-          <ListWrapper>
-            <FadeIn>
-              <div className='inner'>
-                <div className='header'>
-                  <h2>
-                    <span className='icon'>
-                      <AiOutlineStar />
-                    </span>
-                    favorites
-                  </h2>
-                  <div className='info'>
-                    <span className='num-plants'>0 plants</span>
-                  </div>
-                </div>
-                <div className='empty'>
-                  <Empty
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    description='No plants in favorites'
-                  />
-                  <Link to='/browse'>
-                    <Button type='secondary'>BROWSE</Button>
-                  </Link>
-                </div>
-              </div>
-            </FadeIn>
-          </ListWrapper>
-        )}
+        </div>
       </FadeIn>
       <FadeIn delay={500}>
         <Contributions>
@@ -257,6 +166,14 @@ const Wrapper = styled.main`
         font-size: 1.2rem;
       }
     }
+  }
+  .lists {
+    background: #f2f2f2;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border-radius: 20px;
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {

@@ -288,8 +288,7 @@ const getUserPlants = async (req, res) => {
         res.status(404).json({ status: 404, message: 'No plants found.' })
       }
     } else {
-      console.log('no ids')
-      res.status(404).json({ status: 404, message: 'No plants in list.' })
+      res.status(200).json({ plants: [] })
     }
   } catch (err) {
     console.error(err)
