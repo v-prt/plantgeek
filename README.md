@@ -40,7 +40,7 @@ Full-stack live website built 100% by me - including concept, design, and implem
 - [x] hundreds of plants stored in MongoDB database
 - [x] search & filter by name or type
 - [x] find pet friendly (non-toxic) plants
-- [x] add/remove plants in your lists (collection, favorites, wishlist)
+- [x] add/remove plants to your collection and wishlist
 - [x] toggle detailed view
 - [ ] pagination
 
@@ -55,7 +55,7 @@ Full-stack live website built 100% by me - including concept, design, and implem
 
 ### user profiles (wip)
 
-- [x] users can manage their collection, favorites, and wishlist
+- [x] users can manage their collection and wishlist
 - [x] toggle between simple or detailed view
 - [x] users can view their contributions and stickers earned for approved submissions
 - [ ] view other user's profiles

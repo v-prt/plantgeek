@@ -13,10 +13,6 @@ import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import plantgeekLogo from '../assets/logo.webp'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
-// import { BiSearch, BiPlusCircle } from 'react-icons/bi'
-// import { TiHeartOutline } from 'react-icons/ti'
-// import { AiOutlineStar } from 'react-icons/ai'
-// import { RiPlantLine } from 'react-icons/ri'
 
 YupPassword(Yup) // extend yup
 
@@ -66,38 +62,6 @@ export const SignUp = () => {
           <div className='header'>
             <h1>welcome!</h1>
             <img src={plantgeekLogo} alt='' />
-            {/* <ul>
-              <li>
-                <Icon>
-                  <BiSearch />
-                </Icon>
-                browse hundreds of plants
-              </li>
-              <li>
-                <Icon>
-                  <RiPlantLine />
-                </Icon>
-                keep a list of your collection
-              </li>
-              <li>
-                <Icon>
-                  <TiHeartOutline />
-                </Icon>
-                save your favorite plants
-              </li>
-              <li>
-                <Icon>
-                  <AiOutlineStar />
-                </Icon>
-                create a wishlist
-              </li>
-              <li>
-                <Icon>
-                  <BiPlusCircle />
-                </Icon>
-                contribute to our database
-              </li>
-            </ul> */}
           </div>
           <Formik
             initialValues={{

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import axios from 'axios'
 import { API_URL } from '../constants'
 import { useQueryClient } from 'react-query'
@@ -6,81 +6,98 @@ import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS } from '../GlobalStyles'
-import { LoadingOutlined } from '@ant-design/icons'
 import { RiPlantLine } from 'react-icons/ri'
-import { TiHeartOutline } from 'react-icons/ti'
+import { TiHeart } from 'react-icons/ti'
 import { AiOutlineStar } from 'react-icons/ai'
+// import { BiComment } from 'react-icons/bi'
+import { Formik, Form } from 'formik'
+import { Checkbox } from 'formik-antd'
 
-export const ActionBar = ({ plantId }) => {
+export const ActionBar = ({ plantId, hearts }) => {
   const queryClient = new useQueryClient()
   const { currentUser } = useContext(UserContext)
-  const [submitting, setSubmitting] = useState(false)
 
-  const handleList = list => {
-    let data
-    if (list === currentUser.collection) {
-      setSubmitting('collection')
-      data = { collection: plantId }
-    } else if (list === currentUser.favorites) {
-      setSubmitting('favorites')
-      data = { favorites: plantId }
-    } else if (list === currentUser.wishlist) {
-      setSubmitting('wishlist')
-      data = { wishlist: plantId }
+  const handleSubmit = async values => {
+    try {
+      await axios.post(`${API_URL}/lists/${currentUser._id}`, values)
+      queryClient.invalidateQueries('current-user')
+      queryClient.invalidateQueries('collection')
+      queryClient.invalidateQueries('wishlist')
+      queryClient.invalidateQueries('plants')
+    } catch (err) {
+      console.log(err)
     }
-    if (list && list.find(id => id === plantId)) {
-      // REMOVES PLANT
-      axios.put(`${API_URL}/${currentUser.username}/remove`, data).then(res => {
-        if (res.status === 200) {
-          queryClient.invalidateQueries('current-user')
-          setSubmitting(false)
-        } else if (res.status === 404) {
-          console.log('Error removing plant from list')
-          setSubmitting(false)
-        }
-      })
-    } else {
-      // ADDS PLANT
-      axios.put(`${API_URL}/${currentUser.username}/add`, data).then(res => {
-        if (res.status === 200) {
-          queryClient.invalidateQueries('current-user')
-          setSubmitting(false)
-        } else if (res.status === 404) {
-          console.log('Error adding plant to list')
-          setSubmitting(false)
-        }
-      })
-    }
+  }
+
+  const initialValues = {
+    plantId,
+    hearts: hearts || [],
+    collection: currentUser.collection || [],
+    wishlist: currentUser.wishlist || [],
   }
 
   return (
     <>
       {currentUser && (
         <Wrapper>
-          <Action
-            className='collection'
-            aria-label='collect'
-            onClick={() => handleList(currentUser.collection)}
-            disabled={submitting === 'collection'}
-            added={currentUser.collection.find(id => id === plantId)}>
-            {submitting === 'collection' ? <LoadingOutlined spin /> : <RiPlantLine />}
-          </Action>
-          <Action
-            className='wishlist'
-            aria-label='wishlist'
-            onClick={() => handleList(currentUser.wishlist)}
-            disabled={submitting === 'wishlist'}
-            added={currentUser.wishlist.find(id => id === plantId)}>
-            {submitting === 'wishlist' ? <LoadingOutlined spin /> : <AiOutlineStar />}
-          </Action>
-          <Action
-            className='favorites'
-            aria-label='favorite'
-            onClick={() => handleList(currentUser.favorites)}
-            disabled={submitting === 'favorites'}
-            added={currentUser.favorites.find(id => id === plantId)}>
-            {submitting === 'favorites' ? <LoadingOutlined spin /> : <TiHeartOutline />}
-          </Action>
+          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+            {({ values, setFieldValue, submitForm, isSubmitting }) => (
+              <Form>
+                <Checkbox
+                  name='hearts'
+                  checked={values.hearts?.includes(currentUser._id)}
+                  onChange={e => {
+                    setFieldValue(
+                      'hearts',
+                      e.target.checked
+                        ? [...values.hearts, currentUser._id]
+                        : values.hearts.filter(id => id !== currentUser._id)
+                    )
+                    submitForm()
+                  }}>
+                  <span className='icon hearts'>
+                    <TiHeart />
+                  </span>
+                  <span className='num'>{values.hearts?.length || 0}</span>
+                </Checkbox>
+
+                <div className='user-lists'>
+                  <Checkbox
+                    name='collection'
+                    checked={values.collection?.includes(plantId)}
+                    onChange={e => {
+                      setFieldValue(
+                        'collection',
+                        e.target.checked
+                          ? [...values.collection, plantId]
+                          : values.collection.filter(id => id !== plantId)
+                      )
+                      submitForm()
+                    }}>
+                    <span className='icon collection'>
+                      <RiPlantLine />
+                    </span>
+                  </Checkbox>
+                  <Checkbox
+                    name='wishlist'
+                    checked={values.wishlist?.includes(plantId)}
+                    onChange={e => {
+                      setFieldValue(
+                        'wishlist',
+                        e.target.checked
+                          ? [...values.wishlist, plantId]
+                          : values.wishlist.filter(id => id !== plantId)
+                      )
+                      submitForm()
+                    }}>
+                    <span className='icon wishlist'>
+                      <AiOutlineStar />
+                    </span>
+                  </Checkbox>
+                </div>
+              </Form>
+            )}
+          </Formik>
         </Wrapper>
       )}
     </>
@@ -88,41 +105,68 @@ export const ActionBar = ({ plantId }) => {
 }
 
 const Wrapper = styled.div`
-  background: #f7f7f7;
   width: 100%;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  align-self: center;
   margin-top: auto;
-  border-radius: 15px;
-  padding: 5px;
-`
-
-const Action = styled.button`
-  color: #000;
-  opacity: ${props => (props.added ? '1' : '0.5')};
-  border-radius: 50%;
-  height: 30px;
-  width: 30px;
-  display: grid;
-  place-content: center;
-  font-size: 1.3rem;
-  &:hover,
-  &:focus {
-    background: #ccc;
-  }
-  &:disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-  &.collection {
-    background: ${props => (props.added ? COLORS.light : '')};
-  }
-  &.wishlist {
-    background: ${props => (props.added ? '#ffd24d' : '')};
-  }
-  &.favorites {
-    background: ${props => (props.added ? '#b493e6' : '')};
+  border-top: 1px dotted #ccc;
+  padding-top: 5px;
+  form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .ant-checkbox-wrapper {
+      margin: 0;
+      .icon {
+        opacity: 0.5;
+      }
+      .num {
+        color: #999;
+      }
+      &:hover,
+      &:focus {
+        .icon {
+          opacity: 1;
+        }
+      }
+    }
+    .ant-checkbox-wrapper-checked {
+      .icon {
+        opacity: 1;
+        &.hearts {
+          color: ${COLORS.accent};
+        }
+        &.collection {
+          background: ${COLORS.light};
+        }
+        &.wishlist {
+          background: #ffd24d;
+        }
+      }
+    }
+    .ant-checkbox {
+      display: none;
+    }
+    .ant-checkbox + span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0;
+    }
+    .icon {
+      color: #000;
+      border-radius: 50%;
+      height: 30px;
+      width: 30px;
+      display: grid;
+      place-content: center;
+      font-size: 1.3rem;
+      transition: 0.2s ease-in-out;
+    }
+    .user-lists {
+      display: flex;
+      align-items: center;
+      border-radius: 20px;
+      gap: 10px;
+    }
   }
 `

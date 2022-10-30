@@ -203,6 +203,7 @@ const getPlant = async (req, res) => {
     const plant = await db.collection('plants').findOne({
       slug,
     })
+    // TODO: find instances of this plant in users' collections and wishlists and display total on plant profile
     if (plant) {
       res.status(200).json({ status: 200, plant: plant })
     } else {
@@ -386,7 +387,6 @@ const updatePlant = async (req, res) => {
   client.close()
 }
 
-// TODO: will need to remove from users' lists or add a check in case plant data is missing
 const deletePlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   const { id } = req.params
@@ -395,12 +395,11 @@ const deletePlant = async (req, res) => {
   try {
     const filter = { _id: ObjectId(id) }
     const result = await db.collection('plants').deleteOne(filter)
-    // find and delete plant from users' collection, favorites, and wishlist
+    // find and delete plant from users' collection and wishlist
     await db.collection('users').updateMany(
       {},
       {
         $pull: {
-          favorites: id,
           wishlist: id,
           collection: id,
         },

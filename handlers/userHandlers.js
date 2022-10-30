@@ -39,7 +39,6 @@ const createUser = async (req, res) => {
         joined: new Date(),
         friends: [],
         collection: [],
-        favorites: [],
         wishlist: [],
       })
       assert.strictEqual(1, user.insertedCount)
@@ -165,6 +164,52 @@ const getUser = async (req, res) => {
   }
 }
 
+const getWishlist = async (req, res) => {
+  const { userId } = req.params
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  try {
+    const user = await db.collection('users').findOne({ _id: ObjectId(userId) })
+    // convert ids in user.wishlist to objectids
+    const ids = user.wishlist?.map(id => ObjectId(id))
+
+    const wishlist = await db
+      .collection('plants')
+      .find({ _id: { $in: ids } })
+      .toArray()
+
+    res.status(200).json({ status: 200, wishlist })
+  } catch (err) {
+    console.error('Error getting wishlist', err)
+    res.status(500).json({ status: 500, message: 'Internal server error' })
+  }
+  client.close()
+}
+
+const getCollection = async (req, res) => {
+  const { userId } = req.params
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  try {
+    const user = await db.collection('users').findOne({ _id: ObjectId(userId) })
+    // convert ids in user.wishlist to objectids
+    const ids = user.collection?.map(id => ObjectId(id))
+
+    const collection = await db
+      .collection('plants')
+      .find({ _id: { $in: ids } })
+      .toArray()
+
+    res.status(200).json({ status: 200, collection })
+  } catch (err) {
+    console.error('Error getting collection', err)
+    res.status(500).json({ status: 500, message: 'Internal server error' })
+  }
+  client.close()
+}
+
 const updateUser = async (req, res) => {
   const userId = ObjectId(req.params.id)
   const { firstName, lastName, email, username, lowerCaseUsername, currentPassword, newPassword } =
@@ -216,114 +261,151 @@ const updateUser = async (req, res) => {
   client.close()
 }
 
-// (UPDATE/PUT) ADDS A PLANT, FRIEND, OR IMAGE TO USER'S DATA
-const addToUser = async (req, res) => {
+const updateLists = async (req, res) => {
+  const { userId } = req.params
+  const { plantId, hearts, collection, wishlist } = req.body
+
   const client = await MongoClient(MONGO_URI, options)
-  const username = req.params.username
+  await client.connect()
+  const db = client.db('plantgeekdb')
+
   try {
-    await client.connect()
-    const db = client.db('plantgeekdb')
-    const users = db.collection('users')
-    const filter = { username: username }
-    let update = undefined
-    if (req.body.collection) {
-      update = {
-        $push: {
-          collection: req.body.collection,
+    // update collection and wishlist (lists of plantIds) on user
+    const userUpdate = await db.collection('users').updateOne(
+      { _id: ObjectId(userId) },
+      {
+        $set: {
+          collection,
+          wishlist,
         },
       }
-    } else if (req.body.favorites) {
-      update = {
-        $push: {
-          favorites: req.body.favorites,
+    )
+
+    // update hearts (list of userIds) on plant
+    const plantUpdate = await db.collection('plants').updateOne(
+      { _id: ObjectId(plantId) },
+      {
+        $set: {
+          hearts,
         },
       }
-    } else if (req.body.wishlist) {
-      update = {
-        $push: {
-          wishlist: req.body.wishlist,
-        },
-      }
-    } else if (req.body.friends) {
-      update = {
-        $push: {
-          friends: req.body.friends,
-        },
-      }
-    } else if (req.body.image) {
-      update = {
-        $push: {
-          image: req.body.image,
-        },
-      }
-    }
-    const result = await users.updateOne(filter, update)
-    res.status(200).json({
-      status: 200,
-      message: `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`,
-    })
+    )
+
+    res.status(200).json({ status: 200, data: { userUpdate, plantUpdate } })
   } catch (err) {
-    res.status(404).json({ status: 404, message: err.message })
-    console.error(err.stack)
+    console.error(err)
+    return res.status(400).json(err)
   }
-  client.close()
 }
+
+// (UPDATE/PUT) ADDS A PLANT, FRIEND, OR IMAGE TO USER'S DATA
+// const addToUser = async (req, res) => {
+//   const client = await MongoClient(MONGO_URI, options)
+//   const username = req.params.username
+//   try {
+//     await client.connect()
+//     const db = client.db('plantgeekdb')
+//     const users = db.collection('users')
+//     const filter = { username: username }
+//     let update = undefined
+//     if (req.body.collection) {
+//       update = {
+//         $push: {
+//           collection: req.body.collection,
+//         },
+//       }
+//     } else if (req.body.favorites) {
+//       update = {
+//         $push: {
+//           favorites: req.body.favorites,
+//         },
+//       }
+//     } else if (req.body.wishlist) {
+//       update = {
+//         $push: {
+//           wishlist: req.body.wishlist,
+//         },
+//       }
+//     } else if (req.body.friends) {
+//       update = {
+//         $push: {
+//           friends: req.body.friends,
+//         },
+//       }
+//     } else if (req.body.image) {
+//       update = {
+//         $push: {
+//           image: req.body.image,
+//         },
+//       }
+//     }
+//     const result = await users.updateOne(filter, update)
+//     res.status(200).json({
+//       status: 200,
+//       message: `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`,
+//     })
+//   } catch (err) {
+//     res.status(404).json({ status: 404, message: err.message })
+//     console.error(err.stack)
+//   }
+//   client.close()
+// }
 
 // (UPDATE/PUT) REMOVES A PLANT, FRIEND, OR IMAGE FROM USER'S DATA
-const removeFromUser = async (req, res) => {
-  const client = await MongoClient(MONGO_URI, options)
-  const username = req.params.username
-  try {
-    await client.connect()
-    const db = client.db('plantgeekdb')
-    const users = db.collection('users')
-    const filter = { username: username }
-    let update = undefined
-    if (req.body.collection) {
-      update = {
-        $pull: {
-          collection: req.body.collection,
-        },
-      }
-    } else if (req.body.favorites) {
-      update = {
-        $pull: {
-          favorites: req.body.favorites,
-        },
-      }
-    } else if (req.body.wishlist) {
-      update = {
-        $pull: {
-          wishlist: req.body.wishlist,
-        },
-      }
-    } else if (req.body.friends) {
-      update = {
-        $pull: {
-          friends: req.body.friends,
-        },
-      }
-    } else if (req.body.image) {
-      update = {
-        $pull: {
-          image: req.body.image,
-        },
-      }
-    }
-    const result = await users.updateOne(filter, update)
-    res.status(200).json({
-      status: 200,
-      message: `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`,
-    })
-  } catch (err) {
-    res.status(404).json({ status: 404, message: err.message })
-    console.error(err.stack)
-  }
-  client.close()
-}
+// const removeFromUser = async (req, res) => {
+//   const client = await MongoClient(MONGO_URI, options)
+//   const username = req.params.username
+//   try {
+//     await client.connect()
+//     const db = client.db('plantgeekdb')
+//     const users = db.collection('users')
+//     const filter = { username: username }
+//     let update = undefined
+//     if (req.body.collection) {
+//       update = {
+//         $pull: {
+//           collection: req.body.collection,
+//         },
+//       }
+//     } else if (req.body.favorites) {
+//       update = {
+//         $pull: {
+//           favorites: req.body.favorites,
+//         },
+//       }
+//     } else if (req.body.wishlist) {
+//       update = {
+//         $pull: {
+//           wishlist: req.body.wishlist,
+//         },
+//       }
+//     } else if (req.body.friends) {
+//       update = {
+//         $pull: {
+//           friends: req.body.friends,
+//         },
+//       }
+//     } else if (req.body.image) {
+//       update = {
+//         $pull: {
+//           image: req.body.image,
+//         },
+//       }
+//     }
+//     const result = await users.updateOne(filter, update)
+//     res.status(200).json({
+//       status: 200,
+//       message: `${result.matchedCount} user(s) matched the filter, updated ${result.modifiedCount} user(s)`,
+//     })
+//   } catch (err) {
+//     res.status(404).json({ status: 404, message: err.message })
+//     console.error(err.stack)
+//   }
+//   client.close()
+// }
 
-// TODO: (DELETE) REMOVE A USER
-// will need to remove from other users' friends or add a check in case friend user data is missing
+// (DELETE) REMOVE A USER
+// TODO: remove from other users' friends
 const deleteUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   const { id } = req.params
@@ -332,7 +414,6 @@ const deleteUser = async (req, res) => {
   try {
     const filter = { _id: ObjectId(id) }
     const result = await db.collection('users').deleteOne(filter)
-    console.log(result)
     res.status(200).json({ status: 200, data: result })
   } catch (err) {
     console.error(err)
@@ -345,10 +426,11 @@ module.exports = {
   createUser,
   authenticateUser,
   verifyToken,
-  getUser,
   getUsers,
+  getUser,
+  getWishlist,
+  getCollection,
   updateUser,
-  addToUser,
-  removeFromUser,
+  updateLists,
   deleteUser,
 }

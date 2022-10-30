@@ -65,8 +65,8 @@ export const Homepage = () => {
               <ul>
                 <li>Manage your personal collection</li>
                 <li>Add plants you would like to own to your wishlist</li>
-                <li>Upvote and keep a list of your favorite plants</li>
-                <li>Use the detailed view to quickly refer to your plants' needs</li>
+                <li>Upvote your favorite plants</li>
+                <li>Quickly refer to your plants specific needs</li>
               </ul>
               <h2>
                 <Link to='/contribute'>
@@ -96,7 +96,7 @@ export const Homepage = () => {
                 <li>Keep a list of your own houseplant collection</li>
                 <li>Quickly view the care requirements for your plants via your profile</li>
                 <li>Create a wishlist</li>
-                <li>Upvote and save your favorite plants</li>
+                <li>Upvote your favorite plants</li>
                 <li>Help contribute to our database of houseplants</li>
               </ul>
             </>
@@ -104,40 +104,9 @@ export const Homepage = () => {
         </InfoCard>
       </FadeIn>
       <FadeIn delay={300}>
-        <InfoBox>
-          <div>
-            <span className='icon collection'>
-              <RiPlantLine />
-            </span>
-            <span>
-              <b>Have a plant?</b>
-              <p>Add it to your collection</p>
-            </span>
-          </div>
-          <div>
-            <span className='icon wishlist'>
-              <AiOutlineStar />
-            </span>
-            <span>
-              <b>Want a plant?</b>
-              <p>Add it to your wishlist</p>
-            </span>
-          </div>
-          <div>
-            <span className='icon favorites'>
-              <TiHeartOutline />
-            </span>
-            <span>
-              <b>Love a plant?</b>
-              <p>Add it to your favorites</p>
-            </span>
-          </div>
-        </InfoBox>
-      </FadeIn>
-      <FadeIn delay={400}>
         <FeaturedPlants currentUser={currentUser} />
       </FadeIn>
-      <FadeIn delay={500}>
+      <FadeIn delay={400}>
         <InfoCard className='tips'>
           <h2>general tips</h2>
           <h3>tropical</h3>
@@ -169,7 +138,7 @@ export const Homepage = () => {
           </h3>
         </InfoCard>
       </FadeIn>
-      <FadeIn delay={600}>
+      <FadeIn delay={500}>
         <section className='contributions-info'>
           <div>
             <h2>contribute to our database</h2>
@@ -279,43 +248,6 @@ const InfoCard = styled.section`
     margin-left: 3px;
     li {
       margin-left: 20px;
-    }
-  }
-`
-
-const InfoBox = styled.section`
-  background: #fff;
-  border: 1px dotted #ccc;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  div {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  .icon {
-    display: flex;
-    align-items: center;
-    font-size: 2rem;
-    border-radius: 50%;
-    padding: 10px;
-    &.collection {
-      background: ${COLORS.light};
-    }
-    &.wishlist {
-      background: #ffd24d;
-    }
-    &.favorites {
-      background: #b493e6;
-    }
-  }
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    flex-direction: row;
-    justify-content: space-around;
-    div {
-      flex-direction: column;
-      text-align: center;
     }
   }
 `

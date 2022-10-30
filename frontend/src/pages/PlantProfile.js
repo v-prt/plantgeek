@@ -31,7 +31,7 @@ import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
-import { ActionBox } from '../components/ActionBox'
+import { ActionBar } from '../components/ActionBar'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { PlantCard } from '../components/PlantCard'
 import { Ellipsis } from '../components/loaders/Ellipsis'
@@ -405,121 +405,123 @@ export const PlantProfile = () => {
                       ) : (
                         <div className='primary-image'>
                           <ImageLoader src={image} alt={''} placeholder={placeholder} />
+                          {/* TODO: gallery here */}
                         </div>
                       )}
 
                       {/* PLANT NEEDS */}
-                      <Needs>
-                        <h2>Care information</h2>
-                        <div className='row'>
-                          <img src={sun} alt='' />
-                          <div className='column'>
-                            {editMode ? (
-                              <Select name='light' placeholder='Select' style={{ width: '100%' }}>
-                                <Option value='low to bright indirect'>
-                                  low to bright indirect
-                                </Option>
-                                <Option value='medium to bright indirect'>
-                                  medium to bright indirect
-                                </Option>
-                                <Option value='bright indirect'>bright indirect</Option>
-                              </Select>
-                            ) : (
-                              <p>{plant.light || 'unknown'}</p>
-                            )}
-                            <Bar>
-                              {plant.light === 'low to bright indirect' && (
-                                <Indicator level={'1'} />
+                      <Info>
+                        <div className='needs'>
+                          <div className='row'>
+                            <img src={sun} alt='' />
+                            <div className='column'>
+                              {editMode ? (
+                                <Select name='light' placeholder='Select' style={{ width: '100%' }}>
+                                  <Option value='low to bright indirect'>
+                                    low to bright indirect
+                                  </Option>
+                                  <Option value='medium to bright indirect'>
+                                    medium to bright indirect
+                                  </Option>
+                                  <Option value='bright indirect'>bright indirect</Option>
+                                </Select>
+                              ) : (
+                                <p>{plant.light || 'unknown'}</p>
                               )}
-                              {plant.light === 'medium to bright indirect' && (
-                                <Indicator level={'2'} />
+                              <Bar>
+                                {plant.light === 'low to bright indirect' && (
+                                  <Indicator level={'1'} />
+                                )}
+                                {plant.light === 'medium to bright indirect' && (
+                                  <Indicator level={'2'} />
+                                )}
+                                {plant.light === 'bright indirect' && <Indicator level={'3'} />}
+                              </Bar>
+                            </div>
+                          </div>
+                          <div className='row'>
+                            <img src={water} alt='' />
+                            <div className='column'>
+                              {editMode ? (
+                                <Select name='water' placeholder='Select' style={{ width: '100%' }}>
+                                  <Option value='low'>low</Option>
+                                  <Option value='low to medium'>low to medium</Option>
+                                  <Option value='medium'>medium</Option>
+                                  <Option value='medium to high'>medium to high</Option>
+                                  <Option value='high'>high</Option>
+                                </Select>
+                              ) : (
+                                <p>{plant.water || 'unknown'}</p>
                               )}
-                              {plant.light === 'bright indirect' && <Indicator level={'3'} />}
-                            </Bar>
+                              <Bar>
+                                {plant.water === 'low' && <Indicator level={'1'} />}
+                                {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+                                {plant.water === 'medium' && <Indicator level={'2'} />}
+                                {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+                                {plant.water === 'high' && <Indicator level={'3'} />}
+                              </Bar>
+                            </div>
                           </div>
-                        </div>
-                        <div className='row'>
-                          <img src={water} alt='' />
-                          <div className='column'>
-                            {editMode ? (
-                              <Select name='water' placeholder='Select' style={{ width: '100%' }}>
-                                <Option value='low'>low</Option>
-                                <Option value='low to medium'>low to medium</Option>
-                                <Option value='medium'>medium</Option>
-                                <Option value='medium to high'>medium to high</Option>
-                                <Option value='high'>high</Option>
-                              </Select>
-                            ) : (
-                              <p>{plant.water || 'unknown'}</p>
-                            )}
-                            <Bar>
-                              {plant.water === 'low' && <Indicator level={'1'} />}
-                              {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
-                              {plant.water === 'medium' && <Indicator level={'2'} />}
-                              {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
-                              {plant.water === 'high' && <Indicator level={'3'} />}
-                            </Bar>
+                          <div className='row'>
+                            <img src={temp} alt='' />
+                            <div className='column'>
+                              {editMode ? (
+                                <Select
+                                  name='temperature'
+                                  placeholder='Select'
+                                  style={{ width: '100%' }}>
+                                  <Option value='average'>average (55-75°F)</Option>
+                                  <Option value='above average'>above average (65-85°F)</Option>
+                                </Select>
+                              ) : (
+                                <p>
+                                  {plant.temperature === 'average'
+                                    ? 'average (55-75°F)'
+                                    : plant.temperature === 'above average'
+                                    ? 'above average (65-85°F)'
+                                    : plant.temperature || 'unknown'}
+                                </p>
+                              )}
+                              <Bar>
+                                {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+                                {plant.temperature === 'above average' && <Indicator level={'3'} />}
+                              </Bar>
+                            </div>
                           </div>
-                        </div>
-                        <div className='row'>
-                          <img src={temp} alt='' />
-                          <div className='column'>
-                            {editMode ? (
-                              <Select
-                                name='temperature'
-                                placeholder='Select'
-                                style={{ width: '100%' }}>
-                                <Option value='average'>average (55-75°F)</Option>
-                                <Option value='above average'>above average (65-85°F)</Option>
-                              </Select>
-                            ) : (
-                              <p>
-                                {plant.temperature === 'average'
-                                  ? 'average (55-75°F)'
-                                  : plant.temperature === 'above average'
-                                  ? 'above average (65-85°F)'
-                                  : plant.temperature || 'unknown'}
-                              </p>
-                            )}
-                            <Bar>
-                              {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                              {plant.temperature === 'above average' && <Indicator level={'3'} />}
-                            </Bar>
+                          <div className='row'>
+                            <img src={humidity} alt='' />
+                            <div className='column'>
+                              {editMode ? (
+                                <Select
+                                  name='humidity'
+                                  placeholder='Select'
+                                  style={{ width: '100%' }}>
+                                  <Option value='low'>low (30-40%)</Option>
+                                  <Option value='medium'>medium (40-50%)</Option>
+                                  <Option value='high'>high (50-60%+)</Option>
+                                </Select>
+                              ) : (
+                                <p>
+                                  {plant.humidity === 'low'
+                                    ? 'low (30-40%)'
+                                    : plant.humidity === 'medium'
+                                    ? 'medium (40-50%)'
+                                    : plant.humidity === 'high'
+                                    ? 'high (50-60%+)'
+                                    : plant.humidity || 'unknown'}
+                                </p>
+                              )}
+                              <Bar>
+                                {plant.humidity === 'low' && <Indicator level={'1'} />}
+                                {plant.humidity === 'medium' && <Indicator level={'2'} />}
+                                {plant.humidity === 'high' && <Indicator level={'3'} />}
+                              </Bar>
+                            </div>
                           </div>
+                          <Link to='/guidelines' className='link'>
+                            <p>Care Tips</p>
+                          </Link>
                         </div>
-                        <div className='row'>
-                          <img src={humidity} alt='' />
-                          <div className='column'>
-                            {editMode ? (
-                              <Select
-                                name='humidity'
-                                placeholder='Select'
-                                style={{ width: '100%' }}>
-                                <Option value='low'>low (30-40%)</Option>
-                                <Option value='medium'>medium (40-50%)</Option>
-                                <Option value='high'>high (50-60%+)</Option>
-                              </Select>
-                            ) : (
-                              <p>
-                                {plant.humidity === 'low'
-                                  ? 'low (30-40%)'
-                                  : plant.humidity === 'medium'
-                                  ? 'medium (40-50%)'
-                                  : plant.humidity === 'high'
-                                  ? 'high (50-60%+)'
-                                  : plant.humidity || 'unknown'}
-                              </p>
-                            )}
-                            <Bar>
-                              {plant.humidity === 'low' && <Indicator level={'1'} />}
-                              {plant.humidity === 'medium' && <Indicator level={'2'} />}
-                              {plant.humidity === 'high' && <Indicator level={'3'} />}
-                            </Bar>
-                          </div>
-                        </div>
-                        <Link to='/guidelines' className='link'>
-                          <p>Care Tips</p>
-                        </Link>
                         <div className='misc-info'>
                           <div className='difficulty'>
                             Difficulty:{' '}
@@ -549,7 +551,8 @@ export const PlantProfile = () => {
                             </div>
                           )}
                         </div>
-                      </Needs>
+                        <ActionBar plantId={plantId} hearts={plant.hearts} />
+                      </Info>
                     </section>
                   </FadeIn>
                 </Form>
@@ -558,10 +561,6 @@ export const PlantProfile = () => {
 
             {currentUser && (
               <>
-                {/* LIST ACTIONS */}
-                <FadeIn delay={300}>
-                  <ActionBox plantId={plantId} />
-                </FadeIn>
                 {/* SUGGESTION SUBMISSION */}
                 <FadeIn delay={400}>
                   <section className='suggestions-section-user'>
@@ -915,6 +914,7 @@ const Wrapper = styled.main`
       }
     }
     .plant-info {
+      flex-direction: row;
       gap: 40px;
     }
   }
@@ -922,23 +922,22 @@ const Wrapper = styled.main`
     .heading {
       margin-bottom: 30px;
     }
-    .plant-info {
-      flex-direction: row;
-    }
   }
 `
 
-const Needs = styled.div`
-  background: #f2f2f2;
+const Info = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  border-radius: 20px;
+  gap: 20px;
   flex: 1;
-  h2 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
+  .needs,
+  .misc-info {
+    background: #f2f2f2;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
   }
   .row {
     display: flex;
@@ -966,15 +965,10 @@ const Needs = styled.div`
     width: fit-content;
   }
   .misc-info {
-    display: flex;
-    flex-direction: column;
     gap: 10px;
     font-size: 0.9rem;
     color: #999;
     font-weight: bold;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
     p {
       margin-right: 20px;
     }

@@ -9,7 +9,8 @@ import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
-import { PlantList } from '../components/lists/PlantList'
+import { Wishlist } from '../components/lists/Wishlist'
+import { Collection } from '../components/lists/Collection'
 import placeholder from '../assets/avatar-placeholder.png'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import bee from '../assets/stickers/bee.svg'
@@ -25,6 +26,8 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 export const UserProfile = () => {
   const { currentUser } = useContext(UserContext)
   useDocumentTitle(`${currentUser?.username || 'Profile'} | plantgeek`)
+
+  const [list, setList] = useState('collection')
 
   const [approvedContributions, setApprovedContributions] = useState([])
   const [pendingContributions, setPendingContributions] = useState([])
@@ -74,9 +77,21 @@ export const UserProfile = () => {
       </FadeIn>
       <FadeIn delay={200}>
         <div className='lists'>
-          <PlantList user={currentUser} list={currentUser.collection} title='collection' />
-          <PlantList user={currentUser} list={currentUser.wishlist} title='wishlist' />
-          <PlantList user={currentUser} list={currentUser.favorites} title='favorites' />
+          <div className='list-toggle'>
+            <button
+              className={`toggle-btn ${list === 'collection' && 'active'}`}
+              onClick={() => setList('collection')}>
+              My Collection ({currentUser.collection.length})
+            </button>
+            <button
+              className={`toggle-btn ${list === 'wishlist' && 'active'}`}
+              onClick={() => setList('wishlist')}>
+              My Wishlist ({currentUser.wishlist.length})
+            </button>
+          </div>
+          {/* TODO: add more elegant handling for removing items from lists (use state to set list of plants from query, then remove from state and fade card out) */}
+          {list === 'collection' && <Collection user={currentUser} />}
+          {list === 'wishlist' && <Wishlist user={currentUser} />}
         </div>
       </FadeIn>
       <FadeIn delay={500}>
@@ -174,6 +189,28 @@ const Wrapper = styled.main`
     flex-direction: column;
     padding: 0;
     border-radius: 20px;
+    .list-toggle {
+      background: #f2f2f2;
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 50px;
+      z-index: 1;
+      .toggle-btn {
+        flex: 1;
+        padding: 10px;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        font-weight: bold;
+        color: rgba(0, 0, 0, 0.2);
+        &.active {
+          background: rgba(255, 255, 255, 0.5);
+          border-color: ${COLORS.darkest};
+          color: ${COLORS.darkest};
+        }
+      }
+    }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {
@@ -181,6 +218,13 @@ const Wrapper = styled.main`
       .text {
         margin-left: 30px;
         text-align: left;
+      }
+    }
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    .lists {
+      .list-toggle {
+        top: 0;
       }
     }
   }

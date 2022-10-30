@@ -13,9 +13,10 @@ const {
   verifyToken,
   getUsers,
   getUser,
+  getWishlist,
+  getCollection,
   updateUser,
-  addToUser,
-  removeFromUser,
+  updateLists,
   deleteUser,
 } = require('./handlers/userHandlers.js')
 
@@ -61,9 +62,10 @@ app
   .post(`${API_URL}/token`, verifyToken)
   .get(`${API_URL}/users`, getUsers)
   .get(`${API_URL}/users/:id`, getUser)
+  .get(`${API_URL}/wishlist/:userId`, getWishlist)
+  .get(`${API_URL}/collection/:userId`, getCollection)
   .put(`${API_URL}/users/:id`, updateUser)
-  .put(`${API_URL}/:username/add`, addToUser)
-  .put(`${API_URL}/:username/remove`, removeFromUser)
+  .post(`${API_URL}/lists/:userId`, updateLists)
   .delete(`${API_URL}/users/:id`, deleteUser)
 
   // plants
