@@ -108,6 +108,7 @@ export const Browse = () => {
                       allowClear
                       placeholder='Search plants'
                       onChange={submitForm}
+                      onPressEnter={e => e.preventDefault()}
                       style={{ width: '100%' }}
                       prefix={<SearchOutlined />}
                     />
