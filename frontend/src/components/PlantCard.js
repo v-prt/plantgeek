@@ -75,7 +75,7 @@ export const PlantCard = ({ plant, viewNeeds }) => {
           </Bar>
         </Row>
       </Needs>
-      <ActionBar plantId={plant._id} hearts={plant.hearts} />
+      <ActionBar plant={plant} />
     </Wrapper>
   )
 }

@@ -262,14 +262,14 @@ const updateUser = async (req, res) => {
 
 const updateLists = async (req, res) => {
   const { userId } = req.params
-  const { plantId, hearts, collection, wishlist } = req.body
+  const { plantId, hearts, owned, wanted, collection, wishlist } = req.body
 
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
 
   try {
-    // update collection and wishlist (lists of plantIds) on user
+    // update user's collection and wishlist (lists of plantIds)
     const userUpdate = await db.collection('users').updateOne(
       { _id: ObjectId(userId) },
       {
@@ -280,12 +280,14 @@ const updateLists = async (req, res) => {
       }
     )
 
-    // update hearts (list of userIds) on plant
+    // update lists of userIds in hearts, owned, and wanted on plant to be able to sort by most liked/owned/wanted
     const plantUpdate = await db.collection('plants').updateOne(
       { _id: ObjectId(plantId) },
       {
         $set: {
           hearts,
+          owned,
+          wanted,
         },
       }
     )
@@ -307,6 +309,17 @@ const deleteUser = async (req, res) => {
   try {
     const filter = { _id: ObjectId(id) }
     const result = await db.collection('users').deleteOne(filter)
+    // find and remove user's id from plants' hearts
+    await db.collection('plants').updateMany(
+      {},
+      {
+        $pull: {
+          hearts: id,
+          owned: id,
+          wanted: id,
+        },
+      }
+    )
     res.status(200).json({ status: 200, data: result })
   } catch (err) {
     console.error(err)

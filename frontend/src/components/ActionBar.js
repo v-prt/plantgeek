@@ -13,7 +13,8 @@ import { AiOutlineStar } from 'react-icons/ai'
 import { Formik, Form } from 'formik'
 import { Checkbox } from 'formik-antd'
 
-export const ActionBar = ({ plantId, hearts }) => {
+export const ActionBar = ({ plant }) => {
+  const plantId = plant._id
   const queryClient = new useQueryClient()
   const { currentUser } = useContext(UserContext)
 
@@ -23,7 +24,8 @@ export const ActionBar = ({ plantId, hearts }) => {
       queryClient.invalidateQueries('current-user')
       queryClient.invalidateQueries('collection')
       queryClient.invalidateQueries('wishlist')
-      queryClient.invalidateQueries('plants')
+      // leads to funky behavior when browsing and sorting plants
+      // queryClient.invalidateQueries('plants')
     } catch (err) {
       console.log(err)
     }
@@ -31,7 +33,9 @@ export const ActionBar = ({ plantId, hearts }) => {
 
   const initialValues = {
     plantId,
-    hearts: hearts || [],
+    hearts: plant.hearts || [],
+    owned: plant.owned || [],
+    wanted: plant.wanted || [],
     collection: currentUser?.collection || [],
     wishlist: currentUser?.wishlist || [],
   }
@@ -67,6 +71,12 @@ export const ActionBar = ({ plantId, hearts }) => {
                     checked={values.collection?.includes(plantId)}
                     onChange={e => {
                       setFieldValue(
+                        'owned',
+                        e.target.checked
+                          ? [...values.owned, currentUser._id]
+                          : values.owned.filter(id => id !== currentUser._id)
+                      )
+                      setFieldValue(
                         'collection',
                         e.target.checked
                           ? [...values.collection, plantId]
@@ -82,6 +92,12 @@ export const ActionBar = ({ plantId, hearts }) => {
                     name='wishlist'
                     checked={values.wishlist?.includes(plantId)}
                     onChange={e => {
+                      setFieldValue(
+                        'wanted',
+                        e.target.checked
+                          ? [...values.wanted, currentUser._id]
+                          : values.wanted.filter(id => id !== currentUser._id)
+                      )
                       setFieldValue(
                         'wishlist',
                         e.target.checked
@@ -101,11 +117,11 @@ export const ActionBar = ({ plantId, hearts }) => {
         </Wrapper>
       ) : (
         <Wrapper>
-          <div className={`hearts ${hearts?.length && 'liked'}`}>
+          <div className={`hearts ${plant.hearts?.length && 'liked'}`}>
             <span className='icon'>
               <TiHeart />
             </span>
-            <span className='num'>{hearts?.length || 0}</span>
+            <span className='num'>{plant.hearts?.length || 0}</span>
           </div>
         </Wrapper>
       )}

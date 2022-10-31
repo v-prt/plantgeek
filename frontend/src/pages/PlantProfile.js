@@ -551,7 +551,8 @@ export const PlantProfile = () => {
                             </div>
                           )}
                         </div>
-                        <ActionBar plantId={plantId} hearts={plant.hearts} />
+                        {/* FIXME: forms cannot be nested
+                        <ActionBar plant={plant} /> */}
                       </Info>
                     </section>
                   </FadeIn>

@@ -230,7 +230,6 @@ export const Browse = () => {
                         <span className='slider'></span>
                       </Toggle>
                     </div>
-                    {/* TODO: sort by most/least liked/owned/wanted */}
                     <FormItem label='Sort'>
                       <Select
                         getPopupContainer={trigger => trigger.parentNode}
@@ -243,6 +242,15 @@ export const Browse = () => {
                         </Option>
                         <Option value='name-desc'>
                           <ArrowUpOutlined /> Name (Z-A)
+                        </Option>
+                        <Option value='most-hearts'>
+                          <ArrowUpOutlined /> Most liked
+                        </Option>
+                        <Option value='most-owned'>
+                          <ArrowUpOutlined /> Most owned
+                        </Option>
+                        <Option value='most-wanted'>
+                          <ArrowUpOutlined /> Most wanted
                         </Option>
                       </Select>
                     </FormItem>

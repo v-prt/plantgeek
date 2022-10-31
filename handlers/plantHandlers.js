@@ -133,6 +133,18 @@ const getPlants = async (req, res) => {
       order = { primaryName: 1 }
     } else if (sort === 'name-desc') {
       order = { primaryName: -1 }
+    } else if (sort === 'most-hearts') {
+      order = {
+        hearts: -1,
+      }
+    } else if (sort === 'most-owned') {
+      order = {
+        owned: -1,
+      }
+    } else if (sort === 'most-wanted') {
+      order = {
+        wanted: -1,
+      }
     }
   }
 
@@ -394,7 +406,7 @@ const deletePlant = async (req, res) => {
   try {
     const filter = { _id: ObjectId(id) }
     const result = await db.collection('plants').deleteOne(filter)
-    // find and delete plant from users' collection and wishlist
+    // find and remove plant id from users' collections and wishlists
     await db.collection('users').updateMany(
       {},
       {
