@@ -32,13 +32,13 @@ export const ActionBar = ({ plantId, hearts }) => {
   const initialValues = {
     plantId,
     hearts: hearts || [],
-    collection: currentUser.collection || [],
-    wishlist: currentUser.wishlist || [],
+    collection: currentUser?.collection || [],
+    wishlist: currentUser?.wishlist || [],
   }
 
   return (
     <>
-      {currentUser && (
+      {currentUser ? (
         <Wrapper>
           <Formik initialValues={initialValues} onSubmit={handleSubmit}>
             {({ values, setFieldValue, submitForm, isSubmitting }) => (
@@ -99,6 +99,15 @@ export const ActionBar = ({ plantId, hearts }) => {
             )}
           </Formik>
         </Wrapper>
+      ) : (
+        <Wrapper>
+          <div className={`hearts ${hearts?.length && 'liked'}`}>
+            <span className='icon'>
+              <TiHeart />
+            </span>
+            <span className='num'>{hearts?.length || 0}</span>
+          </div>
+        </Wrapper>
       )}
     </>
   )
@@ -152,21 +161,37 @@ const Wrapper = styled.div`
       gap: 5px;
       padding: 0;
     }
-    .icon {
-      color: #000;
-      border-radius: 50%;
-      height: 30px;
-      width: 30px;
-      display: grid;
-      place-content: center;
-      font-size: 1.3rem;
-      transition: 0.2s ease-in-out;
-    }
     .user-lists {
       display: flex;
       align-items: center;
       border-radius: 20px;
       gap: 10px;
+    }
+  }
+  .icon {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    display: grid;
+    place-content: center;
+    font-size: 1.3rem;
+    transition: 0.2s ease-in-out;
+  }
+  .hearts {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    .icon {
+      opacity: 0.5;
+    }
+    .num {
+      color: #999;
+    }
+    &.liked {
+      .icon {
+        opacity: 1;
+        color: ${COLORS.accent};
+      }
     }
   }
 `

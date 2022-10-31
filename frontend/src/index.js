@@ -9,7 +9,6 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
 // set default behavior of query client to only fetch once on render and when stale after 3 hours
-// FIXME: test this more thoroughly - should not refetch for random featured plants
 // const threeHours = 1000 * 60 * 60 * 3
 const queryClient = new QueryClient({
   // defaultOptions: {

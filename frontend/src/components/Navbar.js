@@ -17,8 +17,8 @@ import {
   BiLogOutCircle,
   BiBadgeCheck,
 } from 'react-icons/bi'
+import { TiHeartOutline } from 'react-icons/ti'
 import { CgProfile } from 'react-icons/cg'
-import { IoIosHelpCircleOutline } from 'react-icons/io'
 import { Button } from 'antd'
 import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
 
@@ -84,11 +84,17 @@ export const Navbar = () => {
           </>
         ) : (
           <>
-            <NavLink to='/about'>
+            <NavLink to='/guidelines'>
               <div className='icon'>
-                <IoIosHelpCircleOutline />
+                <TiHeartOutline />
               </div>
-              <span className='label'>about</span>
+              <span className='label'>care tips</span>
+            </NavLink>
+            <NavLink to='/signup' className='login-link'>
+              <div className='icon'>
+                <CgProfile />
+              </div>
+              <span className='label'>sign up</span>
             </NavLink>
             <NavLink to='/login' className='login-link'>
               <div className='icon'>
@@ -237,11 +243,6 @@ const Wrapper = styled.nav`
         }
       }
     }
-    .logout-btn,
-    .login-link {
-      padding-top: 20px;
-      border-top: 1px dotted rgba(255, 255, 255, 0.4);
-    }
     .sidebar-menu {
       display: none;
     }
@@ -263,15 +264,13 @@ const Wrapper = styled.nav`
         padding: 20px 0 20px 20px;
         height: 100%;
         margin-left: auto;
-        a {
+        a,
+        .logout-btn {
+          padding: 10px 20px 10px 10px;
           border-radius: 20px 0 0 20px;
           &.active {
             background: rgba(255, 255, 255, 0.1);
           }
-        }
-        a,
-        .logout-btn {
-          padding: 10px 20px 10px 10px;
         }
       }
       &.expanded {
@@ -350,16 +349,14 @@ const Wrapper = styled.nav`
           flex-direction: column;
           gap: 20px;
           margin-left: 30px;
-          a {
+          a,
+          .logout-btn {
+            padding: 10px;
             border-radius: 20px 0 0 20px;
             &:hover,
             &.active {
               background: rgba(255, 255, 255, 0.1);
             }
-          }
-          a,
-          .logout-btn {
-            padding: 10px;
           }
         }
       }

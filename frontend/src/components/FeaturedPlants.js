@@ -1,51 +1,48 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { API_URL } from '../constants'
-import { useInfiniteQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import axios from 'axios'
 import styled from 'styled-components/macro'
-import { Ellipsis } from './loaders/Ellipsis'
 import { FadeIn } from './loaders/FadeIn.js'
 import { FaArrowAltCircleRight } from 'react-icons/fa'
 import { PlantCard } from './PlantCard'
+import { GhostPlantCard } from './GhostPlantCard'
 
 export const FeaturedPlants = () => {
-  const [plants, setPlants] = useState([])
-
-  const { data, status } = useInfiniteQuery('random-plants', async () => {
-    const { data } = await axios.get(`${API_URL}/random-plants`)
-    return data.plants
-  })
-
-  useEffect(() => {
-    if (data) {
-      let pages = data.pages
-      const array = Array.prototype.concat.apply([], pages)
-      setPlants(
-        [array][0].map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={true} />)
-      )
+  const { data, status } = useQuery(
+    'random-plants',
+    async () => {
+      const { data } = await axios.get(`${API_URL}/random-plants`)
+      return data.plants
+    },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
     }
-  }, [data])
+  )
 
   return (
     <Wrapper>
-      {status === 'success' ? (
-        <FadeIn>
-          <h2>featured houseplants</h2>
-          {/* TODO: carousel */}
-          <Plants>{plants}</Plants>
-          <h3>
-            <Link to='/browse'>
-              browse all plants
-              <span className='icon'>
-                <FaArrowAltCircleRight />
-              </span>
-            </Link>
-          </h3>
-        </FadeIn>
-      ) : (
-        <Ellipsis />
-      )}
+      <FadeIn>
+        <h2>featured houseplants</h2>
+        {/* TODO: carousel */}
+        <Plants>
+          {status === 'success'
+            ? data?.map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={true} />)
+            : Array.from(Array(6).keys()).map(item => (
+                <GhostPlantCard key={item} viewNeeds={true} />
+              ))}
+        </Plants>
+        <h3>
+          <Link to='/browse'>
+            browse all plants
+            <span className='icon'>
+              <FaArrowAltCircleRight />
+            </span>
+          </Link>
+        </h3>
+      </FadeIn>
     </Wrapper>
   )
 }

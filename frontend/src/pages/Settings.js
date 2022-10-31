@@ -21,8 +21,6 @@ import { Image } from './UserProfile'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const AutoSave = () => {
-  useDocumentTitle('Settings | plantgeek')
-
   const { dirty, values, errors, submitForm } = useFormikContext()
 
   useEffect(() => {
@@ -37,6 +35,8 @@ const AutoSave = () => {
 }
 
 export const Settings = () => {
+  useDocumentTitle('Settings | plantgeek')
+
   const submitRef = useRef(0)
   const { currentUser, updateCurrentUser } = useContext(UserContext)
   const [savingStatus, setSavingStatus] = useState(undefined)
@@ -182,7 +182,6 @@ export const Settings = () => {
             )}
           </Formik>
           <div className='zone'>
-            {successStatus && <Alert type='success' message={successStatus} showIcon closable />}
             <div className='password'>
               <p>Password</p>
               <Button
@@ -192,6 +191,7 @@ export const Settings = () => {
                 CHANGE
               </Button>
             </div>
+            {successStatus && <Alert type='success' message={successStatus} showIcon closable />}
             <Formik
               initialValues={passwordInitialValues}
               validationSchema={passwordSchema}
