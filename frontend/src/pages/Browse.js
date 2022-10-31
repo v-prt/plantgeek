@@ -104,17 +104,20 @@ export const Browse = () => {
                 <div className='filter-bar-upper'>
                   <div className='search'>
                     <Select
+                      getPopupContainer={trigger => trigger.parentNode}
+                      // fixes issue with scrolling on mobile moving entire page
+                      virtual={false}
                       name='search'
+                      showSearch
+                      showArrow
                       allowClear
                       mode='tags'
                       placeholder='Search plants'
                       onChange={submitForm}
-                      // onPressEnter={e => e.preventDefault()}
-                      style={{ width: '100%' }}
-                      prefix={<SearchOutlined />}>
-                      {commonGenera.map(genus => (
-                        <Option key={genus} value={genus}>
-                          {genus}
+                      style={{ width: '100%' }}>
+                      {commonGenera.map(term => (
+                        <Option key={term} value={term}>
+                          {term}
                         </Option>
                       ))}
                     </Select>
