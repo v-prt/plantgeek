@@ -37,6 +37,7 @@ const {
 const {
   createSuggestion,
   getSuggestions,
+  getSuggestionsBySlug,
   updateSuggestion,
 } = require('./handlers/suggestionHandlers.js')
 
@@ -83,7 +84,8 @@ app
 
   // suggestions
   .post(`${API_URL}/suggestions/:plantId`, createSuggestion)
-  .get(`${API_URL}/suggestions/:slug`, getSuggestions)
+  .get(`${API_URL}/suggestions`, getSuggestions)
+  .get(`${API_URL}/suggestions/:slug`, getSuggestionsBySlug)
   .put(`${API_URL}/suggestions/:id`, updateSuggestion)
 
 if (process.env.NODE_ENV === 'production') {

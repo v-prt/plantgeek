@@ -17,7 +17,7 @@ import { Privacy } from './pages/Privacy'
 import { About } from './pages/About'
 import { Settings } from './pages/Settings'
 import { Contribute } from './pages/Contribute'
-import { Review } from './pages/Review'
+import { Admin } from './pages/Admin'
 import { PlantProfile } from './pages/PlantProfile'
 import { UserProfile } from './pages/UserProfile'
 import { Footer } from './components/Footer'
@@ -72,8 +72,8 @@ export const App = () => {
               <Route path='/contribute'>
                 <Contribute />
               </Route>
-              <Route path='/review'>
-                <Review />
+              <Route path='/admin'>
+                <Admin />
               </Route>
               <Route path='/profile'>
                 <UserProfile />

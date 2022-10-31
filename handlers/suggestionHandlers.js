@@ -37,6 +37,29 @@ const getSuggestions = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
+
+  try {
+    const suggestions = await db.collection('suggestions').find().toArray()
+
+    const result = await Promise.all(
+      suggestions.map(async suggestion => {
+        const plant = await db.collection('plants').findOne({ _id: ObjectId(suggestion.plantId) })
+        const user = await db.collection('users').findOne({ _id: ObjectId(suggestion.userId) })
+        return { ...suggestion, plant, user }
+      })
+    )
+    res.status(200).json({ status: 200, suggestions: result })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ status: 500, data: req.body, message: err.message })
+  }
+  client.close()
+}
+
+const getSuggestionsBySlug = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
   const { slug } = req.params
 
   try {
@@ -83,5 +106,6 @@ const updateSuggestion = async (req, res) => {
 module.exports = {
   createSuggestion,
   getSuggestions,
+  getSuggestionsBySlug,
   updateSuggestion,
 }

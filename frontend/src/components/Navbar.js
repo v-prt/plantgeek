@@ -8,15 +8,8 @@ import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-// import logo from '../assets/logo.webp'
-import {
-  BiSearch,
-  BiCog,
-  BiPlusCircle,
-  BiLogInCircle,
-  BiLogOutCircle,
-  BiBadgeCheck,
-} from 'react-icons/bi'
+import { BiSearch, BiCog, BiPlusCircle, BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
+import { MdOutlineAdminPanelSettings } from 'react-icons/md'
 import { TiHeartOutline } from 'react-icons/ti'
 import { CgProfile } from 'react-icons/cg'
 import { Button } from 'antd'
@@ -55,12 +48,12 @@ export const Navbar = () => {
               <span className='label'>contribute</span>
             </NavLink>
             {currentUser.role === 'admin' && (
-              <NavLink to='/review'>
+              <NavLink to='/admin'>
                 <div className='icon'>
-                  <BiBadgeCheck />
+                  <MdOutlineAdminPanelSettings />
                 </div>
                 <span className='label'>
-                  review
+                  admin
                   {plantsToReview?.length > 0 && (
                     <span className='review-notification-badge'>
                       {numeral(plantsToReview.length).format('0a')}
@@ -124,12 +117,12 @@ export const Navbar = () => {
           <span className='label'>contribute</span>
         </NavLink>
         {currentUser.role === 'admin' && (
-          <NavLink to='/review'>
+          <NavLink to='/admin'>
             <div className='icon'>
-              <BiBadgeCheck />
+              <MdOutlineAdminPanelSettings />
             </div>
             <span className='label'>
-              review
+              admin
               {plantsToReview?.length > 0 && (
                 <span className='review-notification-badge'>
                   {numeral(plantsToReview.length).format('0a')}

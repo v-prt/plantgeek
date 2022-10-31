@@ -24,25 +24,21 @@ export const FeaturedPlants = () => {
 
   return (
     <Wrapper>
-      <FadeIn>
-        <h2>featured houseplants</h2>
-        {/* TODO: carousel */}
-        <Plants>
-          {status === 'success'
-            ? data?.map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={true} />)
-            : Array.from(Array(6).keys()).map(item => (
-                <GhostPlantCard key={item} viewNeeds={true} />
-              ))}
-        </Plants>
-        <h3>
-          <Link to='/browse'>
-            browse all plants
-            <span className='icon'>
-              <FaArrowAltCircleRight />
-            </span>
-          </Link>
-        </h3>
-      </FadeIn>
+      <h2>featured houseplants</h2>
+      {/* TODO: carousel */}
+      <Plants>
+        {status === 'success'
+          ? data?.map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={true} />)
+          : Array.from(Array(6).keys()).map(item => <GhostPlantCard key={item} viewNeeds={true} />)}
+      </Plants>
+      <h3>
+        <Link to='/browse'>
+          browse all plants
+          <span className='icon'>
+            <FaArrowAltCircleRight />
+          </span>
+        </Link>
+      </h3>
     </Wrapper>
   )
 }
