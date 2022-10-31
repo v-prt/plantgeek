@@ -38,22 +38,11 @@ const createPlant = async (req, res) => {
 
 // (READ/GET) GETS ALL PLANTS
 const getPlants = async (req, res) => {
-  const { search, sort, genus, light, water, temperature, humidity, toxicity, review } = req.query
+  const { search, sort, light, water, temperature, humidity, toxicity, review } = req.query
   let filters = {}
 
   if (search) {
-    const regex = new RegExp(search, 'i')
-    filters = {
-      ...filters,
-      $or: [{ primaryName: { $regex: regex } }, { secondaryName: { $regex: regex } }],
-    }
-  }
-
-  if (genus) {
-    // for each string in search array, clean the string (remove special characters)
-    // const cleanedStrings = search.map(str => str.replace(/[^a-zA-Z ]/g, ''))
-    // create a regex for each string in search array
-    const regex = genus.map(str => new RegExp(str, 'i'))
+    const regex = search.map(str => new RegExp(str, 'i'))
     filters = {
       ...filters,
       $or: [{ primaryName: { $in: regex } }, { secondaryName: { $in: regex } }],

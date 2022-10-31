@@ -103,15 +103,21 @@ export const Browse = () => {
                 {/* FIXME: allowClear doesn't work on mobile */}
                 <div className='filter-bar-upper'>
                   <div className='search'>
-                    <Input
+                    <Select
                       name='search'
                       allowClear
+                      mode='tags'
                       placeholder='Search plants'
                       onChange={submitForm}
-                      onPressEnter={e => e.preventDefault()}
+                      // onPressEnter={e => e.preventDefault()}
                       style={{ width: '100%' }}
-                      prefix={<SearchOutlined />}
-                    />
+                      prefix={<SearchOutlined />}>
+                      {commonGenera.map(genus => (
+                        <Option key={genus} value={genus}>
+                          {genus}
+                        </Option>
+                      ))}
+                    </Select>
                   </div>
                   <button
                     className='filter-menu-btn'
@@ -121,21 +127,6 @@ export const Browse = () => {
                   </button>
                 </div>
                 <div className='tags'>
-                  {values?.genus &&
-                    values.genus.map((genus, i) => (
-                      <Tag
-                        key={i}
-                        closable
-                        onClose={() => {
-                          setValues({
-                            genus: values.genus.filter((g, j) => j !== i),
-                            ...values,
-                          })
-                          submitForm()
-                        }}>
-                        {genus}
-                      </Tag>
-                    ))}
                   {values?.light && (
                     <Tag
                       closable
@@ -253,26 +244,6 @@ export const Browse = () => {
                         <Option value='most-wanted'>
                           <ArrowUpOutlined /> Most wanted
                         </Option>
-                      </Select>
-                    </FormItem>
-                    <FormItem label='Genus'>
-                      <Select
-                        getPopupContainer={trigger => trigger.parentNode}
-                        // fixes issue with scrolling on mobile moving entire page
-                        virtual={false}
-                        name='genus'
-                        showSearch
-                        showArrow
-                        allowClear
-                        mode='tags'
-                        placeholder='Select'
-                        onChange={submitForm}
-                        style={{ width: '100%' }}>
-                        {commonGenera.map(term => (
-                          <Option key={term} value={term}>
-                            {term}
-                          </Option>
-                        ))}
                       </Select>
                     </FormItem>
                     <FormItem label='Light'>
