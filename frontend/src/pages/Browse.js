@@ -222,6 +222,7 @@ export const Browse = () => {
                     </div>
                   }>
                   <PlantFilters
+                    viewNeeds={viewNeeds}
                     setViewNeeds={setViewNeeds}
                     submitForm={submitForm}
                     currentUser={currentUser}
@@ -263,6 +264,7 @@ export const Browse = () => {
               {({ values, setValues, submitForm, resetForm }) => (
                 <Form className='filters-sidebar'>
                   <PlantFilters
+                    viewNeeds={viewNeeds}
                     setViewNeeds={setViewNeeds}
                     submitForm={submitForm}
                     currentUser={currentUser}

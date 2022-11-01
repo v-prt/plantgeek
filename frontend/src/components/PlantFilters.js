@@ -4,7 +4,7 @@ import { FormItem } from './forms/FormItem'
 import { COLORS, BREAKPOINTS, Toggle } from '../GlobalStyles'
 const { Option } = Select
 
-export const PlantFilters = ({ setViewNeeds, submitForm, currentUser }) => {
+export const PlantFilters = ({ viewNeeds, setViewNeeds, submitForm, currentUser }) => {
   return (
     <Wrapper>
       <div className='sort'>
@@ -29,6 +29,7 @@ export const PlantFilters = ({ setViewNeeds, submitForm, currentUser }) => {
           <input
             id='needs-toggle'
             type='checkbox'
+            checked={viewNeeds}
             onChange={ev => setViewNeeds(ev.target.checked)}
           />
           <span className='slider'></span>
