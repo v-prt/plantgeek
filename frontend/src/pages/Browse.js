@@ -4,25 +4,18 @@ import { UserContext } from '../contexts/UserContext'
 import { PlantContext } from '../contexts/PlantContext'
 
 import styled from 'styled-components/macro'
-import { BREAKPOINTS, COLORS, Toggle } from '../GlobalStyles'
+import { BREAKPOINTS, COLORS } from '../GlobalStyles'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
 import { GhostPlantCard } from '../components/GhostPlantCard'
-import { FormItem } from '../components/forms/FormItem'
 import { Formik, Form } from 'formik'
-import { Select, Input } from 'formik-antd'
+import { Select } from 'formik-antd'
 import { Button, Empty, Drawer, Tag } from 'antd'
-import {
-  FilterOutlined,
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-  CloseCircleOutlined,
-  LoadingOutlined,
-  SearchOutlined,
-} from '@ant-design/icons'
+import { FilterOutlined, CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import numeral from 'numeral'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { PlantFilters } from '../components/PlantFilters'
 const { Option } = Select
 
 export const Browse = () => {
@@ -98,7 +91,7 @@ export const Browse = () => {
       <FadeIn>
         <main className='browse-content'>
           <Formik initialValues={formData} onSubmit={handleSubmit}>
-            {({ values, setValues, submitForm, resetForm }) => (
+            {({ values, setValues, setFieldValue, submitForm, resetForm }) => (
               <Form className='filter-bar'>
                 {/* FIXME: allowClear doesn't work on mobile */}
                 <div className='filter-bar-upper'>
@@ -122,6 +115,21 @@ export const Browse = () => {
                       ))}
                     </Select>
                   </div>
+                  <div className='sort'>
+                    <span className='label'>Sort</span>
+                    <Select
+                      getPopupContainer={trigger => trigger.parentNode}
+                      name='sort'
+                      onChange={submitForm}
+                      placeholder='Select'
+                      style={{ width: '300px' }}>
+                      <Option value='name-asc'>Name (A-Z)</Option>
+                      <Option value='name-desc'>Name (Z-A)</Option>
+                      <Option value='most-hearts'>Most liked</Option>
+                      <Option value='most-owned'>Most owned</Option>
+                      <Option value='most-wanted'>Most wanted</Option>
+                    </Select>
+                  </div>
                   <button
                     className='filter-menu-btn'
                     type='primary'
@@ -134,7 +142,7 @@ export const Browse = () => {
                     <Tag
                       closable
                       onClose={() => {
-                        setValues({ light: '', ...values })
+                        setFieldValue('light', null)
                         submitForm()
                       }}>
                       <b>Light:</b> {values.light}
@@ -144,7 +152,7 @@ export const Browse = () => {
                     <Tag
                       closable
                       onClose={() => {
-                        setValues({ water: '', ...values })
+                        setFieldValue('water', null)
                         submitForm()
                       }}>
                       <b>Water:</b> {values.water}
@@ -154,7 +162,7 @@ export const Browse = () => {
                     <Tag
                       closable
                       onClose={() => {
-                        setValues({ temperature: '', ...values })
+                        setFieldValue('temperature', null)
                         submitForm()
                       }}>
                       <b>Temp:</b> {values.temperature}
@@ -164,7 +172,7 @@ export const Browse = () => {
                     <Tag
                       closable
                       onClose={() => {
-                        setValues({ humidity: '', ...values })
+                        setFieldValue('humidity', null)
                         submitForm()
                       }}>
                       <b>Humidity:</b> {values.humidity}
@@ -174,7 +182,7 @@ export const Browse = () => {
                     <Tag
                       closable
                       onClose={() => {
-                        setValues({ toxicity: '', ...values })
+                        setFieldValue('toxicity', null)
                         submitForm()
                       }}>
                       <b>Toxicity:</b> {values.toxicity}
@@ -213,160 +221,80 @@ export const Browse = () => {
                       </Button>
                     </div>
                   }>
-                  <Filters>
-                    <div className='toggle-wrapper'>
-                      <span className='toggle-option'>Show needs</span>
-                      <Toggle>
-                        <input
-                          id='needs-toggle'
-                          type='checkbox'
-                          onChange={ev => setViewNeeds(ev.target.checked)}
-                        />
-                        <span className='slider'></span>
-                      </Toggle>
-                    </div>
-                    <FormItem label='Sort'>
-                      <Select
-                        getPopupContainer={trigger => trigger.parentNode}
-                        name='sort'
-                        onChange={submitForm}
-                        placeholder='Select'
-                        style={{ width: '100%' }}>
-                        <Option value='name-asc'>
-                          <ArrowDownOutlined /> Name (A-Z)
-                        </Option>
-                        <Option value='name-desc'>
-                          <ArrowUpOutlined /> Name (Z-A)
-                        </Option>
-                        <Option value='most-hearts'>
-                          <ArrowUpOutlined /> Most liked
-                        </Option>
-                        <Option value='most-owned'>
-                          <ArrowUpOutlined /> Most owned
-                        </Option>
-                        <Option value='most-wanted'>
-                          <ArrowUpOutlined /> Most wanted
-                        </Option>
-                      </Select>
-                    </FormItem>
-                    <FormItem label='Light'>
-                      <Select
-                        getPopupContainer={trigger => trigger.parentNode}
-                        name='light'
-                        onChange={submitForm}
-                        placeholder='Select'
-                        style={{ width: '100%' }}
-                        allowClear>
-                        <Option value='low to bright indirect'>low to bright indirect</Option>
-                        <Option value='medium to bright indirect'>medium to bright indirect</Option>
-                        <Option value='bright indirect'>bright indirect</Option>
-                        <Option value='unknown'>unknown</Option>
-                      </Select>
-                    </FormItem>
-                    <FormItem label='Water'>
-                      <Select
-                        getPopupContainer={trigger => trigger.parentNode}
-                        name='water'
-                        onChange={submitForm}
-                        placeholder='Select'
-                        style={{ width: '100%' }}
-                        allowClear>
-                        <Option value='low'>low</Option>
-                        <Option value='low to medium'>low to medium</Option>
-                        <Option value='medium'>medium</Option>
-                        <Option value='medium to high'>medium to high</Option>
-                        <Option value='high'>high</Option>
-                        <Option value='unknown'>unknown</Option>
-                      </Select>
-                    </FormItem>
-                    <FormItem label='Temperature'>
-                      <Select
-                        getPopupContainer={trigger => trigger.parentNode}
-                        name='temperature'
-                        onChange={submitForm}
-                        placeholder='Select'
-                        style={{ width: '100%' }}
-                        allowClear>
-                        <Option value='average'>average</Option>
-                        <Option value='above average'>above average</Option>
-                        <Option value='unknown'>unknown</Option>
-                      </Select>
-                    </FormItem>
-                    <FormItem label='Humidity'>
-                      <Select
-                        getPopupContainer={trigger => trigger.parentNode}
-                        name='humidity'
-                        onChange={submitForm}
-                        placeholder='Select'
-                        style={{ width: '100%' }}
-                        allowClear>
-                        <Option value='low'>low</Option>
-                        <Option value='medium'>medium</Option>
-                        <Option value='high'>high</Option>
-                        <Option value='unknown'>unknown</Option>
-                      </Select>
-                    </FormItem>
-                    <FormItem label='Toxicity'>
-                      <Select
-                        getPopupContainer={trigger => trigger.parentNode}
-                        name='toxicity'
-                        onChange={submitForm}
-                        placeholder='Select'
-                        style={{ width: '100%' }}
-                        allowClear>
-                        <Option value='toxic'>toxic</Option>
-                        <Option value='nontoxic'>nontoxic</Option>
-                        <Option value='unknown'>unknown</Option>
-                      </Select>
-                    </FormItem>
-                    {currentUser?.role === 'admin' && (
-                      <FormItem label='Review status' sublabel='(Admin)'>
-                        <Select
-                          getPopupContainer={trigger => trigger.parentNode}
-                          name='review'
-                          onChange={submitForm}
-                          placeholder='Select'
-                          style={{ width: '100%' }}
-                          allowClear>
-                          <Option value='approved'>approved</Option>
-                          <Option value='pending'>pending</Option>
-                          <Option value='rejected'>rejected</Option>
-                        </Select>
-                      </FormItem>
-                    )}
-                  </Filters>
+                  <PlantFilters
+                    setViewNeeds={setViewNeeds}
+                    submitForm={submitForm}
+                    currentUser={currentUser}
+                  />
                 </Drawer>
               </Form>
             )}
           </Formik>
-          <Results onScroll={handleScroll} ref={scrollRef}>
-            {status === 'success' ? (
-              data?.pages[0]?.totalResults > 0 ? (
-                <>
-                  <div className='plants'>
-                    {data.pages.map((group, i) =>
-                      group.plants.map(plant => (
-                        <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
-                      ))
-                    )}
-                  </div>
-                  {isFetchingNextPage && (
-                    <div className='fetching-more'>
-                      <Ellipsis />
+          <div className='browse-content-inner'>
+            <Results onScroll={handleScroll} ref={scrollRef}>
+              {status === 'success' ? (
+                data?.pages[0]?.totalResults > 0 ? (
+                  <>
+                    <div className='plants'>
+                      {data.pages.map((group, i) =>
+                        group.plants.map(plant => (
+                          <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
+                        ))
+                      )}
                     </div>
-                  )}
-                </>
+                    {isFetchingNextPage && (
+                      <div className='fetching-more'>
+                        <Ellipsis />
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
+                )
               ) : (
-                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
-              )
-            ) : (
-              <div className='loading'>
-                {Array.from(Array(12).keys()).map(item => (
-                  <GhostPlantCard key={item} viewNeeds={viewNeeds} />
-                ))}
-              </div>
-            )}
-          </Results>
+                <div className='loading'>
+                  {Array.from(Array(12).keys()).map(item => (
+                    <GhostPlantCard key={item} viewNeeds={viewNeeds} />
+                  ))}
+                </div>
+              )}
+            </Results>
+            <Formik initialValues={formData} onSubmit={handleSubmit}>
+              {({ values, setValues, submitForm, resetForm }) => (
+                <Form className='filters-sidebar'>
+                  <PlantFilters
+                    setViewNeeds={setViewNeeds}
+                    submitForm={submitForm}
+                    currentUser={currentUser}
+                  />
+                  <div className='results-info'>
+                    {status === 'success' ? (
+                      <p
+                        className='num-results'
+                        style={{
+                          fontWeight: 'bold',
+                          color: data.pages[0].totalResults > 0 ? COLORS.accent : '#999',
+                        }}>
+                        {numeral(data?.pages[0]?.totalResults || 0).format('0a')} result
+                        {data?.pages[0]?.totalResults === 1 ? '' : 's'}
+                      </p>
+                    ) : (
+                      <LoadingOutlined spin />
+                    )}
+                    <Button
+                      type='primary'
+                      onClick={() => {
+                        resetForm()
+                        setFormData({ sort: 'name-asc' })
+                        setValues({ sort: 'name-asc' })
+                      }}>
+                      Reset
+                    </Button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
+          </div>
         </main>
       </FadeIn>
     </Wrapper>
@@ -402,6 +330,9 @@ const Wrapper = styled.div`
       .search {
         flex: 1;
       }
+      .sort {
+        display: none;
+      }
       .filter-menu-btn {
         background: ${COLORS.accent};
         color: #fff;
@@ -415,39 +346,52 @@ const Wrapper = styled.div`
         }
       }
     }
-    @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+  }
+  .browse-content-inner {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    .filters-sidebar {
+      display: none;
+    }
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    .browse-content {
       height: calc(100vh - 110px);
       top: 110px;
       right: 0;
       max-width: calc(100vw - 241px);
-      padding: 0 40px;
+      .filter-bar {
+        padding: 20px;
+        .sort {
+          display: block;
+          .label {
+            font-weight: bold;
+            margin: 0 8px 0 20px;
+          }
+        }
+        .filter-menu-btn {
+          display: none;
+        }
+      }
+      .tags {
+        display: none;
+      }
     }
-  }
-`
-
-const Filters = styled.div`
-  display: flex;
-  flex-direction: column;
-  .num-results {
-    color: ${COLORS.accent};
-    text-align: center;
-    font-weight: bold;
-  }
-  .label {
-    font-weight: bold;
-  }
-
-  .toggle-wrapper {
-    display: flex;
-    align-items: center;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    justify-content: space-between;
-    margin: 10px 0;
-    .toggle-option {
-      margin-right: 10px;
-      line-height: 1;
+    .browse-content-inner {
+      // results and desktop filters sidebar
+      .filters-sidebar {
+        display: block;
+        width: 400px;
+        background: #fff;
+        padding: 20px;
+        .results-info {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 20px;
+        }
+      }
     }
   }
 `
