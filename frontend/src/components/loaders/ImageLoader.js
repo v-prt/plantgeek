@@ -3,36 +3,38 @@ import styled from 'styled-components/macro'
 
 export const ImageLoader = ({ src, alt, placeholder }) => {
   const [imageLoaded, setImageLoaded] = useState(false)
-  const [validUrl, setValidUrl] = useState(undefined)
+  // const [validUrl, setValidUrl] = useState(undefined)
 
   useEffect(() => {
     // resetting default values
     setImageLoaded(false)
-    setValidUrl(undefined)
+    // setValidUrl(undefined)
     // validating src/url
-    if (src) {
-      fetch(src, { method: 'HEAD' })
-        .then(res => {
-          if (res.ok) {
-            setValidUrl(true)
-          } else {
-            setValidUrl(false)
-          }
-        })
-        .catch(() => {
-          setValidUrl(false)
-        })
-    } else setValidUrl(false)
+    // if (src) {
+    //   fetch(src, { method: 'HEAD' })
+    //     .then(res => {
+    //       if (res.ok) {
+    //         setValidUrl(true)
+    //       } else {
+    //         setValidUrl(false)
+    //       }
+    //     })
+    //     .catch(() => {
+    //       setValidUrl(false)
+    //     })
+    // } else {
+    //   setValidUrl(false)
+    // }
     // cleanup
     return () => {
       setImageLoaded(false)
-      setValidUrl(undefined)
+      // setValidUrl(undefined)
     }
   }, [src])
 
   return (
     <Wrapper>
-      {validUrl === false ? (
+      {/* {validUrl === false ? (
         <>
           <img
             src={placeholder}
@@ -46,21 +48,21 @@ export const ImageLoader = ({ src, alt, placeholder }) => {
             </div>
           )}
         </>
-      ) : (
-        <>
-          <img
-            src={src}
-            alt={alt}
-            className={`smooth-image ${imageLoaded ? 'visible' : 'hidden'}`}
-            onLoad={() => setImageLoaded(true)}
-          />
-          {!imageLoaded && (
-            <div className='smooth-preloader'>
-              <span className='loader' />
-            </div>
-          )}
-        </>
+      ) : ( 
+        <> */}
+      <img
+        src={src}
+        alt={alt}
+        className={`smooth-image ${imageLoaded ? 'visible' : 'hidden'}`}
+        onLoad={() => setImageLoaded(true)}
+      />
+      {!imageLoaded && (
+        <div className='smooth-preloader'>
+          <span className='loader' />
+        </div>
       )}
+      {/* </>
+      )} */}
     </Wrapper>
   )
 }
