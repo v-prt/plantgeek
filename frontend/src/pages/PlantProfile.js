@@ -22,6 +22,7 @@ import {
   DislikeOutlined,
   DeleteOutlined,
 } from '@ant-design/icons'
+import { BiLogInCircle } from 'react-icons/bi'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
@@ -31,7 +32,7 @@ import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
-import { ActionBar } from '../components/ActionBar'
+import { ActionBox } from '../components/ActionBox'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { PlantCard } from '../components/PlantCard'
 import { Ellipsis } from '../components/loaders/Ellipsis'
@@ -569,8 +570,6 @@ export const PlantProfile = () => {
                             </>
                           )}
                         </div>
-                        {/* FIXME: forms cannot be nested
-                        <ActionBar plant={plant} /> */}
                       </Info>
                     </section>
                   </FadeIn>
@@ -578,24 +577,27 @@ export const PlantProfile = () => {
               )}
             </Formik>
 
-            {currentUser && (
-              <>
+            <FadeIn delay={400}>
+              <div className='actions'>
+                {/* COLLECTION / WISHLIST / HEARTS */}
+                <ActionBox plant={plant} />
+
                 {/* SUGGESTION SUBMISSION */}
-                <FadeIn delay={400}>
-                  <section className='suggestions-section-user'>
-                    <h3>Have a suggestion?</h3>
-                    <p>
-                      Please let us know if you have a suggestion for this plant or want to report
-                      incorrect information.
-                    </p>
-                    <Button type='primary' onClick={() => setSuggestionModal(true)}>
-                      <MailOutlined /> SEND SUGGESTION
-                    </Button>
-                    <Modal
-                      visible={suggestionModal}
-                      footer={null}
-                      onCancel={() => setSuggestionModal(false)}>
-                      <SuggestionSubmission>
+                <section className='suggestions-section-user'>
+                  <h3>Have a suggestion?</h3>
+                  <p>
+                    Please let us know if you have a suggestion for this plant or want to report
+                    incorrect information.
+                  </p>
+                  <Button type='primary' onClick={() => setSuggestionModal(true)}>
+                    <MailOutlined /> SEND SUGGESTION
+                  </Button>
+                  <Modal
+                    visible={suggestionModal}
+                    footer={null}
+                    onCancel={() => setSuggestionModal(false)}>
+                    <SuggestionSubmission>
+                      {currentUser ? (
                         <Formik
                           initialValues={{
                             suggestion: '',
@@ -657,15 +659,25 @@ export const PlantProfile = () => {
                             </Form>
                           )}
                         </Formik>
-                      </SuggestionSubmission>
-                    </Modal>
-                  </section>
-                </FadeIn>
-              </>
-            )}
+                      ) : (
+                        // TODO: add redirect to return user here after they log in
+                        <div className='login'>
+                          <p>Please log in to submit a suggestion.</p>
+                          <Link to='/login'>
+                            <Button type='primary'>
+                              <BiLogInCircle /> LOG IN
+                            </Button>
+                          </Link>
+                        </div>
+                      )}
+                    </SuggestionSubmission>
+                  </Modal>
+                </section>
+              </div>
+            </FadeIn>
 
             {/* SIMILAR PLANTS */}
-            <FadeIn delay={500}>
+            <FadeIn delay={600}>
               <section className='similar-plants'>
                 <h2>similar plants</h2>
                 {/* TODO: carousel (1 at a time on mobile, 2 on tablet, 3 on desktop) */}
@@ -687,7 +699,7 @@ export const PlantProfile = () => {
 
             {/* ADMIN ONLY */}
             {currentUser?.role === 'admin' && (
-              <FadeIn delay={600}>
+              <FadeIn delay={700}>
                 <AdminSection>
                   <h3>Admin</h3>
                   <div className='suggestions-admin'>
@@ -889,6 +901,11 @@ const Wrapper = styled.main`
       }
     }
   }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
   .suggestions-section-user {
     background: ${COLORS.mutedMedium};
     button {
@@ -938,10 +955,17 @@ const Wrapper = styled.main`
       flex-direction: row;
       gap: 40px;
     }
+    .actions {
+      flex-direction: row;
+      gap: 20px;
+    }
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     .heading {
       margin-bottom: 30px;
+    }
+    .actions {
+      gap: 30px;
     }
   }
 `
@@ -1080,6 +1104,13 @@ const SuggestionSubmission = styled.div`
   }
   button {
     margin: 20px auto 0 auto;
+  }
+  .login {
+    text-align: center;
+    button {
+      display: flex;
+      gap: 8px;
+    }
   }
 `
 

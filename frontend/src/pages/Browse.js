@@ -207,7 +207,7 @@ export const Browse = () => {
                             color: data.pages[0].totalResults > 0 ? COLORS.accent : '#999',
                           }}>
                           {numeral(data?.pages[0]?.totalResults || 0).format('0a')} result
-                          {data?.pages[0]?.totalResults === 1 ? '' : 's'}
+                          {data?.pages[0]?.totalResults !== 1 && 's'}
                         </p>
                       ) : (
                         <LoadingOutlined spin />
@@ -281,7 +281,7 @@ export const Browse = () => {
                           color: data.pages[0].totalResults > 0 ? COLORS.accent : '#999',
                         }}>
                         {numeral(data?.pages[0]?.totalResults || 0).format('0a')} result
-                        {data?.pages[0]?.totalResults === 1 ? '' : 's'}
+                        {data?.pages[0]?.totalResults !== 1 && 's'}
                       </p>
                     ) : (
                       <LoadingOutlined spin />

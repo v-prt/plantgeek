@@ -40,92 +40,88 @@ export const ActionBar = ({ plant }) => {
     wishlist: currentUser?.wishlist || [],
   }
 
-  return (
-    <>
-      {currentUser ? (
-        <Wrapper>
-          <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-            {({ values, setFieldValue, submitForm, isSubmitting }) => (
-              <Form>
-                <Checkbox
-                  name='hearts'
-                  checked={values.hearts?.includes(currentUser._id)}
-                  onChange={e => {
-                    setFieldValue(
-                      'hearts',
-                      e.target.checked
-                        ? [...values.hearts, currentUser._id]
-                        : values.hearts.filter(id => id !== currentUser._id)
-                    )
-                    submitForm()
-                  }}>
-                  <span className='icon hearts'>
-                    <TiHeart />
-                  </span>
-                  <span className='num'>{values.hearts?.length || 0}</span>
-                </Checkbox>
+  return currentUser ? (
+    <Wrapper>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+        {({ values, setFieldValue, submitForm, isSubmitting }) => (
+          <Form>
+            <Checkbox
+              name='hearts'
+              checked={values.hearts?.includes(currentUser._id)}
+              onChange={e => {
+                setFieldValue(
+                  'hearts',
+                  e.target.checked
+                    ? [...values.hearts, currentUser._id]
+                    : values.hearts.filter(id => id !== currentUser._id)
+                )
+                submitForm()
+              }}>
+              <span className='icon hearts'>
+                <TiHeart />
+              </span>
+              <span className='num'>{values.hearts?.length || 0}</span>
+            </Checkbox>
 
-                <div className='user-lists'>
-                  <Checkbox
-                    name='collection'
-                    checked={values.collection?.includes(plantId)}
-                    onChange={e => {
-                      setFieldValue(
-                        'owned',
-                        e.target.checked
-                          ? [...values.owned, currentUser._id]
-                          : values.owned.filter(id => id !== currentUser._id)
-                      )
-                      setFieldValue(
-                        'collection',
-                        e.target.checked
-                          ? [...values.collection, plantId]
-                          : values.collection.filter(id => id !== plantId)
-                      )
-                      submitForm()
-                    }}>
-                    <span className='icon collection'>
-                      <RiPlantLine />
-                    </span>
-                  </Checkbox>
-                  <Checkbox
-                    name='wishlist'
-                    checked={values.wishlist?.includes(plantId)}
-                    onChange={e => {
-                      setFieldValue(
-                        'wanted',
-                        e.target.checked
-                          ? [...values.wanted, currentUser._id]
-                          : values.wanted.filter(id => id !== currentUser._id)
-                      )
-                      setFieldValue(
-                        'wishlist',
-                        e.target.checked
-                          ? [...values.wishlist, plantId]
-                          : values.wishlist.filter(id => id !== plantId)
-                      )
-                      submitForm()
-                    }}>
-                    <span className='icon wishlist'>
-                      <AiOutlineStar />
-                    </span>
-                  </Checkbox>
-                </div>
-              </Form>
-            )}
-          </Formik>
-        </Wrapper>
-      ) : (
-        <Wrapper>
-          <div className={`hearts ${plant.hearts?.length && 'liked'}`}>
-            <span className='icon'>
-              <TiHeart />
-            </span>
-            <span className='num'>{plant.hearts?.length || 0}</span>
-          </div>
-        </Wrapper>
-      )}
-    </>
+            <div className='user-lists'>
+              <Checkbox
+                name='collection'
+                checked={values.collection?.includes(plantId)}
+                onChange={e => {
+                  setFieldValue(
+                    'owned',
+                    e.target.checked
+                      ? [...values.owned, currentUser._id]
+                      : values.owned.filter(id => id !== currentUser._id)
+                  )
+                  setFieldValue(
+                    'collection',
+                    e.target.checked
+                      ? [...values.collection, plantId]
+                      : values.collection.filter(id => id !== plantId)
+                  )
+                  submitForm()
+                }}>
+                <span className='icon collection'>
+                  <RiPlantLine />
+                </span>
+              </Checkbox>
+              <Checkbox
+                name='wishlist'
+                checked={values.wishlist?.includes(plantId)}
+                onChange={e => {
+                  setFieldValue(
+                    'wanted',
+                    e.target.checked
+                      ? [...values.wanted, currentUser._id]
+                      : values.wanted.filter(id => id !== currentUser._id)
+                  )
+                  setFieldValue(
+                    'wishlist',
+                    e.target.checked
+                      ? [...values.wishlist, plantId]
+                      : values.wishlist.filter(id => id !== plantId)
+                  )
+                  submitForm()
+                }}>
+                <span className='icon wishlist'>
+                  <AiOutlineStar />
+                </span>
+              </Checkbox>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </Wrapper>
+  ) : (
+    <Wrapper>
+      <div className={`hearts ${plant.hearts?.length && 'liked'}`}>
+        <span className='icon'>
+          <TiHeart />
+        </span>
+        <span className='num'>{plant.hearts?.length || 0}</span>
+      </div>
+    </Wrapper>
   )
 }
 

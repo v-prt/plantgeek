@@ -203,9 +203,19 @@ const getPlant = async (req, res) => {
     const plant = await db.collection('plants').findOne({
       slug,
     })
-    // TODO: find instances of this plant in users' collections and wishlists and display total on plant profile
+
     if (plant) {
-      res.status(200).json({ status: 200, plant: plant })
+      const plantId = plant._id.toString()
+
+      const totalOwned = await db.collection('users').countDocuments({
+        collection: plantId,
+      })
+
+      const totalWanted = await db.collection('users').countDocuments({
+        wishlist: plantId,
+      })
+
+      res.status(200).json({ status: 200, plant: { ...plant, totalOwned, totalWanted } })
     } else {
       res.status(404).json({ status: 404, message: 'Plant not found.' })
     }
