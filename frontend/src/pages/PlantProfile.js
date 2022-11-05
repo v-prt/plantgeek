@@ -321,7 +321,7 @@ export const PlantProfile = () => {
                               prefix={<EditOutlined />}
                             />
                           </FormItem>
-                          <FormItem label='Review status' name='review'>
+                          <FormItem label='Review status' sublabel='(optional)' name='review'>
                             <Select name='review' placeholder='Select' style={{ width: '100%' }}>
                               <Option value='pending'>Pending</Option>
                               <Option value='approved'>Approved</Option>
@@ -527,28 +527,46 @@ export const PlantProfile = () => {
                             Difficulty:{' '}
                             <span className={difficulty?.toLowerCase()}>{difficulty || 'N/A'}</span>
                           </div>
-                          <div className='toxicity'>
-                            Toxicity:{' '}
-                            {editMode ? (
-                              <Select name='toxic' placeholder='Select' style={{ width: '100%' }}>
-                                <Option value={true}>toxic</Option>
-                                <Option value={false}>nontoxic</Option>
-                              </Select>
-                            ) : plant.toxic === false ? (
-                              <span className='nontoxic'>Pet friendly</span>
-                            ) : plant.toxic === true ? (
-                              <span className='toxic'>Not pet friendly</span>
-                            ) : (
-                              <span className='unknown'>Unknown</span>
-                            )}
-                          </div>
-                          {plant.sourceUrl && (
-                            <div className='sources'>
-                              Source(s):{' '}
-                              <a href={plant.sourceUrl} target='_blank' rel='noopenner noreferrer'>
-                                [1]
-                              </a>
-                            </div>
+                          {editMode ? (
+                            <>
+                              <FormItem name='toxic' label='Toxicity'>
+                                <Select name='toxic' placeholder='Select' style={{ width: '100%' }}>
+                                  <Option value={true}>toxic</Option>
+                                  <Option value={false}>nontoxic</Option>
+                                </Select>
+                              </FormItem>
+                              <FormItem name='sourceUrl' label='Source URL'>
+                                <Input
+                                  name='sourceUrl'
+                                  placeholder='https://www.plantpedia.com/monstera-deliciosa'
+                                  style={{ width: '100%' }}
+                                />
+                              </FormItem>
+                            </>
+                          ) : (
+                            <>
+                              <div className='toxicity'>
+                                Toxicity:{' '}
+                                {plant.toxic === false ? (
+                                  <span className='nontoxic'>Pet friendly</span>
+                                ) : plant.toxic === true ? (
+                                  <span className='toxic'>Not pet friendly</span>
+                                ) : (
+                                  <span className='unknown'>Unknown</span>
+                                )}
+                              </div>
+                              {plant.sourceUrl && (
+                                <div className='sources'>
+                                  Source:{' '}
+                                  <a
+                                    href={plant.sourceUrl}
+                                    target='_blank'
+                                    rel='noopenner noreferrer'>
+                                    [1]
+                                  </a>
+                                </div>
+                              )}
+                            </>
                           )}
                         </div>
                         {/* FIXME: forms cannot be nested
@@ -773,6 +791,8 @@ const Wrapper = styled.main`
   form {
     width: 100%;
     .basic-info-form {
+      display: flex;
+      flex-direction: column;
       width: 100%;
       max-width: 400px;
     }
@@ -969,7 +989,6 @@ const Info = styled.div`
     gap: 10px;
     font-size: 0.9rem;
     color: #999;
-    font-weight: bold;
     p {
       margin-right: 20px;
     }
@@ -979,6 +998,7 @@ const Info = styled.div`
       display: flex;
       align-items: center;
       gap: 5px;
+      font-weight: bold;
     }
     .difficulty {
       .easy {

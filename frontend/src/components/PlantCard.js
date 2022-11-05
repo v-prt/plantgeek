@@ -32,7 +32,7 @@ export const PlantCard = ({ plant, viewNeeds }) => {
         )}
         <InfoLink to={`/plant/${plant.slug}`}>
           <div className='thumbnail'>
-            <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+            <ImageLoader src={plant.imageUrl} alt='' placeholder={placeholder} />
           </div>
           <div className='name'>
             <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>
