@@ -32,7 +32,7 @@ export const Browse = () => {
       getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
     })
 
-  const commonGenera = [
+  const genera = [
     'Aglaonema',
     'Alocasia',
     'Aloe',
@@ -106,11 +106,12 @@ export const Browse = () => {
                       allowClear
                       mode='tags'
                       placeholder='Search plants'
+                      value={formData.search}
                       onChange={submitForm}
                       style={{ width: '100%' }}>
-                      {commonGenera.map(term => (
-                        <Option key={term} value={term}>
-                          {term}
+                      {genera.map(genus => (
+                        <Option key={genus} value={genus}>
+                          {genus}
                         </Option>
                       ))}
                     </Select>
@@ -120,6 +121,7 @@ export const Browse = () => {
                     <Select
                       getPopupContainer={trigger => trigger.parentNode}
                       name='sort'
+                      value={formData.sort}
                       onChange={submitForm}
                       placeholder='Select'
                       style={{ width: '300px' }}>
@@ -189,7 +191,7 @@ export const Browse = () => {
                     </Tag>
                   )}
                 </div>
-                {/* TODO: display filter sidebar on right side on desktop */}
+                {/* MOBILE/TABLET FILTERS MENU */}
                 <Drawer
                   visible={sidebarOpen}
                   placement='right'
@@ -260,6 +262,7 @@ export const Browse = () => {
                 </div>
               )}
             </Results>
+            {/* DESKTOP FILTERS SIDEBAR */}
             <Formik initialValues={formData} onSubmit={handleSubmit}>
               {({ values, setValues, submitForm, resetForm }) => (
                 <Form className='filters-sidebar'>
