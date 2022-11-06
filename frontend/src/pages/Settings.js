@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { useQueryClient } from 'react-query'
 import { Redirect } from 'react-router-dom'
+import Resizer from 'react-image-file-resizer'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
 import moment from 'moment'
@@ -13,7 +14,6 @@ import * as Yup from 'yup'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import ImgCrop from 'antd-img-crop'
 import { Button, Alert, Modal, Upload, message } from 'antd'
 import { DeleteOutlined, EditOutlined, SaveOutlined, LoadingOutlined } from '@ant-design/icons'
 import placeholder from '../assets/avatar-placeholder.png'
@@ -96,29 +96,36 @@ export const Settings = () => {
   )
   const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`
 
-  // checking file size before upload
-  const checkSize = file => {
-    const underLimit = file.size / 1024 / 1024 < 1
-    if (!underLimit) {
-      message.error('Image must be under 1 MB.')
-    }
-    return underLimit
-  }
+  // resize file before upload
+  const resizeFile = file =>
+    new Promise(resolve => {
+      Resizer.imageFileResizer(
+        file, // file to be resized
+        300, // maxWidth of the resized image
+        300, // maxHeight of the resized image
+        'WEBP', // compressFormat of the resized image
+        100, // quality of the resized image
+        0, // degree of clockwise rotation to apply to the image
+        uri => {
+          // callback function of the resized image URI
+          resolve(uri)
+        },
+        'base64' // outputType of the resized image
+      )
+    })
 
-  // handling image upload
   const handleImageUpload = async fileData => {
     setUploading(true)
+    const image = await resizeFile(fileData.file)
 
     const formData = new FormData()
-    formData.append('file', fileData.file)
+    formData.append('file', image)
     formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET_USERS)
 
     await axios
-      // uploading image to cloudinary
       .post(cloudinaryUrl, formData)
       .then(res => {
         const imageUrl = res.data.secure_url
-        // updating user with new image url
         axios
           .put(`${API_URL}/users/${currentUser._id}`, { imageUrl })
           .then(() => {
@@ -173,32 +180,30 @@ export const Settings = () => {
     <Wrapper>
       <FadeIn>
         <section className='user-info'>
-          <ImgCrop rotate modalOk='UPLOAD' modalCancel='CANCEL'>
-            <Upload
-              multiple={false}
-              maxCount={1}
-              name='userImage'
-              beforeUpload={checkSize}
-              customRequest={handleImageUpload}
-              fileList={fileList}
-              listType='picture-card'
-              accept='.png, .jpg, .jpeg'
-              showUploadList={{
-                showPreviewIcon: false,
-                showRemoveIcon: false,
-              }}>
-              {!uploading && image ? (
-                <ImageLoader src={image} alt={''} placeholder={placeholder} />
-              ) : (
-                uploadButton
-              )}
-              {!uploading && (
-                <div className='overlay'>
-                  <EditOutlined />
-                </div>
-              )}
-            </Upload>
-          </ImgCrop>
+          <Upload
+            multiple={false}
+            maxCount={1}
+            name='userImage'
+            // beforeUpload={checkSize}
+            customRequest={handleImageUpload}
+            fileList={fileList}
+            listType='picture-card'
+            accept='.png, .jpg, .jpeg'
+            showUploadList={{
+              showPreviewIcon: false,
+              showRemoveIcon: false,
+            }}>
+            {!uploading && image ? (
+              <ImageLoader src={image} alt={''} placeholder={placeholder} />
+            ) : (
+              uploadButton
+            )}
+            {!uploading && (
+              <div className='overlay'>
+                <EditOutlined />
+              </div>
+            )}
+          </Upload>
 
           <div className='text'>
             <h1>
@@ -385,14 +390,13 @@ const Wrapper = styled.main`
         height: 100%;
         width: 100%;
         overflow: hidden;
+        img {
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+          border-radius: 50%;
+        }
       }
-    }
-    .profile-img {
-      border: 2px solid #fff;
-      height: 75px;
-      width: 75px;
-      border-radius: 50%;
-      padding: 2px;
     }
     .text {
       h1 {

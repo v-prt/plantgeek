@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
-import { API_URL } from '../constants'
 import { useQuery, useQueryClient } from 'react-query'
+import Resizer from 'react-image-file-resizer'
+import { API_URL } from '../constants'
 import { message, Upload, Modal, Alert, Button } from 'antd'
 import moment from 'moment'
 import { Formik, Form } from 'formik'
@@ -137,21 +138,31 @@ export const PlantProfile = () => {
   const uploadButton = <div>{uploading ? <Ellipsis /> : <PlusOutlined />}</div>
   const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`
 
-  // checking file size before upload
-  const checkSize = file => {
-    const underLimit = file.size / 1024 / 1024 < 1
-    if (!underLimit) {
-      message.error('Image must be under 1 MB.')
-    }
-    return underLimit
-  }
+  // resize file before upload
+  const resizeFile = file =>
+    new Promise(resolve => {
+      Resizer.imageFileResizer(
+        file, // file to be resized
+        600, // maxWidth of the resized image
+        600, // maxHeight of the resized image
+        'WEBP', // compressFormat of the resized image
+        100, // quality of the resized image
+        0, // degree of clockwise rotation to apply to the image
+        uri => {
+          // callback function of the resized image URI
+          resolve(uri)
+        },
+        'base64' // outputType of the resized image
+      )
+    })
 
   // handling image upload
   const handleImageUpload = async fileData => {
     setUploading(true)
+    const image = await resizeFile(fileData.file)
 
     const formData = new FormData()
-    formData.append('file', fileData.file)
+    formData.append('file', image)
     formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
 
     await axios
@@ -375,11 +386,10 @@ export const PlantProfile = () => {
                               multiple={false}
                               maxCount={1}
                               name='plantImage'
-                              beforeUpload={checkSize}
                               customRequest={handleImageUpload}
                               fileList={fileList}
                               listType='picture-card'
-                              accept='.png, .jpg, .jpeg'
+                              accept='.png, .jpg, .jpeg, .webp'
                               showUploadList={{
                                 showPreviewIcon: false,
                                 showRemoveIcon: false,

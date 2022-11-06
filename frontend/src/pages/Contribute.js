@@ -1,8 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
+import Resizer from 'react-image-file-resizer'
+import { useDropzone } from 'react-dropzone'
 import { API_URL } from '../constants'
 import axios from 'axios'
-import { useDropzone } from 'react-dropzone'
 import { UserContext } from '../contexts/UserContext'
 
 import { Formik, Form } from 'formik'
@@ -63,7 +64,7 @@ export const Contribute = () => {
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
     accept: 'image/*',
     minSize: 0,
-    maxSize: 1242880, // up to 1mb
+    // maxSize: 1242880, // up to 1mb
     multiple: false, // accepts only 1 image
     onDrop: acceptedFiles => {
       setImages(
@@ -82,6 +83,24 @@ export const Contribute = () => {
     }
   }, [images])
 
+  // resize file before upload
+  const resizeFile = file =>
+    new Promise(resolve => {
+      Resizer.imageFileResizer(
+        file, // file to be resized
+        600, // maxWidth of the resized image
+        600, // maxHeight of the resized image
+        'WEBP', // compressFormat of the resized image
+        100, // quality of the resized image
+        0, // degree of clockwise rotation to apply to the image
+        uri => {
+          // callback function of the resized image URI
+          resolve(uri)
+        },
+        'base64' // outputType of the resized image
+      )
+    })
+
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
     setStatus(undefined)
     if (!images) {
@@ -89,8 +108,10 @@ export const Contribute = () => {
       setSubmitting(false)
     } else {
       images.forEach(async image => {
+        const resizedImage = await resizeFile(image)
+
         const formData = new FormData()
-        formData.append('file', image)
+        formData.append('file', resizedImage)
         formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
 
         // upload image to cloudinary
@@ -186,9 +207,6 @@ export const Contribute = () => {
 
                 <FormItem label='Upload image' sublabel='(max 1mb)' name=''>
                   <DropZone>
-                    {/* TODO:
-                  - set up signed uploads with cloudinary
-                  - (STRETCH GOAL) set up a way to approve images before saving to db (cloudinary analysis using amazon rekognition, must be plant and pass guidelines, no offensive content) */}
                     <DropBox
                       {...getRootProps()}
                       isDragAccept={isDragAccept}

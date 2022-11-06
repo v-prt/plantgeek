@@ -216,6 +216,13 @@ const Wrapper = styled.main`
         width: 75px;
         border-radius: 50%;
         padding: 2px;
+        overflow: hidden;
+        img {
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+          border-radius: 50%;
+        }
       }
       .text {
         h1 {

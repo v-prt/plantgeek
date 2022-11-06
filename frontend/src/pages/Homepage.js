@@ -23,15 +23,21 @@ export const Homepage = () => {
       <FadeIn>
         {currentUser ? (
           <section className='heading'>
-            <div className='profile-img'>
+            <Link className='profile-img' to='/profile'>
               <ImageLoader src={currentUser.imageUrl || userPlaceholder} alt='' />
+            </Link>
+            <div className='text'>
+              <h1>hey, {currentUser.firstName}!</h1>
+              <p>How are your plants today?</p>
             </div>
-            <h1>hey, {currentUser.firstName}!</h1>
           </section>
         ) : (
           <section className='heading'>
             <img className='logo' src={plantgeekLogo} alt='' />
-            <h1>welcome to plantgeek</h1>
+            <div className='text'>
+              <h1>hey there!</h1>
+              <p>How are your plants today?</p>
+            </div>
           </section>
         )}
       </FadeIn>
@@ -142,7 +148,7 @@ export const Homepage = () => {
             <h2>contribute to our database</h2>
             <p>
               Can't find a specific plant? Contribute it to our database - you'll earn badges for
-              approved submissions! Please help us by reporting any duplicate or incorrect
+              approved submissions! You can also help us by reporting any duplicate or incorrect
               information.
             </p>
             <Link to='contribute'>
@@ -162,14 +168,14 @@ const Wrapper = styled.main`
   .heading {
     background: ${COLORS.light};
     display: flex;
-    flex-direction: column;
     align-items: center;
     gap: 12px;
     h1 {
-      text-align: center;
+      font-size: 1.5rem;
     }
     .logo {
       height: 50px;
+      width: 50px;
     }
     .profile-img {
       border: 2px solid #fff;
@@ -177,6 +183,13 @@ const Wrapper = styled.main`
       width: 75px;
       border-radius: 50%;
       padding: 2px;
+      overflow: hidden;
+      img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
     }
   }
   .icon {
@@ -208,11 +221,17 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
-      flex-direction: row;
       gap: 20px;
+      .logo {
+        height: 75px;
+        width: 75px;
+      }
       .profile-img {
         height: 100px;
         width: 100px;
+      }
+      h1 {
+        font-size: 2rem;
       }
     }
   }
