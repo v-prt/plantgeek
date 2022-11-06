@@ -122,8 +122,7 @@ export const UserProvider = ({ children }) => {
       queryClient.invalidateQueries('current-user')
       return res.data
     } catch (err) {
-      console.log(err.response)
-      return { error: err.response.data.msg }
+      return { error: err.response.data.message }
     }
   }
 

@@ -28,9 +28,9 @@ const createUser = async (req, res) => {
       username: { $regex: new RegExp(`^${req.body.username}$`, 'i') },
     })
     if (existingEmail) {
-      res.status(409).json({ status: 409, message: 'Email already registered' })
+      res.status(409).json({ status: 409, message: 'That email is already in use' })
     } else if (existingUsername) {
-      res.status(409).json({ status: 409, message: 'Username taken' })
+      res.status(409).json({ status: 409, message: 'That username is taken' })
     } else {
       const user = await db.collection('users').insertOne({
         firstName: req.body.firstName,
@@ -304,7 +304,7 @@ const updateUser = async (req, res) => {
       const hashedPwd = await bcrypt.hash(newPassword, user.password)
       const passwordValid = await bcrypt.compare(currentPassword, user.password)
       if (!passwordValid) {
-        res.status(400).json({ code: 'incorrect_password', msg: 'Password is incorrect' })
+        return res.status(400).json({ message: 'Incorrect password' })
       } else {
         update = {
           $set: {
@@ -328,9 +328,9 @@ const updateUser = async (req, res) => {
       username: { $regex: new RegExp(`^${username}$`, 'i') },
     })
     if (existingEmail && !existingEmail._id.equals(userId)) {
-      res.status(400).json({ code: 'email_taken', msg: 'Email already in use' })
+      return res.status(400).json({ message: 'That email is already in use' })
     } else if (existingUsername && !existingUsername._id.equals(userId)) {
-      res.status(400).json({ code: 'username_taken', msg: 'Username already in use' })
+      return res.status(400).json({ message: 'That username is taken' })
     } else {
       const result = await db.collection('users').updateOne(filter, update)
       res.status(200).json({ status: 200, data: result })

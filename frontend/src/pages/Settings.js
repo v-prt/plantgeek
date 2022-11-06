@@ -1,46 +1,44 @@
-import React, { useState, useEffect, useContext, useRef } from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import { Redirect } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
 import moment from 'moment'
 import { API_URL } from '../constants'
 
-import { Formik, Form, useFormikContext } from 'formik'
+import { Formik, Form } from 'formik'
 import { FormItem } from '../components/forms/FormItem'
-import { Saving } from '../components/forms/Saving'
 import { Input } from 'formik-antd'
 import * as Yup from 'yup'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import { Button, Alert } from 'antd'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { Button, Alert, message } from 'antd'
+import { DeleteOutlined, EditOutlined, CloseCircleOutlined, SaveOutlined } from '@ant-design/icons'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
-const AutoSave = () => {
-  const { dirty, values, errors, submitForm } = useFormikContext()
+// const AutoSave = () => {
+//   const { dirty, values, errors, submitForm } = useFormikContext()
 
-  useEffect(() => {
-    // auto saves only if form has been interacted with and there are no errors
-    // dirty is false by default, becomes true once form has been interacted with
-    if (dirty && !Object.keys(errors).length) {
-      submitForm()
-    }
-  }, [dirty, values, errors, submitForm])
+//   useEffect(() => {
+//     // auto saves only if form has been interacted with and there are no errors
+//     // dirty is false by default, becomes true once form has been interacted with
+//     if (dirty && !Object.keys(errors).length) {
+//       submitForm()
+//     }
+//   }, [dirty, values, errors, submitForm])
 
-  return null
-}
+//   return null
+// }
 
 export const Settings = () => {
   useDocumentTitle('Settings • plantgeek')
 
   const submitRef = useRef(0)
   const { currentUser, updateCurrentUser } = useContext(UserContext)
-  const [savingStatus, setSavingStatus] = useState(undefined)
+  const [editMode, setEditMode] = useState(false)
   const [passwordEditMode, setPasswordEditMode] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [successStatus, setSuccessStatus] = useState('')
 
   // #region Initial Values
@@ -80,49 +78,29 @@ export const Settings = () => {
   // #endregion Schemas
 
   // #region Functions
-  const updateAccount = (values, { setStatus }) => {
-    setSavingStatus('saving')
-    // increment submitRef
-    submitRef.current++
-    // get current submitRef id
-    const thisSubmit = submitRef.current
-    setTimeout(async () => {
-      // check if this is still the latest submit
-      if (thisSubmit === submitRef.current) {
-        setStatus('')
-        const result = await updateCurrentUser(values)
-        if (result.error) {
-          setStatus(result.error)
-          setSavingStatus('error')
-          setTimeout(() => {
-            setSavingStatus(undefined)
-          }, 2000)
-        } else {
-          setSavingStatus('saved')
-          setTimeout(() => {
-            setSavingStatus(false)
-          }, 2000)
-        }
-      }
-    }, 300)
-  }
-
-  const changePassword = async (values, { setStatus }) => {
-    setLoading(true)
+  const updateAccount = async (values, { setStatus }) => {
     setStatus('')
-    setSuccessStatus('')
     const result = await updateCurrentUser(values)
     if (result.error) {
       setStatus(result.error)
-      setLoading(false)
     } else {
-      setSuccessStatus('Password changed')
-      setLoading(false)
+      setEditMode(false)
+    }
+  }
+
+  const changePassword = async (values, { setStatus }) => {
+    setStatus('')
+    const result = await updateCurrentUser(values)
+    if (result.error) {
+      setStatus(result.error)
+    } else {
+      message.success('Password updated successfully')
       setPasswordEditMode(false)
     }
   }
 
   const handleDelete = () => {
+    // TODO: use antd modal to confirm delete
     if (window.confirm('Are you sure you want to delete your account? This cannot be undone!')) {
       localStorage.removeItem('plantgeekToken')
       window.location.replace('/login')
@@ -131,7 +109,6 @@ export const Settings = () => {
   }
   // #endregion Functions
 
-  // TODO: edit mode with save button
   return !currentUser ? (
     <Redirect to='/signup' />
   ) : (
@@ -154,35 +131,64 @@ export const Settings = () => {
       </FadeIn>
       <FadeIn delay={200}>
         <section className='settings'>
-          <Heading>
-            account settings <Saving savingStatus={savingStatus} />
-          </Heading>
           <Formik
             initialValues={accountInitialValues}
             validationSchema={accountSchema}
             onSubmit={updateAccount}>
-            {({ status }) => (
+            {({ status, setStatus, values, setValues, isSubmitting }) => (
               <Form>
+                <Heading>
+                  account settings
+                  {editMode ? (
+                    <div className='buttons'>
+                      <Button
+                        type='primary'
+                        htmlType='submit'
+                        loading={isSubmitting}
+                        icon={<SaveOutlined />}>
+                        SAVE
+                      </Button>
+                      <Button
+                        type='secondary'
+                        icon={<CloseCircleOutlined />}
+                        onClick={() => {
+                          // reset form values
+                          setStatus('')
+                          setValues(accountInitialValues)
+                          setEditMode(false)
+                        }}>
+                        CANCEL
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      type='primary'
+                      icon={<EditOutlined />}
+                      onClick={() => setEditMode(true)}>
+                      EDIT
+                    </Button>
+                  )}
+                </Heading>
                 {status && <Alert type='error' message={status} showIcon />}
                 <FormItem name='firstName' label='First name'>
-                  <Input name='firstName' />
+                  <Input name='firstName' disabled={!editMode} />
                 </FormItem>
                 <FormItem name='lastName' label='Last name'>
-                  <Input name='lastName' />
+                  <Input name='lastName' disabled={!editMode} />
                 </FormItem>
                 <FormItem name='username' label='Username'>
-                  <Input name='username' prefix='@' />
+                  <Input name='username' prefix='@' disabled={!editMode} />
                 </FormItem>
                 <FormItem name='email' label='Email'>
-                  <Input name='email' />
+                  <Input name='email' disabled={!editMode} />
                 </FormItem>
                 {/* TODO: upload profile image */}
-                <AutoSave />
               </Form>
             )}
           </Formik>
           <div className='zone'>
             <div className='password'>
+              {/* TODO: add password recovery here */}
               <p>Password</p>
               <Button
                 type='secondary'
@@ -192,7 +198,6 @@ export const Settings = () => {
                 CHANGE
               </Button>
             </div>
-            {successStatus && <Alert type='success' message={successStatus} showIcon closable />}
             <Formik
               initialValues={passwordInitialValues}
               validationSchema={passwordSchema}
@@ -209,15 +214,11 @@ export const Settings = () => {
                   <FormItem name='confirmPassword' label='Confirm new password'>
                     <Input.Password name='confirmPassword' type='password' />
                   </FormItem>
-                  <div className='buttons'>
+                  <div className='password-buttons'>
                     <Button type='secondary' onClick={() => setPasswordEditMode(!passwordEditMode)}>
                       CANCEL
                     </Button>
-                    <Button
-                      htmlType='submit'
-                      type='primary'
-                      disabled={loading || isSubmitting}
-                      loading={loading || isSubmitting}>
+                    <Button htmlType='submit' type='primary' loading={isSubmitting}>
                       SUBMIT
                     </Button>
                   </div>
@@ -284,7 +285,7 @@ const Wrapper = styled.main`
       &.expanded {
         display: flex;
       }
-      .buttons {
+      .password-buttons {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -342,9 +343,17 @@ const Wrapper = styled.main`
 
 const Heading = styled.h2`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  .saving {
-    margin-left: 5px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+  .buttons {
+    display: flex;
+    gap: 10px;
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 `
