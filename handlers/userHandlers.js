@@ -291,15 +291,17 @@ const getCollection = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const userId = ObjectId(req.params.id)
-  const { firstName, lastName, email, username, currentPassword, newPassword } = req.body
+  const { email, username, currentPassword, newPassword } = req.body
   const client = await MongoClient(MONGO_URI, options)
+
   try {
     await client.connect()
     const db = client.db('plantgeekdb')
     const filter = { _id: userId }
     const user = await db.collection('users').findOne({ _id: userId })
-    // FIXME: can probably make this simpler
+
     let update = {}
+
     if (newPassword) {
       const hashedPwd = await bcrypt.hash(newPassword, user.password)
       const passwordValid = await bcrypt.compare(currentPassword, user.password)
@@ -314,12 +316,7 @@ const updateUser = async (req, res) => {
       }
     } else
       update = {
-        $set: {
-          firstName,
-          lastName,
-          email,
-          username,
-        },
+        $set: req.body,
       }
     const existingEmail = await db.collection('users').findOne({
       email: { $regex: new RegExp(`^${email}$`, 'i') },
@@ -327,6 +324,7 @@ const updateUser = async (req, res) => {
     const existingUsername = await db.collection('users').findOne({
       username: { $regex: new RegExp(`^${username}$`, 'i') },
     })
+
     if (existingEmail && !existingEmail._id.equals(userId)) {
       return res.status(400).json({ message: 'That email is already in use' })
     } else if (existingUsername && !existingUsername._id.equals(userId)) {
@@ -339,6 +337,7 @@ const updateUser = async (req, res) => {
     console.error(err)
     return res.status(400).json(err)
   }
+
   client.close()
 }
 

@@ -73,16 +73,16 @@ export const UserProfile = () => {
       <FadeIn>
         <section className='user-info'>
           <div className='profile'>
-            <img
-              className='profile-img'
-              src={currentUser.image ? currentUser.image[0] : placeholder}
-              alt=''
-            />
+            <div className='profile-img'>
+              <ImageLoader src={currentUser.imageUrl || placeholder} alt='' />
+            </div>
             <div className='text'>
               <h1>
                 {currentUser.firstName} {currentUser.lastName}
               </h1>
-              <p className='username'>@{currentUser.username}</p>
+              <p className='username'>
+                @{currentUser.username} {currentUser.role === 'admin' && '(Admin)'}
+              </p>
               <p className='date'>Joined {moment(currentUser.joined).format('ll')}</p>
             </div>
           </div>

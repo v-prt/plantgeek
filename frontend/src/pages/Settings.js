@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react'
+import { useQueryClient } from 'react-query'
 import { Redirect } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
@@ -12,10 +13,12 @@ import * as Yup from 'yup'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import { Button, Alert, Modal, message } from 'antd'
-import { DeleteOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons'
+import ImgCrop from 'antd-img-crop'
+import { Button, Alert, Modal, Upload, message } from 'antd'
+import { DeleteOutlined, EditOutlined, SaveOutlined, LoadingOutlined } from '@ant-design/icons'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
+import { ImageLoader } from '../components/loaders/ImageLoader'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 // const AutoSave = () => {
@@ -35,10 +38,12 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 export const Settings = () => {
   useDocumentTitle('Settings • plantgeek')
 
+  const queryClient = new useQueryClient()
   const { currentUser, updateCurrentUser } = useContext(UserContext)
   const [editMode, setEditMode] = useState(false)
   const [passwordEditMode, setPasswordEditMode] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
+  const [image, setImage] = useState(currentUser.imageUrl)
 
   // #region Initial Values
   const accountInitialValues = {
@@ -77,6 +82,63 @@ export const Settings = () => {
   // #endregion Schemas
 
   // #region Functions
+  // IMAGE UPLOAD
+  const [uploading, setUploading] = useState(false)
+  const fileList = []
+  const uploadButton = (
+    <div>
+      {uploading ? (
+        <LoadingOutlined spin />
+      ) : (
+        <img className='placeholder' src={placeholder} alt='' />
+      )}
+    </div>
+  )
+  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`
+
+  // checking file size before upload
+  const checkSize = file => {
+    const underLimit = file.size / 1024 / 1024 < 1
+    if (!underLimit) {
+      message.error('Image must be under 1 MB.')
+    }
+    return underLimit
+  }
+
+  // handling image upload
+  const handleImageUpload = async fileData => {
+    setUploading(true)
+
+    const formData = new FormData()
+    formData.append('file', fileData.file)
+    formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET_USERS)
+
+    await axios
+      // uploading image to cloudinary
+      .post(cloudinaryUrl, formData)
+      .then(res => {
+        const imageUrl = res.data.secure_url
+        // updating user with new image url
+        axios
+          .put(`${API_URL}/users/${currentUser._id}`, { imageUrl })
+          .then(() => {
+            setImage(imageUrl)
+            queryClient.invalidateQueries('current-user')
+            setUploading(false)
+          })
+          .catch(err => {
+            console.log(err)
+            message.error('Something went wrong on the server. Please try again.')
+            setUploading(false)
+          })
+      })
+      .catch(err => {
+        console.log(err)
+        message.error('Something went wrong with cloudinary. Please try again.')
+        setUploading(false)
+      })
+  }
+
   const updateAccount = async (values, { setStatus }) => {
     setStatus('')
     const result = await updateCurrentUser(values)
@@ -111,16 +173,40 @@ export const Settings = () => {
     <Wrapper>
       <FadeIn>
         <section className='user-info'>
-          <img
-            className='profile-img'
-            src={currentUser.image ? currentUser.image[0] : placeholder}
-            alt=''
-          />
+          <ImgCrop rotate modalOk='UPLOAD' modalCancel='CANCEL'>
+            <Upload
+              multiple={false}
+              maxCount={1}
+              name='userImage'
+              beforeUpload={checkSize}
+              customRequest={handleImageUpload}
+              fileList={fileList}
+              listType='picture-card'
+              accept='.png, .jpg, .jpeg'
+              showUploadList={{
+                showPreviewIcon: false,
+                showRemoveIcon: false,
+              }}>
+              {!uploading && image ? (
+                <ImageLoader src={image} alt={''} placeholder={placeholder} />
+              ) : (
+                uploadButton
+              )}
+              {!uploading && (
+                <div className='overlay'>
+                  <EditOutlined />
+                </div>
+              )}
+            </Upload>
+          </ImgCrop>
+
           <div className='text'>
             <h1>
               {currentUser.firstName} {currentUser.lastName}
             </h1>
-            <p className='username'>@{currentUser.username}</p>
+            <p className='username'>
+              @{currentUser.username} {currentUser.role === 'admin' && '(Admin)'}
+            </p>
             <p className='date'>Joined {moment(currentUser.joined).format('ll')}</p>
           </div>
         </section>
@@ -261,6 +347,46 @@ const Wrapper = styled.main`
     gap: 10px;
     max-width: 600px;
     margin: auto;
+    .ant-upload-picture-card-wrapper {
+      width: fit-content;
+    }
+    .ant-upload-list {
+      height: 100px;
+      width: 100px;
+      position: relative;
+      overflow: hidden;
+      .placeholder {
+        height: 100%;
+        width: 100%;
+      }
+      .overlay {
+        height: 100%;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.2);
+        color: #fff;
+        visibility: hidden;
+        opacity: 0;
+        transition: 0.2s ease-in-out;
+        position: absolute;
+        display: grid;
+        place-content: center;
+        border-radius: 50%;
+        font-size: 1.2rem;
+      }
+      &:hover {
+        .overlay {
+          visibility: visible;
+          opacity: 1;
+        }
+      }
+      .ant-upload-select-picture-card {
+        border-radius: 50%;
+        margin: auto;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
+    }
     .profile-img {
       border: 2px solid #fff;
       height: 75px;

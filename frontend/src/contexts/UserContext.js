@@ -8,10 +8,9 @@ export const UserProvider = ({ children }) => {
   const queryClient = new useQueryClient()
   const [token, setToken] = useState(localStorage.getItem('plantgeekToken'))
   const [checkedToken, setCheckedToken] = useState(false)
-  const [currentUser, setCurrentUser] = useState()
   const [currentUserId, setCurrentUserId] = useState()
 
-  const { data: userData, status: userStatus } = useQuery(
+  const { data: currentUser, status: userStatus } = useQuery(
     ['current-user', currentUserId],
     async () => {
       if (currentUserId) {
@@ -20,12 +19,6 @@ export const UserProvider = ({ children }) => {
       } else return null
     }
   )
-
-  useEffect(() => {
-    if (userData) {
-      setCurrentUser(userData)
-    } else return null
-  }, [userData])
 
   // SIGNUP
   const handleSignup = async values => {
@@ -61,21 +54,18 @@ export const UserProvider = ({ children }) => {
     try {
       const res = await axios.post(`${API_URL}/token`, { token })
       if (res.status === 200) {
-        setCurrentUser(res.data.user)
         setCurrentUserId(res.data.user._id)
         setCheckedToken(true)
       } else {
         // something wrong with token
         localStorage.removeItem('plantgeekToken')
         window.location.replace('/')
-        setCurrentUser(undefined)
         setCurrentUserId(undefined)
       }
     } catch (err) {
       // something wrong with token
       localStorage.removeItem('plantgeekToken')
       window.location.replace('/')
-      setCurrentUser(undefined)
       setCurrentUserId(undefined)
     }
   }
@@ -139,7 +129,6 @@ export const UserProvider = ({ children }) => {
         resetPassword,
         getUserById,
         currentUser,
-        currentUserId,
         updateCurrentUser,
       }}>
       {children}

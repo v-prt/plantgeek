@@ -4,11 +4,13 @@ import { UserContext } from '../contexts/UserContext'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
+import { ImageLoader } from '../components/loaders/ImageLoader'
 import { Button } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import { FaArrowAltCircleRight } from 'react-icons/fa'
 import { FeaturedPlants } from '../components/FeaturedPlants'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import plantgeekLogo from '../assets/logo.webp'
 import userPlaceholder from '../assets/avatar-placeholder.png'
 import plantPlaceholder from '../assets/plant-placeholder.svg'
 
@@ -19,20 +21,19 @@ export const Homepage = () => {
   return (
     <Wrapper>
       <FadeIn>
-        <section className='heading'>
-          {currentUser ? (
-            <div className='inner'>
-              <h1>welcome back, {currentUser.firstName}</h1>
-              <img
-                className='profile-img'
-                src={currentUser.image ? currentUser.image[0] : userPlaceholder}
-                alt=''
-              />
+        {currentUser ? (
+          <section className='heading'>
+            <div className='profile-img'>
+              <ImageLoader src={currentUser.imageUrl || userPlaceholder} alt='' />
             </div>
-          ) : (
+            <h1>hey, {currentUser.firstName}!</h1>
+          </section>
+        ) : (
+          <section className='heading'>
+            <img className='logo' src={plantgeekLogo} alt='' />
             <h1>welcome to plantgeek</h1>
-          )}
-        </section>
+          </section>
+        )}
       </FadeIn>
       <FadeIn delay={200}>
         <InfoCard>
@@ -161,24 +162,21 @@ const Wrapper = styled.main`
   .heading {
     background: ${COLORS.light};
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    .inner {
-      display: flex;
-      flex-direction: column-reverse;
-      align-items: center;
-      justify-content: flex-end;
-    }
+    gap: 12px;
     h1 {
       text-align: center;
     }
+    .logo {
+      height: 50px;
+    }
     .profile-img {
-      background: ${COLORS.lightest};
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      border: 2px solid #fff;
       height: 75px;
       width: 75px;
       border-radius: 50%;
-      padding: 3px;
+      padding: 2px;
     }
   }
   .icon {
@@ -210,16 +208,11 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
-      justify-content: flex-end;
-      .inner {
-        flex-direction: row;
-      }
-      h1 {
-        text-align: right;
-        font-size: 2rem;
-      }
+      flex-direction: row;
+      gap: 20px;
       .profile-img {
-        margin-left: 20px;
+        height: 100px;
+        width: 100px;
       }
     }
   }
