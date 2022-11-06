@@ -86,6 +86,27 @@ export const UserProvider = ({ children }) => {
     } else setCheckedToken(true)
   }, [token])
 
+  // SEND PASSWORD RESET CODE
+  const sendPasswordResetCode = async email => {
+    try {
+      const res = await axios.post(`${API_URL}/password-reset-code`, { email })
+      return res.data
+    } catch (err) {
+      return { error: err.response.data.message }
+    }
+  }
+
+  // RESET PASSWORD
+  const resetPassword = async values => {
+    console.log(values)
+    try {
+      const res = await axios.post(`${API_URL}/password`, values)
+      return res.data
+    } catch (err) {
+      return { error: err.response.data.message }
+    }
+  }
+
   // GET USER BY ID
   const getUserById = async id => {
     await axios
@@ -115,6 +136,8 @@ export const UserProvider = ({ children }) => {
         handleSignup,
         handleLogin,
         handleLogout,
+        sendPasswordResetCode,
+        resetPassword,
         getUserById,
         currentUser,
         currentUserId,

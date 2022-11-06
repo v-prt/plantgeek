@@ -5,6 +5,9 @@ const MONGO_URI = process.env.MONGO_URI
 const bcrypt = require('bcrypt')
 const saltRounds = 10
 const jwt = require('jsonwebtoken')
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL
 
 const options = {
   useNewUrlParser: true,
@@ -76,6 +79,7 @@ const authenticateUser = async (req, res) => {
       }
     } else {
       client.close()
+      // FIXME: 404
       return res.status(401).json({ message: 'User not found' })
     }
   } catch (err) {
@@ -118,6 +122,76 @@ const verifyToken = async (req, res) => {
     console.error(err.stack)
     res.status(500).json({ status: 500, message: err.message })
   }
+  client.close()
+}
+
+const sendPasswordResetCode = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  const { email } = req.body
+  try {
+    const user = await db.collection('users').findOne({ email })
+    if (user) {
+      const code = Math.floor(100000 + Math.random() * 900000)
+      const hashedCode = await bcrypt.hash(code.toString(), saltRounds)
+
+      await db.collection('users').updateOne({ email }, { $set: { passwordResetCode: hashedCode } })
+
+      const msg = {
+        to: email,
+        from: ADMIN_EMAIL,
+        subject: 'Plantgeek Password Recovery',
+        text: `Your password reset code is: ${code}`,
+        html: `Your password reset code is: <strong>${code}</strong>`,
+      }
+      sgMail
+        .send(msg)
+        .then(() => {
+          res.status(200).json({ message: 'Code sent' })
+        })
+        .catch(error => {
+          console.error(error)
+        })
+    } else {
+      res.status(404).json({ message: 'Email not found' })
+    }
+  } catch (err) {
+    console.error(err.stack)
+    return res.status(500).send('Internal server error')
+  }
+  client.close()
+}
+
+// RESET PASSWORD WITH CODE
+const resetPassword = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+
+  const { email, code, newPassword } = req.body
+
+  try {
+    const user = await db.collection('users').findOne({ email })
+    if (user) {
+      const isValid = await bcrypt.compare(code.toString(), user.passwordResetCode)
+      if (isValid) {
+        const hashedPwd = await bcrypt.hash(newPassword, saltRounds)
+        await db
+          .collection('users')
+          .updateOne({ email }, { $set: { password: hashedPwd, passwordResetCode: null } })
+        res.status(200).json({ message: 'Password changed' })
+      } else {
+        res.status(403).json({ message: 'Incorrect code' })
+      }
+    } else {
+      res.status(404).json({ message: 'Email not found' })
+    }
+  } catch (err) {
+    console.error(err.stack)
+    return res.status(500).send('Internal server error')
+  }
+
   client.close()
 }
 
@@ -332,6 +406,8 @@ module.exports = {
   createUser,
   authenticateUser,
   verifyToken,
+  sendPasswordResetCode,
+  resetPassword,
   getUsers,
   getUser,
   getWishlist,

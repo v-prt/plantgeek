@@ -11,6 +11,8 @@ const {
   createUser,
   authenticateUser,
   verifyToken,
+  sendPasswordResetCode,
+  resetPassword,
   getUsers,
   getUser,
   getWishlist,
@@ -61,6 +63,8 @@ app
   .post(`${API_URL}/users`, createUser)
   .post(`${API_URL}/login`, authenticateUser)
   .post(`${API_URL}/token`, verifyToken)
+  .post(`${API_URL}/password-reset-code`, sendPasswordResetCode)
+  .post(`${API_URL}/password`, resetPassword)
   .get(`${API_URL}/users`, getUsers)
   .get(`${API_URL}/users/:id`, getUser)
   .get(`${API_URL}/wishlist/:userId`, getWishlist)

@@ -8,8 +8,9 @@ import { ScrollToTop } from './components/general/ScrollToTop'
 import { Navbar } from './components/Navbar'
 import { Homepage } from './pages/Homepage'
 import { Browse } from './pages/Browse'
-import { Login } from './pages/Login'
 import { SignUp } from './pages/SignUp'
+import { Login } from './pages/Login'
+import { PasswordRecovery } from './pages/PasswordRecovery'
 import { Welcome } from './pages/Welcome'
 import { Guidelines } from './pages/Guidelines'
 import { Terms } from './pages/Terms'
@@ -45,11 +46,14 @@ export const App = () => {
               <Route path='/browse'>
                 <Browse />
               </Route>
+              <Route path='/signup'>
+                <SignUp />
+              </Route>
               <Route path='/login'>
                 <Login />
               </Route>
-              <Route path='/signup'>
-                <SignUp />
+              <Route path='/password-recovery'>
+                <PasswordRecovery />
               </Route>
               <Route path='/welcome'>
                 <Welcome />

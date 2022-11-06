@@ -57,8 +57,8 @@ export const SignUp = () => {
       <FadeIn>
         <Card>
           <div className='header'>
-            <h1>welcome!</h1>
             <img src={plantgeekLogo} alt='' />
+            <h1>welcome!</h1>
           </div>
           <Formik
             initialValues={{
@@ -75,22 +75,22 @@ export const SignUp = () => {
             {({ status, isSubmitting }) => (
               <Form>
                 <FormItem name='firstName' label='First name'>
-                  <Input name='firstName' type='text' placeholder='Jane' />
+                  <Input name='firstName' type='text' />
                 </FormItem>
                 <FormItem name='lastName' label='Last name'>
-                  <Input name='lastName' type='text' placeholder='Doe' />
+                  <Input name='lastName' type='text' />
                 </FormItem>
                 <FormItem name='email' label='Email'>
-                  <Input name='email' type='text' placeholder='janedoe@gmail.com' />
+                  <Input name='email' type='text' />
                 </FormItem>
                 <FormItem name='username' label='Username'>
-                  <Input name='username' type='text' placeholder='JaneDoe' />
+                  <Input name='username' type='text' />
                 </FormItem>
                 <FormItem
                   name='password'
                   label='Password'
-                  sublabel='- minimum 6 characters, 1 number, and 1 symbol'>
-                  <Input.Password name='password' type='password' placeholder='********' />
+                  sublabel='(minimum 6 characters, 1 number, and 1 symbol)'>
+                  <Input.Password name='password' type='password' />
                 </FormItem>
                 <p className='subtext'>
                   By creating an account, you agree to our{' '}
@@ -153,9 +153,11 @@ export const Card = styled.div`
     text-align: center;
   }
   form {
+    width: 100%;
+    max-width: 300px;
     display: flex;
     flex-direction: column;
-    margin: 20px 0;
+    margin: 20px auto;
   }
   a {
     text-decoration: underline;
@@ -167,17 +169,23 @@ export const Card = styled.div`
   .ant-alert {
     margin-top: 10px;
   }
+  .info-text {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+  }
   .subtext {
     text-align: center;
     margin-top: 20px;
+  }
+  .password-changed {
+    margin: 20px auto;
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     margin: auto;
     max-width: 400px;
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    flex-direction: row;
-    max-width: fit-content;
     .header {
       min-width: 310px;
       padding: 20px;
@@ -187,10 +195,6 @@ export const Card = styled.div`
       li {
         font-size: 1rem;
       }
-    }
-    form {
-      margin: 0 0 0 20px;
-      max-width: 300px;
     }
   }
 `

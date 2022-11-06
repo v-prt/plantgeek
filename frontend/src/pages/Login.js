@@ -11,16 +11,16 @@ import { FadeIn } from '../components/loaders/FadeIn'
 import plantgeekLogo from '../assets/logo.webp'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
-const LoginSchema = Yup.object().shape({
-  email: Yup.string().required('Required'),
-  password: Yup.string().required('Required'),
-})
-
 export const Login = () => {
   useDocumentTitle('Log in | plantgeek')
 
   const { handleLogin, currentUser } = useContext(UserContext)
   const [loading, setLoading] = useState(false)
+
+  const schema = Yup.object().shape({
+    email: Yup.string().required('Required'),
+    password: Yup.string().required('Required'),
+  })
 
   const handleSubmit = async (values, { setStatus }) => {
     setLoading(true)
@@ -41,15 +41,15 @@ export const Login = () => {
       <FadeIn>
         <Card>
           <div className='header'>
-            <h1>welcome back!</h1>
             <img src={plantgeekLogo} alt='' />
+            <h1>welcome back!</h1>
           </div>
           <Formik
             initialValues={{
               email: '',
               password: '',
             }}
-            validationSchema={LoginSchema}
+            validationSchema={schema}
             validateOnChange={false}
             validateOnBlur={false}
             onSubmit={handleSubmit}>
@@ -58,9 +58,10 @@ export const Login = () => {
                 <FormItem name='email' label='Email'>
                   <Input name='email' type='text' autoFocus />
                 </FormItem>
-                <FormItem name='password' label='Password' sublabel=' - case sensitive'>
+                <FormItem name='password' label='Password' sublabel='(case sensitive)'>
                   <Input.Password name='password' type='password' />
                 </FormItem>
+                <Link to='/password-recovery'>Forgot password?</Link>
                 <Button
                   htmlType='submit'
                   type='primary'
