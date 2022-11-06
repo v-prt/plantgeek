@@ -362,7 +362,7 @@ const updateLists = async (req, res) => {
       }
     )
 
-    // update lists of userIds in hearts, owned, and wanted on plant to be able to sort by most liked/owned/wanted
+    // update lists of userIds in hearts, owned, and wanted on plant to be able to sort by most liked/owned/wanted and show totals on profile
     const plantUpdate = await db.collection('plants').updateOne(
       { _id: ObjectId(plantId) },
       {

@@ -49,8 +49,8 @@ export const ActionBox = ({ plant }) => {
           <Form>
             <div className='user-lists'>
               <p className='popularity-info'>
-                This plant is in <b>{plant.totalOwned} collections</b> and{' '}
-                <b>{plant.totalWanted} wishlists</b>.
+                This plant is in <b>{plant.owned?.length} collections</b> and{' '}
+                <b>{plant.wanted?.length} wishlists</b>.
               </p>
               <Checkbox
                 name='collection'

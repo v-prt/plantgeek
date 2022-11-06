@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react'
+import React, { useState, useContext } from 'react'
 import { Redirect } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
@@ -12,8 +12,8 @@ import * as Yup from 'yup'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import { Button, Alert, message } from 'antd'
-import { DeleteOutlined, EditOutlined, CloseCircleOutlined, SaveOutlined } from '@ant-design/icons'
+import { Button, Alert, Modal, message } from 'antd'
+import { DeleteOutlined, EditOutlined, SaveOutlined } from '@ant-design/icons'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
@@ -35,11 +35,10 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 export const Settings = () => {
   useDocumentTitle('Settings • plantgeek')
 
-  const submitRef = useRef(0)
   const { currentUser, updateCurrentUser } = useContext(UserContext)
   const [editMode, setEditMode] = useState(false)
   const [passwordEditMode, setPasswordEditMode] = useState(false)
-  const [successStatus, setSuccessStatus] = useState('')
+  const [deleteModal, setDeleteModal] = useState(false)
 
   // #region Initial Values
   const accountInitialValues = {
@@ -100,12 +99,9 @@ export const Settings = () => {
   }
 
   const handleDelete = () => {
-    // TODO: use antd modal to confirm delete
-    if (window.confirm('Are you sure you want to delete your account? This cannot be undone!')) {
-      localStorage.removeItem('plantgeekToken')
-      window.location.replace('/login')
-      axios.delete(`${API_URL}/users/${currentUser._id}`).catch(err => console.log(err))
-    }
+    localStorage.removeItem('plantgeekToken')
+    window.location.replace('/login')
+    axios.delete(`${API_URL}/users/${currentUser._id}`).catch(err => console.log(err))
   }
   // #endregion Functions
 
@@ -150,7 +146,6 @@ export const Settings = () => {
                       </Button>
                       <Button
                         type='secondary'
-                        icon={<CloseCircleOutlined />}
                         onClick={() => {
                           // reset form values
                           setStatus('')
@@ -193,9 +188,8 @@ export const Settings = () => {
               <Button
                 type='secondary'
                 onClick={() => setPasswordEditMode(!passwordEditMode)}
-                className={passwordEditMode && 'hidden'}
-                icon={<EditOutlined />}>
-                CHANGE
+                className={passwordEditMode && 'hidden'}>
+                CHANGE...
               </Button>
             </div>
             <Formik
@@ -218,8 +212,12 @@ export const Settings = () => {
                     <Button type='secondary' onClick={() => setPasswordEditMode(!passwordEditMode)}>
                       CANCEL
                     </Button>
-                    <Button htmlType='submit' type='primary' loading={isSubmitting}>
-                      SUBMIT
+                    <Button
+                      htmlType='submit'
+                      type='primary'
+                      icon={<SaveOutlined />}
+                      loading={isSubmitting}>
+                      SAVE
                     </Button>
                   </div>
                 </Form>
@@ -229,9 +227,24 @@ export const Settings = () => {
           <div className='zone'>
             <div className='danger'>
               <p>Danger zone</p>
-              <Button type='danger' onClick={handleDelete} icon={<DeleteOutlined />}>
-                DELETE ACCOUNT
+              <Button type='danger' onClick={() => setDeleteModal(true)}>
+                DELETE ACCOUNT...
               </Button>
+              <Modal
+                title='Delete account'
+                visible={deleteModal}
+                footer={false}
+                onCancel={() => setDeleteModal(false)}>
+                <p>Are you sure you want to permanently delete your account?</p>
+                <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+                  <Button type='danger' onClick={handleDelete} icon={<DeleteOutlined />}>
+                    DELETE
+                  </Button>
+                  <Button type='secondary' onClick={() => setDeleteModal(false)}>
+                    CANCEL
+                  </Button>
+                </div>
+              </Modal>
             </div>
           </div>
         </section>

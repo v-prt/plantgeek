@@ -205,17 +205,7 @@ const getPlant = async (req, res) => {
     })
 
     if (plant) {
-      const plantId = plant._id.toString()
-
-      const totalOwned = await db.collection('users').countDocuments({
-        collection: plantId,
-      })
-
-      const totalWanted = await db.collection('users').countDocuments({
-        wishlist: plantId,
-      })
-
-      res.status(200).json({ status: 200, plant: { ...plant, totalOwned, totalWanted } })
+      res.status(200).json({ status: 200, plant })
     } else {
       res.status(404).json({ status: 404, message: 'Plant not found.' })
     }
