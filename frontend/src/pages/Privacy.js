@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const Privacy = () => {
-  useDocumentTitle('Privacy Policy | plantgeek')
+  useDocumentTitle('Privacy Policy • plantgeek')
 
   return (
     <Wrapper>

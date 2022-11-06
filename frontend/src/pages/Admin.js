@@ -19,7 +19,7 @@ import { ClockCircleOutlined, LikeOutlined, DislikeOutlined } from '@ant-design/
 const { Option } = Select
 
 export const Admin = () => {
-  useDocumentTitle('Admin | plantgeek')
+  useDocumentTitle('Admin • plantgeek')
 
   const { currentUser } = useContext(UserContext)
 

@@ -13,6 +13,9 @@ import { Wishlist } from '../components/lists/Wishlist'
 import { Collection } from '../components/lists/Collection'
 import placeholder from '../assets/avatar-placeholder.png'
 import { Ellipsis } from '../components/loaders/Ellipsis'
+import { RiPlantLine } from 'react-icons/ri'
+import { AiOutlineStar } from 'react-icons/ai'
+import { BiPlusCircle } from 'react-icons/bi'
 import bee from '../assets/stickers/bee.svg'
 import boot from '../assets/stickers/boot.svg'
 import cactus from '../assets/stickers/cactus.svg'
@@ -25,7 +28,9 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const UserProfile = () => {
   const { currentUser } = useContext(UserContext)
-  useDocumentTitle(`${currentUser?.username || 'Profile'} | plantgeek`)
+  useDocumentTitle(
+    `${currentUser.firstName} ${currentUser.lastName} (@${currentUser.username}) • plantgeek`
+  )
 
   const [list, setList] = useState('collection')
 
@@ -41,6 +46,8 @@ export const UserProfile = () => {
     { name: boot, value: 75 },
     { name: cactus, value: 100 },
   ]
+
+  // TODO: move collection and wishlist queries here and pass data to lists
 
   const { data: contributions, status: contributionsStatus } = useQuery(
     ['contributions', currentUser._id],
@@ -65,13 +72,39 @@ export const UserProfile = () => {
     <Wrapper>
       <FadeIn>
         <section className='user-info'>
-          <Image src={currentUser.image ? currentUser.image[0] : placeholder} alt='' />
-          <div className='text'>
-            <h1>
-              {currentUser.firstName} {currentUser.lastName}
-            </h1>
-            <p className='username'>@{currentUser.username}</p>
-            <p className='date'>Joined {moment(currentUser.joined).format('ll')}</p>
+          <div className='profile'>
+            <img
+              className='profile-img'
+              src={currentUser.image ? currentUser.image[0] : placeholder}
+              alt=''
+            />
+            <div className='text'>
+              <h1>
+                {currentUser.firstName} {currentUser.lastName}
+              </h1>
+              <p className='username'>@{currentUser.username}</p>
+              <p className='date'>Joined {moment(currentUser.joined).format('ll')}</p>
+            </div>
+          </div>
+          <div className='stats'>
+            <div className='stat'>
+              <p className='label'>
+                <RiPlantLine /> Collection
+              </p>
+              <p className='number'>{currentUser.collection.length}</p>
+            </div>
+            <div className='stat'>
+              <p className='label'>
+                <AiOutlineStar /> Wishlist
+              </p>
+              <p className='number'>{currentUser.wishlist.length}</p>
+            </div>
+            <div className='stat'>
+              <p className='label'>
+                <BiPlusCircle /> Contributions
+              </p>
+              <p className='number'>{approvedContributions.length}</p>
+            </div>
           </div>
         </section>
       </FadeIn>
@@ -81,12 +114,12 @@ export const UserProfile = () => {
             <button
               className={`toggle-btn ${list === 'collection' && 'active'}`}
               onClick={() => setList('collection')}>
-              My Collection ({currentUser.collection.length})
+              My Collection
             </button>
             <button
               className={`toggle-btn ${list === 'wishlist' && 'active'}`}
               onClick={() => setList('wishlist')}>
-              My Wishlist ({currentUser.wishlist.length})
+              My Wishlist
             </button>
           </div>
           {/* TODO: add more elegant handling for removing items from lists (use state to set list of plants from query, then remove from state and fade card out) */}
@@ -171,17 +204,53 @@ const Wrapper = styled.main`
   .user-info {
     background: ${COLORS.light};
     display: flex;
-    align-items: center;
-    gap: 10px;
-    .text {
-      h1 {
-        font-size: 1.2rem;
+    flex-direction: column;
+    gap: 20px;
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      .profile-img {
+        border: 2px solid #fff;
+        height: 75px;
+        width: 75px;
+        border-radius: 50%;
+        padding: 2px;
       }
-      .username {
-        font-weight: bold;
+      .text {
+        h1 {
+          font-size: 1.2rem;
+        }
+        .username {
+          font-weight: bold;
+        }
+        .date {
+          font-size: 0.8rem;
+        }
       }
-      .date {
-        font-size: 0.8rem;
+    }
+    .stats {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .stat {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 5px 20px;
+        .number {
+          font-size: 1.8rem;
+          font-weight: bold;
+        }
+        .label {
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
       }
     }
   }
@@ -204,12 +273,11 @@ const Wrapper = styled.main`
       .toggle-btn {
         flex: 1;
         padding: 10px;
-        border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         font-weight: bold;
         color: rgba(0, 0, 0, 0.2);
         &.active {
           background: rgba(255, 255, 255, 0.5);
-          border-color: ${COLORS.darkest};
           color: ${COLORS.darkest};
         }
       }
@@ -217,24 +285,41 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {
-      gap: 20px;
+      flex-direction: row;
+      justify-content: space-between;
+      .profile {
+        gap: 20px;
+        .profile-img {
+          height: 100px;
+          width: 100px;
+        }
+      }
+      .stats {
+        .stat {
+          gap: 20px;
+        }
+      }
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    .user-info {
+      align-items: center;
+      .stats {
+        flex-direction: row;
+        gap: 20px;
+        .stat {
+          flex-direction: column-reverse;
+          gap: 0;
+          padding: 10px 20px;
+        }
+      }
+    }
     .lists {
       .list-toggle {
         top: 0;
       }
     }
   }
-`
-
-export const Image = styled.img`
-  border: 2px solid #fff;
-  height: 75px;
-  width: 75px;
-  border-radius: 50%;
-  padding: 2px;
 `
 
 const Contributions = styled.section`

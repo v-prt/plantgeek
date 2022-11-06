@@ -3,7 +3,7 @@ import { FadeIn } from '../components/loaders/FadeIn'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const About = () => {
-  useDocumentTitle('About | plantgeek')
+  useDocumentTitle('About • plantgeek')
 
   return (
     <Wrapper>

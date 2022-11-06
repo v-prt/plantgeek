@@ -63,7 +63,15 @@ const authenticateUser = async (req, res) => {
   await client.connect()
   try {
     const db = client.db('plantgeekdb')
-    const user = await db.collection('users').findOne({ email: req.body.email })
+    const user = await db.collection('users').findOne(
+      // find by username or email
+      {
+        $or: [
+          { username: { $regex: new RegExp(`^${req.body.username}$`, 'i') } },
+          { email: { $regex: new RegExp(`^${req.body.username}$`, 'i') } },
+        ],
+      }
+    )
     if (user) {
       const isValid = await bcrypt.compare(req.body.password, user.password)
       if (isValid) {

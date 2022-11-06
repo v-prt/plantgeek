@@ -2,7 +2,7 @@ import styled from 'styled-components/macro'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const Terms = () => {
-  useDocumentTitle('Terms & Conditions | plantgeek')
+  useDocumentTitle('Terms & Conditions • plantgeek')
 
   return (
     <Wrapper>

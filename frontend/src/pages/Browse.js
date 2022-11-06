@@ -19,7 +19,7 @@ import { PlantFilters } from '../components/PlantFilters'
 const { Option } = Select
 
 export const Browse = () => {
-  useDocumentTitle('Browse | plantgeek')
+  useDocumentTitle('Browse • plantgeek')
 
   const submitRef = useRef(0)
   const scrollRef = useRef()

@@ -23,7 +23,7 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 const { Option } = Select
 
 export const Contribute = () => {
-  useDocumentTitle('Contribute | plantgeek')
+  useDocumentTitle('Contribute • plantgeek')
 
   const { currentUser } = useContext(UserContext)
   const [status, setStatus] = useState(undefined)

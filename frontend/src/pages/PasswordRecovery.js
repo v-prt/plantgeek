@@ -12,7 +12,7 @@ import plantgeekLogo from '../assets/logo.webp'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const PasswordRecovery = () => {
-  useDocumentTitle('Password recovery | plantgeek')
+  useDocumentTitle('Password recovery • plantgeek')
 
   const { sendPasswordResetCode, resetPassword, currentUser } = useContext(UserContext)
   const [email, setEmail] = useState('')
@@ -91,9 +91,9 @@ export const PasswordRecovery = () => {
                   }}
                   validationSchema={Yup.object().shape({
                     code: Yup.string().required('Required'),
-                    newPassword: Yup.string().required('Required'),
+                    newPassword: Yup.string().min(6, `That's too short`).required('Required'),
                     confirmPassword: Yup.string()
-                      .required('Required')
+                      .required('You must confirm your new password')
                       .oneOf([Yup.ref('newPassword'), null], 'Passwords must match'),
                   })}
                   validateOnChange={false}

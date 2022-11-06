@@ -10,11 +10,6 @@ export const Guidelines = () => {
     <Wrapper>
       <section className='heading'>
         <h1>houseplant care tips</h1>
-        <p className='subheader'>So what does "bright indirect" mean anyway?</p>
-        <p className='disclaimer'>
-          Disclaimer: The following are guidelines based on the personal experience and research of
-          a houseplant hobbyist. Your mileage may vary!
-        </p>
       </section>
       <section className='info-section'>
         <h2>

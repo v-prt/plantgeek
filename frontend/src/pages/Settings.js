@@ -14,10 +14,9 @@ import * as Yup from 'yup'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { Button, Alert } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
-import { Image } from './UserProfile'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 const AutoSave = () => {
@@ -35,7 +34,7 @@ const AutoSave = () => {
 }
 
 export const Settings = () => {
-  useDocumentTitle('Settings | plantgeek')
+  useDocumentTitle('Settings • plantgeek')
 
   const submitRef = useRef(0)
   const { currentUser, updateCurrentUser } = useContext(UserContext)
@@ -55,32 +54,28 @@ export const Settings = () => {
   const passwordInitialValues = {
     currentPassword: '',
     newPassword: '',
-    confirmNewPassword: '',
+    confirmPassword: '',
   }
   // #endregion Initial Values
 
   // #region Schemas
   const accountSchema = Yup.object().shape({
-    firstName: Yup.string().min(2, 'Too short').required('Required'),
-    lastName: Yup.string().min(2, 'Too short').required('Required'),
+    firstName: Yup.string().min(2, `That's too short`).required('Required'),
+    lastName: Yup.string().min(2, `That's too short`).required('Required'),
     email: Yup.string().email('Invalid email').required('Required'),
     username: Yup.string()
-      .min(4, 'Too short')
-      .max(20, 'Too long')
-      .required('Username required')
+      .min(4, `That's too short`)
+      .max(20, `That's too long`)
+      .required('Required')
       .matches(/^[a-zA-Z0-9]+$/, 'No special characters or spaces allowed'),
   })
 
   const passwordSchema = Yup.object().shape({
-    currentPassword: Yup.string().required('Current password required'),
-    newPassword: Yup.string()
-      .min(6, 'Too short')
-      .minNumbers(1, 'Must include at least 1 number')
-      .minSymbols(1, 'Must include at least 1 symbol')
-      .required('New password required'),
-    confirmNewPassword: Yup.string()
-      .oneOf([Yup.ref('newPassword')], "Passwords don't match")
-      .required('You must confirm your new password'),
+    currentPassword: Yup.string().required('Required'),
+    newPassword: Yup.string().min(6, `That's too short`).required('Required'),
+    confirmPassword: Yup.string()
+      .required('You must confirm your new password')
+      .oneOf([Yup.ref('newPassword'), null], 'Passwords must match'),
   })
   // #endregion Schemas
 
@@ -136,13 +131,18 @@ export const Settings = () => {
   }
   // #endregion Functions
 
+  // TODO: edit mode with save button
   return !currentUser ? (
     <Redirect to='/signup' />
   ) : (
     <Wrapper>
       <FadeIn>
         <section className='user-info'>
-          <Image src={currentUser.image ? currentUser.image[0] : placeholder} alt='' />
+          <img
+            className='profile-img'
+            src={currentUser.image ? currentUser.image[0] : placeholder}
+            alt=''
+          />
           <div className='text'>
             <h1>
               {currentUser.firstName} {currentUser.lastName}
@@ -171,9 +171,9 @@ export const Settings = () => {
                   <Input name='lastName' />
                 </FormItem>
                 <FormItem name='username' label='Username'>
-                  <Input name='username' />
+                  <Input name='username' prefix='@' />
                 </FormItem>
-                <FormItem name='email' label='Email address'>
+                <FormItem name='email' label='Email'>
                   <Input name='email' />
                 </FormItem>
                 {/* TODO: upload profile image */}
@@ -187,7 +187,8 @@ export const Settings = () => {
               <Button
                 type='secondary'
                 onClick={() => setPasswordEditMode(!passwordEditMode)}
-                className={passwordEditMode && 'hidden'}>
+                className={passwordEditMode && 'hidden'}
+                icon={<EditOutlined />}>
                 CHANGE
               </Button>
             </div>
@@ -199,24 +200,14 @@ export const Settings = () => {
               {({ status, isSubmitting, submitForm }) => (
                 <Form className={passwordEditMode ? 'expanded' : 'hidden'}>
                   {status && <Alert type='error' message={status} showIcon />}
-                  <FormItem name='currentPassword'>
-                    <Input.Password
-                      name='currentPassword'
-                      type='password'
-                      placeholder='Current password'
-                    />
+                  <FormItem name='currentPassword' label='Current password'>
+                    <Input.Password name='currentPassword' type='password' />
                   </FormItem>
-                  <FormItem
-                    name='newPassword'
-                    sublabel='New password must be at least 6 characters long, and include 1 number and 1 symbol.'>
-                    <Input.Password name='newPassword' type='password' placeholder='New password' />
+                  <FormItem name='newPassword' label='New password'>
+                    <Input.Password name='newPassword' type='password' />
                   </FormItem>
-                  <FormItem name='confirmNewPassword'>
-                    <Input.Password
-                      name='confirmNewPassword'
-                      type='password'
-                      placeholder='Confirm new password'
-                    />
+                  <FormItem name='confirmPassword' label='Confirm new password'>
+                    <Input.Password name='confirmPassword' type='password' />
                   </FormItem>
                   <div className='buttons'>
                     <Button type='secondary' onClick={() => setPasswordEditMode(!passwordEditMode)}>
@@ -254,6 +245,15 @@ const Wrapper = styled.main`
     display: flex;
     align-items: center;
     gap: 10px;
+    max-width: 600px;
+    margin: auto;
+    .profile-img {
+      border: 2px solid #fff;
+      height: 75px;
+      width: 75px;
+      border-radius: 50%;
+      padding: 2px;
+    }
     .text {
       h1 {
         font-size: 1.2rem;

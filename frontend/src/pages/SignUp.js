@@ -17,25 +17,27 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 YupPassword(Yup) // extend yup
 
 export const SignUp = () => {
-  useDocumentTitle('Sign up | plantgeek')
+  useDocumentTitle('Sign up • plantgeek')
 
   const { currentUser, handleSignup } = useContext(UserContext)
   const [loading, setLoading] = useState(false)
 
   const SignUpSchema = Yup.object().shape({
-    firstName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('First name required'),
-    lastName: Yup.string().min(2, 'Too short').max(30, 'Too long').required('Last name required'),
-    email: Yup.string().email('Invalid email').required('Email required'),
+    firstName: Yup.string()
+      .min(2, `That's too short`)
+      .max(30, `That's too long`)
+      .required('Required'),
+    lastName: Yup.string()
+      .min(2, `That's too short`)
+      .max(30, `That's too long`)
+      .required('Required'),
+    email: Yup.string().email('Invalid email').required('Required'),
     username: Yup.string()
-      .min(4, 'Too short')
-      .max(20, 'Too long')
-      .required('Username required')
+      .min(4, `That's too short`)
+      .max(20, `That's too long`)
+      .required('Required')
       .matches(/^[a-zA-Z0-9]+$/, 'No special characters or spaces allowed'),
-    password: Yup.string()
-      .min(6, 'Too short')
-      .minNumbers(1, 'Must include at least 1 number')
-      .minSymbols(1, 'Must include at least 1 symbol')
-      .required('Password required'),
+    password: Yup.string().min(6, `That's too short`).required('Required'),
   })
 
   const handleSubmit = async (values, { setStatus }) => {
@@ -84,19 +86,11 @@ export const SignUp = () => {
                   <Input name='email' type='text' />
                 </FormItem>
                 <FormItem name='username' label='Username'>
-                  <Input name='username' type='text' />
+                  <Input name='username' type='text' prefix='@' />
                 </FormItem>
-                <FormItem
-                  name='password'
-                  label='Password'
-                  sublabel='(minimum 6 characters, 1 number, and 1 symbol)'>
+                <FormItem name='password' label='Password' sublabel='(at least 6 characters)'>
                   <Input.Password name='password' type='password' />
                 </FormItem>
-                <p className='subtext'>
-                  By creating an account, you agree to our{' '}
-                  <Link to='/terms'>Terms and Conditions</Link> and
-                  <Link to='/privacy'> Privacy Policy</Link>.
-                </p>
                 <Button
                   htmlType='submit'
                   type='primary'
@@ -177,6 +171,10 @@ export const Card = styled.div`
   .subtext {
     text-align: center;
     margin-top: 20px;
+    &.small {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
   }
   .password-changed {
     margin: 20px auto;

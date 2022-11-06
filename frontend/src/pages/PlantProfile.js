@@ -77,7 +77,7 @@ export const PlantProfile = () => {
     }
   }, [plant])
 
-  useDocumentTitle(plant?.primaryName ? `${plant?.primaryName} | plantgeek` : 'plantgeek')
+  useDocumentTitle(plant?.primaryName ? `${plant?.primaryName} • plantgeek` : 'plantgeek')
 
   // setting plant care difficulty
   useEffect(() => {

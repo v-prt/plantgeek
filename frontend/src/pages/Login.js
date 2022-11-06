@@ -12,13 +12,13 @@ import plantgeekLogo from '../assets/logo.webp'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 export const Login = () => {
-  useDocumentTitle('Log in | plantgeek')
+  useDocumentTitle('Log in • plantgeek')
 
   const { handleLogin, currentUser } = useContext(UserContext)
   const [loading, setLoading] = useState(false)
 
   const schema = Yup.object().shape({
-    email: Yup.string().required('Required'),
+    username: Yup.string().required('Required'),
     password: Yup.string().required('Required'),
   })
 
@@ -46,7 +46,7 @@ export const Login = () => {
           </div>
           <Formik
             initialValues={{
-              email: '',
+              username: '',
               password: '',
             }}
             validationSchema={schema}
@@ -55,10 +55,10 @@ export const Login = () => {
             onSubmit={handleSubmit}>
             {({ status, isSubmitting }) => (
               <Form>
-                <FormItem name='email' label='Email'>
-                  <Input name='email' type='text' autoFocus />
+                <FormItem name='username' label='Email or username'>
+                  <Input name='username' type='text' prefix='@' autoFocus />
                 </FormItem>
-                <FormItem name='password' label='Password' sublabel='(case sensitive)'>
+                <FormItem name='password' label='Password'>
                   <Input.Password name='password' type='password' />
                 </FormItem>
                 <Link to='/password-recovery'>Forgot password?</Link>
@@ -72,7 +72,7 @@ export const Login = () => {
                 </Button>
                 {status && <Alert type='error' message={status} showIcon />}
                 <p className='subtext'>
-                  Don't have an account yet? <Link to='/signup'>Sign up</Link>
+                  New to plantgeek? <Link to='/signup'>Sign up</Link>
                 </p>
               </Form>
             )}
