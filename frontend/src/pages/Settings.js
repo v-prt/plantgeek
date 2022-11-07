@@ -268,7 +268,6 @@ export const Settings = () => {
                 <FormItem name='email' label='Email'>
                   <Input name='email' disabled={!editMode} />
                 </FormItem>
-                {/* TODO: upload profile image */}
               </Form>
             )}
           </Formik>

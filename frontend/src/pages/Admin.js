@@ -39,7 +39,7 @@ export const Admin = () => {
     <Wrapper>
       <FadeIn>
         <section className='review-contributions'>
-          <h2>contributions to review</h2>
+          <h2>review contributions</h2>
           {status === 'success' ? (
             data.length > 0 ? (
               <>
@@ -59,7 +59,7 @@ export const Admin = () => {
       </FadeIn>
       <FadeIn>
         <section className='review-suggestions'>
-          <h2>suggestions from users</h2>
+          <h2>review suggestions</h2>
           <div className='suggestions-list'>
             {suggestionsStatus === 'success' ? (
               suggestions?.length > 0 ? (

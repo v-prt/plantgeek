@@ -47,7 +47,29 @@ export const UserProfile = () => {
     { name: cactus, value: 100 },
   ]
 
-  // TODO: move collection and wishlist queries here and pass data to lists
+  const { data: collection, status: collectionStatus } = useQuery(
+    ['collection', currentUser.collection],
+    async () => {
+      try {
+        const { data } = await axios.get(`${API_URL}/collection/${currentUser._id}`)
+        return data.collection
+      } catch (err) {
+        return null
+      }
+    }
+  )
+
+  const { data: wishlist, status: wishlistStatus } = useQuery(
+    ['wishlist', currentUser.wishlist],
+    async () => {
+      try {
+        const { data } = await axios.get(`${API_URL}/wishlist/${currentUser._id}`)
+        return data.wishlist
+      } catch (err) {
+        return null
+      }
+    }
+  )
 
   const { data: contributions, status: contributionsStatus } = useQuery(
     ['contributions', currentUser._id],
@@ -123,8 +145,12 @@ export const UserProfile = () => {
             </button>
           </div>
           {/* TODO: add more elegant handling for removing items from lists (use state to set list of plants from query, then remove from state and fade card out) */}
-          {list === 'collection' && <Collection user={currentUser} />}
-          {list === 'wishlist' && <Wishlist user={currentUser} />}
+          {list === 'collection' && (
+            <Collection user={currentUser} data={collection} status={collectionStatus} />
+          )}
+          {list === 'wishlist' && (
+            <Wishlist user={currentUser} data={wishlist} status={wishlistStatus} />
+          )}
         </div>
       </FadeIn>
       <FadeIn delay={500}>
@@ -168,7 +194,7 @@ export const UserProfile = () => {
               )}
               {pendingContributions.length > 0 && (
                 <div className='pending-contributions'>
-                  <h3>pending review ({pendingContributions.length})</h3>
+                  <h3>pending ({pendingContributions.length})</h3>
                   <div className='plants'>
                     {pendingContributions.map(plant => (
                       <Link
@@ -262,29 +288,29 @@ const Wrapper = styled.main`
     }
   }
   .lists {
-    background: #f2f2f2;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     padding: 0;
     border-radius: 20px;
     .list-toggle {
-      background: #f2f2f2;
-      border-radius: 20px 20px 0 0;
-      overflow: hidden;
+      background: ${COLORS.lightest};
       display: flex;
       align-items: center;
+      gap: 10px;
       position: sticky;
       top: 50px;
+      padding-top: 10px;
       z-index: 1;
       .toggle-btn {
+        background: #ddd;
         flex: 1;
+        border-radius: 10px 10px 0 0;
         padding: 10px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid #ddd;
         font-weight: bold;
-        color: rgba(0, 0, 0, 0.2);
+        color: #999;
         &.active {
-          background: rgba(255, 255, 255, 0.5);
+          background: #f4f4f4;
           color: ${COLORS.darkest};
         }
       }
@@ -389,49 +415,40 @@ const Contributions = styled.section`
   }
   .approved-contributions,
   .pending-contributions {
-    margin: 10px 0;
+    margin-top: 40px;
     .plants {
-      display: flex;
-      grid-gap: 20px;
-      flex-wrap: wrap;
-      align-items: center;
       margin: 10px 0;
+      display: flex;
+      flex-direction: column;
       .contribution-card {
         width: 100%;
-        border: 1px solid #e6e6e6;
-        border-radius: 10px;
+        border-top: 1px solid #e6e6e6;
         padding: 10px;
         display: flex;
         align-items: center;
-        &.pending {
-          border: 1px dotted #e6e6e6;
+        &:last-child {
+          border-bottom: 1px solid #e6e6e6;
         }
         img {
-          height: 100px;
-          width: 100px;
+          height: 75px;
+          width: 75px;
           border-radius: 50%;
-          &.placeholder {
-            height: 75px;
-            width: 75px;
-          }
         }
         .info {
           margin-left: 10px;
           .primary-name {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             color: #222;
           }
           .secondary-name {
             color: #999;
             font-size: 0.8rem;
+            font-style: italic;
           }
         }
         &:hover {
-          border-color: ${COLORS.accent};
-          &.pending {
-            border-color: orange;
-          }
+          background: #f6f6f6;
           .info .primary-name {
             color: #222;
           }
@@ -439,9 +456,6 @@ const Contributions = styled.section`
       }
     }
     @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-      .contribution-card {
-        max-width: 300px;
-      }
     }
   }
   .no-contributions {

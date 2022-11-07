@@ -125,7 +125,8 @@ export const Contribute = () => {
               toxic: values.toxic === 'toxic' ? true : false,
               imageUrl,
               contributorId: currentUser._id,
-              review: currentUser.role === 'admin' ? 'approved' : 'pending',
+              review: 'pending',
+              // review: currentUser.role === 'admin' ? 'approved' : 'pending',
               ...values,
             })
             .then(res => {
@@ -156,17 +157,16 @@ export const Contribute = () => {
                 <img className='checkmark' src={checkmark} alt='' />
                 new plant submitted
               </h2>
-              {newPlant.review === 'approved' ? (
+              {/* {newPlant.review === 'approved' ? (
                 <p>
                   Thank you! Since you're an admin, your submission has been automatically approved.
                 </p>
-              ) : (
-                <p>
-                  Thank you! Your submission will be reviewed shortly and, if approved, you will see
-                  the new plant on site soon. In the meantime, you may submit additional plants
-                  below.
-                </p>
-              )}
+              ) : ( */}
+              <p>
+                Thank you! Your submission will be reviewed shortly and, if approved, you will see
+                the new plant on site soon. In the meantime, you may submit additional plants below.
+              </p>
+              {/* )} */}
             </div>
             <PlantCard key={newPlant._id} plant={newPlant} viewNeeds={true} />
           </section>

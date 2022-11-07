@@ -81,7 +81,7 @@ export const Browse = () => {
     const thisSubmit = submitRef.current
     setTimeout(() => {
       if (thisSubmit === submitRef.current) {
-        setFormData(values)
+        setFormData({ ...formData, ...values })
       }
     }, 400)
   }
@@ -101,13 +101,16 @@ export const Browse = () => {
                       // fixes issue with scrolling on mobile moving entire page
                       virtual={false}
                       name='search'
+                      value={formData.search}
                       showSearch
                       showArrow
                       allowClear
                       mode='tags'
                       placeholder='Search plants'
-                      value={formData.search}
-                      onChange={submitForm}
+                      onChange={e => {
+                        setValues({ ...values, search: e })
+                        submitForm()
+                      }}
                       style={{ width: '100%' }}>
                       {genera.map(genus => (
                         <Option key={genus} value={genus}>
@@ -122,7 +125,10 @@ export const Browse = () => {
                       getPopupContainer={trigger => trigger.parentNode}
                       name='sort'
                       value={formData.sort}
-                      onChange={submitForm}
+                      onChange={e => {
+                        setValues({ ...values, sort: e })
+                        submitForm()
+                      }}
                       placeholder='Select'
                       style={{ width: '300px' }}>
                       <Option value='name-asc'>Name (A-Z)</Option>
@@ -226,8 +232,10 @@ export const Browse = () => {
                   <PlantFilters
                     viewNeeds={viewNeeds}
                     setViewNeeds={setViewNeeds}
+                    setValues={setValues}
                     submitForm={submitForm}
                     currentUser={currentUser}
+                    formData={formData}
                   />
                 </Drawer>
               </Form>
@@ -269,8 +277,10 @@ export const Browse = () => {
                   <PlantFilters
                     viewNeeds={viewNeeds}
                     setViewNeeds={setViewNeeds}
+                    setValues={setValues}
                     submitForm={submitForm}
                     currentUser={currentUser}
+                    formData={formData}
                   />
                   <div className='results-info'>
                     {status === 'success' ? (

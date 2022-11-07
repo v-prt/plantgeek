@@ -1,12 +1,12 @@
-import styled from 'styled-components/macro'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { Wrapper } from './Terms'
 
 export const Privacy = () => {
   useDocumentTitle('Privacy Policy • plantgeek')
 
   return (
     <Wrapper>
-      <div className='document'>
+      <section className='document'>
         <h1>Privacy Policy</h1>
         <p>Last updated: December 11, 2021</p>
         <p>
@@ -177,33 +177,7 @@ export const Privacy = () => {
           website, we strongly encourage you to contact us immediately and we will do our best
           efforts to promptly remove such information from our records.
         </p>
-      </div>
+      </section>
     </Wrapper>
   )
 }
-
-const Wrapper = styled.main`
-  margin: 30px;
-  .document {
-    background: #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    max-width: 1000px;
-    margin: auto;
-    padding: 30px;
-    h1 {
-      margin: 20px 0 0 0;
-    }
-    h2 {
-      margin: 10px 0 0 0;
-    }
-    h3 {
-      margin: 5px 0 0 0;
-    }
-    a {
-      text-decoration: underline;
-    }
-    ul {
-      list-style: disc inside;
-    }
-  }
-`

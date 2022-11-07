@@ -4,7 +4,15 @@ import { FormItem } from './forms/FormItem'
 import { COLORS, BREAKPOINTS, Toggle } from '../GlobalStyles'
 const { Option } = Select
 
-export const PlantFilters = ({ viewNeeds, setViewNeeds, submitForm, currentUser }) => {
+export const PlantFilters = ({
+  viewNeeds,
+  setViewNeeds,
+  values,
+  setValues,
+  submitForm,
+  currentUser,
+  formData,
+}) => {
   return (
     <Wrapper>
       <div className='sort'>
@@ -12,7 +20,11 @@ export const PlantFilters = ({ viewNeeds, setViewNeeds, submitForm, currentUser 
           <Select
             getPopupContainer={trigger => trigger.parentNode}
             name='sort'
-            onChange={submitForm}
+            value={formData.sort}
+            onChange={e => {
+              setValues({ ...values, sort: e })
+              submitForm()
+            }}
             placeholder='Select'
             style={{ width: '100%' }}>
             <Option value='name-asc'>Name (A-Z)</Option>
@@ -39,7 +51,11 @@ export const PlantFilters = ({ viewNeeds, setViewNeeds, submitForm, currentUser 
         <Select
           getPopupContainer={trigger => trigger.parentNode}
           name='light'
-          onChange={submitForm}
+          value={formData.light}
+          onChange={e => {
+            setValues({ ...values, light: e })
+            submitForm()
+          }}
           placeholder='Select'
           style={{ width: '100%' }}
           allowClear>
@@ -53,7 +69,11 @@ export const PlantFilters = ({ viewNeeds, setViewNeeds, submitForm, currentUser 
         <Select
           getPopupContainer={trigger => trigger.parentNode}
           name='water'
-          onChange={submitForm}
+          value={formData.water}
+          onChange={e => {
+            setValues({ ...values, water: e })
+            submitForm()
+          }}
           placeholder='Select'
           style={{ width: '100%' }}
           allowClear>
@@ -69,7 +89,11 @@ export const PlantFilters = ({ viewNeeds, setViewNeeds, submitForm, currentUser 
         <Select
           getPopupContainer={trigger => trigger.parentNode}
           name='temperature'
-          onChange={submitForm}
+          value={formData.temperature}
+          onChange={e => {
+            setValues({ ...values, temperature: e })
+            submitForm()
+          }}
           placeholder='Select'
           style={{ width: '100%' }}
           allowClear>
@@ -82,7 +106,11 @@ export const PlantFilters = ({ viewNeeds, setViewNeeds, submitForm, currentUser 
         <Select
           getPopupContainer={trigger => trigger.parentNode}
           name='humidity'
-          onChange={submitForm}
+          value={formData.humidity}
+          onChange={e => {
+            setValues({ ...values, humidity: e })
+            submitForm()
+          }}
           placeholder='Select'
           style={{ width: '100%' }}
           allowClear>
@@ -96,7 +124,11 @@ export const PlantFilters = ({ viewNeeds, setViewNeeds, submitForm, currentUser 
         <Select
           getPopupContainer={trigger => trigger.parentNode}
           name='toxicity'
-          onChange={submitForm}
+          value={formData.toxicity}
+          onChange={e => {
+            setValues({ ...values, toxicity: e })
+            submitForm()
+          }}
           placeholder='Select'
           style={{ width: '100%' }}
           allowClear>
@@ -110,7 +142,11 @@ export const PlantFilters = ({ viewNeeds, setViewNeeds, submitForm, currentUser 
           <Select
             getPopupContainer={trigger => trigger.parentNode}
             name='review'
-            onChange={submitForm}
+            value={formData.review}
+            onChange={e => {
+              setValues({ ...values, review: e })
+              submitForm()
+            }}
             placeholder='Select'
             style={{ width: '100%' }}
             allowClear>

@@ -590,7 +590,9 @@ export const PlantProfile = () => {
             <FadeIn delay={400}>
               <div className='actions'>
                 {/* COLLECTION / WISHLIST / HEARTS */}
-                <ActionBox plant={plant} />
+                {plant.review !== 'pending' && plant.review !== 'rejected' && (
+                  <ActionBox plant={plant} />
+                )}
 
                 {/* SUGGESTION SUBMISSION */}
                 <section className='suggestions-section-user'>

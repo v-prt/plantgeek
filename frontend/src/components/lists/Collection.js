@@ -1,22 +1,10 @@
-import { useQuery } from 'react-query'
-import { API_URL } from '../../constants'
-import axios from 'axios'
 import styled from 'styled-components/macro'
 import { FadeIn } from '../loaders/FadeIn'
 import { PlantCard } from '../PlantCard'
 import { GhostPlantCard } from '../GhostPlantCard'
 import { Empty } from 'antd'
 
-export const Collection = ({ user }) => {
-  const { data, status } = useQuery(['collection', user.collection], async () => {
-    try {
-      const { data } = await axios.get(`${API_URL}/collection/${user._id}`)
-      return data.collection
-    } catch (err) {
-      return null
-    }
-  })
-
+export const Collection = ({ data, status }) => {
   return (
     <ListWrapper>
       <FadeIn>
@@ -43,6 +31,8 @@ export const Collection = ({ user }) => {
 }
 
 export const ListWrapper = styled.div`
+  background: #f4f4f4;
+  border-radius: 0 0 20px 20px;
   .inner {
     .empty {
       display: grid;
@@ -58,7 +48,7 @@ export const ListWrapper = styled.div`
   }
 `
 
-const Plants = styled.div`
+export const Plants = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;

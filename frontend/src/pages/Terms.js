@@ -6,7 +6,7 @@ export const Terms = () => {
 
   return (
     <Wrapper>
-      <div className='document'>
+      <section className='document'>
         <h1>Terms and Conditions</h1>
         <p>Last updated: December 11, 2021</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
@@ -248,27 +248,25 @@ export const Terms = () => {
             https://www.plantgeek.co/about
           </a>
         </p>
-      </div>
+      </section>
     </Wrapper>
   )
 }
 
-const Wrapper = styled.main`
-  margin: 30px;
+export const Wrapper = styled.main`
   .document {
     background: #fff;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     max-width: 1000px;
     margin: auto;
-    padding: 30px;
     h1 {
-      margin: 20px 0 0 0;
+      margin-bottom: 20px;
     }
     h2 {
-      margin: 10px 0 0 0;
+      margin: 20px 0 10px 0;
     }
     h3 {
-      margin: 5px 0 0 0;
+      margin: 10px 0 5px 0;
     }
     a {
       text-decoration: underline;

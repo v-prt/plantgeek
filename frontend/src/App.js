@@ -2,7 +2,7 @@ import './App.less'
 import React, { useContext } from 'react'
 import { UserContext } from './contexts/UserContext'
 
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import background from './assets/monstera1.jpg'
 import { ScrollToTop } from './components/general/ScrollToTop'
 import { Navbar } from './components/Navbar'
@@ -25,7 +25,9 @@ import { Footer } from './components/Footer'
 
 import styled from 'styled-components/macro'
 import GlobalStyles, { BREAKPOINTS } from './GlobalStyles'
+import { Button } from 'antd'
 import { BeatingHeart } from './components/loaders/BeatingHeart'
+import placeholder from './assets/plant-placeholder.svg'
 
 export const App = () => {
   const { checkedToken, userStatus } = useContext(UserContext)
@@ -85,7 +87,17 @@ export const App = () => {
               <Route path='/plant/:slug'>
                 <PlantProfile />
               </Route>
-              {/* TODO: catchall for non-existing routes (generic "not found" or redirect to homepage) */}
+              <Route path='*'>
+                <main className='not-found'>
+                  <section className='inner'>
+                    <img src={placeholder} alt='' />
+                    <p>Oops, are you lost?</p>
+                    <Link to='/'>
+                      <Button type='primary'>GO HOME</Button>
+                    </Link>
+                  </section>
+                </main>
+              </Route>
             </Switch>
             <Footer />
           </Body>
@@ -117,6 +129,21 @@ const Body = styled.div`
       width: 100%;
       padding: 20px;
       border-radius: 20px;
+    }
+  }
+  .not-found {
+    section {
+      background: #fff;
+      max-width: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      margin: auto;
+      img {
+        height: 100px;
+        width: 100px;
+      }
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
