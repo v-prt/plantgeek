@@ -12,6 +12,7 @@ import { SignUp } from './pages/SignUp'
 import { Login } from './pages/Login'
 import { PasswordRecovery } from './pages/PasswordRecovery'
 import { Welcome } from './pages/Welcome'
+import { EmailVerification } from './pages/EmailVerification'
 import { Guidelines } from './pages/Guidelines'
 import { Terms } from './pages/Terms'
 import { Privacy } from './pages/Privacy'
@@ -59,6 +60,9 @@ export const App = () => {
               </Route>
               <Route path='/welcome'>
                 <Welcome />
+              </Route>
+              <Route path='/verify-email/:userId'>
+                <EmailVerification />
               </Route>
               <Route path='/guidelines'>
                 <Guidelines />

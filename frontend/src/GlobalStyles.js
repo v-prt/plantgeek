@@ -216,6 +216,9 @@ export default createGlobalStyle`
       opacity: 0.5 !important;
       pointer-events: none !important;
     }
+    .ant-input-affix-wrapper-disabled {
+      cursor: default;
+    }
     .ant-modal-footer {
       display: flex;
     }

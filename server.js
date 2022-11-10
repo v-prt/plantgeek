@@ -9,8 +9,10 @@ const path = require('path')
 // HANDLERS
 const {
   createUser,
+  resendVerificationEmail,
   authenticateUser,
   verifyToken,
+  verifyEmail,
   sendPasswordResetCode,
   resetPassword,
   getUsers,
@@ -61,8 +63,10 @@ app
   // ENDPOINTS
   // users
   .post(`${API_URL}/users`, createUser)
+  .post(`${API_URL}/verification-email/:userId`, resendVerificationEmail)
   .post(`${API_URL}/login`, authenticateUser)
   .post(`${API_URL}/token`, verifyToken)
+  .post(`${API_URL}/verify-email/:userId`, verifyEmail)
   .post(`${API_URL}/password-reset-code`, sendPasswordResetCode)
   .post(`${API_URL}/password`, resetPassword)
   .get(`${API_URL}/users`, getUsers)

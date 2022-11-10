@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken')
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL
+const EMAIL_TEMPLATE_ID = process.env.EMAIL_VERIFICATION_TEMPLATE_ID
 
 const options = {
   useNewUrlParser: true,
@@ -17,9 +18,10 @@ const options = {
 // (CREATE/POST) ADDS A NEW USER
 const createUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+
   try {
-    await client.connect()
-    const db = client.db('plantgeekdb')
     const hashedPwd = await bcrypt.hash(req.body.password, saltRounds)
     const existingEmail = await db.collection('users').findOne({
       email: { $regex: new RegExp(`^${req.body.email}$`, 'i') },
@@ -27,6 +29,7 @@ const createUser = async (req, res) => {
     const existingUsername = await db.collection('users').findOne({
       username: { $regex: new RegExp(`^${req.body.username}$`, 'i') },
     })
+
     if (existingEmail) {
       res.status(409).json({ status: 409, message: 'That email is already in use' })
     } else if (existingUsername) {
@@ -44,10 +47,34 @@ const createUser = async (req, res) => {
         wishlist: [],
       })
       assert.strictEqual(1, user.insertedCount)
+
+      // send welcome email with verification link
+      // TODO: hash user id
+      const message = {
+        personalizations: [
+          {
+            to: {
+              email: req.body.email,
+              name: `${req.body.firstName} ${req.body.lastName}`,
+            },
+            dynamic_template_data: {
+              first_name: req.body.firstName,
+              verification_link: `https://www.plantgeek.co/verify-email/${user.insertedId}`,
+            },
+          },
+        ],
+        from: { email: ADMIN_EMAIL, name: 'Plantgeek' },
+        template_id: EMAIL_TEMPLATE_ID,
+      }
+
+      await sgMail.send(message).catch(err => console.error(err.response?.body?.errors))
+
       res.status(201).json({
         status: 201,
         data: user,
-        token: jwt.sign({ userId: user.insertedId }, process.env.TOKEN_SECRET, { expiresIn: '7d' }),
+        token: jwt.sign({ userId: user.insertedId }, process.env.TOKEN_SECRET, {
+          expiresIn: '7d',
+        }),
       })
     }
   } catch (err) {
@@ -55,6 +82,39 @@ const createUser = async (req, res) => {
     console.error(err.stack)
   }
   client.close()
+}
+
+const resendVerificationEmail = async (req, res) => {
+  const { userId } = req.params
+
+  try {
+    // TODO: hash user id (user might need to be logged in)
+    // const hashedId = await bcrypt.hash(userId, saltRounds)
+
+    const message = {
+      personalizations: [
+        {
+          to: {
+            email: req.body.email,
+            name: `${req.body.firstName} ${req.body.lastName}`,
+          },
+          dynamic_template_data: {
+            first_name: req.body.firstName,
+            verification_link: `https://www.plantgeek.co/verify-email/${userId}`,
+          },
+        },
+      ],
+      from: { email: ADMIN_EMAIL, name: 'Plantgeek' },
+      template_id: EMAIL_TEMPLATE_ID,
+    }
+
+    await sgMail.send(message).catch(err => console.error(err))
+
+    res.status(200).json({ status: 200, message: 'Email sent' })
+  } catch (err) {
+    console.error(err.stack)
+    return res.status(500).send('Internal server error')
+  }
 }
 
 // (READ/POST) AUTHENTICATES USER WHEN LOGGING IN
@@ -125,6 +185,32 @@ const verifyToken = async (req, res) => {
       }
     } else {
       res.status(400).json({ status: 400, message: `Token couldn't be verified` })
+    }
+  } catch (err) {
+    console.error(err.stack)
+    res.status(500).json({ status: 500, message: err.message })
+  }
+  client.close()
+}
+
+const verifyEmail = async (req, res) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  const { userId } = req.params
+
+  try {
+    const user = await db.collection('users').findOne({
+      _id: ObjectId(userId),
+    })
+
+    if (user) {
+      await db
+        .collection('users')
+        .updateOne({ _id: ObjectId(userId) }, { $set: { emailVerified: true } })
+      res.status(200).json({ status: 200, message: 'Email verified' })
+    } else {
+      res.status(404).json({ status: 404, message: 'User not found' })
     }
   } catch (err) {
     console.error(err.stack)
@@ -411,8 +497,10 @@ const deleteUser = async (req, res) => {
 
 module.exports = {
   createUser,
+  resendVerificationEmail,
   authenticateUser,
   verifyToken,
+  verifyEmail,
   sendPasswordResetCode,
   resetPassword,
   getUsers,

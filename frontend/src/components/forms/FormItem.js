@@ -65,10 +65,16 @@ export const FormItem = ({
 const Wrapper = styled.div`
   width: 100%;
   margin: 10px 0;
+
   .item-label {
     display: block;
     line-height: 1.2;
     margin-bottom: 2px;
+    .label {
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+    }
     .info {
       color: ${COLORS.accent};
     }

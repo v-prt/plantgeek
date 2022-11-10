@@ -15,7 +15,14 @@ import * as Yup from 'yup'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { Button, Alert, Modal, Upload, message } from 'antd'
-import { DeleteOutlined, EditOutlined, SaveOutlined, LoadingOutlined } from '@ant-design/icons'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SaveOutlined,
+  LoadingOutlined,
+  CheckCircleOutlined,
+  RedoOutlined,
+} from '@ant-design/icons'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { ImageLoader } from '../components/loaders/ImageLoader'
@@ -156,6 +163,21 @@ export const Settings = () => {
     }
   }
 
+  const resendVerificationEmail = async () => {
+    await axios
+      .post(`${API_URL}/verification-email/${currentUser._id}`, {
+        email: currentUser.email,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+      })
+      .then(() => {
+        message.success('Email verification link sent.')
+      })
+      .catch(() => {
+        message.error('Oops, something went wrong.')
+      })
+  }
+
   const changePassword = async (values, { setStatus }) => {
     setStatus('')
     const result = await updateCurrentUser(values)
@@ -265,9 +287,38 @@ export const Settings = () => {
                 <FormItem name='username' label='Username'>
                   <Input name='username' disabled={!editMode} />
                 </FormItem>
-                <FormItem name='email' label='Email'>
-                  <Input name='email' disabled={!editMode} />
+                <FormItem
+                  name='email'
+                  label='Email'
+                  sublabel={!currentUser.emailVerified && '(not verified)'}>
+                  <Input
+                    name='email'
+                    disabled={!editMode}
+                    suffix={
+                      currentUser.emailVerified && (
+                        <CheckCircleOutlined style={{ color: '#966fd1' }} />
+                      )
+                    }
+                  />
                 </FormItem>
+                {!currentUser.emailVerified && (
+                  <div className='verify-email'>
+                    <Alert
+                      type='info'
+                      message={
+                        <>
+                          <p>Please check your email for the verification link.</p>
+                          <Button
+                            type='link'
+                            icon={<RedoOutlined />}
+                            onClick={resendVerificationEmail}>
+                            Resend
+                          </Button>
+                        </>
+                      }
+                    />
+                  </div>
+                )}
               </Form>
             )}
           </Formik>
@@ -426,6 +477,13 @@ const Wrapper = styled.main`
       }
       &.expanded {
         display: flex;
+      }
+      .verify-email {
+        button {
+          padding: 0;
+          margin: 0;
+          border: 0;
+        }
       }
       .password-buttons {
         display: flex;

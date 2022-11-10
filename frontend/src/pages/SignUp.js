@@ -38,6 +38,9 @@ export const SignUp = () => {
       .required('Required')
       .matches(/^[a-zA-Z0-9]+$/, 'No special characters or spaces allowed'),
     password: Yup.string().min(6, `That's too short`).required('Required'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+      .required('Required'),
   })
 
   const handleSubmit = async (values, { setStatus }) => {
@@ -77,7 +80,7 @@ export const SignUp = () => {
             {({ status, isSubmitting }) => (
               <Form>
                 <FormItem name='firstName' label='First name'>
-                  <Input name='firstName' type='text' />
+                  <Input name='firstName' type='text' autoFocus />
                 </FormItem>
                 <FormItem name='lastName' label='Last name'>
                   <Input name='lastName' type='text' />
@@ -86,10 +89,13 @@ export const SignUp = () => {
                   <Input name='email' type='text' />
                 </FormItem>
                 <FormItem name='username' label='Username'>
-                  <Input name='username' type='text' />
+                  <Input name='username' type='text' autoComplete='off' />
                 </FormItem>
                 <FormItem name='password' label='Password' sublabel='(at least 6 characters)'>
-                  <Input.Password name='password' type='password' />
+                  <Input.Password name='password' type='password' autoComplete='off' />
+                </FormItem>
+                <FormItem name='confirmPassword' label='Confirm password'>
+                  <Input.Password name='confirmPassword' type='password' autoComplete='off' />
                 </FormItem>
                 <Button
                   htmlType='submit'

@@ -116,6 +116,15 @@ export const UserProvider = ({ children }) => {
     }
   }
 
+  const verifyEmail = async userId => {
+    try {
+      const res = await axios.post(`${API_URL}/verify-email/${userId}`)
+      return res.data
+    } catch (err) {
+      return { error: err.response.data.message }
+    }
+  }
+
   return (
     <UserContext.Provider
       value={{
@@ -130,6 +139,7 @@ export const UserProvider = ({ children }) => {
         getUserById,
         currentUser,
         updateCurrentUser,
+        verifyEmail,
       }}>
       {children}
     </UserContext.Provider>
