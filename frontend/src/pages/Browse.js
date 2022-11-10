@@ -433,6 +433,9 @@ const Results = styled.div`
     justify-content: center;
     gap: 20px;
   }
+  .plants {
+    padding-bottom: 80px;
+  }
   .fetching-more {
     display: grid;
     place-content: center;
