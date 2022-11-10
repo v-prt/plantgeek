@@ -142,7 +142,7 @@ export const Homepage = () => {
       <FadeIn delay={500}>
         <section className='contributions-info'>
           <div>
-            <h2>contribute to our database</h2>
+            <h2>contribute to plantgeek</h2>
             <p>
               Can't find a specific plant? Contribute it to our database - you'll earn badges for
               approved submissions! You can also help us by reporting any duplicate or incorrect

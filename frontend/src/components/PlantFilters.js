@@ -21,7 +21,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
             style={{ width: '100%' }}>
             <Option value='name-asc'>Name (A-Z)</Option>
             <Option value='name-desc'>Name (Z-A)</Option>
-            <Option value='most-hearts'>Most liked</Option>
+            <Option value='most-hearts'>Most loved</Option>
             <Option value='most-owned'>Most owned</Option>
             <Option value='most-wanted'>Most wanted</Option>
           </Select>
@@ -42,7 +42,6 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           <Option value='low to bright indirect'>low to bright indirect</Option>
           <Option value='medium to bright indirect'>medium to bright indirect</Option>
           <Option value='bright indirect'>bright indirect</Option>
-          <Option value='unknown'>unknown</Option>
         </Select>
       </FormItem>
       <FormItem label='Water'>
@@ -62,7 +61,6 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           <Option value='medium'>medium</Option>
           <Option value='medium to high'>medium to high</Option>
           <Option value='high'>high</Option>
-          <Option value='unknown'>unknown</Option>
         </Select>
       </FormItem>
       <FormItem label='Temperature'>
@@ -79,7 +77,6 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           allowClear>
           <Option value='average'>average</Option>
           <Option value='above average'>above average</Option>
-          <Option value='unknown'>unknown</Option>
         </Select>
       </FormItem>
       <FormItem label='Humidity'>
@@ -97,7 +94,6 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           <Option value='low'>low</Option>
           <Option value='medium'>medium</Option>
           <Option value='high'>high</Option>
-          <Option value='unknown'>unknown</Option>
         </Select>
       </FormItem>
       <FormItem label='Toxicity'>
@@ -114,7 +110,6 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           allowClear>
           <Option value='toxic'>toxic</Option>
           <Option value='nontoxic'>nontoxic</Option>
-          <Option value='unknown'>unknown</Option>
         </Select>
       </FormItem>
       {currentUser?.role === 'admin' && (
