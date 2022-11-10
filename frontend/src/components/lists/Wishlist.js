@@ -12,16 +12,14 @@ export const Wishlist = ({ data, status }) => {
           <Plants>
             {status === 'success' ? (
               data?.length ? (
-                data.map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={true} />)
+                data.map(plant => <PlantCard key={plant._id} plant={plant} />)
               ) : (
                 <div className='empty'>
                   <Empty description='Nothing here yet!' />
                 </div>
               )
             ) : (
-              Array.from(Array(6).keys()).map(item => (
-                <GhostPlantCard key={item} viewNeeds={true} />
-              ))
+              Array.from(Array(6).keys()).map(item => <GhostPlantCard key={item} />)
             )}
           </Plants>
         </div>

@@ -56,7 +56,7 @@ export const Login = () => {
             {({ status, isSubmitting }) => (
               <Form>
                 <FormItem name='username' label='Email or username'>
-                  <Input name='username' type='text' prefix='@' autoFocus />
+                  <Input name='username' type='text' autoFocus />
                 </FormItem>
                 <FormItem name='password' label='Password'>
                   <Input.Password name='password' type='password' />

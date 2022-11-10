@@ -261,7 +261,7 @@ const getRandomPlants = async (req, res) => {
   try {
     const plants = await db
       .collection('plants')
-      .aggregate([{ $sample: { size: 9 } }])
+      .aggregate([{ $sample: { size: 6 } }])
       .toArray()
     if (plants) {
       res.status(200).json({ status: 200, plants: plants })

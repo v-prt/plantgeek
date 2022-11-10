@@ -132,14 +132,11 @@ export const Homepage = () => {
             water to drain. Terracotta or clay pots are recommended to aid in preventing root rot
             from water-logged soil.
           </p>
-          <h3>
+          <div className='cta' style={{ marginTop: '20px' }}>
             <Link to='/guidelines'>
-              more houseplant care tips
-              <span className='icon'>
-                <FaArrowAltCircleRight />
-              </span>
+              <Button type='primary'>READ MORE</Button>
             </Link>
-          </h3>
+          </div>
         </InfoCard>
       </FadeIn>
       <FadeIn delay={500}>

@@ -86,7 +86,7 @@ export const SignUp = () => {
                   <Input name='email' type='text' />
                 </FormItem>
                 <FormItem name='username' label='Username'>
-                  <Input name='username' type='text' prefix='@' />
+                  <Input name='username' type='text' />
                 </FormItem>
                 <FormItem name='password' label='Password' sublabel='(at least 6 characters)'>
                   <Input.Password name='password' type='password' />

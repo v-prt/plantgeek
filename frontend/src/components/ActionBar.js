@@ -127,7 +127,6 @@ export const ActionBar = ({ plant }) => {
 
 const Wrapper = styled.div`
   width: 100%;
-  margin-top: auto;
   border-top: 1px dotted #ccc;
   padding-top: 5px;
   form {

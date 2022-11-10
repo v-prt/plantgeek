@@ -263,7 +263,7 @@ export const Settings = () => {
                   <Input name='lastName' disabled={!editMode} />
                 </FormItem>
                 <FormItem name='username' label='Username'>
-                  <Input name='username' prefix='@' disabled={!editMode} />
+                  <Input name='username' disabled={!editMode} />
                 </FormItem>
                 <FormItem name='email' label='Email'>
                   <Input name='email' disabled={!editMode} />

@@ -45,7 +45,7 @@ export const Admin = () => {
               <>
                 <div className='plants'>
                   {data.map(plant => (
-                    <PlantCard key={plant._id} plant={plant} viewNeeds={true} />
+                    <PlantCard key={plant._id} plant={plant} />
                   ))}
                 </div>
               </>

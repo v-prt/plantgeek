@@ -168,7 +168,7 @@ export const Contribute = () => {
               </p>
               {/* )} */}
             </div>
-            <PlantCard key={newPlant._id} plant={newPlant} viewNeeds={true} />
+            <PlantCard key={newPlant._id} plant={newPlant} />
           </section>
         </FadeIn>
       )}

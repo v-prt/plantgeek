@@ -1,18 +1,10 @@
 import styled from 'styled-components/macro'
 import { Select } from 'formik-antd'
 import { FormItem } from './forms/FormItem'
-import { COLORS, BREAKPOINTS, Toggle } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 const { Option } = Select
 
-export const PlantFilters = ({
-  viewNeeds,
-  setViewNeeds,
-  values,
-  setValues,
-  submitForm,
-  currentUser,
-  formData,
-}) => {
+export const PlantFilters = ({ values, setValues, submitForm, currentUser, formData }) => {
   return (
     <Wrapper>
       <div className='sort'>
@@ -34,18 +26,6 @@ export const PlantFilters = ({
             <Option value='most-wanted'>Most wanted</Option>
           </Select>
         </FormItem>
-      </div>
-      <div className='toggle-wrapper'>
-        <span className='toggle-option'>Show needs</span>
-        <Toggle>
-          <input
-            id='needs-toggle'
-            type='checkbox'
-            checked={viewNeeds}
-            onChange={ev => setViewNeeds(ev.target.checked)}
-          />
-          <span className='slider'></span>
-        </Toggle>
       </div>
       <FormItem label='Light'>
         <Select

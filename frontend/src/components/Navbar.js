@@ -8,11 +8,17 @@ import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import { BiSearch, BiCog, BiPlusCircle, BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
+import {
+  BiHome,
+  BiSearch,
+  BiCog,
+  BiPlusCircle,
+  BiLogInCircle,
+  BiLogOutCircle,
+} from 'react-icons/bi'
 import { MdOutlineAdminPanelSettings } from 'react-icons/md'
 import { TiHeartOutline } from 'react-icons/ti'
 import { CgProfile } from 'react-icons/cg'
-import { Button } from 'antd'
 import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
 
 export const Navbar = () => {
@@ -24,9 +30,15 @@ export const Navbar = () => {
     return data.plants
   })
 
-  const SidebarMenuLinks = () => {
+  const MenuLinks = () => {
     return (
       <div className='links'>
+        <NavLink exact to='/'>
+          <div className='icon'>
+            <BiHome />
+          </div>
+          <span className='label'>home</span>
+        </NavLink>
         <NavLink to='/browse'>
           <div className='icon'>
             <BiSearch />
@@ -101,52 +113,6 @@ export const Navbar = () => {
     )
   }
 
-  const FlyoutMenuLinks = () => {
-    return (
-      <div className='links'>
-        <NavLink to='/profile'>
-          <div className='icon'>
-            <CgProfile />
-          </div>
-          <span className='label'>profile</span>
-        </NavLink>
-        <NavLink to='/contribute'>
-          <div className='icon'>
-            <BiPlusCircle />
-          </div>
-          <span className='label'>contribute</span>
-        </NavLink>
-        {currentUser.role === 'admin' && (
-          <NavLink to='/admin'>
-            <div className='icon'>
-              <MdOutlineAdminPanelSettings />
-            </div>
-            <span className='label'>
-              admin
-              {plantsToReview?.length > 0 && (
-                <span className='review-notification-badge'>
-                  {numeral(plantsToReview.length).format('0a')}
-                </span>
-              )}
-            </span>
-          </NavLink>
-        )}
-        <NavLink to='/settings'>
-          <div className='icon'>
-            <BiCog />
-          </div>
-          <span className='label'>settings</span>
-        </NavLink>
-        <button className='logout-btn' onClick={handleLogout}>
-          <div className='icon'>
-            <BiLogOutCircle />
-          </div>
-          <span className='label'>log out</span>
-        </button>
-      </div>
-    )
-  }
-
   return (
     <Wrapper>
       <div className='inner'>
@@ -154,36 +120,18 @@ export const Navbar = () => {
         <NavLink exact to='/' className='logo' onClick={() => setExpanded(false)}>
           plantgeek
         </NavLink>
-        <div className='mobile-ctas'>
-          <NavLink to='/browse' className='browse mobile' onClick={() => setExpanded(false)}>
-            <div className='icon'>
-              <BiSearch />
-            </div>
-          </NavLink>
-          {currentUser ? (
-            <div className='hamburger' onClick={() => setExpanded(!expanded)}>
-              {expanded ? <CloseOutlined /> : <MenuOutlined />}
-            </div>
-          ) : (
-            <NavLink to='/login' className='browse mobile' onClick={() => setExpanded(false)}>
-              <Button type='primary'>Log in</Button>
-            </NavLink>
-          )}
+        <div className='hamburger' onClick={() => setExpanded(!expanded)}>
+          {expanded ? <CloseOutlined /> : <MenuOutlined />}
         </div>
 
         {/* SIDEBAR FOR DESKTOP */}
         <div className='sidebar-menu'>
-          <SidebarMenuLinks />
+          <MenuLinks />
         </div>
-
         {/* FLYOUT MENU FOR TABLET AND MOBILE */}
-        {currentUser && (
-          <div
-            className={`flyout-menu ${expanded && 'expanded'}`}
-            onClick={() => setExpanded(false)}>
-            <FlyoutMenuLinks />
-          </div>
-        )}
+        <div className={`flyout-menu ${expanded && 'expanded'}`} onClick={() => setExpanded(false)}>
+          <MenuLinks />
+        </div>
       </div>
     </Wrapper>
   )
@@ -253,8 +201,8 @@ const Wrapper = styled.nav`
         background: #222;
         display: flex;
         flex-direction: column;
-        gap: 20px;
-        padding: 20px 0 20px 20px;
+        gap: 10px;
+        padding: 20px 0 0 20px;
         height: 100%;
         margin-left: auto;
         a,

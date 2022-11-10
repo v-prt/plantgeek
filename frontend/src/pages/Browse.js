@@ -23,7 +23,7 @@ export const Browse = () => {
 
   const submitRef = useRef(0)
   const scrollRef = useRef()
-  const { formData, setFormData, viewNeeds, setViewNeeds, fetchPlants } = useContext(PlantContext)
+  const { formData, setFormData, fetchPlants } = useContext(PlantContext)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { currentUser } = useContext(UserContext)
 
@@ -230,8 +230,6 @@ export const Browse = () => {
                     </div>
                   }>
                   <PlantFilters
-                    viewNeeds={viewNeeds}
-                    setViewNeeds={setViewNeeds}
                     setValues={setValues}
                     submitForm={submitForm}
                     currentUser={currentUser}
@@ -248,9 +246,7 @@ export const Browse = () => {
                   <>
                     <div className='plants'>
                       {data.pages.map((group, i) =>
-                        group.plants.map(plant => (
-                          <PlantCard key={plant._id} plant={plant} viewNeeds={viewNeeds} />
-                        ))
+                        group.plants.map(plant => <PlantCard key={plant._id} plant={plant} />)
                       )}
                     </div>
                     {isFetchingNextPage && (
@@ -265,7 +261,7 @@ export const Browse = () => {
               ) : (
                 <div className='loading'>
                   {Array.from(Array(12).keys()).map(item => (
-                    <GhostPlantCard key={item} viewNeeds={viewNeeds} />
+                    <GhostPlantCard key={item} />
                   ))}
                 </div>
               )}
@@ -275,8 +271,6 @@ export const Browse = () => {
               {({ values, setValues, submitForm, resetForm }) => (
                 <Form className='filters-sidebar'>
                   <PlantFilters
-                    viewNeeds={viewNeeds}
-                    setViewNeeds={setViewNeeds}
                     setValues={setValues}
                     submitForm={submitForm}
                     currentUser={currentUser}
@@ -329,7 +323,7 @@ const Wrapper = styled.div`
       background: #f2f2f2;
       box-shadow: 0px 10px 10px -10px rgba(0, 0, 0, 0.2);
       width: 100%;
-      padding: 10px;
+      padding: 10px 20px;
       z-index: 10;
       .filter-bar-upper {
         display: flex;

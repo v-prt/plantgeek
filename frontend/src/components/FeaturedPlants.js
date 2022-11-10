@@ -4,9 +4,9 @@ import { API_URL } from '../constants'
 import { useQuery } from 'react-query'
 import axios from 'axios'
 import styled from 'styled-components/macro'
-import { FaArrowAltCircleRight } from 'react-icons/fa'
 import { PlantCard } from './PlantCard'
 import { GhostPlantCard } from './GhostPlantCard'
+import { Button } from 'antd'
 
 export const FeaturedPlants = () => {
   const { data, status } = useQuery(
@@ -27,17 +27,14 @@ export const FeaturedPlants = () => {
       {/* TODO: carousel */}
       <Plants>
         {status === 'success'
-          ? data?.map(plant => <PlantCard key={plant._id} plant={plant} viewNeeds={true} />)
-          : Array.from(Array(6).keys()).map(item => <GhostPlantCard key={item} viewNeeds={true} />)}
+          ? data?.map(plant => <PlantCard key={plant._id} plant={plant} />)
+          : Array.from(Array(6).keys()).map(item => <GhostPlantCard key={item} />)}
       </Plants>
-      <h3>
+      <div className='cta'>
         <Link to='/browse'>
-          browse all plants
-          <span className='icon'>
-            <FaArrowAltCircleRight />
-          </span>
+          <Button type='primary'>BROWSE PLANTS</Button>
         </Link>
-      </h3>
+      </div>
     </Wrapper>
   )
 }
@@ -51,13 +48,8 @@ const Wrapper = styled.section`
     text-align: center;
     margin-bottom: 30px;
   }
-  h3 {
-    width: fit-content;
-    margin: 20px auto 0 auto;
-    a {
-      display: flex;
-      align-items: center;
-    }
+  .cta {
+    margin: 40px auto 0 auto;
   }
 `
 

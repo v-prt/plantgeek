@@ -11,70 +11,68 @@ import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
 
-export const PlantCard = ({ plant, viewNeeds }) => {
+export const PlantCard = ({ plant }) => {
   return (
     <Wrapper key={plant._id} className='plant-card'>
-      {plant.review === 'pending' && (
-        <div className='review-status pending'>
-          PENDING <ExclamationCircleOutlined />
-        </div>
-      )}
-      {plant.review === 'rejected' && (
-        <div className='review-status rejected'>
-          REJECTED <CloseCircleOutlined />
-        </div>
-      )}
-      <Div>
+      <InfoLink to={`/plant/${plant.slug}`}>
+        {plant.review === 'pending' && (
+          <div className='review-status pending'>
+            PENDING <ExclamationCircleOutlined />
+          </div>
+        )}
+        {plant.review === 'rejected' && (
+          <div className='review-status rejected'>
+            REJECTED <CloseCircleOutlined />
+          </div>
+        )}
         {plant.toxic === false && (
           <Stamp>
             <FaPaw />
           </Stamp>
         )}
-        <InfoLink to={`/plant/${plant.slug}`}>
-          <div className='thumbnail'>
-            <ImageLoader src={plant.imageUrl} alt='' placeholder={placeholder} />
-          </div>
-          <div className='name'>
-            <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>
-            <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
-          </div>
-        </InfoLink>
-      </Div>
-      <Needs expanded={viewNeeds}>
-        <Row>
-          <img src={sun} alt='light' />
-          <Bar>
-            {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
-            {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
-            {plant.light === 'bright indirect' && <Indicator level={'3'} />}
-          </Bar>
-        </Row>
-        <Row>
-          <img src={water} alt='water' />
-          <Bar>
-            {plant.water === 'low' && <Indicator level={'1'} />}
-            {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
-            {plant.water === 'medium' && <Indicator level={'2'} />}
-            {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
-            {plant.water === 'high' && <Indicator level={'3'} />}
-          </Bar>
-        </Row>
-        <Row>
-          <img src={temp} alt='temperature' />
-          <Bar>
-            {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-            {plant.temperature === 'above average' && <Indicator level={'3'} />}
-          </Bar>
-        </Row>
-        <Row>
-          <img src={humidity} alt='humidity' />
-          <Bar>
-            {plant.humidity === 'low' && <Indicator level={'1'} />}
-            {plant.humidity === 'medium' && <Indicator level={'2'} />}
-            {plant.humidity === 'high' && <Indicator level={'3'} />}
-          </Bar>
-        </Row>
-      </Needs>
+        <div className='thumbnail'>
+          <ImageLoader src={plant.imageUrl} alt='' placeholder={placeholder} />
+        </div>
+        <div className='name'>
+          <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>
+          <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
+        </div>
+        <Needs>
+          <Row>
+            <img src={sun} alt='light' />
+            <Bar>
+              {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
+              {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
+              {plant.light === 'bright indirect' && <Indicator level={'3'} />}
+            </Bar>
+          </Row>
+          <Row>
+            <img src={water} alt='water' />
+            <Bar>
+              {plant.water === 'low' && <Indicator level={'1'} />}
+              {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+              {plant.water === 'medium' && <Indicator level={'2'} />}
+              {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+              {plant.water === 'high' && <Indicator level={'3'} />}
+            </Bar>
+          </Row>
+          <Row>
+            <img src={temp} alt='temperature' />
+            <Bar>
+              {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+              {plant.temperature === 'above average' && <Indicator level={'3'} />}
+            </Bar>
+          </Row>
+          <Row>
+            <img src={humidity} alt='humidity' />
+            <Bar>
+              {plant.humidity === 'low' && <Indicator level={'1'} />}
+              {plant.humidity === 'medium' && <Indicator level={'2'} />}
+              {plant.humidity === 'high' && <Indicator level={'3'} />}
+            </Bar>
+          </Row>
+        </Needs>
+      </InfoLink>
       <ActionBar plant={plant} />
     </Wrapper>
   )
@@ -85,8 +83,9 @@ const Wrapper = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   border-radius: 20px;
-  padding: 10px;
+  padding: 15px;
   transition: 0.2s ease-in-out;
   position: relative;
   width: 100%;
@@ -100,8 +99,6 @@ const Wrapper = styled.div`
     color: ${COLORS.alert};
     border: 1px dotted;
     position: absolute;
-    top: 20px;
-    right: 20px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -114,12 +111,6 @@ const Wrapper = styled.div`
       color: ${COLORS.danger};
     }
   }
-`
-
-const Div = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: relative;
 `
 
 const Stamp = styled.div`
@@ -139,28 +130,29 @@ const Stamp = styled.div`
 const InfoLink = styled(Link)`
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
+  position: relative;
+  height: 100%;
   .thumbnail {
     width: 100%;
-    max-width: 250px;
+    max-width: 100%;
     aspect-ratio: 1 / 1;
-  }
-  img {
-    width: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    &.placeholder {
-      width: 80%;
-      object-fit: contain;
+    margin: 0 auto;
+    img {
+      width: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      &.placeholder {
+        width: 80%;
+        object-fit: contain;
+      }
     }
   }
+
   .name {
     color: ${COLORS.darkest};
     text-align: center;
     transition: 0.2s ease-in-out;
-    min-height: 67px;
     display: grid;
     place-content: center;
   }
@@ -174,17 +166,15 @@ const InfoLink = styled(Link)`
 `
 
 const Needs = styled.div`
-  padding: 0 10px;
-  visibility: ${props => (props.expanded ? 'visible' : 'hidden')};
-  opacity: ${props => (props.expanded ? '1' : '0')};
-  max-height: ${props => (props.expanded ? '1000px' : '0')};
-  transition: 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: auto 0 10px 0;
 `
 
 const Row = styled.div`
   display: flex;
   align-items: center;
-  margin: 10px 0;
   img {
     height: 25px;
   }

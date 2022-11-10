@@ -1,18 +1,16 @@
 import styled from 'styled-components/macro'
 
-export const GhostPlantCard = ({ viewNeeds }) => {
+export const GhostPlantCard = () => {
   return (
     <Wrapper>
       <div className='thumbnail loading-gradient' />
       <div className='name loading-gradient' />
-      {viewNeeds && (
-        <div className='needs'>
-          <div className='row loading-gradient' />
-          <div className='row loading-gradient' />
-          <div className='row loading-gradient' />
-          <div className='row loading-gradient' />
-        </div>
-      )}
+      <div className='needs'>
+        <div className='row loading-gradient' />
+        <div className='row loading-gradient' />
+        <div className='row loading-gradient' />
+        <div className='row loading-gradient' />
+      </div>
       <div className='actions'>
         <div className='icon loading-gradient' />
         <div className='group'>

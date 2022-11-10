@@ -19,43 +19,6 @@ export const BREAKPOINTS = {
   desktop: '1100px',
 }
 
-export const Button = styled.button`
-  background: ${COLORS.darkest};
-  color: #fff;
-  border: 1px solid ${COLORS.darkest};
-  display: grid;
-  place-content: center;
-  line-height: 1;
-  height: 50px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  &.secondary {
-    background: #fff;
-    color: ${COLORS.darkest};
-    border: 1px solid ${COLORS.darkest};
-  }
-  &.danger {
-    background: #fff;
-    color: ${COLORS.danger};
-    border: 1px solid ${COLORS.danger};
-  }
-  h2 {
-    margin-right: 10px;
-  }
-  &:hover {
-    background: ${COLORS.medium};
-    border: 1px solid ${COLORS.medium};
-    &.secondary {
-      color: #fff;
-    }
-    &.danger {
-      background: ${COLORS.danger};
-      color: #fff;
-      border: 1px solid ${COLORS.danger};
-    }
-  }
-`
-
 export const Toggle = styled.label`
   height: 20px;
   width: 40px;
