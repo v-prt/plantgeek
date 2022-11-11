@@ -61,7 +61,7 @@ export const App = () => {
               <Route path='/welcome'>
                 <Welcome />
               </Route>
-              <Route path='/verify-email/:userId'>
+              <Route path='/verify-email/:hashedId'>
                 <EmailVerification />
               </Route>
               <Route path='/guidelines'>

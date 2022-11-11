@@ -1,25 +1,27 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
+import { Redirect, useParams, useHistory } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import { Wrapper, Card } from './SignUp'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { Ellipsis } from '../components/loaders/Ellipsis'
-import { Alert } from 'antd'
+import { Button, Alert, message } from 'antd'
+import { RedoOutlined } from '@ant-design/icons'
 
 export const EmailVerification = () => {
-  const { userId } = useParams()
+  const { hashedId } = useParams()
   const history = useHistory()
   const queryClient = new useQueryClient()
-  const { token, verifyEmail } = useContext(UserContext)
+  const { token, verifyEmail, resendVerificationEmail } = useContext(UserContext)
   const [verified, setVerified] = useState(false)
-  const [error, setError] = useState(false)
+  const [status, setStatus] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleVerify = async () => {
-    if (userId) {
-      const result = await verifyEmail(userId)
+    if (hashedId) {
+      const result = await verifyEmail(hashedId)
       if (result.error) {
-        setError(true)
+        setStatus(result.error)
       } else {
         queryClient.invalidateQueries('current-user')
         setVerified(true)
@@ -27,38 +29,63 @@ export const EmailVerification = () => {
     }
   }
 
-  handleVerify()
+  useEffect(() => {
+    if (token && hashedId) {
+      handleVerify()
+    }
+  })
 
   useEffect(() => {
-    if (verified && token) {
+    if (verified) {
       setTimeout(() => {
         history.push('/profile')
-      }, 3000)
-    } else if (verified && !token) {
-      setTimeout(() => {
-        history.push('/login')
       }, 3000)
     }
   })
 
-  return (
+  const handleVerificationEmail = async () => {
+    setLoading(true)
+    const result = await resendVerificationEmail()
+    if (result.error) {
+      message.error(result.error)
+    } else {
+      message.success('Verification email sent')
+    }
+    setLoading(false)
+  }
+
+  return !token ? (
+    <Redirect to='/login' />
+  ) : (
     <Wrapper>
       <FadeIn>
-        <Card style={{ flexDirection: 'column' }}>
+        <Card>
           <div className='header'>
-            <h1>{verified ? 'Email verified!' : 'Verifying your email'}</h1>
+            <h1>email verification</h1>
           </div>
-          <div className='body'>
-            <p>
-              {verified && token
-                ? 'Redirecting to your profile...'
-                : verified && !token
-                ? 'Redirecting to login...'
-                : 'Please wait...'}
-            </p>
-            <Ellipsis />
-          </div>
-          {error && <Alert type='error' message='Sorry, something went wrong.' showIcon />}
+          {status ? (
+            <div className='body'>
+              <Alert type='error' message={status} showIcon />
+              <Button
+                type='link'
+                icon={<RedoOutlined />}
+                onClick={handleVerificationEmail}
+                loading={loading}>
+                Resend email
+              </Button>
+            </div>
+          ) : (
+            <>
+              <div className='body'>
+                <p>
+                  {verified
+                    ? `Verified! You'll be redirected to your profile soon.`
+                    : 'Verifying, please wait.'}
+                </p>
+                <Ellipsis />
+              </div>
+            </>
+          )}
         </Card>
       </FadeIn>
     </Wrapper>

@@ -116,9 +116,24 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-  const verifyEmail = async userId => {
+  const verifyEmail = async hashedId => {
     try {
-      const res = await axios.post(`${API_URL}/verify-email/${userId}`)
+      const res = await axios.post(`${API_URL}/verify-email/${hashedId}`, {
+        userId: currentUser._id,
+      })
+      return res.data
+    } catch (err) {
+      return { error: err.response.data.message }
+    }
+  }
+
+  const resendVerificationEmail = async () => {
+    try {
+      const res = await axios.post(`${API_URL}/verification-email/${currentUser._id}`, {
+        email: currentUser.email,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+      })
       return res.data
     } catch (err) {
       return { error: err.response.data.message }
@@ -140,6 +155,7 @@ export const UserProvider = ({ children }) => {
         currentUser,
         updateCurrentUser,
         verifyEmail,
+        resendVerificationEmail,
       }}>
       {children}
     </UserContext.Provider>

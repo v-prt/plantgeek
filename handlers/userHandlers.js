@@ -49,7 +49,8 @@ const createUser = async (req, res) => {
       assert.strictEqual(1, user.insertedCount)
 
       // send welcome email with verification link
-      // TODO: hash user id
+      const hashedId = await bcrypt.hash(user.insertedId.toString(), saltRounds)
+
       const message = {
         personalizations: [
           {
@@ -59,7 +60,7 @@ const createUser = async (req, res) => {
             },
             dynamic_template_data: {
               first_name: req.body.firstName,
-              verification_link: `https://www.plantgeek.co/verify-email/${user.insertedId}`,
+              verification_link: `https://www.plantgeek.co/verify-email/${hashedId}`,
             },
           },
         ],
@@ -88,8 +89,7 @@ const resendVerificationEmail = async (req, res) => {
   const { userId } = req.params
 
   try {
-    // TODO: hash user id (user might need to be logged in)
-    // const hashedId = await bcrypt.hash(userId, saltRounds)
+    const hashedId = await bcrypt.hash(userId, saltRounds)
 
     const message = {
       personalizations: [
@@ -100,7 +100,7 @@ const resendVerificationEmail = async (req, res) => {
           },
           dynamic_template_data: {
             first_name: req.body.firstName,
-            verification_link: `https://www.plantgeek.co/verify-email/${userId}`,
+            verification_link: `https://www.plantgeek.co/verify-email/${hashedId}`,
           },
         },
       ],
@@ -197,18 +197,24 @@ const verifyEmail = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
-  const { userId } = req.params
+  const { hashedId } = req.params
+  const { userId } = req.body
 
   try {
     const user = await db.collection('users').findOne({
       _id: ObjectId(userId),
     })
+    const isValid = await bcrypt.compare(userId, hashedId)
 
     if (user) {
-      await db
-        .collection('users')
-        .updateOne({ _id: ObjectId(userId) }, { $set: { emailVerified: true } })
-      res.status(200).json({ status: 200, message: 'Email verified' })
+      if (isValid) {
+        await db
+          .collection('users')
+          .updateOne({ _id: ObjectId(userId) }, { $set: { emailVerified: true } })
+        res.status(200).json({ status: 200, message: 'Email verified' })
+      } else {
+        res.status(400).json({ status: 400, message: 'Invalid verification link' })
+      }
     } else {
       res.status(404).json({ status: 404, message: 'User not found' })
     }

@@ -22,7 +22,7 @@ export const Welcome = () => {
   ) : (
     <Wrapper>
       <FadeIn>
-        <Card style={{ flexDirection: 'column' }}>
+        <Card>
           <div className='header'>
             <h1>Welcome!</h1>
           </div>

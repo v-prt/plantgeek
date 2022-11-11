@@ -46,11 +46,12 @@ export const Settings = () => {
   useDocumentTitle('Settings • plantgeek')
 
   const queryClient = new useQueryClient()
-  const { currentUser, updateCurrentUser } = useContext(UserContext)
+  const { currentUser, updateCurrentUser, resendVerificationEmail } = useContext(UserContext)
   const [editMode, setEditMode] = useState(false)
   const [passwordEditMode, setPasswordEditMode] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [image, setImage] = useState(currentUser.imageUrl)
+  const [loading, setLoading] = useState(false)
 
   // #region Initial Values
   const accountInitialValues = {
@@ -163,21 +164,6 @@ export const Settings = () => {
     }
   }
 
-  const resendVerificationEmail = async () => {
-    await axios
-      .post(`${API_URL}/verification-email/${currentUser._id}`, {
-        email: currentUser.email,
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
-      })
-      .then(() => {
-        message.success('Email verification link sent.')
-      })
-      .catch(() => {
-        message.error('Oops, something went wrong.')
-      })
-  }
-
   const changePassword = async (values, { setStatus }) => {
     setStatus('')
     const result = await updateCurrentUser(values)
@@ -193,6 +179,17 @@ export const Settings = () => {
     localStorage.removeItem('plantgeekToken')
     window.location.replace('/login')
     axios.delete(`${API_URL}/users/${currentUser._id}`).catch(err => console.log(err))
+  }
+
+  const handleVerificationEmail = async () => {
+    setLoading(true)
+    const result = await resendVerificationEmail()
+    if (result.error) {
+      message.error(result.error)
+    } else {
+      message.success('Verification email sent')
+    }
+    setLoading(false)
   }
   // #endregion Functions
 
@@ -311,8 +308,9 @@ export const Settings = () => {
                           <Button
                             type='link'
                             icon={<RedoOutlined />}
-                            onClick={resendVerificationEmail}>
-                            Resend
+                            onClick={handleVerificationEmail}
+                            loading={loading}>
+                            Resend email
                           </Button>
                         </>
                       }
