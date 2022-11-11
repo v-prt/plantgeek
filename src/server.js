@@ -2,12 +2,15 @@
 
 'use strict' // helps write more secure javascript
 
-const express = require('express')
-const morgan = require('morgan') // logs request on the terminal (example: Get /users 100ms 200)
-const path = require('path')
+import express from 'express'
+import morgan from 'morgan' // logs request on the terminal (example: Get /users 100ms 200)
+import path from 'path'
+
+import sourceMapSupport from 'source-map-support'
+sourceMapSupport.install()
 
 // HANDLERS
-const {
+import {
   createUser,
   resendVerificationEmail,
   authenticateUser,
@@ -22,9 +25,9 @@ const {
   updateUser,
   updateLists,
   deleteUser,
-} = require('./handlers/userHandlers.js')
+} from './handlers/userHandlers.js'
 
-const {
+import {
   createPlant,
   getPlants,
   getPlantsToReview,
@@ -36,14 +39,14 @@ const {
   addComment,
   updatePlant,
   deletePlant,
-} = require('./handlers/plantHandlers.js')
+} from './handlers/plantHandlers.js'
 
-const {
+import {
   createSuggestion,
   getSuggestions,
   getSuggestionsBySlug,
   updateSuggestion,
-} = require('./handlers/suggestionHandlers.js')
+} from './handlers/suggestionHandlers.js'
 
 // run on whatever port heroku has available or 4000 (local)
 const PORT = process.env.PORT || 4000

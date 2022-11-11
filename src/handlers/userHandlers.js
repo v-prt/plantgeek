@@ -1,12 +1,14 @@
-const { MongoClient, ObjectId } = require('mongodb')
-const assert = require('assert')
-require('dotenv').config()
+import mongodb from 'mongodb'
+const { MongoClient, ObjectId } = mongodb
+import assert from 'assert'
+import * as dotenv from 'dotenv'
+dotenv.config()
 const MONGO_URI = process.env.MONGO_URI
-const bcrypt = require('bcrypt')
-const crypto = require('crypto')
+import bcrypt from 'bcrypt'
+import crypto from 'crypto'
 const saltRounds = 10
-const jwt = require('jsonwebtoken')
-const sgMail = require('@sendgrid/mail')
+import jwt from 'jsonwebtoken'
+import sgMail from '@sendgrid/mail'
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL
 
@@ -22,7 +24,7 @@ const options = {
 }
 
 // (CREATE/POST) ADDS A NEW USER
-const createUser = async (req, res) => {
+export const createUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -91,7 +93,7 @@ const createUser = async (req, res) => {
   client.close()
 }
 
-const resendVerificationEmail = async (req, res) => {
+export const resendVerificationEmail = async (req, res) => {
   const { userId } = req.params
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
@@ -132,7 +134,7 @@ const resendVerificationEmail = async (req, res) => {
 }
 
 // (READ/POST) AUTHENTICATES USER WHEN LOGGING IN
-const authenticateUser = async (req, res) => {
+export const authenticateUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   try {
@@ -171,7 +173,7 @@ const authenticateUser = async (req, res) => {
 }
 
 // (READ/POST) VERIFIES JWT TOKEN
-const verifyToken = async (req, res) => {
+export const verifyToken = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   try {
     await client.connect()
@@ -207,7 +209,7 @@ const verifyToken = async (req, res) => {
   client.close()
 }
 
-const verifyEmail = async (req, res) => {
+export const verifyEmail = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -241,7 +243,7 @@ const verifyEmail = async (req, res) => {
   client.close()
 }
 
-const sendPasswordResetCode = async (req, res) => {
+export const sendPasswordResetCode = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -281,7 +283,7 @@ const sendPasswordResetCode = async (req, res) => {
 }
 
 // RESET PASSWORD WITH CODE
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -313,7 +315,7 @@ const resetPassword = async (req, res) => {
 }
 
 // (READ/GET) GETS ALL USERS
-const getUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -331,7 +333,7 @@ const getUsers = async (req, res) => {
 }
 
 // (READ/GET) GETS USER BY ID
-const getUser = async (req, res) => {
+export const getUser = async (req, res) => {
   if (req.params.id === 'undefined') {
     return null
   } else {
@@ -352,7 +354,7 @@ const getUser = async (req, res) => {
   }
 }
 
-const getWishlist = async (req, res) => {
+export const getWishlist = async (req, res) => {
   const { userId } = req.params
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
@@ -375,7 +377,7 @@ const getWishlist = async (req, res) => {
   client.close()
 }
 
-const getCollection = async (req, res) => {
+export const getCollection = async (req, res) => {
   const { userId } = req.params
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
@@ -398,7 +400,7 @@ const getCollection = async (req, res) => {
   client.close()
 }
 
-const updateUser = async (req, res) => {
+export const updateUser = async (req, res) => {
   const userId = ObjectId(req.params.id)
   const { email, username, currentPassword, newPassword } = req.body
   const client = await MongoClient(MONGO_URI, options)
@@ -477,7 +479,7 @@ const updateUser = async (req, res) => {
   client.close()
 }
 
-const updateLists = async (req, res) => {
+export const updateLists = async (req, res) => {
   const { userId } = req.params
   const { plantId, hearts, owned, wanted, collection, wishlist } = req.body
 
@@ -518,7 +520,7 @@ const updateLists = async (req, res) => {
 
 // (DELETE) REMOVE A USER
 // TODO: remove from other users' friends
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   const { id } = req.params
   await client.connect()
@@ -545,19 +547,19 @@ const deleteUser = async (req, res) => {
   client.close()
 }
 
-module.exports = {
-  createUser,
-  resendVerificationEmail,
-  authenticateUser,
-  verifyToken,
-  verifyEmail,
-  sendPasswordResetCode,
-  resetPassword,
-  getUsers,
-  getUser,
-  getWishlist,
-  getCollection,
-  updateUser,
-  updateLists,
-  deleteUser,
-}
+// module.exports = {
+//   createUser,
+//   resendVerificationEmail,
+//   authenticateUser,
+//   verifyToken,
+//   verifyEmail,
+//   sendPasswordResetCode,
+//   resetPassword,
+//   getUsers,
+//   getUser,
+//   getWishlist,
+//   getCollection,
+//   updateUser,
+//   updateLists,
+//   deleteUser,
+// }

@@ -1,6 +1,7 @@
-const { MongoClient, ObjectId } = require('mongodb')
-const assert = require('assert')
-require('dotenv').config()
+import mongodb from 'mongodb'
+const { MongoClient, ObjectId } = mongodb
+import * as dotenv from 'dotenv'
+dotenv.config()
 const MONGO_URI = process.env.MONGO_URI
 
 const options = {
@@ -9,7 +10,7 @@ const options = {
 }
 
 // (CREATE/POST) ADDS A NEW PLANT
-const createPlant = async (req, res) => {
+export const createPlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -37,7 +38,7 @@ const createPlant = async (req, res) => {
 }
 
 // (READ/GET) GETS ALL PLANTS
-const getPlants = async (req, res) => {
+export const getPlants = async (req, res) => {
   const { search, sort, light, water, temperature, humidity, toxicity, review } = req.query
   let filters = {}
 
@@ -174,7 +175,7 @@ const getPlants = async (req, res) => {
   client.close()
 }
 
-const getPlantsToReview = async (req, res) => {
+export const getPlantsToReview = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -192,7 +193,7 @@ const getPlantsToReview = async (req, res) => {
 }
 
 // (READ/GET) GETS PLANT BY ID
-const getPlant = async (req, res) => {
+export const getPlant = async (req, res) => {
   const slug = req.params.slug
 
   const client = await MongoClient(MONGO_URI, options)
@@ -216,7 +217,7 @@ const getPlant = async (req, res) => {
   client.close()
 }
 
-const getSimilarPlants = async (req, res) => {
+export const getSimilarPlants = async (req, res) => {
   const { slug } = req.params
 
   const client = await MongoClient(MONGO_URI, options)
@@ -254,7 +255,7 @@ const getSimilarPlants = async (req, res) => {
   client.close()
 }
 
-const getRandomPlants = async (req, res) => {
+export const getRandomPlants = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -274,7 +275,7 @@ const getRandomPlants = async (req, res) => {
   client.close()
 }
 
-const getUserPlants = async (req, res) => {
+export const getUserPlants = async (req, res) => {
   const { ids } = req.query
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
@@ -300,7 +301,7 @@ const getUserPlants = async (req, res) => {
   client.close()
 }
 
-const getUserContributions = async (req, res) => {
+export const getUserContributions = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -321,7 +322,7 @@ const getUserContributions = async (req, res) => {
 }
 
 // (UPDATE/PUT) ADDS COMMENT TO A PLANT BY ID
-const addComment = async (req, res) => {
+export const addComment = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   const { id } = req.params
   try {
@@ -349,7 +350,7 @@ const addComment = async (req, res) => {
   client.close()
 }
 
-const updatePlant = async (req, res) => {
+export const updatePlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -387,7 +388,7 @@ const updatePlant = async (req, res) => {
   client.close()
 }
 
-const deletePlant = async (req, res) => {
+export const deletePlant = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   const { id } = req.params
   await client.connect()
@@ -635,17 +636,3 @@ const deletePlant = async (req, res) => {
 //   }
 //   client.close()
 // }
-
-module.exports = {
-  createPlant,
-  getPlants,
-  getPlantsToReview,
-  getPlant,
-  getSimilarPlants,
-  getRandomPlants,
-  getUserPlants,
-  getUserContributions,
-  addComment,
-  updatePlant,
-  deletePlant,
-}

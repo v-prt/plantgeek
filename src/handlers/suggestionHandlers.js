@@ -1,5 +1,7 @@
-const { MongoClient, ObjectId } = require('mongodb')
-require('dotenv').config()
+import mongodb from 'mongodb'
+const { MongoClient, ObjectId } = mongodb
+import * as dotenv from 'dotenv'
+dotenv.config()
 const MONGO_URI = process.env.MONGO_URI
 
 const options = {
@@ -7,7 +9,7 @@ const options = {
   useUnifiedTopology: true,
 }
 
-const createSuggestion = async (req, res) => {
+export const createSuggestion = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -33,7 +35,7 @@ const createSuggestion = async (req, res) => {
   client.close()
 }
 
-const getSuggestions = async (req, res) => {
+export const getSuggestions = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -56,7 +58,7 @@ const getSuggestions = async (req, res) => {
   client.close()
 }
 
-const getSuggestionsBySlug = async (req, res) => {
+export const getSuggestionsBySlug = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -83,7 +85,7 @@ const getSuggestionsBySlug = async (req, res) => {
   client.close()
 }
 
-const updateSuggestion = async (req, res) => {
+export const updateSuggestion = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
@@ -101,11 +103,4 @@ const updateSuggestion = async (req, res) => {
     console.error(err)
   }
   client.close()
-}
-
-module.exports = {
-  createSuggestion,
-  getSuggestions,
-  getSuggestionsBySlug,
-  updateSuggestion,
 }
