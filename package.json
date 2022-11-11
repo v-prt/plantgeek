@@ -28,7 +28,7 @@
     "build": "cd frontend && npm run build",
     "install-frontend": "cd frontend && npm install",
     "heroku-postbuild": "npm run install-frontend && npm run build",
-    "start": "dist/server.js",
+    "start": "ts-node src/server.ts",
     "dev": "nodemon src/server.ts"
   },
   "engines": {
