@@ -3,7 +3,7 @@
     "target": "es6",
     "module": "commonjs",
     //   tells the compiler to put the compiled code into the dist/js folder.
-    "outDir": "dist/js",
+    "outDir": "dist",
     // informs TypeScript to compile every .ts file located in the src folder.
     "rootDir": "src",
     "strict": true,

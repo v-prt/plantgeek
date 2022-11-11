@@ -1,7 +1,5 @@
 // 'npm run dev' to start development server
 
-'use strict' // helps write more secure javascript
-
 import express from 'express'
 import morgan from 'morgan' // logs request on the terminal (example: Get /users 100ms 200)
 import path from 'path'
@@ -55,7 +53,11 @@ const API_URL = process.env.API_URL
 const app = express()
 
 app
-  .use(function (req, res, next) {
+  .use(function (
+    req: any,
+    res: { header: (arg0: string, arg1: string) => void },
+    next: () => void
+  ) {
     res.header('Access-Control-Allow-Methods', 'OPTIONS, HEAD, GET, PUT, POST, DELETE, PATCH')
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
     next()
@@ -103,7 +105,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'frontend', 'build')))
 }
 
-app.get('*', (req, res) => {
+app.get('*', (req: any, res: { sendFile: (arg0: string) => void }) => {
   res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'))
 })
 

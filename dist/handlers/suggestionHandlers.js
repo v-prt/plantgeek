@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,8 +31,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { MongoClient, ObjectId } = require('mongodb');
-require('dotenv').config();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updateSuggestion = exports.getSuggestionsBySlug = exports.getSuggestions = exports.createSuggestion = void 0;
+const mongodb_1 = __importDefault(require("mongodb"));
+const { MongoClient, ObjectId } = mongodb_1.default;
+const dotenv = __importStar(require("dotenv"));
+dotenv.config();
 const MONGO_URI = process.env.MONGO_URI;
 const options = {
     useNewUrlParser: true,
@@ -39,6 +69,7 @@ const createSuggestion = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
     client.close();
 });
+exports.createSuggestion = createSuggestion;
 const getSuggestions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     yield client.connect();
@@ -58,6 +89,7 @@ const getSuggestions = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
     client.close();
 });
+exports.getSuggestions = getSuggestions;
 const getSuggestionsBySlug = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     yield client.connect();
@@ -82,6 +114,7 @@ const getSuggestionsBySlug = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
     client.close();
 });
+exports.getSuggestionsBySlug = getSuggestionsBySlug;
 const updateSuggestion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     yield client.connect();
@@ -102,10 +135,5 @@ const updateSuggestion = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
     client.close();
 });
-module.exports = {
-    createSuggestion,
-    getSuggestions,
-    getSuggestionsBySlug,
-    updateSuggestion,
-};
+exports.updateSuggestion = updateSuggestion;
 //# sourceMappingURL=suggestionHandlers.js.map

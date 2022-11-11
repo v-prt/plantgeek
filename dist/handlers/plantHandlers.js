@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,9 +31,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { MongoClient, ObjectId } = require('mongodb');
-const assert = require('assert');
-require('dotenv').config();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deletePlant = exports.updatePlant = exports.addComment = exports.getUserContributions = exports.getUserPlants = exports.getRandomPlants = exports.getSimilarPlants = exports.getPlant = exports.getPlantsToReview = exports.getPlants = exports.createPlant = void 0;
+const mongodb_1 = __importDefault(require("mongodb"));
+const { MongoClient, ObjectId } = mongodb_1.default;
+const dotenv = __importStar(require("dotenv"));
+dotenv.config();
 const MONGO_URI = process.env.MONGO_URI;
 const options = {
     useNewUrlParser: true,
@@ -43,6 +72,7 @@ const createPlant = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     client.close();
 });
+exports.createPlant = createPlant;
 // (READ/GET) GETS ALL PLANTS
 const getPlants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { search, sort, light, water, temperature, humidity, toxicity, review } = req.query;
@@ -155,6 +185,7 @@ const getPlants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     client.close();
 });
+exports.getPlants = getPlants;
 const getPlantsToReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     yield client.connect();
@@ -173,6 +204,7 @@ const getPlantsToReview = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
     client.close();
 });
+exports.getPlantsToReview = getPlantsToReview;
 // (READ/GET) GETS PLANT BY ID
 const getPlant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const slug = req.params.slug;
@@ -195,6 +227,7 @@ const getPlant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     client.close();
 });
+exports.getPlant = getPlant;
 const getSimilarPlants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { slug } = req.params;
     const client = yield MongoClient(MONGO_URI, options);
@@ -229,6 +262,7 @@ const getSimilarPlants = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
     client.close();
 });
+exports.getSimilarPlants = getSimilarPlants;
 const getRandomPlants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     yield client.connect();
@@ -250,6 +284,7 @@ const getRandomPlants = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
     client.close();
 });
+exports.getRandomPlants = getRandomPlants;
 const getUserPlants = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { ids } = req.query;
     const client = yield MongoClient(MONGO_URI, options);
@@ -278,6 +313,7 @@ const getUserPlants = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     client.close();
 });
+exports.getUserPlants = getUserPlants;
 const getUserContributions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     yield client.connect();
@@ -299,6 +335,7 @@ const getUserContributions = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
     client.close();
 });
+exports.getUserContributions = getUserContributions;
 // (UPDATE/PUT) ADDS COMMENT TO A PLANT BY ID
 const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
@@ -328,6 +365,7 @@ const addComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     client.close();
 });
+exports.addComment = addComment;
 const updatePlant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     yield client.connect();
@@ -363,6 +401,7 @@ const updatePlant = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     client.close();
 });
+exports.updatePlant = updatePlant;
 const deletePlant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     const { id } = req.params;
@@ -386,6 +425,7 @@ const deletePlant = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     client.close();
 });
+exports.deletePlant = deletePlant;
 // taking all plants and saving images to cloudinary, then updating the plant with the cloudinary image url
 // const uploadToCloudinary = async () => {
 //   const client = await MongoClient(MONGO_URI, options)
@@ -588,17 +628,4 @@ const deletePlant = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 //   }
 //   client.close()
 // }
-module.exports = {
-    createPlant,
-    getPlants,
-    getPlantsToReview,
-    getPlant,
-    getSimilarPlants,
-    getRandomPlants,
-    getUserPlants,
-    getUserContributions,
-    addComment,
-    updatePlant,
-    deletePlant,
-};
 //# sourceMappingURL=plantHandlers.js.map

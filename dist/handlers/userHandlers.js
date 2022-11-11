@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,16 +31,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const { MongoClient, ObjectId } = require('mongodb');
-const assert = require('assert');
-require('dotenv').config();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteUser = exports.updateLists = exports.updateUser = exports.getCollection = exports.getWishlist = exports.getUser = exports.getUsers = exports.resetPassword = exports.sendPasswordResetCode = exports.verifyEmail = exports.verifyToken = exports.authenticateUser = exports.resendVerificationEmail = exports.createUser = void 0;
+const mongodb_1 = __importDefault(require("mongodb"));
+const { MongoClient, ObjectId } = mongodb_1.default;
+const assert_1 = __importDefault(require("assert"));
+const dotenv = __importStar(require("dotenv"));
+dotenv.config();
 const MONGO_URI = process.env.MONGO_URI;
-const bcrypt = require('bcrypt');
-const crypto = require('crypto');
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const crypto_1 = __importDefault(require("crypto"));
 const saltRounds = 10;
-const jwt = require('jsonwebtoken');
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const mail_1 = __importDefault(require("@sendgrid/mail"));
+mail_1.default.setApiKey(process.env.SENDGRID_API_KEY);
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 // template for new signups & resending verification email
 const EMAIL_VERIFICATION_TEMPLATE_ID = process.env.SENDGRID_EMAIL_VERIFICATION_TEMPLATE_ID;
@@ -33,7 +63,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     yield client.connect();
     const db = client.db('plantgeekdb');
     try {
-        const hashedPwd = yield bcrypt.hash(req.body.password, saltRounds);
+        const hashedPwd = yield bcrypt_1.default.hash(req.body.password, saltRounds);
         const existingEmail = yield db.collection('users').findOne({
             email: { $regex: new RegExp(`^${req.body.email}$`, 'i') },
         });
@@ -47,7 +77,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             res.status(409).json({ status: 409, message: 'That username is taken' });
         }
         else {
-            const code = crypto.randomBytes(20).toString('hex');
+            const code = crypto_1.default.randomBytes(20).toString('hex');
             const user = yield db.collection('users').insertOne({
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
@@ -60,7 +90,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 wishlist: [],
                 verificationCode: code,
             });
-            assert.strictEqual(1, user.insertedCount);
+            assert_1.default.strictEqual(1, user.insertedCount);
             const message = {
                 personalizations: [
                     {
@@ -77,11 +107,11 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 from: { email: ADMIN_EMAIL, name: 'plantgeek' },
                 template_id: EMAIL_VERIFICATION_TEMPLATE_ID,
             };
-            yield sgMail.send(message).catch(err => { var _a, _b; return console.error((_b = (_a = err.response) === null || _a === void 0 ? void 0 : _a.body) === null || _b === void 0 ? void 0 : _b.errors); });
+            yield mail_1.default.send(message).catch(err => { var _a, _b; return console.error((_b = (_a = err.response) === null || _a === void 0 ? void 0 : _a.body) === null || _b === void 0 ? void 0 : _b.errors); });
             res.status(201).json({
                 status: 201,
                 data: user,
-                token: jwt.sign({ userId: user.insertedId }, process.env.TOKEN_SECRET, {
+                token: jsonwebtoken_1.default.sign({ userId: user.insertedId }, process.env.TOKEN_SECRET, {
                     expiresIn: '7d',
                 }),
             });
@@ -93,13 +123,14 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     client.close();
 });
+exports.createUser = createUser;
 const resendVerificationEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const client = yield MongoClient(MONGO_URI, options);
     yield client.connect();
     const db = client.db('plantgeekdb');
     try {
-        const code = crypto.randomBytes(20).toString('hex');
+        const code = crypto_1.default.randomBytes(20).toString('hex');
         yield db
             .collection('users')
             .updateOne({ _id: ObjectId(userId) }, { $set: { verificationCode: code } });
@@ -119,7 +150,7 @@ const resendVerificationEmail = (req, res) => __awaiter(void 0, void 0, void 0, 
             from: { email: ADMIN_EMAIL, name: 'plantgeek' },
             template_id: EMAIL_VERIFICATION_TEMPLATE_ID,
         };
-        yield sgMail.send(message).catch(err => console.error(err));
+        yield mail_1.default.send(message).catch(err => console.error(err));
         res.status(200).json({ status: 200, message: 'Email sent' });
     }
     catch (err) {
@@ -128,6 +159,7 @@ const resendVerificationEmail = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
     client.close();
 });
+exports.resendVerificationEmail = resendVerificationEmail;
 // (READ/POST) AUTHENTICATES USER WHEN LOGGING IN
 const authenticateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
@@ -143,12 +175,12 @@ const authenticateUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
             ],
         });
         if (user) {
-            const isValid = yield bcrypt.compare(req.body.password, user.password);
+            const isValid = yield bcrypt_1.default.compare(req.body.password, user.password);
             if (isValid) {
                 client.close();
                 return res.status(200).json({
                     // TODO: look into how "expiresIn" works, remove from local storage if expired
-                    token: jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '7d' }),
+                    token: jsonwebtoken_1.default.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '7d' }),
                     data: user,
                 });
             }
@@ -168,13 +200,14 @@ const authenticateUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
         return res.status(500).send('Internal server error');
     }
 });
+exports.authenticateUser = authenticateUser;
 // (READ/POST) VERIFIES JWT TOKEN
 const verifyToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     try {
         yield client.connect();
         const db = client.db('plantgeekdb');
-        const verifiedToken = jwt.verify(req.body.token, process.env.TOKEN_SECRET, (err, decoded) => {
+        const verifiedToken = jsonwebtoken_1.default.verify(req.body.token, process.env.TOKEN_SECRET, (err, decoded) => {
             if (err) {
                 return false;
             }
@@ -209,6 +242,7 @@ const verifyToken = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     client.close();
 });
+exports.verifyToken = verifyToken;
 const verifyEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     yield client.connect();
@@ -240,6 +274,7 @@ const verifyEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     client.close();
 });
+exports.verifyEmail = verifyEmail;
 const sendPasswordResetCode = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
     yield client.connect();
@@ -249,7 +284,7 @@ const sendPasswordResetCode = (req, res) => __awaiter(void 0, void 0, void 0, fu
         const user = yield db.collection('users').findOne({ email });
         if (user) {
             const code = Math.floor(100000 + Math.random() * 900000);
-            const hashedCode = yield bcrypt.hash(code.toString(), saltRounds);
+            const hashedCode = yield bcrypt_1.default.hash(code.toString(), saltRounds);
             yield db.collection('users').updateOne({ email }, { $set: { passwordResetCode: hashedCode } });
             const msg = {
                 to: email,
@@ -258,7 +293,7 @@ const sendPasswordResetCode = (req, res) => __awaiter(void 0, void 0, void 0, fu
                 text: `Your password reset code is: ${code}`,
                 html: `Your password reset code is: <strong>${code}</strong>`,
             };
-            sgMail
+            mail_1.default
                 .send(msg)
                 .then(() => {
                 res.status(200).json({ message: 'Code sent' });
@@ -277,6 +312,7 @@ const sendPasswordResetCode = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
     client.close();
 });
+exports.sendPasswordResetCode = sendPasswordResetCode;
 // RESET PASSWORD WITH CODE
 const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
@@ -286,9 +322,9 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const user = yield db.collection('users').findOne({ email });
         if (user) {
-            const isValid = yield bcrypt.compare(code.toString(), user.passwordResetCode);
+            const isValid = yield bcrypt_1.default.compare(code.toString(), user.passwordResetCode);
             if (isValid) {
-                const hashedPwd = yield bcrypt.hash(newPassword, saltRounds);
+                const hashedPwd = yield bcrypt_1.default.hash(newPassword, saltRounds);
                 yield db
                     .collection('users')
                     .updateOne({ email }, { $set: { password: hashedPwd, passwordResetCode: null } });
@@ -308,6 +344,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     client.close();
 });
+exports.resetPassword = resetPassword;
 // (READ/GET) GETS ALL USERS
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield MongoClient(MONGO_URI, options);
@@ -327,6 +364,7 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     client.close();
 });
+exports.getUsers = getUsers;
 // (READ/GET) GETS USER BY ID
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.params.id === 'undefined') {
@@ -351,6 +389,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         client.close();
     }
 });
+exports.getUser = getUser;
 const getWishlist = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const { userId } = req.params;
@@ -373,6 +412,7 @@ const getWishlist = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     client.close();
 });
+exports.getWishlist = getWishlist;
 const getCollection = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     const { userId } = req.params;
@@ -395,6 +435,7 @@ const getCollection = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     client.close();
 });
+exports.getCollection = getCollection;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = ObjectId(req.params.id);
     const { email, username, currentPassword, newPassword } = req.body;
@@ -406,8 +447,8 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const user = yield db.collection('users').findOne({ _id: userId });
         let update = {};
         if (newPassword) {
-            const hashedPwd = yield bcrypt.hash(newPassword, user.password);
-            const passwordValid = yield bcrypt.compare(currentPassword, user.password);
+            const hashedPwd = yield bcrypt_1.default.hash(newPassword, user.password);
+            const passwordValid = yield bcrypt_1.default.compare(currentPassword, user.password);
             if (!passwordValid) {
                 return res.status(400).json({ message: 'Incorrect password' });
             }
@@ -438,7 +479,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         else {
             // check if email is being updated, if so set emailVerified to false and send new verification email
             if (email !== user.email) {
-                const code = crypto.randomBytes(20).toString('hex');
+                const code = crypto_1.default.randomBytes(20).toString('hex');
                 update.$set.verificationCode = code;
                 update.$set.emailVerified = false;
                 const message = {
@@ -457,7 +498,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                     from: { email: ADMIN_EMAIL, name: 'plantgeek' },
                     template_id: NEW_EMAIL_VERIFICATION_TEMPLATE_ID,
                 };
-                yield sgMail.send(message).catch(err => console.error(err));
+                yield mail_1.default.send(message).catch(err => console.error(err));
             }
             const result = yield db.collection('users').updateOne(filter, update);
             res.status(200).json({ status: 200, data: result });
@@ -469,6 +510,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     client.close();
 });
+exports.updateUser = updateUser;
 const updateLists = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const { plantId, hearts, owned, wanted, collection, wishlist } = req.body;
@@ -498,6 +540,7 @@ const updateLists = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         return res.status(400).json(err);
     }
 });
+exports.updateLists = updateLists;
 // (DELETE) REMOVE A USER
 // TODO: remove from other users' friends
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -524,20 +567,21 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     client.close();
 });
-module.exports = {
-    createUser,
-    resendVerificationEmail,
-    authenticateUser,
-    verifyToken,
-    verifyEmail,
-    sendPasswordResetCode,
-    resetPassword,
-    getUsers,
-    getUser,
-    getWishlist,
-    getCollection,
-    updateUser,
-    updateLists,
-    deleteUser,
-};
+exports.deleteUser = deleteUser;
+// module.exports = {
+//   createUser,
+//   resendVerificationEmail,
+//   authenticateUser,
+//   verifyToken,
+//   verifyEmail,
+//   sendPasswordResetCode,
+//   resetPassword,
+//   getUsers,
+//   getUser,
+//   getWishlist,
+//   getCollection,
+//   updateUser,
+//   updateLists,
+//   deleteUser,
+// }
 //# sourceMappingURL=userHandlers.js.map
