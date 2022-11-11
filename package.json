@@ -1,7 +1,7 @@
 {
   "name": "plantgeek",
   "version": "1.0.0",
-  "main": "src/server.js",
+  "main": "backend/server.ts",
   "license": "MIT",
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
@@ -28,8 +28,8 @@
     "build": "cd frontend && npm run build",
     "install-frontend": "cd frontend && npm install",
     "heroku-postbuild": "npm run install-frontend && npm run build",
-    "start": "ts-node src/server.ts",
-    "dev": "nodemon src/server.ts"
+    "start": "ts-node backend/server.ts",
+    "dev": "nodemon backend/server.ts"
   },
   "engines": {
     "node": "14.18.1",
