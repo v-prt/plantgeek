@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Redirect, useParams, useHistory } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import { Wrapper, Card } from './SignUp'
@@ -7,39 +7,31 @@ import { FadeIn } from '../components/loaders/FadeIn.js'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { Button, Alert, message } from 'antd'
 import { RedoOutlined } from '@ant-design/icons'
+import success from '../assets/success.svg'
 
 export const EmailVerification = () => {
-  const { hashedId } = useParams()
-  const history = useHistory()
+  const { code } = useParams()
   const queryClient = new useQueryClient()
-  const { token, verifyEmail, resendVerificationEmail } = useContext(UserContext)
-  const [verified, setVerified] = useState(false)
+  const { token, currentUser, verifyEmail, resendVerificationEmail, handleLogout } =
+    useContext(UserContext)
+  const [checked, setChecked] = useState(false)
   const [status, setStatus] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const handleVerify = async () => {
-    if (hashedId) {
-      const result = await verifyEmail(hashedId)
-      if (result.error) {
-        setStatus(result.error)
-      } else {
-        queryClient.invalidateQueries('current-user')
-        setVerified(true)
-      }
+    setStatus(false)
+    const result = await verifyEmail(code)
+    if (result.error) {
+      setStatus(result.error)
+    } else {
+      queryClient.invalidateQueries('current-user')
     }
+    setChecked(true)
   }
 
   useEffect(() => {
-    if (token && hashedId) {
+    if (!currentUser?.emailVerified && token && code && !checked) {
       handleVerify()
-    }
-  })
-
-  useEffect(() => {
-    if (verified) {
-      setTimeout(() => {
-        history.push('/profile')
-      }, 3000)
     }
   })
 
@@ -54,38 +46,59 @@ export const EmailVerification = () => {
     setLoading(false)
   }
 
-  return !token ? (
-    <Redirect to='/login' />
-  ) : (
+  return (
     <Wrapper>
       <FadeIn>
         <Card>
           <div className='header'>
             <h1>email verification</h1>
           </div>
-          {status ? (
-            <div className='body'>
-              <Alert type='error' message={status} showIcon />
-              <Button
-                type='link'
-                icon={<RedoOutlined />}
-                onClick={handleVerificationEmail}
-                loading={loading}>
-                Resend email
-              </Button>
-            </div>
-          ) : (
-            <>
-              <div className='body'>
-                <p>
-                  {verified
-                    ? `Verified! You'll be redirected to your profile soon.`
-                    : 'Verifying, please wait.'}
-                </p>
-                <Ellipsis />
-              </div>
-            </>
-          )}
+          <div className='body email-verification'>
+            {token ? (
+              status ? (
+                <>
+                  <Alert type='error' message={status} showIcon />
+                  <p>
+                    We couldn't verify <b>{currentUser.email}</b> with the given link.
+                  </p>
+                  <div className='buttons'>
+                    <Button
+                      type='primary'
+                      icon={<RedoOutlined />}
+                      onClick={handleVerificationEmail}
+                      loading={loading}>
+                      RESEND EMAIL
+                    </Button>
+                    <Button type='secondary' onClick={handleLogout}>
+                      LOG OUT
+                    </Button>
+                  </div>
+                </>
+              ) : currentUser.emailVerified ? (
+                <>
+                  <img className='success' src={success} alt='' />
+                  <p>Thanks! Your email has been verified.</p>
+                  <Link to='/'>
+                    <Button type='primary'>GO HOME</Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <div className='loading'>
+                    <Ellipsis />
+                  </div>
+                  <p>Verifying, please wait.</p>
+                </>
+              )
+            ) : (
+              <>
+                <Alert type='warning' message='You must log in to verify your email.' showIcon />
+                <Link to='/login'>
+                  <Button type='primary'>LOG IN</Button>
+                </Link>
+              </>
+            )}
+          </div>
         </Card>
       </FadeIn>
     </Wrapper>

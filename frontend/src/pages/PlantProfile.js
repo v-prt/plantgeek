@@ -620,19 +620,21 @@ export const PlantProfile = () => {
                             sourceUrl: Yup.string().url('Invalid URL'),
                           })}
                           onSubmit={async (values, { setSubmitting }) => {
-                            try {
-                              await axios.post(`${API_URL}/suggestions/${plantId}`, {
-                                suggestion: values.suggestion,
-                                sourceUrl: values.sourceUrl,
-                                userId: currentUser._id,
-                              })
-                              message.success('Suggestion submitted! Thank you.')
-                              setSuggestionModal(false)
-                            } catch (err) {
-                              console.log(err)
-                              message.error(
-                                'Oops, something went wrong when submitting your suggestion.'
-                              )
+                            if (currentUser.emailVerified) {
+                              try {
+                                await axios.post(`${API_URL}/suggestions/${plantId}`, {
+                                  suggestion: values.suggestion,
+                                  sourceUrl: values.sourceUrl,
+                                  userId: currentUser._id,
+                                })
+                                message.success('Suggestion submitted! Thank you.')
+                                setSuggestionModal(false)
+                              } catch (err) {
+                                console.log(err)
+                                message.error(
+                                  'Oops, something went wrong when submitting your suggestion.'
+                                )
+                              }
                             }
                           }}>
                           {({ isSubmitting, submitForm }) => (
@@ -661,11 +663,18 @@ export const PlantProfile = () => {
                               <FormItem name='source'>
                                 <Input name='sourceUrl' placeholder='Source URL' />
                               </FormItem>
+                              {!currentUser.emailVerified && (
+                                <Alert
+                                  type='warning'
+                                  message='Please verify your email address to submit a suggestion.'
+                                  showIcon
+                                />
+                              )}
                               <Button
                                 type='primary'
-                                disabled={isSubmitting}
+                                disabled={isSubmitting || !currentUser.emailVerified}
                                 loading={isSubmitting}
-                                onClick={() => submitForm()}>
+                                onClick={submitForm}>
                                 SUBMIT
                               </Button>
                             </Form>

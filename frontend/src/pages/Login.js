@@ -71,12 +71,12 @@ export const Login = () => {
                   LOG IN
                 </Button>
                 {status && <Alert type='error' message={status} showIcon />}
-                <p className='subtext'>
-                  New to plantgeek? <Link to='/signup'>Sign up</Link>
-                </p>
               </Form>
             )}
           </Formik>
+          <p className='subtext'>
+            New to plantgeek? <Link to='/signup'>Sign up</Link>
+          </p>
         </Card>
       </FadeIn>
     </Wrapper>

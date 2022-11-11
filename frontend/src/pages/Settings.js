@@ -301,7 +301,7 @@ export const Settings = () => {
                 {!currentUser.emailVerified && (
                   <div className='verify-email'>
                     <Alert
-                      type='info'
+                      type='warning'
                       message={
                         <>
                           <p>Please check your email for the verification link.</p>
@@ -310,7 +310,7 @@ export const Settings = () => {
                             icon={<RedoOutlined />}
                             onClick={handleVerificationEmail}
                             loading={loading}>
-                            Resend email
+                            RESEND EMAIL
                           </Button>
                         </>
                       }

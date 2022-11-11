@@ -66,7 +66,7 @@ app
   .post(`${API_URL}/verification-email/:userId`, resendVerificationEmail)
   .post(`${API_URL}/login`, authenticateUser)
   .post(`${API_URL}/token`, verifyToken)
-  .post(`${API_URL}/verify-email/:hashedId`, verifyEmail)
+  .post(`${API_URL}/verify-email/:code`, verifyEmail)
   .post(`${API_URL}/password-reset-code`, sendPasswordResetCode)
   .post(`${API_URL}/password`, resetPassword)
   .get(`${API_URL}/users`, getUsers)

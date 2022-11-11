@@ -3,12 +3,18 @@ const assert = require('assert')
 require('dotenv').config()
 const MONGO_URI = process.env.MONGO_URI
 const bcrypt = require('bcrypt')
+const crypto = require('crypto')
 const saltRounds = 10
 const jwt = require('jsonwebtoken')
 const sgMail = require('@sendgrid/mail')
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL
-const EMAIL_TEMPLATE_ID = process.env.EMAIL_VERIFICATION_TEMPLATE_ID
+
+// template for new signups & resending verification email
+const EMAIL_VERIFICATION_TEMPLATE_ID = process.env.SENDGRID_EMAIL_VERIFICATION_TEMPLATE_ID
+
+// template for when email has changed
+const NEW_EMAIL_VERIFICATION_TEMPLATE_ID = process.env.SENDGRID_NEW_EMAIL_VERIFICATION_TEMPLATE_ID
 
 const options = {
   useNewUrlParser: true,
@@ -35,6 +41,8 @@ const createUser = async (req, res) => {
     } else if (existingUsername) {
       res.status(409).json({ status: 409, message: 'That username is taken' })
     } else {
+      const code = crypto.randomBytes(20).toString('hex')
+
       const user = await db.collection('users').insertOne({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -45,11 +53,9 @@ const createUser = async (req, res) => {
         friends: [],
         collection: [],
         wishlist: [],
+        verificationCode: code,
       })
       assert.strictEqual(1, user.insertedCount)
-
-      // send welcome email with verification link
-      const hashedId = await bcrypt.hash(user.insertedId.toString(), saltRounds)
 
       const message = {
         personalizations: [
@@ -60,12 +66,12 @@ const createUser = async (req, res) => {
             },
             dynamic_template_data: {
               first_name: req.body.firstName,
-              verification_link: `https://www.plantgeek.co/verify-email/${hashedId}`,
+              verification_link: `https://www.plantgeek.co/verify-email/${code}`,
             },
           },
         ],
-        from: { email: ADMIN_EMAIL, name: 'Plantgeek' },
-        template_id: EMAIL_TEMPLATE_ID,
+        from: { email: ADMIN_EMAIL, name: 'plantgeek' },
+        template_id: EMAIL_VERIFICATION_TEMPLATE_ID,
       }
 
       await sgMail.send(message).catch(err => console.error(err.response?.body?.errors))
@@ -87,9 +93,16 @@ const createUser = async (req, res) => {
 
 const resendVerificationEmail = async (req, res) => {
   const { userId } = req.params
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
 
   try {
-    const hashedId = await bcrypt.hash(userId, saltRounds)
+    const code = crypto.randomBytes(20).toString('hex')
+
+    await db
+      .collection('users')
+      .updateOne({ _id: ObjectId(userId) }, { $set: { verificationCode: code } })
 
     const message = {
       personalizations: [
@@ -100,12 +113,12 @@ const resendVerificationEmail = async (req, res) => {
           },
           dynamic_template_data: {
             first_name: req.body.firstName,
-            verification_link: `https://www.plantgeek.co/verify-email/${hashedId}`,
+            verification_link: `https://www.plantgeek.co/verify-email/${code}`,
           },
         },
       ],
-      from: { email: ADMIN_EMAIL, name: 'Plantgeek' },
-      template_id: EMAIL_TEMPLATE_ID,
+      from: { email: ADMIN_EMAIL, name: 'plantgeek' },
+      template_id: EMAIL_VERIFICATION_TEMPLATE_ID,
     }
 
     await sgMail.send(message).catch(err => console.error(err))
@@ -115,6 +128,7 @@ const resendVerificationEmail = async (req, res) => {
     console.error(err.stack)
     return res.status(500).send('Internal server error')
   }
+  client.close()
 }
 
 // (READ/POST) AUTHENTICATES USER WHEN LOGGING IN
@@ -197,20 +211,22 @@ const verifyEmail = async (req, res) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
   const db = client.db('plantgeekdb')
-  const { hashedId } = req.params
+  const { code } = req.params
   const { userId } = req.body
 
   try {
     const user = await db.collection('users').findOne({
       _id: ObjectId(userId),
     })
-    const isValid = await bcrypt.compare(userId, hashedId)
 
     if (user) {
-      if (isValid) {
+      if (user.verificationCode === code) {
         await db
           .collection('users')
-          .updateOne({ _id: ObjectId(userId) }, { $set: { emailVerified: true } })
+          .updateOne(
+            { _id: ObjectId(userId) },
+            { $set: { emailVerified: true, verificationCode: null } }
+          )
         res.status(200).json({ status: 200, message: 'Email verified' })
       } else {
         res.status(400).json({ status: 400, message: 'Invalid verification link' })
@@ -241,10 +257,11 @@ const sendPasswordResetCode = async (req, res) => {
       const msg = {
         to: email,
         from: ADMIN_EMAIL,
-        subject: 'Plantgeek Password Recovery',
+        subject: 'Recover password on plantgeek',
         text: `Your password reset code is: ${code}`,
         html: `Your password reset code is: <strong>${code}</strong>`,
       }
+
       sgMail
         .send(msg)
         .then(() => {
@@ -410,6 +427,7 @@ const updateUser = async (req, res) => {
       update = {
         $set: req.body,
       }
+
     const existingEmail = await db.collection('users').findOne({
       email: { $regex: new RegExp(`^${email}$`, 'i') },
     })
@@ -422,6 +440,32 @@ const updateUser = async (req, res) => {
     } else if (existingUsername && !existingUsername._id.equals(userId)) {
       return res.status(400).json({ message: 'That username is taken' })
     } else {
+      // check if email is being updated, if so set emailVerified to false and send new verification email
+      if (email !== user.email) {
+        const code = crypto.randomBytes(20).toString('hex')
+        update.$set.verificationCode = code
+        update.$set.emailVerified = false
+
+        const message = {
+          personalizations: [
+            {
+              to: {
+                email: req.body.email,
+                name: `${req.body.firstName} ${req.body.lastName}`,
+              },
+              dynamic_template_data: {
+                first_name: req.body.firstName,
+                verification_link: `https://www.plantgeek.co/verify-email/${code}`,
+              },
+            },
+          ],
+          from: { email: ADMIN_EMAIL, name: 'plantgeek' },
+          template_id: NEW_EMAIL_VERIFICATION_TEMPLATE_ID,
+        }
+
+        await sgMail.send(message).catch(err => console.error(err))
+      }
+
       const result = await db.collection('users').updateOne(filter, update)
       res.status(200).json({ status: 200, data: result })
     }

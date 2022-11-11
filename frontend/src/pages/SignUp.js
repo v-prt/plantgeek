@@ -85,11 +85,11 @@ export const SignUp = () => {
                 <FormItem name='lastName' label='Last name'>
                   <Input name='lastName' type='text' />
                 </FormItem>
-                <FormItem name='email' label='Email'>
-                  <Input name='email' type='text' />
-                </FormItem>
                 <FormItem name='username' label='Username'>
                   <Input name='username' type='text' autoComplete='off' />
+                </FormItem>
+                <FormItem name='email' label='Email'>
+                  <Input name='email' type='text' />
                 </FormItem>
                 <FormItem name='password' label='Password' sublabel='(at least 6 characters)'>
                   <Input.Password name='password' type='password' autoComplete='off' />
@@ -106,12 +106,12 @@ export const SignUp = () => {
                   CREATE ACCOUNT
                 </Button>
                 {status && <Alert type='error' message={status} showIcon />}
-                <p className='subtext'>
-                  Already have an account? <Link to='/login'>Log in</Link>
-                </p>
               </Form>
             )}
           </Formik>
+          <p className='subtext'>
+            Already have an account? <Link to='/login'>Log in</Link>
+          </p>
         </Card>
       </FadeIn>
     </Wrapper>
@@ -168,6 +168,7 @@ export const Card = styled.div`
   }
   .ant-alert {
     margin-top: 10px;
+    text-align: left;
   }
   .info-text {
     font-weight: bold;
@@ -176,14 +177,28 @@ export const Card = styled.div`
   }
   .subtext {
     text-align: center;
-    margin-top: 20px;
-    &.small {
-      font-size: 0.8rem;
-      opacity: 0.8;
-    }
+    margin-bottom: 20px;
   }
   .password-changed {
     margin: 20px auto;
+  }
+  .welcome {
+    p {
+      margin: 20px 0;
+    }
+  }
+  .success {
+    height: 40px;
+    width: 40px;
+  }
+  .email-verification {
+    p {
+      margin: 20px 0 0 0;
+    }
+    .buttons {
+      display: flex;
+      gap: 12px;
+    }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     margin: auto;

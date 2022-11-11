@@ -116,9 +116,9 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-  const verifyEmail = async hashedId => {
+  const verifyEmail = async code => {
     try {
-      const res = await axios.post(`${API_URL}/verify-email/${hashedId}`, {
+      const res = await axios.post(`${API_URL}/verify-email/${code}`, {
         userId: currentUser._id,
       })
       return res.data

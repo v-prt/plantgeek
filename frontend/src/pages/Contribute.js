@@ -102,46 +102,48 @@ export const Contribute = () => {
     })
 
   const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    setStatus(undefined)
-    if (!images) {
-      setStatus('You must upload an image.')
-      setSubmitting(false)
-    } else {
-      images.forEach(async image => {
-        const resizedImage = await resizeFile(image)
+    if (currentUser.emailVerified) {
+      setStatus(undefined)
+      if (!images) {
+        setStatus('You must upload an image.')
+        setSubmitting(false)
+      } else {
+        images.forEach(async image => {
+          const resizedImage = await resizeFile(image)
 
-        const formData = new FormData()
-        formData.append('file', resizedImage)
-        formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
+          const formData = new FormData()
+          formData.append('file', resizedImage)
+          formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
 
-        // upload image to cloudinary
-        await axios.post(cloudinaryUrl, formData).then(res => {
-          const imageUrl = res.data.secure_url
+          // upload image to cloudinary
+          await axios.post(cloudinaryUrl, formData).then(res => {
+            const imageUrl = res.data.secure_url
 
-          // upload plant to db
-          axios
-            .post(`${API_URL}/plants`, {
-              slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
-              toxic: values.toxic === 'toxic' ? true : false,
-              imageUrl,
-              contributorId: currentUser._id,
-              review: 'pending',
-              // review: currentUser.role === 'admin' ? 'approved' : 'pending',
-              ...values,
-            })
-            .then(res => {
-              setSubmitting(false)
-              setNewPlant(res.data.plant)
-              resetForm()
-              setImages()
-              window.scrollTo(0, 0)
-            })
-            .catch(err => {
-              setStatus(err.response.data.message)
-              setSubmitting(false)
-            })
+            // upload plant to db
+            axios
+              .post(`${API_URL}/plants`, {
+                slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
+                toxic: values.toxic === 'toxic' ? true : false,
+                imageUrl,
+                contributorId: currentUser._id,
+                review: 'pending',
+                // review: currentUser.role === 'admin' ? 'approved' : 'pending',
+                ...values,
+              })
+              .then(res => {
+                setSubmitting(false)
+                setNewPlant(res.data.plant)
+                resetForm()
+                setImages()
+                window.scrollTo(0, 0)
+              })
+              .catch(err => {
+                setStatus(err.response.data.message)
+                setSubmitting(false)
+              })
+          })
         })
-      })
+      }
     }
   }
 
@@ -278,6 +280,13 @@ export const Contribute = () => {
                   />
                 </FormItem>
 
+                {!currentUser.emailVerified && (
+                  <Alert
+                    type='warning'
+                    message='Please verify your email address to contribute.'
+                    showIcon
+                  />
+                )}
                 <div className='buttons'>
                   <Button
                     type='secondary'
@@ -290,7 +299,7 @@ export const Contribute = () => {
                   <Button
                     type='primary'
                     htmlType='submit'
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !currentUser.emailVerified}
                     loading={isSubmitting}>
                     SUBMIT
                   </Button>
