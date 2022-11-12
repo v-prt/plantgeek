@@ -23,7 +23,7 @@ import {
   updateUser,
   updateLists,
   deleteUser,
-} from './handlers/userHandlers.js'
+} from './controllers/UserController'
 
 import {
   createPlant,
@@ -32,19 +32,19 @@ import {
   getPlant,
   getSimilarPlants,
   getRandomPlants,
-  getUserPlants,
+  // getUserPlants,
   getUserContributions,
-  addComment,
+  // addComment,
   updatePlant,
   deletePlant,
-} from './handlers/plantHandlers.js'
+} from './controllers/PlantController'
 
 import {
   createSuggestion,
   getSuggestions,
   getSuggestionsBySlug,
   updateSuggestion,
-} from './handlers/suggestionHandlers.js'
+} from './controllers/SuggestionController'
 
 // run on whatever port heroku has available or 4000 (local)
 const PORT = process.env.PORT || 4000
@@ -85,10 +85,10 @@ app
   .get(`${API_URL}/plant/:slug`, getPlant)
   .get(`${API_URL}/similar-plants/:slug`, getSimilarPlants)
   .get(`${API_URL}/random-plants`, getRandomPlants)
-  .get(`${API_URL}/user-plants/:page`, getUserPlants)
+  // .get(`${API_URL}/user-plants/:page`, getUserPlants)
   .get(`${API_URL}/contributions/:userId`, getUserContributions)
   .put(`${API_URL}/plants/:id`, updatePlant)
-  .put(`${API_URL}/plants/:id/comments`, addComment)
+  // .put(`${API_URL}/plants/:id/comments`, addComment)
   .delete(`${API_URL}/plants/:id`, deletePlant)
 
   // suggestions

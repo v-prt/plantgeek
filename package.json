@@ -4,11 +4,11 @@
   "main": "backend/server.ts",
   "license": "MIT",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "@types/express": "^4.17.14",
     "@types/morgan": "^1.9.3",
     "@types/node": "^18.11.9",
     "@types/source-map-support": "^0.5.6",
-    "@sendgrid/mail": "^7.7.0",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.27.1",
     "dotenv": "^8.2.0",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.14",
+    "@types/mongodb": "^4.0.7",
     "@types/morgan": "^1.9.3",
     "@types/node": "^18.11.9",
     "@types/source-map-support": "^0.5.6",
