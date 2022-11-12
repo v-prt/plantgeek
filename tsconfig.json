@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "sourceMap": true
   },
   // tells the compiler to include files that are in the src directory and sub-directory.
