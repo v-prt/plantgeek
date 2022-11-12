@@ -53,11 +53,7 @@ const API_URL = process.env.API_URL
 const app = express()
 
 app
-  .use(function (
-    req: any,
-    res: { header: (arg0: string, arg1: string) => void },
-    next: () => void
-  ) {
+  .use(function (req, res, next) {
     res.header('Access-Control-Allow-Methods', 'OPTIONS, HEAD, GET, PUT, POST, DELETE, PATCH')
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
     next()
@@ -105,7 +101,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'frontend', 'build')))
 }
 
-app.get('*', (res: { sendFile: (arg0: string) => void }) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'build', 'index.html'))
 })
 
