@@ -204,7 +204,7 @@ export const Contribute = () => {
                 </FormItem>
 
                 <FormItem label='Common name' sublabel='(optional)' name='secondaryName'>
-                  <Input name='secondaryName' placeholder='Swiss cheese plant' />
+                  <Input name='secondaryName' placeholder='Swiss Cheese Plant' />
                 </FormItem>
 
                 <FormItem label='Upload image' sublabel='(max 1mb)' name=''>

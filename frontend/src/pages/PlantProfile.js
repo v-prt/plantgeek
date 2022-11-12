@@ -23,6 +23,7 @@ import {
   DislikeOutlined,
   DeleteOutlined,
 } from '@ant-design/icons'
+import { FaPaw } from 'react-icons/fa'
 import { BiLogInCircle } from 'react-icons/bi'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
@@ -37,6 +38,7 @@ import { ActionBox } from '../components/ActionBox'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { PlantCard } from '../components/PlantCard'
 import { Ellipsis } from '../components/loaders/Ellipsis'
+import { Stamp } from '../components/PlantCard'
 const { Option } = Select
 
 export const PlantProfile = () => {
@@ -328,7 +330,7 @@ export const PlantProfile = () => {
                           <FormItem label='Common name' sublabel='(optional)' name='secondaryName'>
                             <Input
                               name='secondaryName'
-                              placeholder='Swiss cheese plant'
+                              placeholder='Swiss Cheese Plant'
                               style={{ width: '100%' }}
                               prefix={<EditOutlined />}
                             />
@@ -395,7 +397,7 @@ export const PlantProfile = () => {
                                 showRemoveIcon: false,
                               }}>
                               {!uploading && image ? (
-                                <ImageLoader src={image} alt={''} placeholder={placeholder} />
+                                <ImageLoader src={image} alt='' placeholder={placeholder} />
                               ) : (
                                 uploadButton
                               )}
@@ -415,7 +417,12 @@ export const PlantProfile = () => {
                         </div>
                       ) : (
                         <div className='primary-image'>
-                          <ImageLoader src={image} alt={''} placeholder={placeholder} />
+                          {plant.toxic === false && (
+                            <Stamp>
+                              <FaPaw />
+                            </Stamp>
+                          )}
+                          <ImageLoader src={image} alt='' placeholder={placeholder} />
                           {/* TODO: gallery here */}
                         </div>
                       )}
@@ -529,9 +536,6 @@ export const PlantProfile = () => {
                               </Bar>
                             </div>
                           </div>
-                          <Link to='/guidelines' className='link'>
-                            <p>Care Tips</p>
-                          </Link>
                         </div>
                         <div className='misc-info'>
                           <div className='difficulty'>
@@ -557,26 +561,28 @@ export const PlantProfile = () => {
                           ) : (
                             <>
                               <div className='toxicity'>
-                                Toxicity:{' '}
+                                Toxic:{' '}
                                 {plant.toxic === false ? (
-                                  <span className='nontoxic'>Pet friendly</span>
+                                  <span className='nontoxic'>No</span>
                                 ) : plant.toxic === true ? (
-                                  <span className='toxic'>Not pet friendly</span>
+                                  <span className='toxic'>Yes</span>
                                 ) : (
                                   <span className='unknown'>Unknown</span>
                                 )}
                               </div>
-                              {plant.sourceUrl && (
-                                <div className='sources'>
-                                  Source:{' '}
-                                  <a
-                                    href={plant.sourceUrl}
-                                    target='_blank'
-                                    rel='noopenner noreferrer'>
-                                    [1]
-                                  </a>
-                                </div>
-                              )}
+                              <div className='links'>
+                                <Link to='/guidelines' className='link'>
+                                  Care Tips
+                                </Link>
+                                •
+                                <a
+                                  className='source-link'
+                                  href={plant.sourceUrl}
+                                  target='_blank'
+                                  rel='noopenner noreferrer'>
+                                  Source
+                                </a>
+                              </div>
                             </>
                           )}
                         </div>
@@ -876,6 +882,7 @@ const Wrapper = styled.main`
       max-width: 400px;
       aspect-ratio: 1 / 1;
       margin: auto;
+      position: relative;
       .ant-upload-list {
         height: 100%;
         width: 100%;
@@ -1023,13 +1030,6 @@ const Info = styled.div`
       }
     }
   }
-  .link {
-    font-size: 0.8rem;
-    color: ${COLORS.accent};
-    margin-top: 10px;
-    text-decoration: underline;
-    width: fit-content;
-  }
   .misc-info {
     gap: 10px;
     font-size: 0.9rem;
@@ -1061,14 +1061,24 @@ const Info = styled.div`
         width: 150px;
       }
       .toxic {
-        color: ${COLORS.alert};
+        color: ${COLORS.danger};
       }
       .nontoxic {
-        color: ${COLORS.light};
+        color: ${COLORS.mediumLight};
       }
       .unknown {
         color: #999;
       }
+    }
+  }
+  .links {
+    color: #999;
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    a {
+      font-size: 0.8rem;
+      text-decoration: underline;
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {

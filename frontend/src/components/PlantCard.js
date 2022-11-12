@@ -113,10 +113,11 @@ const Wrapper = styled.div`
   }
 `
 
-const Stamp = styled.div`
-  background: #c4c4c4;
+export const Stamp = styled.div`
+  background: ${COLORS.accent};
   color: #fff;
   position: absolute;
+  right: 0;
   border-radius: 50%;
   display: grid;
   padding: 5px;

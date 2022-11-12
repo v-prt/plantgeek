@@ -49,8 +49,8 @@ export const ActionBox = ({ plant }) => {
           <Form>
             <div className='user-lists'>
               <p className='popularity-info'>
-                This plant is in <b>{plant.owned?.length} collections</b> and{' '}
-                <b>{plant.wanted?.length} wishlists</b>.
+                This plant is in <b>{plant.owned?.length || 0} collections</b> and{' '}
+                <b>{plant.wanted?.length || 0} wishlists</b>.
               </p>
               <Checkbox
                 name='collection'
@@ -135,13 +135,13 @@ export const ActionBox = ({ plant }) => {
           <span className='icon'>
             <RiPlantLine />
           </span>
-          In {plant.totalOwned} collection{plant.totalOwned !== 1 && 's'}
+          In {plant.totalOwned || 0} collection{plant.totalOwned !== 1 && 's'}
         </div>
         <div className={`label wishlist ${plant.totalWanted && 'opaque'}`}>
           <span className='icon'>
             <AiOutlineStar />
           </span>
-          In {plant.totalWanted} wishlist{plant.totalWanted !== 1 && 's'}
+          In {plant.totalWanted || 0} wishlist{plant.totalWanted !== 1 && 's'}
         </div>
       </div>
       <div className='hearts'>
