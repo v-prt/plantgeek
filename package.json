@@ -31,10 +31,10 @@
     "typescript": "^4.8.4"
   },
   "scripts": {
-    "build": "cd frontend && npm run build",
+    "build": "npx dist && cd frontend && npm run build",
     "install-frontend": "cd frontend && npm install",
     "heroku-postbuild": "npm run install-frontend && npm run build",
-    "start": "node backend/server.ts",
+    "start": "node dist/server.js",
     "dev": "nodemon backend/server.ts"
   },
   "engines": {

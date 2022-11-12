@@ -12,6 +12,7 @@ backend/node_modules/
 
 # production
 frontend/build/
+dist
 
 # misc
 .DS_Store
