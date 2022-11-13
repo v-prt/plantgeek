@@ -105,7 +105,15 @@ export const getPlants = async (req: Request, res: Response) => {
   } else if (toxicity === 'nontoxic') {
     filters = { ...filters, toxic: false }
   } else if (toxicity === 'unknown') {
-    filters = { ...filters, $or: [{ toxic: null }, { toxic: { $exists: false } }] }
+    filters = {
+      ...filters,
+      $or: [
+        { toxic: null },
+        { toxic: { $exists: false } },
+        { toxic: 'toxic' },
+        { toxic: 'nontoxic' },
+      ],
+    }
   }
 
   if (review) {

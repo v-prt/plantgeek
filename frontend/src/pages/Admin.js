@@ -92,11 +92,11 @@ export const Admin = () => {
                           await axios.put(`${API_URL}/suggestions/${suggestion._id}`, {
                             status: values.status,
                           })
-                          message.success('Suggestion status updated!')
+                          message.success('Suggestion status updated')
                           setSubmitting(false)
                         } catch (err) {
                           console.log(err)
-                          message.error('Oops, something went wrong.')
+                          message.error('Oops, something went wrong')
                         }
                       }}>
                       {({ submitForm }) => (

@@ -119,17 +119,17 @@ export const Contribute = () => {
           await axios.post(cloudinaryUrl, formData).then(res => {
             const imageUrl = res.data.secure_url
 
-            // upload plant to db
+            const data = {
+              slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
+              imageUrl,
+              contributorId: currentUser._id,
+              review: 'pending',
+              ...values,
+            }
+
+            //  upload plant to db
             axios
-              .post(`${API_URL}/plants`, {
-                slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
-                toxic: values.toxic === 'toxic' ? true : false,
-                imageUrl,
-                contributorId: currentUser._id,
-                review: 'pending',
-                // review: currentUser.role === 'admin' ? 'approved' : 'pending',
-                ...values,
-              })
+              .post(`${API_URL}/plants`, data)
               .then(res => {
                 setSubmitting(false)
                 setNewPlant(res.data.plant)
@@ -268,8 +268,8 @@ export const Contribute = () => {
 
                 <FormItem label='Toxicity' name='toxic'>
                   <Select name='toxic' placeholder='Select'>
-                    <Option value='toxic'>toxic</Option>
-                    <Option value='nontoxic'>nontoxic</Option>
+                    <Option value={true}>toxic</Option>
+                    <Option value={false}>nontoxic</Option>
                   </Select>
                 </FormItem>
 

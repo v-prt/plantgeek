@@ -143,13 +143,13 @@ export const Settings = () => {
           })
           .catch(err => {
             console.log(err)
-            message.error('Something went wrong on the server. Please try again.')
+            message.error('Oops, something went wrong')
             setUploading(false)
           })
       })
       .catch(err => {
         console.log(err)
-        message.error('Something went wrong with cloudinary. Please try again.')
+        message.error('Oops, something went wrong')
         setUploading(false)
       })
   }
@@ -170,7 +170,7 @@ export const Settings = () => {
     if (result.error) {
       setStatus(result.error)
     } else {
-      message.success('Password updated successfully')
+      message.success('Password updated')
       setPasswordEditMode(false)
     }
   }

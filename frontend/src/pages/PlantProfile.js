@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import { API_URL } from '../constants'
 import { message, Modal, Alert, Button, Drawer } from 'antd'
 import moment from 'moment'
@@ -19,7 +19,6 @@ import {
   DislikeOutlined,
   DeleteOutlined,
 } from '@ant-design/icons'
-import { FaPaw } from 'react-icons/fa'
 import { BiLogInCircle } from 'react-icons/bi'
 import { MdOutlineAdminPanelSettings } from 'react-icons/md'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
@@ -35,13 +34,13 @@ import { ActionBox } from '../components/ActionBox'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { PlantCard } from '../components/PlantCard'
 import { Ellipsis } from '../components/loaders/Ellipsis'
-import { Stamp } from '../components/PlantCard'
 import { PlantEditor } from '../components/PlantEditor'
 const { Option } = Select
 
 export const PlantProfile = () => {
-  const history = useHistory()
   const { slug } = useParams()
+  const history = useHistory()
+  const queryClient = new useQueryClient()
   const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
   const [editDrawerOpen, setEditDrawerOpen] = useState(false)
@@ -161,12 +160,12 @@ export const PlantProfile = () => {
             <FadeIn delay={200}>
               <section className='plant-info'>
                 <div className='primary-image'>
-                  {plant.toxic === false && (
-                    <Stamp>
-                      <FaPaw />
-                    </Stamp>
-                  )}
-                  <ImageLoader src={plant.imageUrl} alt='' placeholder={placeholder} />
+                  <ImageLoader
+                    src={plant.imageUrl}
+                    alt=''
+                    placeholder={placeholder}
+                    borderRadius='10px'
+                  />
                   {/* TODO: gallery here */}
                 </div>
 
@@ -237,34 +236,36 @@ export const PlantProfile = () => {
                     </div>
                   </div>
                   <div className='misc-info'>
-                    <div className='difficulty'>
-                      Difficulty:{' '}
-                      <span className={difficulty?.toLowerCase()}>{difficulty || 'N/A'}</span>
+                    <div className={`difficulty ${difficulty?.toLowerCase()}`}>
+                      Difficulty: {difficulty || 'N/A'}
                     </div>
-
-                    <div className='toxicity'>
-                      Toxic:{' '}
-                      {plant.toxic === false ? (
-                        <span className='nontoxic'>No</span>
-                      ) : plant.toxic === true ? (
-                        <span className='toxic'>Yes</span>
-                      ) : (
-                        <span className='unknown'>Unknown</span>
-                      )}
+                    <div
+                      className={`toxicity ${
+                        plant.toxic === true
+                          ? 'toxic'
+                          : plant.toxic === false
+                          ? 'nontoxic'
+                          : 'unkown'
+                      }`}>
+                      {plant.toxic === true
+                        ? 'Toxic'
+                        : plant.toxic === false
+                        ? 'Non-toxic'
+                        : 'Toxicity unknown'}
                     </div>
-                    <div className='links'>
-                      <Link to='/guidelines' className='link'>
-                        Care Tips
-                      </Link>
-                      •
-                      <a
-                        className='source-link'
-                        href={plant.sourceUrl}
-                        target='_blank'
-                        rel='noopenner noreferrer'>
-                        Source
-                      </a>
-                    </div>
+                  </div>
+                  <div className='links'>
+                    <Link to='/guidelines' className='link'>
+                      Care Tips
+                    </Link>
+                    •
+                    <a
+                      className='source-link'
+                      href={plant.sourceUrl}
+                      target='_blank'
+                      rel='noopenner noreferrer'>
+                      Source
+                    </a>
                   </div>
                 </Info>
               </section>
@@ -310,13 +311,11 @@ export const PlantProfile = () => {
                                   sourceUrl: values.sourceUrl,
                                   userId: currentUser._id,
                                 })
-                                message.success('Suggestion submitted! Thank you.')
+                                message.success('Suggestion submitted')
                                 setSuggestionModalOpen(false)
                               } catch (err) {
                                 console.log(err)
-                                message.error(
-                                  'Oops, something went wrong when submitting your suggestion.'
-                                )
+                                message.error('Oops, something went wrong')
                               }
                             }
                           }}>
@@ -440,11 +439,11 @@ export const PlantProfile = () => {
                                   await axios.put(`${API_URL}/suggestions/${suggestion._id}`, {
                                     status: values.status,
                                   })
-                                  message.success('Suggestion status updated!')
+                                  message.success('Suggestion status updated')
                                   setSubmitting(false)
                                 } catch (err) {
                                   console.log(err)
-                                  message.error('Oops, something went wrong.')
+                                  message.error('Oops, something went wrong')
                                 }
                               }}>
                               {({ submitForm }) => (
@@ -597,43 +596,10 @@ const Wrapper = styled.main`
       aspect-ratio: 1 / 1;
       margin: auto;
       position: relative;
-      .ant-upload-list {
-        height: 100%;
-        width: 100%;
-        position: relative;
-        overflow: hidden;
-        .overlay {
-          height: 100%;
-          width: 100%;
-          background: rgba(0, 0, 0, 0.2);
-          color: #fff;
-          visibility: hidden;
-          opacity: 0;
-          transition: 0.2s ease-in-out;
-          position: absolute;
-          display: grid;
-          place-content: center;
-          border-radius: 50%;
-          font-size: 1.5rem;
-        }
-        &:hover {
-          .overlay {
-            visibility: visible;
-            opacity: 1;
-          }
-        }
-        .ant-upload-select-picture-card {
-          border-radius: 50%;
-          margin: auto;
-          height: 100%;
-          width: 100%;
-          overflow: hidden;
-        }
-      }
       img {
         object-fit: cover;
         width: 100%;
-        border-radius: 50%;
+        border-radius: 10px;
         aspect-ratio: 1 / 1;
         &.placeholder {
           border-radius: 0;
@@ -714,8 +680,7 @@ const Info = styled.div`
   flex-direction: column;
   gap: 20px;
   flex: 1;
-  .needs,
-  .misc-info {
+  .needs {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -739,43 +704,31 @@ const Info = styled.div`
     }
   }
   .misc-info {
+    display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     font-size: 0.9rem;
-    color: #999;
-    p {
-      margin-right: 20px;
-    }
     .difficulty,
-    .toxicity,
-    .sources {
-      display: flex;
-      align-items: center;
-      gap: 5px;
+    .toxicity {
       font-weight: bold;
-    }
-    .difficulty {
-      .easy {
+      font-size: 0.8rem;
+      padding: 2px 10px;
+      border-radius: 15px;
+      background: #eee;
+      color: #999;
+      &.easy,
+      &.nontoxic {
+        background: #f1f9eb;
         color: ${COLORS.mediumLight};
       }
-      .moderate {
+      &.moderate {
+        background: #fff0e6;
         color: ${COLORS.alert};
       }
-      .hard {
+      &.hard,
+      &.toxic {
+        background: #ffe6e6;
         color: ${COLORS.danger};
-      }
-    }
-    .toxicity {
-      .ant-select {
-        width: 150px;
-      }
-      .toxic {
-        color: ${COLORS.danger};
-      }
-      .nontoxic {
-        color: ${COLORS.mediumLight};
-      }
-      .unknown {
-        color: #999;
       }
     }
   }
@@ -783,7 +736,6 @@ const Info = styled.div`
     color: #999;
     display: flex;
     gap: 8px;
-    margin-top: 10px;
     a {
       font-size: 0.8rem;
       text-decoration: underline;

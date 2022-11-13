@@ -161,6 +161,7 @@ const InfoLink = styled(Link)`
     font-weight: bold;
   }
   .secondary-name {
+    color: #666;
     font-style: italic;
     font-size: 0.8rem;
   }

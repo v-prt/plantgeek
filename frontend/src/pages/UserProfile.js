@@ -423,9 +423,10 @@ const Contributions = styled.section`
       .contribution-card {
         width: 100%;
         border-top: 1px solid #e6e6e6;
-        padding: 10px;
+        padding: 10px 0;
         display: flex;
         align-items: center;
+        gap: 10px;
         &:last-child {
           border-bottom: 1px solid #e6e6e6;
         }
@@ -435,14 +436,17 @@ const Contributions = styled.section`
           border-radius: 50%;
         }
         .info {
-          margin-left: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
           .primary-name {
             font-size: 1rem;
             font-weight: bold;
             color: #222;
+            line-height: 1.2;
           }
           .secondary-name {
-            color: #999;
+            color: #666;
             font-size: 0.8rem;
             font-style: italic;
           }

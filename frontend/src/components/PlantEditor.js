@@ -106,7 +106,7 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
       await axios
         .put(`${API_URL}/plants/${plant._id}`, data)
         .then(() => {
-          message.success('Plant updated.')
+          message.success('Plant updated')
           setEditDrawerOpen(false)
           // push to new route if primaryName/slug changed
           if (data.slug !== slug) {
@@ -117,10 +117,11 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
           }
           queryClient.invalidateQueries('plants-to-review')
           queryClient.invalidateQueries('plants')
+          window.scrollTo(0, 0)
         })
         .catch(err => {
           console.log(err)
-          message.error('Oops, something went wrong.')
+          message.error('Oops, something went wrong')
         })
     } catch (err) {
       setStatus(err.response.data.message)

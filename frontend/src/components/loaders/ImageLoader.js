@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components/macro'
 
-export const ImageLoader = ({ src, alt, placeholder }) => {
+export const ImageLoader = ({ src, alt, placeholder, borderRadius }) => {
   const [imageLoaded, setImageLoaded] = useState(false)
   const [validUrl, setValidUrl] = useState(undefined)
 
@@ -33,7 +33,7 @@ export const ImageLoader = ({ src, alt, placeholder }) => {
   }, [src])
 
   return (
-    <Wrapper>
+    <Wrapper style={{ borderRadius }}>
       {validUrl === false ? (
         <>
           <img
