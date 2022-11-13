@@ -4,9 +4,8 @@ import { Document } from 'mongoose'
 export interface IReport extends Document {
   userId: string
   plantId: string
-  text: string
-  resolved: boolean
-  created: Date
+  report: string
+  status: string
 }
 
 // TODO: plant interface, user interface

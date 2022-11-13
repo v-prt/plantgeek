@@ -14,12 +14,12 @@ const reportSchema: Schema = new Schema(
       type: ObjectId,
       required: true,
     },
-    text: {
+    report: {
       type: String,
       required: true,
     },
-    resolved: {
-      type: Boolean,
+    status: {
+      type: String,
       required: true,
     },
   },
@@ -28,4 +28,4 @@ const reportSchema: Schema = new Schema(
 
 // TODO: plant schema, user schema
 
-export const Todo = model<IReport>('Todo', reportSchema)
+export const Report = model<IReport>('Report', reportSchema)

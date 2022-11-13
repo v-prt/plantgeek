@@ -49,7 +49,7 @@ export const Settings = () => {
   const { currentUser, updateCurrentUser, resendVerificationEmail } = useContext(UserContext)
   const [editMode, setEditMode] = useState(false)
   const [passwordEditMode, setPasswordEditMode] = useState(false)
-  const [deleteModal, setDeleteModal] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [image, setImage] = useState(currentUser.imageUrl)
   const [loading, setLoading] = useState(false)
 
@@ -366,20 +366,20 @@ export const Settings = () => {
           <div className='zone'>
             <div className='danger'>
               <p>Danger zone</p>
-              <Button type='danger' onClick={() => setDeleteModal(true)}>
+              <Button type='danger' onClick={() => setDeleteModalOpen(true)}>
                 DELETE ACCOUNT...
               </Button>
               <Modal
                 title='Delete account'
-                visible={deleteModal}
+                visible={deleteModalOpen}
                 footer={false}
-                onCancel={() => setDeleteModal(false)}>
+                onCancel={() => setDeleteModalOpen(false)}>
                 <p>Are you sure you want to permanently delete your account?</p>
                 <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
                   <Button type='danger' onClick={handleDelete} icon={<DeleteOutlined />}>
                     DELETE
                   </Button>
-                  <Button type='secondary' onClick={() => setDeleteModal(false)}>
+                  <Button type='secondary' onClick={() => setDeleteModalOpen(false)}>
                     CANCEL
                   </Button>
                 </div>

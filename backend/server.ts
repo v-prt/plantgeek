@@ -34,3 +34,9 @@ app.get('*', (req, res) => {
 })
 
 app.listen(PORT, () => console.info(`Listening on port ${PORT}`))
+
+// TODO:
+// mongoose
+//   .connect(uri)
+//   .then(() => app.listen(PORT, () => console.info(`Listening on port ${PORT}`)))
+//   .catch(error => console.error(error))

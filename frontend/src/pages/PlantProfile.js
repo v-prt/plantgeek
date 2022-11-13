@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
-import { useQuery, useQueryClient } from 'react-query'
-import Resizer from 'react-image-file-resizer'
+import { useQuery } from 'react-query'
 import { API_URL } from '../constants'
-import { message, Upload, Modal, Alert, Button } from 'antd'
+import { message, Modal, Alert, Button, Drawer } from 'antd'
 import moment from 'moment'
 import { Formik, Form } from 'formik'
 import { FormItem } from '../components/forms/FormItem'
@@ -15,9 +14,6 @@ import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import {
   EditOutlined,
-  SaveOutlined,
-  CloseCircleOutlined,
-  PlusOutlined,
   ClockCircleOutlined,
   LikeOutlined,
   DislikeOutlined,
@@ -25,6 +21,7 @@ import {
 } from '@ant-design/icons'
 import { FaPaw } from 'react-icons/fa'
 import { BiLogInCircle } from 'react-icons/bi'
+import { MdOutlineAdminPanelSettings } from 'react-icons/md'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
@@ -39,17 +36,17 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { PlantCard } from '../components/PlantCard'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { Stamp } from '../components/PlantCard'
+import { PlantEditor } from '../components/PlantEditor'
 const { Option } = Select
 
 export const PlantProfile = () => {
-  const { slug } = useParams()
-  const [plantId, setPlantId] = useState('')
-  const { currentUser } = useContext(UserContext)
   const history = useHistory()
+  const { slug } = useParams()
+  const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
-  const queryClient = new useQueryClient()
-  const [image, setImage] = useState(undefined)
-  const [suggestionModal, setSuggestionModal] = useState(false)
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false)
+  const [suggestionModalOpen, setSuggestionModalOpen] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 
   const { data: plant, status } = useQuery(['plant', slug], async () => {
     try {
@@ -72,13 +69,6 @@ export const PlantProfile = () => {
       return data.similarPlants
     }
   )
-
-  useEffect(() => {
-    if (plant) {
-      setPlantId(plant._id)
-      setImage(plant.imageUrl)
-    }
-  }, [plant])
 
   useDocumentTitle(plant?.primaryName ? `${plant?.primaryName} • plantgeek` : 'plantgeek')
 
@@ -132,466 +122,153 @@ export const PlantProfile = () => {
     }
   }, [plant])
 
-  // #region ADMIN ACTIONS
-
-  // IMAGE UPLOAD
-  const [uploading, setUploading] = useState(false)
-  const fileList = []
-  const uploadButton = <div>{uploading ? <Ellipsis /> : <PlusOutlined />}</div>
-  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`
-
-  // resize file before upload
-  const resizeFile = file =>
-    new Promise(resolve => {
-      Resizer.imageFileResizer(
-        file, // file to be resized
-        600, // maxWidth of the resized image
-        600, // maxHeight of the resized image
-        'WEBP', // compressFormat of the resized image
-        100, // quality of the resized image
-        0, // degree of clockwise rotation to apply to the image
-        uri => {
-          // callback function of the resized image URI
-          resolve(uri)
-        },
-        'base64' // outputType of the resized image
-      )
-    })
-
-  // handling image upload
-  const handleImageUpload = async fileData => {
-    setUploading(true)
-    const image = await resizeFile(fileData.file)
-
-    const formData = new FormData()
-    formData.append('file', image)
-    formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
-
-    await axios
-      // uploading image to cloudinary
-      .post(cloudinaryUrl, formData)
-      .then(res => {
-        const imageUrl = res.data.secure_url
-        // updating plant with new image url
-        axios
-          .put(`${API_URL}/plants/${plantId}`, { imageUrl })
-          .then(() => {
-            message.success('Image uploaded.')
-            setImage(imageUrl)
-            queryClient.invalidateQueries('plant')
-            queryClient.invalidateQueries('plants')
-            setUploading(false)
-          })
-          .catch(err => {
-            console.log(err)
-            message.error('Something went wrong on the server. Please try again.')
-            setUploading(false)
-          })
-      })
-      .catch(err => {
-        console.log(err)
-        message.error('Something went wrong with cloudinary. Please try again.')
-        setUploading(false)
-      })
-  }
-
-  // UPDATE PLANT
-  const [editMode, setEditMode] = useState(false)
-
-  const initialValues = {
-    primaryName: plant?.primaryName,
-    secondaryName: plant?.secondaryName,
-    light: plant?.light,
-    water: plant?.water,
-    temperature: plant?.temperature,
-    humidity: plant?.humidity,
-    toxic: plant?.toxic,
-    review: plant?.review,
-    sourceUrl: plant?.sourceUrl,
-  }
-
-  const schema = Yup.object().shape({
-    primaryName: Yup.string()
-      .min(2, 'Too short')
-      .required('Required')
-      // no special characters except hyphens and apostrophes
-      .matches(/^[a-zA-Z0-9-'\s]+$/, 'No special characters'),
-    secondaryName: Yup.string()
-      .min(2, 'Too short')
-      .matches(/^[a-zA-Z0-9-'\s]+$/, 'No special characters'),
-    light: Yup.string().required('Required'),
-    water: Yup.string().required('Required'),
-    temperature: Yup.string().required('Required'),
-    humidity: Yup.string().required('Required'),
-    toxic: Yup.string().required('Required'),
-  })
-
-  const handleSubmit = async (values, { setStatus, setSubmitting }) => {
-    setStatus('')
-    setSubmitting(true)
-    const data = {
-      slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
-      ...values,
-    }
-    try {
-      await axios.put(`${API_URL}/plants/${plantId}`, data)
-
-      message.success('Plant updated.')
-      setEditMode(false)
-
-      // push to new route if primaryName/slug changed
-      if (data.slug !== slug) {
-        history.push(`/plant/${data.slug}`)
-      } else {
-        queryClient.invalidateQueries('plant')
-        queryClient.invalidateQueries('similar-plants')
-      }
-      queryClient.invalidateQueries('plants')
-    } catch (err) {
-      setStatus(err.response.data.message)
-    }
-    setSubmitting(false)
-  }
-
-  const removeImage = async () => {
-    try {
-      // TODO: test
-      await axios.put(`${API_URL}/plants/${plantId}`, {
-        imageUrl:
-          // 'https://res.cloudinary.com/plantgeek/image/upload/v1664931643/plantgeek-plants/plant-placeholder_z8s1n7.png',
-          null,
-      })
-      queryClient.invalidateQueries('plant')
-      queryClient.invalidateQueries('plants')
-      message.success('Image removed.')
-    } catch (err) {
-      console.log(err)
-      message.error('Sorry, something went wrong.')
-    }
-  }
-
-  // DELETE PLANT
+  // DELETE PLANT (ADMIN)
   const handleDelete = plantId => {
-    if (
-      window.confirm(
-        'Are you sure you want to delete this plant from the database? This cannot be undone!'
-      )
-    ) {
-      history.push('/browse')
-      axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
-    }
+    history.push('/browse')
+    axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
   }
-
-  // #endregion ADMIN ACTIONS
 
   return (
     <Wrapper>
       {status === 'success' ? (
         plant ? (
           <>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={schema}
-              validateOnChange={false}
-              validateOnBlur={false}
-              onSubmit={handleSubmit}>
-              {({ status, submitForm, isSubmitting }) => (
-                <Form>
-                  <FadeIn>
-                    <section className='heading'>
-                      {plant.review === 'pending' && (
-                        <div className='review-pending'>
-                          <Alert
-                            type='warning'
-                            message='This plant is pending review by an admin.'
-                            showIcon
-                          />
-                        </div>
-                      )}
-                      {plant.review === 'rejected' && (
-                        <div className='review-pending'>
-                          <Alert
-                            type='error'
-                            message='This plant has been rejected by an admin. The information may be incorrect or is a duplicate.'
-                            showIcon
-                          />
-                        </div>
-                      )}
-                      {editMode ? (
-                        <div className='basic-info-form'>
-                          <FormItem label='Botanical name' name='primaryName'>
-                            <Input
-                              name='primaryName'
-                              placeholder='Monstera deliciosa'
-                              style={{ width: '100%' }}
-                              prefix={<EditOutlined />}
-                            />
-                          </FormItem>
-                          <FormItem label='Common name' sublabel='(optional)' name='secondaryName'>
-                            <Input
-                              name='secondaryName'
-                              placeholder='Swiss Cheese Plant'
-                              style={{ width: '100%' }}
-                              prefix={<EditOutlined />}
-                            />
-                          </FormItem>
-                          <FormItem label='Review status' sublabel='(optional)' name='review'>
-                            <Select name='review' placeholder='Select' style={{ width: '100%' }}>
-                              <Option value='pending'>Pending</Option>
-                              <Option value='approved'>Approved</Option>
-                              <Option value='rejected'>Rejected</Option>
-                            </Select>
-                          </FormItem>
-                        </div>
-                      ) : (
-                        <>
-                          <h1>{plant.primaryName?.toLowerCase()}</h1>
-                          <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
-                        </>
-                      )}
-                      {currentUser?.role === 'admin' &&
-                        (editMode ? (
-                          <>
-                            {status && <Alert type='error' message={status} showIcon />}
-                            <div className='buttons'>
-                              <Button
-                                type='primary'
-                                icon={<SaveOutlined />}
-                                loading={isSubmitting}
-                                onClick={() => submitForm()}>
-                                SAVE
-                              </Button>
-                              <Button
-                                type='secondary'
-                                icon={<CloseCircleOutlined />}
-                                onClick={() => setEditMode(false)}>
-                                CANCEL
-                              </Button>
-                            </div>
-                          </>
-                        ) : (
-                          <Button
-                            type='primary'
-                            icon={<EditOutlined />}
-                            onClick={() => setEditMode(true)}>
-                            EDIT
-                          </Button>
-                        ))}
-                    </section>
-                  </FadeIn>
-                  <FadeIn delay={200}>
-                    <section className='plant-info'>
-                      {currentUser?.role === 'admin' && editMode ? (
-                        <div className='upload-wrapper'>
-                          <div className='primary-image'>
-                            <Upload
-                              multiple={false}
-                              maxCount={1}
-                              name='plantImage'
-                              customRequest={handleImageUpload}
-                              fileList={fileList}
-                              listType='picture-card'
-                              accept='.png, .jpg, .jpeg, .webp'
-                              showUploadList={{
-                                showPreviewIcon: false,
-                                showRemoveIcon: false,
-                              }}>
-                              {!uploading && image ? (
-                                <ImageLoader src={image} alt='' placeholder={placeholder} />
-                              ) : (
-                                uploadButton
-                              )}
-                              {!uploading && (
-                                <div className='overlay'>
-                                  <EditOutlined />
-                                </div>
-                              )}
-                            </Upload>
-                          </div>
-                          <button
-                            type='button'
-                            onClick={() => removeImage()}
-                            style={{ color: 'red' }}>
-                            <DeleteOutlined /> Remove Image
-                          </button>
-                        </div>
-                      ) : (
-                        <div className='primary-image'>
-                          {plant.toxic === false && (
-                            <Stamp>
-                              <FaPaw />
-                            </Stamp>
-                          )}
-                          <ImageLoader src={image} alt='' placeholder={placeholder} />
-                          {/* TODO: gallery here */}
-                        </div>
-                      )}
+            <FadeIn>
+              <section className='heading'>
+                {plant.review === 'pending' && (
+                  <div className='review-pending'>
+                    <Alert
+                      type='warning'
+                      message='This plant is pending review by an admin.'
+                      showIcon
+                    />
+                  </div>
+                )}
+                {plant.review === 'rejected' && (
+                  <div className='review-pending'>
+                    <Alert
+                      type='error'
+                      message='This plant has been rejected by an admin. The information may be incorrect or is a duplicate.'
+                      showIcon
+                    />
+                  </div>
+                )}
+                <h1>{plant.primaryName?.toLowerCase()}</h1>
+                <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
+              </section>
+            </FadeIn>
 
-                      {/* PLANT NEEDS */}
-                      <Info>
-                        <div className='needs'>
-                          <div className='row'>
-                            <img src={sun} alt='' />
-                            <div className='column'>
-                              {editMode ? (
-                                <Select name='light' placeholder='Select' style={{ width: '100%' }}>
-                                  <Option value='low to bright indirect'>
-                                    low to bright indirect
-                                  </Option>
-                                  <Option value='medium to bright indirect'>
-                                    medium to bright indirect
-                                  </Option>
-                                  <Option value='bright indirect'>bright indirect</Option>
-                                </Select>
-                              ) : (
-                                <p>{plant.light || 'unknown'}</p>
-                              )}
-                              <Bar>
-                                {plant.light === 'low to bright indirect' && (
-                                  <Indicator level={'1'} />
-                                )}
-                                {plant.light === 'medium to bright indirect' && (
-                                  <Indicator level={'2'} />
-                                )}
-                                {plant.light === 'bright indirect' && <Indicator level={'3'} />}
-                              </Bar>
-                            </div>
-                          </div>
-                          <div className='row'>
-                            <img src={water} alt='' />
-                            <div className='column'>
-                              {editMode ? (
-                                <Select name='water' placeholder='Select' style={{ width: '100%' }}>
-                                  <Option value='low'>low</Option>
-                                  <Option value='low to medium'>low to medium</Option>
-                                  <Option value='medium'>medium</Option>
-                                  <Option value='medium to high'>medium to high</Option>
-                                  <Option value='high'>high</Option>
-                                </Select>
-                              ) : (
-                                <p>{plant.water || 'unknown'}</p>
-                              )}
-                              <Bar>
-                                {plant.water === 'low' && <Indicator level={'1'} />}
-                                {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
-                                {plant.water === 'medium' && <Indicator level={'2'} />}
-                                {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
-                                {plant.water === 'high' && <Indicator level={'3'} />}
-                              </Bar>
-                            </div>
-                          </div>
-                          <div className='row'>
-                            <img src={temp} alt='' />
-                            <div className='column'>
-                              {editMode ? (
-                                <Select
-                                  name='temperature'
-                                  placeholder='Select'
-                                  style={{ width: '100%' }}>
-                                  <Option value='average'>average (55-75°F)</Option>
-                                  <Option value='above average'>above average (65-85°F)</Option>
-                                </Select>
-                              ) : (
-                                <p>
-                                  {plant.temperature === 'average'
-                                    ? 'average (55-75°F)'
-                                    : plant.temperature === 'above average'
-                                    ? 'above average (65-85°F)'
-                                    : plant.temperature || 'unknown'}
-                                </p>
-                              )}
-                              <Bar>
-                                {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                                {plant.temperature === 'above average' && <Indicator level={'3'} />}
-                              </Bar>
-                            </div>
-                          </div>
-                          <div className='row'>
-                            <img src={humidity} alt='' />
-                            <div className='column'>
-                              {editMode ? (
-                                <Select
-                                  name='humidity'
-                                  placeholder='Select'
-                                  style={{ width: '100%' }}>
-                                  <Option value='low'>low (30-40%)</Option>
-                                  <Option value='medium'>medium (40-50%)</Option>
-                                  <Option value='high'>high (50-60%+)</Option>
-                                </Select>
-                              ) : (
-                                <p>
-                                  {plant.humidity === 'low'
-                                    ? 'low (30-40%)'
-                                    : plant.humidity === 'medium'
-                                    ? 'medium (40-50%)'
-                                    : plant.humidity === 'high'
-                                    ? 'high (50-60%+)'
-                                    : plant.humidity || 'unknown'}
-                                </p>
-                              )}
-                              <Bar>
-                                {plant.humidity === 'low' && <Indicator level={'1'} />}
-                                {plant.humidity === 'medium' && <Indicator level={'2'} />}
-                                {plant.humidity === 'high' && <Indicator level={'3'} />}
-                              </Bar>
-                            </div>
-                          </div>
-                        </div>
-                        <div className='misc-info'>
-                          <div className='difficulty'>
-                            Difficulty:{' '}
-                            <span className={difficulty?.toLowerCase()}>{difficulty || 'N/A'}</span>
-                          </div>
-                          {editMode ? (
-                            <>
-                              <FormItem name='toxic' label='Toxicity'>
-                                <Select name='toxic' placeholder='Select' style={{ width: '100%' }}>
-                                  <Option value={true}>toxic</Option>
-                                  <Option value={false}>nontoxic</Option>
-                                </Select>
-                              </FormItem>
-                              <FormItem name='sourceUrl' label='Source URL'>
-                                <Input
-                                  name='sourceUrl'
-                                  placeholder='https://www.plantpedia.com/monstera-deliciosa'
-                                  style={{ width: '100%' }}
-                                />
-                              </FormItem>
-                            </>
-                          ) : (
-                            <>
-                              <div className='toxicity'>
-                                Toxic:{' '}
-                                {plant.toxic === false ? (
-                                  <span className='nontoxic'>No</span>
-                                ) : plant.toxic === true ? (
-                                  <span className='toxic'>Yes</span>
-                                ) : (
-                                  <span className='unknown'>Unknown</span>
-                                )}
-                              </div>
-                              <div className='links'>
-                                <Link to='/guidelines' className='link'>
-                                  Care Tips
-                                </Link>
-                                •
-                                <a
-                                  className='source-link'
-                                  href={plant.sourceUrl}
-                                  target='_blank'
-                                  rel='noopenner noreferrer'>
-                                  Source
-                                </a>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </Info>
-                    </section>
-                  </FadeIn>
-                </Form>
-              )}
-            </Formik>
+            <FadeIn delay={200}>
+              <section className='plant-info'>
+                <div className='primary-image'>
+                  {plant.toxic === false && (
+                    <Stamp>
+                      <FaPaw />
+                    </Stamp>
+                  )}
+                  <ImageLoader src={plant.imageUrl} alt='' placeholder={placeholder} />
+                  {/* TODO: gallery here */}
+                </div>
+
+                {/* PLANT NEEDS */}
+                <Info>
+                  <div className='needs'>
+                    <div className='row'>
+                      <img src={sun} alt='' />
+                      <div className='column'>
+                        <p>{plant.light || 'unknown'}</p>
+
+                        <Bar>
+                          {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
+                          {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
+                          {plant.light === 'bright indirect' && <Indicator level={'3'} />}
+                        </Bar>
+                      </div>
+                    </div>
+                    <div className='row'>
+                      <img src={water} alt='' />
+                      <div className='column'>
+                        <p>{plant.water || 'unknown'}</p>
+                        <Bar>
+                          {plant.water === 'low' && <Indicator level={'1'} />}
+                          {plant.water === 'low to medium' && <Indicator level={'1-2'} />}
+                          {plant.water === 'medium' && <Indicator level={'2'} />}
+                          {plant.water === 'medium to high' && <Indicator level={'2-3'} />}
+                          {plant.water === 'high' && <Indicator level={'3'} />}
+                        </Bar>
+                      </div>
+                    </div>
+                    <div className='row'>
+                      <img src={temp} alt='' />
+                      <div className='column'>
+                        <p>
+                          {plant.temperature === 'average'
+                            ? 'average (55-75°F)'
+                            : plant.temperature === 'above average'
+                            ? 'above average (65-85°F)'
+                            : plant.temperature || 'unknown'}
+                        </p>
+
+                        <Bar>
+                          {plant.temperature === 'average' && <Indicator level={'1-2'} />}
+                          {plant.temperature === 'above average' && <Indicator level={'3'} />}
+                        </Bar>
+                      </div>
+                    </div>
+                    <div className='row'>
+                      <img src={humidity} alt='' />
+                      <div className='column'>
+                        <p>
+                          {plant.humidity === 'low'
+                            ? 'low (30-40%)'
+                            : plant.humidity === 'medium'
+                            ? 'medium (40-50%)'
+                            : plant.humidity === 'high'
+                            ? 'high (50-60%+)'
+                            : plant.humidity || 'unknown'}
+                        </p>
+
+                        <Bar>
+                          {plant.humidity === 'low' && <Indicator level={'1'} />}
+                          {plant.humidity === 'medium' && <Indicator level={'2'} />}
+                          {plant.humidity === 'high' && <Indicator level={'3'} />}
+                        </Bar>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='misc-info'>
+                    <div className='difficulty'>
+                      Difficulty:{' '}
+                      <span className={difficulty?.toLowerCase()}>{difficulty || 'N/A'}</span>
+                    </div>
+
+                    <div className='toxicity'>
+                      Toxic:{' '}
+                      {plant.toxic === false ? (
+                        <span className='nontoxic'>No</span>
+                      ) : plant.toxic === true ? (
+                        <span className='toxic'>Yes</span>
+                      ) : (
+                        <span className='unknown'>Unknown</span>
+                      )}
+                    </div>
+                    <div className='links'>
+                      <Link to='/guidelines' className='link'>
+                        Care Tips
+                      </Link>
+                      •
+                      <a
+                        className='source-link'
+                        href={plant.sourceUrl}
+                        target='_blank'
+                        rel='noopenner noreferrer'>
+                        Source
+                      </a>
+                    </div>
+                  </div>
+                </Info>
+              </section>
+            </FadeIn>
 
             <FadeIn delay={400}>
               <div className='actions'>
@@ -607,13 +284,13 @@ export const PlantProfile = () => {
                     Please let us know if you have a suggestion for this plant or want to report
                     incorrect information.
                   </p>
-                  <Button type='primary' onClick={() => setSuggestionModal(true)}>
+                  <Button type='primary' onClick={() => setSuggestionModalOpen(true)}>
                     <MailOutlined /> SEND SUGGESTION
                   </Button>
                   <Modal
-                    visible={suggestionModal}
+                    visible={suggestionModalOpen}
                     footer={null}
-                    onCancel={() => setSuggestionModal(false)}>
+                    onCancel={() => setSuggestionModalOpen(false)}>
                     <SuggestionSubmission>
                       {currentUser ? (
                         <Formik
@@ -628,13 +305,13 @@ export const PlantProfile = () => {
                           onSubmit={async (values, { setSubmitting }) => {
                             if (currentUser.emailVerified) {
                               try {
-                                await axios.post(`${API_URL}/suggestions/${plantId}`, {
+                                await axios.post(`${API_URL}/suggestions/${plant._id}`, {
                                   suggestion: values.suggestion,
                                   sourceUrl: values.sourceUrl,
                                   userId: currentUser._id,
                                 })
                                 message.success('Suggestion submitted! Thank you.')
-                                setSuggestionModal(false)
+                                setSuggestionModalOpen(false)
                               } catch (err) {
                                 console.log(err)
                                 message.error(
@@ -728,7 +405,10 @@ export const PlantProfile = () => {
             {currentUser?.role === 'admin' && (
               <FadeIn delay={700}>
                 <AdminSection>
-                  <h3>Admin</h3>
+                  <h3>
+                    <MdOutlineAdminPanelSettings /> Admin
+                  </h3>
+
                   <div className='suggestions-admin'>
                     <h4>Suggestions from users</h4>
                     {/* TODO: filter suggestions by status */}
@@ -795,14 +475,49 @@ export const PlantProfile = () => {
                       )}
                     </div>
                   </div>
-                  <div className='danger-zone'>
-                    <p>DANGER ZONE</p>
+
+                  <div className='admin-buttons'>
                     <Button
-                      type='danger'
-                      onClick={() => handleDelete(plantId)}
-                      icon={<DeleteOutlined />}>
-                      DELETE PLANT
+                      type='primary'
+                      icon={<EditOutlined />}
+                      onClick={() => setEditDrawerOpen(true)}>
+                      EDIT PLANT
                     </Button>
+                    <Drawer
+                      title='Edit plant'
+                      visible={editDrawerOpen}
+                      onClose={() => setEditDrawerOpen(false)}>
+                      <PlantEditor
+                        plant={plant}
+                        slug={slug}
+                        currentUser={currentUser}
+                        setEditDrawerOpen={setEditDrawerOpen}
+                      />
+                    </Drawer>
+
+                    <Button type='danger' onClick={() => setDeleteModalOpen(true)}>
+                      DELETE PLANT...
+                    </Button>
+                    <Modal
+                      title='Delete plant'
+                      visible={deleteModalOpen}
+                      footer={false}
+                      onCancel={() => setDeleteModalOpen(false)}>
+                      <p>
+                        Are you sure you want to permanently delete <b>{plant.primaryName}</b>?
+                      </p>
+                      <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+                        <Button
+                          type='danger'
+                          onClick={() => handleDelete(plant._id)}
+                          icon={<DeleteOutlined />}>
+                          DELETE
+                        </Button>
+                        <Button type='secondary' onClick={() => setDeleteModalOpen(false)}>
+                          CANCEL
+                        </Button>
+                      </div>
+                    </Modal>
                   </div>
                 </AdminSection>
               </FadeIn>
@@ -838,7 +553,6 @@ const Wrapper = styled.main`
   }
   .heading {
     background: ${COLORS.light};
-    margin-bottom: 10px;
     .review-pending {
       margin-bottom: 20px;
     }
@@ -971,7 +685,6 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
-      margin-bottom: 20px;
       h1 {
         font-size: 2rem;
       }
@@ -989,9 +702,6 @@ const Wrapper = styled.main`
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    .heading {
-      margin-bottom: 30px;
-    }
     .actions {
       gap: 30px;
     }
@@ -1006,22 +716,20 @@ const Info = styled.div`
   flex: 1;
   .needs,
   .misc-info {
-    background: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .row {
+    background: #f6f6f6;
     padding: 10px;
     border-radius: 10px;
     display: flex;
-    flex-direction: column;
-  }
-  .row {
-    display: flex;
     align-items: center;
-    margin: 10px 0;
+    gap: 10px;
     img {
-      background: #fff;
-      padding: 5px;
-      border-radius: 50%;
-      height: 40px;
-      margin-right: 10px;
+      height: 30px;
+      width: 30px;
     }
     .column {
       flex: 1;
@@ -1083,9 +791,10 @@ const Info = styled.div`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .row {
+      gap: 15px;
       img {
-        height: 45px;
-        margin-right: 15px;
+        height: 35px;
+        width: 35px;
       }
       .column {
         p {
@@ -1178,17 +887,10 @@ const AdminSection = styled.section`
       }
     }
   }
-  .danger-zone {
-    background: #fff;
-    width: 100%;
-    margin-top: 30px;
-    padding: 20px 0;
-    border-top: 1px dotted #ccc;
+  .admin-buttons {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    p {
-      color: red;
-    }
+    gap: 12px;
+    border-top: 1px dotted #ccc;
+    padding-top: 20px;
   }
 `
