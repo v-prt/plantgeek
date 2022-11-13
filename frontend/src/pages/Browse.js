@@ -382,9 +382,9 @@ const Wrapper = styled.div`
         .filter-menu-btn {
           display: none;
         }
-      }
-      .tags {
-        display: none;
+        .tags {
+          display: none;
+        }
       }
     }
     .browse-content-inner {
