@@ -31,11 +31,11 @@ import {
 } from './controllers/PlantController'
 
 import {
-  createSuggestion,
-  getSuggestions,
-  getSuggestionsBySlug,
-  updateSuggestion,
-} from './controllers/SuggestionController'
+  createReport,
+  getReports,
+  getPlantReports,
+  updateReportStatus,
+} from './controllers/ReportController'
 
 const router: Router = Router()
 const API_URL = process.env.API_URL
@@ -69,10 +69,10 @@ router
   .put(`${API_URL}/plants/:id`, updatePlant)
   .delete(`${API_URL}/plants/:id`, deletePlant)
 
-  // suggestions
-  .post(`${API_URL}/suggestions/:plantId`, createSuggestion)
-  .get(`${API_URL}/suggestions`, getSuggestions)
-  .get(`${API_URL}/suggestions/:slug`, getSuggestionsBySlug)
-  .put(`${API_URL}/suggestions/:id`, updateSuggestion)
+  // reports
+  .post(`${API_URL}/reports/:plantId`, createReport)
+  .get(`${API_URL}/reports`, getReports)
+  .get(`${API_URL}/reports/:plantId`, getPlantReports)
+  .put(`${API_URL}/reports/:reportId`, updateReportStatus)
 
 export default router

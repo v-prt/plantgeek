@@ -114,8 +114,8 @@ const Wrapper = styled.div`
 `
 
 export const Stamp = styled.div`
-  background: ${COLORS.accent};
-  color: #fff;
+  background: #f1f9eb;
+  color: ${COLORS.mediumLight};
   position: absolute;
   right: 0;
   border-radius: 50%;

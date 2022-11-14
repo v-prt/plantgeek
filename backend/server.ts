@@ -33,10 +33,10 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'build', 'index.html'))
 })
 
-app.listen(PORT, () => console.info(`Listening on port ${PORT}`))
+// app.listen(PORT, () => console.info(`Listening on port ${PORT}`))
 
-// TODO:
-// mongoose
-//   .connect(uri)
-//   .then(() => app.listen(PORT, () => console.info(`Listening on port ${PORT}`)))
-//   .catch(error => console.error(error))
+// TODO: look into how connect works (does connection need to be closed?)
+mongoose
+  .connect(uri)
+  .then(() => app.listen(PORT, () => console.info(`Listening on port ${PORT}`)))
+  .catch(error => console.error(error))

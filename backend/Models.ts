@@ -14,7 +14,7 @@ const reportSchema: Schema = new Schema(
       type: ObjectId,
       required: true,
     },
-    report: {
+    message: {
       type: String,
       required: true,
     },
