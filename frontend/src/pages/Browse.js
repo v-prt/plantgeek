@@ -366,6 +366,7 @@ const Wrapper = styled.div`
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     .browse-content {
+      height: 100vh;
       /* height: calc(100vh - 110px); */
       /* top: 110px; */
       right: 0;

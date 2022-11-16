@@ -394,7 +394,7 @@ export const Settings = () => {
 
 const Wrapper = styled.main`
   .user-info {
-    background: ${COLORS.light};
+    background: linear-gradient(45deg, #a4e17d, #95d190);
     display: flex;
     align-items: center;
     gap: 10px;

@@ -154,7 +154,7 @@ export const Homepage = () => {
 
 const Wrapper = styled.main`
   .heading {
-    background: ${COLORS.light};
+    background: linear-gradient(45deg, #a4e17d, #95d190);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -235,6 +235,7 @@ const InfoCard = styled.section`
     align-items: center;
     font-size: 1.2rem;
     font-weight: bold;
+    width: fit-content;
   }
   ul {
     list-style: disc;

@@ -219,7 +219,7 @@ export const Guidelines = () => {
 
 const Wrapper = styled.main`
   .heading {
-    background: ${COLORS.light};
+    background: linear-gradient(45deg, #a4e17d, #95d190);
     h1 {
       line-height: 1.2;
       margin-bottom: 10px;

@@ -131,7 +131,7 @@ export const Card = styled.div`
   border-radius: 20px;
   overflow: hidden;
   .header {
-    background: ${COLORS.light};
+    background: linear-gradient(45deg, #a4e17d, #95d190);
     display: flex;
     flex-direction: column;
     align-items: center;

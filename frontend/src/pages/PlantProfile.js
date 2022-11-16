@@ -390,7 +390,7 @@ const Wrapper = styled.main`
     }
   }
   .heading {
-    background: ${COLORS.light};
+    background: linear-gradient(45deg, #a4e17d, #95d190);
     .review-pending {
       margin-bottom: 20px;
     }
