@@ -203,6 +203,19 @@ export const getPlantsToReview = async (req: Request, res: Response) => {
   client.close()
 }
 
+export const countPendingPlants = async (req: Request, res: Response) => {
+  const client = await MongoClient(MONGO_URI, options)
+  await client.connect()
+  const db = client.db('plantgeekdb')
+  try {
+    const count = await db.collection('plants').countDocuments({ review: 'pending' })
+    res.status(200).json({ count })
+  } catch (err) {
+    console.error(err)
+  }
+  client.close()
+}
+
 // (READ/GET) GETS PLANT BY ID
 export const getPlant = async (req: Request, res: Response) => {
   const slug = req.params.slug

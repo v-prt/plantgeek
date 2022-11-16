@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
+import { useQueryClient } from 'react-query'
 import Resizer from 'react-image-file-resizer'
 import { useDropzone } from 'react-dropzone'
 import { API_URL } from '../constants'
@@ -26,6 +27,7 @@ const { Option } = Select
 export const Contribute = () => {
   useDocumentTitle('Contribute • plantgeek')
 
+  const queryClient = useQueryClient()
   const { currentUser } = useContext(UserContext)
   const [status, setStatus] = useState(undefined)
   const [newPlant, setNewPlant] = useState(null)
@@ -135,6 +137,8 @@ export const Contribute = () => {
                 setNewPlant(res.data.plant)
                 resetForm()
                 setImages()
+                queryClient.invalidateQueries('plants-to-review')
+                queryClient.invalidateQueries('pending-plants')
                 window.scrollTo(0, 0)
               })
               .catch(err => {

@@ -90,6 +90,18 @@ export const getPlantReports = async (req: Request, res: Response): Promise<void
   client.close()
 }
 
+export const countPendingReports = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const count = await Report.countDocuments({ status: 'pending' })
+    res.status(200).json({ count })
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err)
+      res.status(500).json(err)
+    }
+  }
+}
+
 export const updateReportStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const { reportId } = req.params

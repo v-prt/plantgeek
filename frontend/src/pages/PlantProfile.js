@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import { API_URL } from '../constants'
 import { Modal, Alert, Button, Drawer } from 'antd'
 import { UserContext } from '../contexts/UserContext'
@@ -28,6 +28,7 @@ import { SinglePlantReports } from '../components/reports/SinglePlantReports'
 export const PlantProfile = () => {
   const { slug } = useParams()
   const history = useHistory()
+  const queryClient = useQueryClient()
   const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
   const [editDrawerOpen, setEditDrawerOpen] = useState(false)
@@ -107,6 +108,9 @@ export const PlantProfile = () => {
   const handleDelete = plantId => {
     history.push('/browse')
     axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
+    queryClient.invalidateQueries('plants')
+    queryClient.invalidateQueries('plants-to-review')
+    queryClient.invalidateQueries('pending-plants')
   }
 
   return (

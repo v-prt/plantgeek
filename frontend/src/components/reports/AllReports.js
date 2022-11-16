@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { API_URL } from '../../constants'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import axios from 'axios'
 import moment from 'moment'
 import styled from 'styled-components/macro'
@@ -14,7 +14,9 @@ import { ClockCircleOutlined, LikeOutlined, DislikeOutlined } from '@ant-design/
 import { RiPlantLine } from 'react-icons/ri'
 const { Option } = Select
 
-export const AllReports = ({ plantId }) => {
+export const AllReports = () => {
+  const queryClient = useQueryClient()
+
   // TODO: filter reports by status, pagination
   const { data: reports, status: reportsStatus } = useQuery(['reports'], async () => {
     const { data } = await axios.get(`${API_URL}/reports`)
@@ -55,6 +57,7 @@ export const AllReports = ({ plantId }) => {
                       status: values.status,
                     })
                     message.success('Report status updated')
+                    queryClient.invalidateQueries('pending-reports')
                     setSubmitting(false)
                   } catch (err) {
                     console.log(err)

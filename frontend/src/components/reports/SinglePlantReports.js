@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { API_URL } from '../../constants'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import axios from 'axios'
 import moment from 'moment'
 import styled from 'styled-components/macro'
@@ -8,13 +8,15 @@ import { COLORS } from '../../GlobalStyles'
 import { Formik, Form } from 'formik'
 import { FormItem } from '../forms/FormItem'
 import { Select } from 'formik-antd'
-import { Empty, message } from 'antd'
+import { message } from 'antd'
 import { Ellipsis } from '../loaders/Ellipsis'
 import { ClockCircleOutlined, LikeOutlined, DislikeOutlined } from '@ant-design/icons'
 import { RiPlantLine } from 'react-icons/ri'
 const { Option } = Select
 
 export const SinglePlantReports = ({ plantId }) => {
+  const queryClient = useQueryClient()
+
   // TODO: filter reports by status, pagination
   const { data: reports, status: reportsStatus } = useQuery(
     ['plant-reports', plantId],
@@ -58,6 +60,8 @@ export const SinglePlantReports = ({ plantId }) => {
                       status: values.status,
                     })
                     message.success('Report status updated')
+                    queryClient.invalidateQueries('reports')
+                    queryClient.invalidateQueries('pending-reports')
                     setSubmitting(false)
                   } catch (err) {
                     console.log(err)
@@ -85,7 +89,7 @@ export const SinglePlantReports = ({ plantId }) => {
             </div>
           ))
         ) : (
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No reports' />
+          <p className='no-reports'>No reports.</p>
         )
       ) : (
         <Ellipsis />
@@ -137,5 +141,8 @@ const Wrapper = styled.div`
       width: 100%;
       max-width: 200px;
     }
+  }
+  .no-reports {
+    opacity: 0.5;
   }
 `

@@ -116,6 +116,7 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
             queryClient.invalidateQueries('similar-plants')
           }
           queryClient.invalidateQueries('plants-to-review')
+          queryClient.invalidateQueries('pending-plants')
           queryClient.invalidateQueries('plants')
           window.scrollTo(0, 0)
         })

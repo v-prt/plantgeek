@@ -22,6 +22,7 @@ import {
   createPlant,
   getPlants,
   getPlantsToReview,
+  countPendingPlants,
   getPlant,
   getSimilarPlants,
   getRandomPlants,
@@ -34,6 +35,7 @@ import {
   createReport,
   getReports,
   getPlantReports,
+  countPendingReports,
   updateReportStatus,
 } from './controllers/ReportController'
 
@@ -62,6 +64,7 @@ router
   .post(`${API_URL}/plants`, createPlant)
   .get(`${API_URL}/plants/:page`, getPlants)
   .get(`${API_URL}/plants-to-review`, getPlantsToReview)
+  .get(`${API_URL}/pending-plants`, countPendingPlants)
   .get(`${API_URL}/plant/:slug`, getPlant)
   .get(`${API_URL}/similar-plants/:slug`, getSimilarPlants)
   .get(`${API_URL}/random-plants`, getRandomPlants)
@@ -73,6 +76,7 @@ router
   .post(`${API_URL}/reports/:plantId`, createReport)
   .get(`${API_URL}/reports`, getReports)
   .get(`${API_URL}/reports/:plantId`, getPlantReports)
+  .get(`${API_URL}/pending-reports`, countPendingReports)
   .put(`${API_URL}/reports/:reportId`, updateReportStatus)
 
 export default router

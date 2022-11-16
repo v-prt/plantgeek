@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { API_URL } from '../constants'
 import axios from 'axios'
-import numeral from 'numeral'
 import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
@@ -25,9 +24,18 @@ export const Navbar = () => {
   const { handleLogout, currentUser } = useContext(UserContext)
   const [expanded, setExpanded] = useState(false)
 
-  const { data: plantsToReview } = useQuery(['plants-to-review'], async () => {
-    const { data } = await axios.get(`${API_URL}/plants-to-review`)
-    return data.plants
+  const { data: pendingPlants } = useQuery(['pending-plants'], async () => {
+    if (currentUser?.role === 'admin') {
+      const { data } = await axios.get(`${API_URL}/pending-plants`)
+      return data.count
+    } else return null
+  })
+
+  const { data: pendingReports } = useQuery(['pending-reports'], async () => {
+    if (currentUser?.role === 'admin') {
+      const { data } = await axios.get(`${API_URL}/pending-reports`)
+      return data.count
+    } else return null
   })
 
   const MenuLinks = () => {
@@ -66,9 +74,9 @@ export const Navbar = () => {
                 </div>
                 <span className='label'>
                   admin
-                  {plantsToReview?.length > 0 && (
+                  {pendingPlants + pendingReports > 0 && (
                     <span className='review-notification-badge'>
-                      {numeral(plantsToReview.length).format('0a')}
+                      {pendingPlants + pendingReports}
                     </span>
                   )}
                 </span>
