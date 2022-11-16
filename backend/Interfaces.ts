@@ -5,6 +5,7 @@ export interface IReport extends Document {
   userId: string
   plantId: string
   message: string
+  sourceUrl: string
   status: string
 }
 

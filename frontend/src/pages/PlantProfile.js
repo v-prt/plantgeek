@@ -271,6 +271,7 @@ export const PlantProfile = () => {
                   <Modal
                     visible={reportModalOpen}
                     footer={null}
+                    destroyOnClose
                     onCancel={() => setReportModalOpen(false)}>
                     <SubmitReport
                       currentUser={currentUser}

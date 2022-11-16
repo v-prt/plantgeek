@@ -14,12 +14,13 @@ const options = {
 
 export const createReport = async (req: Request, res: Response): Promise<void> => {
   try {
-    const body = req.body as Pick<IReport, 'userId' | 'plantId' | 'message'>
+    const body = req.body as Pick<IReport, 'userId' | 'plantId' | 'message' | 'sourceUrl'>
 
     const report: IReport = new Report({
       userId: body.userId,
       plantId: body.plantId,
       message: body.message,
+      sourceUrl: body.sourceUrl,
       status: 'pending',
     })
 

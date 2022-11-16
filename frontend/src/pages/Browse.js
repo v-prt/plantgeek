@@ -366,12 +366,12 @@ const Wrapper = styled.div`
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     .browse-content {
-      height: calc(100vh - 110px);
-      top: 110px;
+      /* height: calc(100vh - 110px); */
+      /* top: 110px; */
       right: 0;
       max-width: calc(100vw - 241px);
       .filter-bar {
-        padding: 20px;
+        padding: 35px 20px 20px 20px;
         .sort {
           display: block;
           .label {

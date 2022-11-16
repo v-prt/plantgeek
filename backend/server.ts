@@ -35,8 +35,14 @@ app.get('*', (req, res) => {
 
 // app.listen(PORT, () => console.info(`Listening on port ${PORT}`))
 
-// TODO: look into how connect works (does connection need to be closed?)
 mongoose
   .connect(uri)
   .then(() => app.listen(PORT, () => console.info(`Listening on port ${PORT}`)))
   .catch(error => console.error(error))
+
+process.on('SIGINT', () => {
+  mongoose.connection.close(() => {
+    console.info('Mongoose default connection disconnected through app termination')
+    process.exit(0)
+  })
+})

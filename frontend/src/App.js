@@ -41,7 +41,7 @@ export const App = () => {
         <>
           <Navbar />
           <Body>
-            <Banner />
+            {/* <Banner /> */}
             <Switch>
               <Route exact path='/'>
                 <Homepage />
@@ -173,12 +173,12 @@ const Body = styled.div`
   }
 `
 
-const Banner = styled.div`
-  background: url(${background}) center center / cover;
-  height: 110px;
-  width: 100%;
-  display: none;
-  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    display: block;
-  }
-`
+// const Banner = styled.div`
+//   background: url(${background}) center center / cover;
+//   height: 110px;
+//   width: 100%;
+//   display: none;
+//   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+//     display: block;
+//   }
+// `

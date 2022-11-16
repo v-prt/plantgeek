@@ -15,7 +15,7 @@ import { RiPlantLine } from 'react-icons/ri'
 const { Option } = Select
 
 export const AllReports = ({ plantId }) => {
-  // TODO: filter reports by status
+  // TODO: filter reports by status, pagination
   const { data: reports, status: reportsStatus } = useQuery(['reports'], async () => {
     const { data } = await axios.get(`${API_URL}/reports`)
     return data.reports

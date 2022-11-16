@@ -18,6 +18,10 @@ const reportSchema: Schema = new Schema(
       type: String,
       required: true,
     },
+    sourceUrl: {
+      type: String,
+      required: false,
+    },
     status: {
       type: String,
       required: true,

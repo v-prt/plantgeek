@@ -47,6 +47,7 @@ export const UserProfile = () => {
     { name: cactus, value: 100 },
   ]
 
+  // TODO: pagination for collection, wishlist, and contributions
   const { data: collection, status: collectionStatus } = useQuery(
     ['collection', currentUser.collection],
     async () => {

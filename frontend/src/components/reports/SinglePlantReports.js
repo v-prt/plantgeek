@@ -15,7 +15,7 @@ import { RiPlantLine } from 'react-icons/ri'
 const { Option } = Select
 
 export const SinglePlantReports = ({ plantId }) => {
-  // TODO: filter reports by status
+  // TODO: filter reports by status, pagination
   const { data: reports, status: reportsStatus } = useQuery(
     ['plant-reports', plantId],
     async () => {
