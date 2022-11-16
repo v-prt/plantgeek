@@ -13,7 +13,7 @@ export const Footer = () => {
           <Link to='/about'>About</Link>•<Link to='/privacy'>Privacy Policy</Link>•
           <Link to='/terms'>Terms and Conditions</Link>
         </div>
-        <p>&copy; 2021 - {currentYear} plantgeek. All rights reserved.</p>
+        <p>&copy; plantgeek 2021 - {currentYear} • All rights reserved.</p>
       </div>
     </Wrapper>
   )

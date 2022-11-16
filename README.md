@@ -50,7 +50,7 @@ Full-stack live website built 100% by me - including concept, design, and implem
 - [x] view detailed care information
 - [x] admins can edit incorrect or missing information, including images
 - [x] admins can delete plants in case of corrupt or duplicate data
-- [x] users can submit suggestions for changes on each plant
+- [x] users can report plants for admins to review
 - [ ] photo gallery (user submitted photos)
 - [ ] additional information, including: region of origin, description, etc.
 
@@ -65,7 +65,7 @@ Full-stack live website built 100% by me - including concept, design, and implem
 
 - [x] users can upload new plant data to help grow database
 - [x] cloudinary media library image storage (urls stored in database)
-- [x] admins can review and approve or reject submissions
+- [x] admins can review and approve or reject contributions
 - [x] users can earn badges for approved submissions
 
 ### account settings (wip)

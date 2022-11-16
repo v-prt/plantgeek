@@ -14,9 +14,13 @@ const reportSchema: Schema = new Schema(
       type: ObjectId,
       required: true,
     },
-    report: {
+    message: {
       type: String,
       required: true,
+    },
+    sourceUrl: {
+      type: String,
+      required: false,
     },
     status: {
       type: String,

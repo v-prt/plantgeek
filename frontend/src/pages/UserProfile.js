@@ -47,6 +47,7 @@ export const UserProfile = () => {
     { name: cactus, value: 100 },
   ]
 
+  // TODO: pagination for collection, wishlist, and contributions
   const { data: collection, status: collectionStatus } = useQuery(
     ['collection', currentUser.collection],
     async () => {
@@ -228,7 +229,7 @@ const Wrapper = styled.main`
   flex-direction: column;
   align-items: center;
   .user-info {
-    background: ${COLORS.light};
+    background: linear-gradient(45deg, #a4e17d, #95d190);
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -297,10 +298,6 @@ const Wrapper = styled.main`
       display: flex;
       align-items: center;
       gap: 10px;
-      position: sticky;
-      top: 50px;
-      padding-top: 10px;
-      z-index: 1;
       .toggle-btn {
         background: #ddd;
         flex: 1;

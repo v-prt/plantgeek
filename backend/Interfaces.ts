@@ -4,7 +4,8 @@ import { Document } from 'mongoose'
 export interface IReport extends Document {
   userId: string
   plantId: string
-  report: string
+  message: string
+  sourceUrl: string
   status: string
 }
 

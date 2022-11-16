@@ -1,31 +1,18 @@
 import { useState, useEffect, useContext } from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
-import { useQuery, useQueryClient } from 'react-query'
+import { useQuery } from 'react-query'
 import { API_URL } from '../constants'
-import { message, Modal, Alert, Button, Drawer } from 'antd'
-import moment from 'moment'
-import { Formik, Form } from 'formik'
-import { FormItem } from '../components/forms/FormItem'
-import { Input, Select } from 'formik-antd'
-import * as Yup from 'yup'
+import { Modal, Alert, Button, Drawer } from 'antd'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import {
-  EditOutlined,
-  ClockCircleOutlined,
-  LikeOutlined,
-  DislikeOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons'
-import { BiLogInCircle } from 'react-icons/bi'
+import { EditOutlined, DeleteOutlined, FlagOutlined } from '@ant-design/icons'
 import { MdOutlineAdminPanelSettings } from 'react-icons/md'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
 import placeholder from '../assets/plant-placeholder.svg'
-import { MailOutlined } from '@ant-design/icons'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
@@ -35,16 +22,16 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { PlantCard } from '../components/PlantCard'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { PlantEditor } from '../components/PlantEditor'
-const { Option } = Select
+import { SubmitReport } from '../components/SubmitReport'
+import { SinglePlantReports } from '../components/reports/SinglePlantReports'
 
 export const PlantProfile = () => {
   const { slug } = useParams()
   const history = useHistory()
-  const queryClient = new useQueryClient()
   const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
   const [editDrawerOpen, setEditDrawerOpen] = useState(false)
-  const [suggestionModalOpen, setSuggestionModalOpen] = useState(false)
+  const [reportModalOpen, setReportModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 
   const { data: plant, status } = useQuery(['plant', slug], async () => {
@@ -56,11 +43,6 @@ export const PlantProfile = () => {
     }
   })
 
-  const { data: suggestions } = useQuery(['suggestions', slug], async () => {
-    const { data } = await axios.get(`${API_URL}/suggestions/${slug}`)
-    return data.suggestions
-  })
-
   const { data: similarPlants, status: similarPlantsStatus } = useQuery(
     ['similar-plants', slug],
     async () => {
@@ -69,7 +51,7 @@ export const PlantProfile = () => {
     }
   )
 
-  useDocumentTitle(plant?.primaryName ? `${plant?.primaryName} • plantgeek` : 'plantgeek')
+  useDocumentTitle(plant?.primaryName ? `${plant?.primaryName}` : 'plantgeek')
 
   // setting plant care difficulty
   useEffect(() => {
@@ -176,7 +158,6 @@ export const PlantProfile = () => {
                       <img src={sun} alt='' />
                       <div className='column'>
                         <p>{plant.light || 'unknown'}</p>
-
                         <Bar>
                           {plant.light === 'low to bright indirect' && <Indicator level={'1'} />}
                           {plant.light === 'medium to bright indirect' && <Indicator level={'2'} />}
@@ -207,7 +188,6 @@ export const PlantProfile = () => {
                             ? 'above average (65-85°F)'
                             : plant.temperature || 'unknown'}
                         </p>
-
                         <Bar>
                           {plant.temperature === 'average' && <Indicator level={'1-2'} />}
                           {plant.temperature === 'above average' && <Indicator level={'3'} />}
@@ -226,7 +206,6 @@ export const PlantProfile = () => {
                             ? 'high (50-60%+)'
                             : plant.humidity || 'unknown'}
                         </p>
-
                         <Bar>
                           {plant.humidity === 'low' && <Indicator level={'1'} />}
                           {plant.humidity === 'medium' && <Indicator level={'2'} />}
@@ -235,6 +214,7 @@ export const PlantProfile = () => {
                       </div>
                     </div>
                   </div>
+
                   <div className='misc-info'>
                     <div className={`difficulty ${difficulty?.toLowerCase()}`}>
                       Difficulty: {difficulty || 'N/A'}
@@ -278,102 +258,26 @@ export const PlantProfile = () => {
                   <ActionBox plant={plant} />
                 )}
 
-                {/* SUGGESTION SUBMISSION */}
-                <section className='suggestions-section-user'>
-                  <h3>Have a suggestion?</h3>
+                {/* REPORT PLANT */}
+                <section className='reports-section'>
+                  <h3>See something wrong?</h3>
                   <p>
                     Please let us know if you have a suggestion for this plant or want to report
                     incorrect information.
                   </p>
-                  <Button type='primary' onClick={() => setSuggestionModalOpen(true)}>
-                    <MailOutlined /> SEND SUGGESTION
+                  <Button type='primary' onClick={() => setReportModalOpen(true)}>
+                    <FlagOutlined /> REPORT PLANT
                   </Button>
                   <Modal
-                    visible={suggestionModalOpen}
+                    visible={reportModalOpen}
                     footer={null}
-                    onCancel={() => setSuggestionModalOpen(false)}>
-                    <SuggestionSubmission>
-                      {currentUser ? (
-                        <Formik
-                          initialValues={{
-                            suggestion: '',
-                            sourceUrl: '',
-                          }}
-                          validationSchema={Yup.object({
-                            suggestion: Yup.string().required('Required'),
-                            sourceUrl: Yup.string().url('Invalid URL'),
-                          })}
-                          onSubmit={async (values, { setSubmitting }) => {
-                            if (currentUser.emailVerified) {
-                              try {
-                                await axios.post(`${API_URL}/suggestions/${plant._id}`, {
-                                  suggestion: values.suggestion,
-                                  sourceUrl: values.sourceUrl,
-                                  userId: currentUser._id,
-                                })
-                                message.success('Suggestion submitted')
-                                setSuggestionModalOpen(false)
-                              } catch (err) {
-                                console.log(err)
-                                message.error('Oops, something went wrong')
-                              }
-                            }
-                          }}>
-                          {({ isSubmitting, submitForm }) => (
-                            <Form>
-                              <h3>Submit a suggestion</h3>
-                              <div className='instructions'>
-                                <p>
-                                  Please note any incorrect information on this plant and include
-                                  your suggested change. If possible, include a source to help us
-                                  validate your information.
-                                </p>
-                                <p>
-                                  We also welcome suggestions for additional information to add to
-                                  this plant's page. Thank you for your contribution!
-                                </p>
-                              </div>
-
-                              <FormItem name='suggestion'>
-                                <Input.TextArea
-                                  name='suggestion'
-                                  placeholder='Enter your suggestion'
-                                  rows={4}
-                                  style={{ resize: 'none' }}
-                                />
-                              </FormItem>
-                              <FormItem name='source'>
-                                <Input name='sourceUrl' placeholder='Source URL' />
-                              </FormItem>
-                              {!currentUser.emailVerified && (
-                                <Alert
-                                  type='warning'
-                                  message='Please verify your email address to submit a suggestion.'
-                                  showIcon
-                                />
-                              )}
-                              <Button
-                                type='primary'
-                                disabled={isSubmitting || !currentUser.emailVerified}
-                                loading={isSubmitting}
-                                onClick={submitForm}>
-                                SUBMIT
-                              </Button>
-                            </Form>
-                          )}
-                        </Formik>
-                      ) : (
-                        // TODO: add redirect to return user here after they log in
-                        <div className='login'>
-                          <p>Please log in to submit a suggestion.</p>
-                          <Link to='/login'>
-                            <Button type='primary'>
-                              <BiLogInCircle /> LOG IN
-                            </Button>
-                          </Link>
-                        </div>
-                      )}
-                    </SuggestionSubmission>
+                    destroyOnClose
+                    onCancel={() => setReportModalOpen(false)}>
+                    <SubmitReport
+                      currentUser={currentUser}
+                      plantId={plant._id}
+                      setReportModalOpen={setReportModalOpen}
+                    />
                   </Modal>
                 </section>
               </div>
@@ -408,72 +312,7 @@ export const PlantProfile = () => {
                     <MdOutlineAdminPanelSettings /> Admin
                   </h3>
 
-                  <div className='suggestions-admin'>
-                    <h4>Suggestions from users</h4>
-                    {/* TODO: filter suggestions by status */}
-                    <div className='suggestions-list'>
-                      {suggestions?.length > 0 ? (
-                        suggestions.map((suggestion, i) => (
-                          <div className='suggestion' key={i}>
-                            <p className='user'>
-                              {suggestion.user?.username}{' '}
-                              <span className='id'>- User ID {suggestion.userId}</span>
-                            </p>
-                            <p className='date'>{moment(suggestion.dateSubmitted).format('lll')}</p>
-                            <p className='text'>"{suggestion.suggestion}"</p>
-                            {suggestion.sourceUrl ? (
-                              <a
-                                className='source'
-                                href={suggestion.sourceUrl}
-                                target='_blank'
-                                rel='noopener noreferrer'>
-                                Source
-                              </a>
-                            ) : (
-                              <p style={{ color: '#999' }}>No source.</p>
-                            )}
-                            <Formik
-                              initialValues={{ status: suggestion.status }}
-                              onSubmit={async (values, { setSubmitting }) => {
-                                try {
-                                  await axios.put(`${API_URL}/suggestions/${suggestion._id}`, {
-                                    status: values.status,
-                                  })
-                                  message.success('Suggestion status updated')
-                                  setSubmitting(false)
-                                } catch (err) {
-                                  console.log(err)
-                                  message.error('Oops, something went wrong')
-                                }
-                              }}>
-                              {({ submitForm }) => (
-                                <Form>
-                                  <FormItem name='status'>
-                                    <Select
-                                      name='status'
-                                      placeholder='Set status'
-                                      onChange={() => submitForm()}>
-                                      <Option value='pending'>
-                                        <ClockCircleOutlined /> Pending
-                                      </Option>
-                                      <Option value='approved'>
-                                        <LikeOutlined /> Approved
-                                      </Option>
-                                      <Option value='rejected'>
-                                        <DislikeOutlined /> Rejected
-                                      </Option>
-                                    </Select>
-                                  </FormItem>
-                                </Form>
-                              )}
-                            </Formik>
-                          </div>
-                        ))
-                      ) : (
-                        <p style={{ color: '#999' }}>No suggestions.</p>
-                      )}
-                    </div>
-                  </div>
+                  <SinglePlantReports plantId={plant._id} />
 
                   <div className='admin-buttons'>
                     <Button
@@ -551,7 +390,7 @@ const Wrapper = styled.main`
     }
   }
   .heading {
-    background: ${COLORS.light};
+    background: linear-gradient(45deg, #a4e17d, #95d190);
     .review-pending {
       margin-bottom: 20px;
     }
@@ -614,7 +453,7 @@ const Wrapper = styled.main`
     flex-direction: column;
     gap: 10px;
   }
-  .suggestions-section-user {
+  .reports-section {
     background: ${COLORS.mutedMedium};
     button {
       margin-top: 20px;
@@ -779,66 +618,8 @@ const Indicator = styled.div`
   width: ${props => props.level === '3' && '100%'};
 `
 
-const SuggestionSubmission = styled.div`
-  padding: 20px 0;
-  h3 {
-    margin-bottom: 20px;
-  }
-  .instructions {
-    p {
-      margin-bottom: 20px;
-    }
-  }
-  .info-text {
-    font-size: 0.8rem;
-    margin-bottom: 5px;
-    opacity: 0.7;
-  }
-  button {
-    margin: 20px auto 0 auto;
-  }
-  .login {
-    text-align: center;
-    button {
-      display: flex;
-      gap: 8px;
-    }
-  }
-`
-
 const AdminSection = styled.section`
   background: #fff;
-  .suggestions-admin {
-    margin: 20px 0;
-  }
-  .suggestions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    .suggestion {
-      font-size: 0.8rem;
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
-      padding: 10px 0;
-      .user {
-        color: ${COLORS.accent};
-        font-weight: bold;
-        .id {
-          color: #999;
-          font-weight: normal;
-        }
-      }
-      .text {
-        font-size: 1rem;
-      }
-      .source {
-        color: ${COLORS.accent};
-        text-decoration: underline;
-      }
-      .ant-select {
-        max-width: 200px;
-      }
-    }
-  }
   .admin-buttons {
     display: flex;
     gap: 12px;

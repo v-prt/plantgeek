@@ -33,10 +33,16 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'build', 'index.html'))
 })
 
-app.listen(PORT, () => console.info(`Listening on port ${PORT}`))
+// app.listen(PORT, () => console.info(`Listening on port ${PORT}`))
 
-// TODO:
-// mongoose
-//   .connect(uri)
-//   .then(() => app.listen(PORT, () => console.info(`Listening on port ${PORT}`)))
-//   .catch(error => console.error(error))
+mongoose
+  .connect(uri)
+  .then(() => app.listen(PORT, () => console.info(`Listening on port ${PORT}`)))
+  .catch(error => console.error(error))
+
+process.on('SIGINT', () => {
+  mongoose.connection.close(() => {
+    console.info('Mongoose default connection disconnected through app termination')
+    process.exit(0)
+  })
+})

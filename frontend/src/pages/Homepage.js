@@ -6,8 +6,7 @@ import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { ImageLoader } from '../components/loaders/ImageLoader'
 import { Button } from 'antd'
-import { PlusCircleOutlined } from '@ant-design/icons'
-import { FaArrowAltCircleRight } from 'react-icons/fa'
+import { PlusCircleOutlined, DoubleRightOutlined } from '@ant-design/icons'
 import { FeaturedPlants } from '../components/FeaturedPlants'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import plantgeekLogo from '../assets/logo.webp'
@@ -43,14 +42,12 @@ export const Homepage = () => {
       </FadeIn>
       <FadeIn delay={200}>
         <InfoCard>
-          <h2>
-            <Link to='/browse'>
-              browse houseplants
-              <span className='icon'>
-                <FaArrowAltCircleRight />
-              </span>
-            </Link>
-          </h2>
+          <Link to='/browse' className='info-cta'>
+            browse houseplants
+            <span className='icon'>
+              <DoubleRightOutlined />
+            </span>
+          </Link>
           <ul>
             <li>Search & filter hundreds of plants by name or genus</li>
             <li>Learn how to care for your plants</li>
@@ -58,28 +55,24 @@ export const Homepage = () => {
           </ul>
           {currentUser ? (
             <>
-              <h2>
-                <Link to='/profile'>
-                  view your profile
-                  <span className='icon'>
-                    <FaArrowAltCircleRight />
-                  </span>
-                </Link>
-              </h2>
+              <Link to='/profile' className='info-cta'>
+                view your profile
+                <span className='icon'>
+                  <DoubleRightOutlined />
+                </span>
+              </Link>
               <ul>
                 <li>Manage your personal collection</li>
                 <li>Add plants you would like to own to your wishlist</li>
                 <li>Upvote your favorite plants</li>
                 <li>Quickly refer to your plants specific needs</li>
               </ul>
-              <h2>
-                <Link to='/contribute'>
-                  contribute
-                  <span className='icon'>
-                    <FaArrowAltCircleRight />
-                  </span>
-                </Link>
-              </h2>
+              <Link to='/contribute' className='info-cta'>
+                contribute
+                <span className='icon'>
+                  <DoubleRightOutlined />
+                </span>
+              </Link>
               <ul>
                 <li>Help us grow our database of houseplants</li>
                 <li>Upload images to our gallery</li>
@@ -88,14 +81,12 @@ export const Homepage = () => {
             </>
           ) : (
             <>
-              <h2>
-                <Link to='/signup'>
-                  create an account
-                  <span className='icon'>
-                    <FaArrowAltCircleRight />
-                  </span>
-                </Link>
-              </h2>
+              <Link to='/signup' className='info-cta'>
+                create an account
+                <span className='icon'>
+                  <DoubleRightOutlined />
+                </span>
+              </Link>
               <ul>
                 <li>Keep a list of your own houseplant collection</li>
                 <li>Quickly view the care requirements for your plants via your profile</li>
@@ -163,7 +154,7 @@ export const Homepage = () => {
 
 const Wrapper = styled.main`
   .heading {
-    background: ${COLORS.light};
+    background: linear-gradient(45deg, #a4e17d, #95d190);
     display: flex;
     align-items: center;
     gap: 12px;
@@ -236,16 +227,15 @@ const Wrapper = styled.main`
 
 const InfoCard = styled.section`
   background: #fff;
-  h2,
-  h3 {
-    width: fit-content;
-    a {
-      display: flex;
-      align-items: center;
-    }
-  }
   h3 {
     margin-top: 20px;
+  }
+  .info-cta {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: fit-content;
   }
   ul {
     list-style: disc;
