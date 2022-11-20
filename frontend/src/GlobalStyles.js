@@ -62,25 +62,16 @@ export const DropZone = styled.div`
     flex-wrap: wrap;
     justify-content: center;
     .thumbnail {
-      display: grid;
-      place-content: center;
-      border-radius: 2px;
-      border: 1px solid #e6e6e6;
-      margin-bottom: 8px;
-      margin-right: 8px;
-      width: 100px;
       height: 100px;
-      padding: 4px;
-      box-sizing: border-box;
-      .thumbnail-inner {
-        display: flex;
-        min-width: 0px;
-        overflow: hidden;
-        img {
-          display: block;
-          width: auto;
-          height: 100%;
-        }
+      width: 100px;
+      display: flex;
+      border-radius: 5px;
+      border: 1px solid #e6e6e6;
+      margin: 5px;
+      padding: 5px;
+      img {
+        width: 100%;
+        object-fit: cover;
       }
     }
   }

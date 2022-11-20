@@ -228,9 +228,7 @@ export const Contribute = () => {
                       {images &&
                         images.map(image => (
                           <div className='thumbnail' key={image.name}>
-                            <div className='thumbnail-inner'>
-                              <img src={image.preview} alt={image.name} />
-                            </div>
+                            <img src={image.preview} alt={image.name} />
                           </div>
                         ))}
                     </div>

@@ -37,7 +37,6 @@ const Wrapper = styled.div`
   }
   .thumbnail {
     width: 100%;
-    max-width: 250px;
     aspect-ratio: 1 / 1;
     border-radius: 50%;
   }

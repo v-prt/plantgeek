@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { UserContext } from './contexts/UserContext'
 
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
-import background from './assets/monstera1.jpg'
+// import background from './assets/monstera1.jpg'
 import { ScrollToTop } from './components/general/ScrollToTop'
 import { Navbar } from './components/Navbar'
 import { Homepage } from './pages/Homepage'

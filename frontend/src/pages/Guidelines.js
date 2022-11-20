@@ -1,5 +1,4 @@
 import styled from 'styled-components/macro'
-import { COLORS } from '../GlobalStyles'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
