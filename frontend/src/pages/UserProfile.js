@@ -97,7 +97,7 @@ export const UserProfile = () => {
         <section className='user-info'>
           <div className='profile'>
             <div className='profile-img'>
-              <ImageLoader src={currentUser.imageUrl || placeholder} alt='' />
+              <ImageLoader src={currentUser.imageUrl || placeholder} alt='' borderRadius='50%' />
             </div>
             <div className='text'>
               <h1>
@@ -182,7 +182,12 @@ export const UserProfile = () => {
                         to={`/plant/${plant.slug}`}
                         key={plant._id}>
                         <div className='thumbnail'>
-                          <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+                          <ImageLoader
+                            src={plant.imageUrl}
+                            alt={''}
+                            placeholder={placeholder}
+                            borderRadius='50%'
+                          />
                         </div>
                         <div className='info'>
                           <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>
@@ -203,7 +208,12 @@ export const UserProfile = () => {
                         to={`/plant/${plant.slug}`}
                         key={plant._id}>
                         <div className='thumbnail'>
-                          <ImageLoader src={plant.imageUrl} alt={''} placeholder={placeholder} />
+                          <ImageLoader
+                            src={plant.imageUrl}
+                            alt={''}
+                            placeholder={placeholder}
+                            borderRadius='50%'
+                          />
                         </div>
                         <div className='info'>
                           <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>

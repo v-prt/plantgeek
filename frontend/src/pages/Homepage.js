@@ -23,7 +23,11 @@ export const Homepage = () => {
         {currentUser ? (
           <section className='heading'>
             <Link className='profile-img' to='/profile'>
-              <ImageLoader src={currentUser.imageUrl || userPlaceholder} alt='' />
+              <ImageLoader
+                src={currentUser.imageUrl || userPlaceholder}
+                alt=''
+                borderRadius='50%'
+              />
             </Link>
             <div className='text'>
               <h1>hey, {currentUser.firstName}!</h1>

@@ -88,6 +88,10 @@ const plantSchema: Schema = new Schema({
     type: Boolean,
     required: true,
   },
+  sourceUrl: {
+    type: String,
+    required: true,
+  },
   slug: {
     type: String,
     required: true,

@@ -31,7 +31,7 @@ export const PlantCard = ({ plant }) => {
           </Stamp>
         )}
         <div className='thumbnail'>
-          <ImageLoader src={plant.imageUrl} alt='' placeholder={placeholder} />
+          <ImageLoader src={plant.imageUrl} alt='' placeholder={placeholder} borderRadius='50%' />
         </div>
         <div className='name'>
           <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>

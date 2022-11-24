@@ -214,7 +214,7 @@ export const Settings = () => {
               showRemoveIcon: false,
             }}>
             {!uploading && image ? (
-              <ImageLoader src={image} alt={''} placeholder={placeholder} />
+              <ImageLoader src={image} alt={''} placeholder={placeholder} borderRadius='50%' />
             ) : (
               uploadButton
             )}

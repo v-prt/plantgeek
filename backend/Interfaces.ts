@@ -25,6 +25,7 @@ export interface IPlant extends Document {
   temperature: string
   humidity: string
   toxic: boolean
+  sourceUrl: string
   slug: string
   hearts: IUser[]
   owned: IUser[]

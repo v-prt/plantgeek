@@ -153,7 +153,12 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
                   showRemoveIcon: false,
                 }}>
                 {!uploading && (newImage || plant.imageUrl) ? (
-                  <ImageLoader src={newImage || plant.imageUrl} alt='' placeholder={placeholder} />
+                  <ImageLoader
+                    src={newImage || plant.imageUrl}
+                    alt=''
+                    placeholder={placeholder}
+                    borderRadius='50%'
+                  />
                 ) : (
                   uploadButton
                 )}
