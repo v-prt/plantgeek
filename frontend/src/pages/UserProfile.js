@@ -49,7 +49,7 @@ export const UserProfile = () => {
 
   // TODO: pagination for collection, wishlist, and contributions
   const { data: collection, status: collectionStatus } = useQuery(
-    ['collection', currentUser.collection],
+    ['collection', currentUser.plantCollection],
     async () => {
       try {
         const { data } = await axios.get(`${API_URL}/collection/${currentUser._id}`)
@@ -61,7 +61,7 @@ export const UserProfile = () => {
   )
 
   const { data: wishlist, status: wishlistStatus } = useQuery(
-    ['wishlist', currentUser.wishlist],
+    ['wishlist', currentUser.plantWishlist],
     async () => {
       try {
         const { data } = await axios.get(`${API_URL}/wishlist/${currentUser._id}`)
@@ -114,13 +114,13 @@ export const UserProfile = () => {
               <p className='label'>
                 <RiPlantLine /> Collection
               </p>
-              <p className='number'>{currentUser.collection.length}</p>
+              <p className='number'>{currentUser.plantCollection.length}</p>
             </div>
             <div className='stat'>
               <p className='label'>
                 <AiOutlineStar /> Wishlist
               </p>
-              <p className='number'>{currentUser.wishlist.length}</p>
+              <p className='number'>{currentUser.plantWishlist.length}</p>
             </div>
             <div className='stat'>
               <p className='label'>

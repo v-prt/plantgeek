@@ -1,7 +1,8 @@
 import { Response, Request } from 'express'
+import { IUser } from '../Interfaces'
+import { User } from '../Models'
 const mongodb = require('mongodb')
 const { MongoClient, ObjectId } = mongodb
-import assert from 'assert'
 import * as dotenv from 'dotenv'
 dotenv.config()
 const MONGO_URI = process.env.MONGO_URI
@@ -26,39 +27,31 @@ const options = {
 
 // (CREATE/POST) ADDS A NEW USER
 export const createUser = async (req: Request, res: Response) => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
-
   try {
     const hashedPwd = await bcrypt.hash(req.body.password, saltRounds)
-    const existingEmail = await db.collection('users').findOne({
+    const existingEmail = await User.findOne({
       email: { $regex: new RegExp(`^${req.body.email}$`, 'i') },
     })
-    const existingUsername = await db.collection('users').findOne({
+    const existingUsername = await User.findOne({
       username: { $regex: new RegExp(`^${req.body.username}$`, 'i') },
     })
 
     if (existingEmail) {
-      res.status(409).json({ status: 409, message: 'That email is already in use' })
+      res.status(409).json({ message: 'That email is already in use' })
     } else if (existingUsername) {
-      res.status(409).json({ status: 409, message: 'That username is taken' })
+      res.status(409).json({ message: 'That username is taken' })
     } else {
       const code = crypto.randomBytes(20).toString('hex')
 
-      const user = await db.collection('users').insertOne({
+      const user: IUser = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
         username: req.body.username,
         password: hashedPwd,
-        joined: new Date(),
-        friends: [],
-        collection: [],
-        wishlist: [],
         verificationCode: code,
       })
-      assert.strictEqual(1, user.insertedCount)
+      const newUser: IUser = await user.save()
 
       const message = {
         personalizations: [
@@ -80,34 +73,27 @@ export const createUser = async (req: Request, res: Response) => {
       await sgMail.send(message).catch(err => console.error(err.response?.body?.errors))
 
       res.status(201).json({
-        status: 201,
         data: user,
-        token: jwt.sign({ userId: user.insertedId }, process.env.TOKEN_SECRET, {
+        token: jwt.sign({ userId: newUser._id }, process.env.TOKEN_SECRET, {
           expiresIn: '7d',
         }),
       })
     }
   } catch (err) {
     if (err instanceof Error) {
-      res.status(500).json({ status: 500, data: req.body, message: err.message })
-      console.error(err.stack)
+      console.error(err)
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
-  client.close()
 }
 
 export const resendVerificationEmail = async (req: Request, res: Response) => {
   const { userId } = req.params
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
 
   try {
     const code = crypto.randomBytes(20).toString('hex')
 
-    await db
-      .collection('users')
-      .updateOne({ _id: ObjectId(userId) }, { $set: { verificationCode: code } })
+    await User.updateOne({ _id: ObjectId(userId) }, { $set: { verificationCode: code } })
 
     const message = {
       personalizations: [
@@ -128,23 +114,19 @@ export const resendVerificationEmail = async (req: Request, res: Response) => {
 
     await sgMail.send(message).catch(err => console.error(err))
 
-    res.status(200).json({ status: 200, message: 'Email sent' })
+    res.status(200).json({ message: 'Email sent' })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      return res.status(500).send('Internal server error')
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
-  client.close()
 }
 
 // (READ/POST) AUTHENTICATES USER WHEN LOGGING IN
 export const authenticateUser = async (req: Request, res: Response) => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
   try {
-    const db = client.db('plantgeekdb')
-    const user = await db.collection('users').findOne(
+    const user: IUser | null = await User.findOne(
       // find by username or email
       {
         $or: [
@@ -156,36 +138,27 @@ export const authenticateUser = async (req: Request, res: Response) => {
     if (user) {
       const isValid = await bcrypt.compare(req.body.password, user.password)
       if (isValid) {
-        // FIXME: remove "returns" and put 1 client.close() at end of function
-        client.close()
-        return res.status(200).json({
-          // TODO: look into how "expiresIn" works, remove from local storage if expired
+        res.status(200).json({
           token: jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '7d' }),
           data: user,
         })
       } else {
-        client.close()
-        return res.status(403).json({ message: 'Incorrect password' })
+        res.status(403).json({ message: 'Incorrect password' })
       }
     } else {
-      client.close()
-      // FIXME: 404
-      return res.status(401).json({ message: 'User not found' })
+      res.status(404).json({ message: 'User not found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      return res.status(500).send('Internal server error')
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
 // (READ/POST) VERIFIES JWT TOKEN
 export const verifyToken = async (req: Request, res: Response) => {
-  const client = await MongoClient(MONGO_URI, options)
   try {
-    await client.connect()
-    const db = client.db('plantgeekdb')
     const verifiedToken = jwt.verify(req.body.token, process.env.TOKEN_SECRET, (err, decoded) => {
       if (err) {
         return false
@@ -195,68 +168,62 @@ export const verifyToken = async (req: Request, res: Response) => {
     })
     if (verifiedToken) {
       try {
-        const user = await db.collection('users').findOne({
+        const user: IUser | null = await User.findOne({
           _id: ObjectId(verifiedToken),
         })
         if (user) {
-          res.status(200).json({ status: 200, user: user })
+          res.status(200).json({ user: user })
         } else {
-          res.status(404).json({ status: 404, message: 'User not found' })
+          res.status(404).json({ message: 'User not found' })
         }
       } catch (err) {
         if (err instanceof Error) {
           console.error(err.stack)
-          res.status(500).json({ status: 500, message: err.message })
+          res.status(500).json({ message: 'Internal server error.' })
         }
       }
     } else {
-      res.status(400).json({ status: 400, message: `Token couldn't be verified` })
+      res.status(400).json({ message: `Token couldn't be verified` })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ status: 500, message: err.message })
+      res.status(500).json({ message: 'Internal server error.' })
     }
   }
-  client.close()
 }
 
 export const verifyEmail = async (req: Request, res: Response) => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
   const { code } = req.params
   const { userId } = req.body
 
   try {
-    const user = await db.collection('users').findOne({
+    const user: IUser | null = await User.findOne({
       _id: ObjectId(userId),
     })
 
     if (user) {
       if (user.verificationCode === code) {
-        await db
-          .collection('users')
-          .updateOne(
-            { _id: ObjectId(userId) },
-            { $set: { emailVerified: true, verificationCode: null } }
-          )
-        res.status(200).json({ status: 200, message: 'Email verified' })
+        await User.updateOne(
+          { _id: ObjectId(userId) },
+          { $set: { emailVerified: true, verificationCode: null } }
+        )
+        res.status(200).json({ message: 'Email verified' })
       } else {
-        res.status(400).json({ status: 400, message: 'Invalid verification link' })
+        res.status(400).json({ message: 'Invalid verification link' })
       }
     } else {
-      res.status(404).json({ status: 404, message: 'User not found' })
+      res.status(404).json({ message: 'User not found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ status: 500, message: err.message })
+      res.status(500).json({ message: 'Internal server error.' })
     }
   }
-  client.close()
 }
 
+// TODO: update following endpoints to use new User model
 export const sendPasswordResetCode = async (req: Request, res: Response) => {
   const client = await MongoClient(MONGO_URI, options)
   await client.connect()
@@ -379,8 +346,7 @@ export const getWishlist = async (req: Request, res: Response) => {
   const db = client.db('plantgeekdb')
   try {
     const user = await db.collection('users').findOne({ _id: ObjectId(userId) })
-    // convert ids in user.wishlist to objectids
-    const ids = user.wishlist?.map(id => ObjectId(id))
+    const ids = user.plantWishlist?.map(id => ObjectId(id))
 
     const wishlist = await db
       .collection('plants')
@@ -402,8 +368,7 @@ export const getCollection = async (req: Request, res: Response) => {
   const db = client.db('plantgeekdb')
   try {
     const user = await db.collection('users').findOne({ _id: ObjectId(userId) })
-    // convert ids in user.wishlist to objectids
-    const ids = user.collection?.map(id => ObjectId(id))
+    const ids = user.plantCollection?.map(id => ObjectId(id))
 
     const collection = await db
       .collection('plants')

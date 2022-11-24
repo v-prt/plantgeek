@@ -1,5 +1,21 @@
 import { Document } from 'mongoose'
 
+export interface IUser extends Document {
+  firstName: string
+  lastName: string
+  email: string
+  username: string
+  password: string
+  joined: Date
+  role?: string
+  imageUrl?: string
+  plantCollection: IPlant[]
+  plantWishlist: IPlant[]
+  emailVerified?: boolean
+  verificationCode?: string
+  passwordResetCode?: string
+}
+
 export interface IPlant extends Document {
   primaryName: string
   secondaryName?: string

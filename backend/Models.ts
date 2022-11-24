@@ -1,8 +1,60 @@
-// we start by importing the interfaces and some utilities from mongoose. The latter helps to define the schemas and also pass in the interface as a type to the model before exporting it.
-
-import { IPlant, IReport } from './Interfaces'
+import { IUser, IPlant, IReport } from './Interfaces'
 import { model, Schema } from 'mongoose'
 const ObjectId = Schema.Types.ObjectId
+
+const userSchema: Schema = new Schema({
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  joined: {
+    type: Date,
+    default: Date.now,
+  },
+  role: {
+    type: String,
+    default: 'user',
+  },
+  imageUrl: {
+    type: String,
+  },
+  plantCollection: {
+    type: [ObjectId],
+    ref: 'Plant',
+    default: [],
+  },
+  plantWishlist: {
+    type: [ObjectId],
+    ref: 'Plant',
+    default: [],
+  },
+  emailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  verificationCode: {
+    type: String,
+  },
+  passwordResetCode: {
+    type: String,
+  },
+})
 
 const plantSchema: Schema = new Schema({
   primaryName: {
@@ -86,7 +138,6 @@ const reportSchema: Schema = new Schema(
   { timestamps: true }
 )
 
-// TODO: plant schema, user schema
-
+export const User = model<IUser>('User', userSchema)
 export const Plant = model<IPlant>('Plant', plantSchema)
 export const Report = model<IReport>('Report', reportSchema)
