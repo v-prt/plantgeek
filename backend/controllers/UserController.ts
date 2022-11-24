@@ -26,7 +26,7 @@ const options = {
 }
 
 // (CREATE/POST) ADDS A NEW USER
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const hashedPwd = await bcrypt.hash(req.body.password, saltRounds)
     const existingEmail = await User.findOne({
@@ -87,7 +87,7 @@ export const createUser = async (req: Request, res: Response) => {
   }
 }
 
-export const resendVerificationEmail = async (req: Request, res: Response) => {
+export const resendVerificationEmail = async (req: Request, res: Response): Promise<void> => {
   const { userId } = req.params
 
   try {
@@ -124,7 +124,7 @@ export const resendVerificationEmail = async (req: Request, res: Response) => {
 }
 
 // (READ/POST) AUTHENTICATES USER WHEN LOGGING IN
-export const authenticateUser = async (req: Request, res: Response) => {
+export const authenticateUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const user: IUser | null = await User.findOne(
       // find by username or email
@@ -157,7 +157,7 @@ export const authenticateUser = async (req: Request, res: Response) => {
 }
 
 // (READ/POST) VERIFIES JWT TOKEN
-export const verifyToken = async (req: Request, res: Response) => {
+export const verifyToken = async (req: Request, res: Response): Promise<void> => {
   try {
     const verifiedToken = jwt.verify(req.body.token, process.env.TOKEN_SECRET, (err, decoded) => {
       if (err) {
@@ -179,7 +179,7 @@ export const verifyToken = async (req: Request, res: Response) => {
       } catch (err) {
         if (err instanceof Error) {
           console.error(err.stack)
-          res.status(500).json({ message: 'Internal server error.' })
+          res.status(500).json({ message: 'Internal server error' })
         }
       }
     } else {
@@ -188,12 +188,12 @@ export const verifyToken = async (req: Request, res: Response) => {
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const verifyEmail = async (req: Request, res: Response) => {
+export const verifyEmail = async (req: Request, res: Response): Promise<void> => {
   const { code } = req.params
   const { userId } = req.body
 
@@ -218,12 +218,12 @@ export const verifyEmail = async (req: Request, res: Response) => {
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const sendPasswordResetCode = async (req: Request, res: Response) => {
+export const sendPasswordResetCode = async (req: Request, res: Response): Promise<void> => {
   const { email } = req.body
 
   try {
@@ -261,7 +261,7 @@ export const sendPasswordResetCode = async (req: Request, res: Response) => {
   }
 }
 
-export const resetPassword = async (req: Request, res: Response) => {
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
   const { email, code, newPassword } = req.body
   try {
     const user: IUser | null = await User.findOne({ email })
@@ -285,7 +285,7 @@ export const resetPassword = async (req: Request, res: Response) => {
   }
 }
 
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const users: IUser[] = await User.find().lean()
     if (users) {
@@ -301,27 +301,23 @@ export const getUsers = async (req: Request, res: Response) => {
   }
 }
 
-export const getUser = async (req: Request, res: Response) => {
-  if (req.params.id === 'undefined') {
-    return null
-  } else {
-    try {
-      const user: IUser | null = await User.findOne({ _id: ObjectId(req.params.id) })
-      if (user) {
-        res.status(200).json({ user: user })
-      } else {
-        res.status(404).json({ message: 'User not found' })
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error(err.stack)
-        res.status(500).json({ message: 'Internal server error' })
-      }
+export const getUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user: IUser | null = await User.findOne({ _id: ObjectId(req.params.id) })
+    if (user) {
+      res.status(200).json({ user: user })
+    } else {
+      res.status(404).json({ message: 'User not found' })
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getWishlist = async (req: Request, res: Response) => {
+export const getWishlist = async (req: Request, res: Response): Promise<void> => {
   const { userId } = req.params
   try {
     // get user's plantWishlist and include plant data
@@ -338,7 +334,7 @@ export const getWishlist = async (req: Request, res: Response) => {
   }
 }
 
-export const getCollection = async (req: Request, res: Response) => {
+export const getCollection = async (req: Request, res: Response): Promise<void> => {
   const { userId } = req.params
   try {
     // get user's plantCollection and include plant data
@@ -355,7 +351,7 @@ export const getCollection = async (req: Request, res: Response) => {
   }
 }
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req: Request, res: Response): Promise<void> => {
   const userId = ObjectId(req.params.id)
   const { email, username, currentPassword, newPassword } = req.body
 
@@ -368,7 +364,7 @@ export const updateUser = async (req: Request, res: Response) => {
     if (newPassword) {
       const passwordValid = await bcrypt.compare(currentPassword, user?.password)
       if (!passwordValid) {
-        return res.status(400).json({ message: 'Incorrect password' })
+        res.status(400).json({ message: 'Incorrect password' })
       } else {
         const hashedPwd = await bcrypt.hash(newPassword, saltRounds)
         updates = { password: hashedPwd }
@@ -385,9 +381,9 @@ export const updateUser = async (req: Request, res: Response) => {
     })
 
     if (existingEmail && !existingEmail._id.equals(userId)) {
-      return res.status(400).json({ message: 'That email is already in use' })
+      res.status(400).json({ message: 'That email is already in use' })
     } else if (existingUsername && !existingUsername._id.equals(userId)) {
-      return res.status(400).json({ message: 'That username is taken' })
+      res.status(400).json({ message: 'That username is taken' })
     } else {
       // check if email is being updated, if so set emailVerified to false and send new verification email
       if (email && email !== user?.email) {
@@ -428,7 +424,7 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 }
 
-export const updateLists = async (req: Request, res: Response) => {
+export const updateLists = async (req: Request, res: Response): Promise<void> => {
   const { userId } = req.params
   const { plantId, hearts, owned, wanted, plantCollection, plantWishlist } = req.body
 
@@ -465,11 +461,10 @@ export const updateLists = async (req: Request, res: Response) => {
   }
 }
 
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params
   try {
-    const filter = { _id: ObjectId(id) }
-    const result = await User.deleteOne(filter)
+    const result = await User.deleteOne({ _id: ObjectId(id) })
     await Plant.updateMany(
       {},
       {

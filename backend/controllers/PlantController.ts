@@ -1,6 +1,6 @@
 import { Response, Request } from 'express'
 import { IPlant } from '../Interfaces'
-import { Plant } from '../Models'
+import { Plant, User } from '../Models'
 const mongodb = require('mongodb')
 const { MongoClient, ObjectId } = mongodb
 import * as dotenv from 'dotenv'
@@ -13,7 +13,7 @@ const options = {
 }
 
 // (CREATE/POST) ADDS A NEW PLANT
-export const createPlant = async (req: Request, res: Response) => {
+export const createPlant = async (req: Request, res: Response): Promise<void> => {
   try {
     const { primaryName } = req.body
 
@@ -25,7 +25,7 @@ export const createPlant = async (req: Request, res: Response) => {
     })
 
     if (nameTaken) {
-      return res.status(400).json({ message: 'A plant already exists with this name.' })
+      res.status(400).json({ message: 'A plant already exists with this name' })
     } else {
       const plant: IPlant = new Plant(req.body)
       const newPlant: IPlant = await plant.save()
@@ -34,13 +34,13 @@ export const createPlant = async (req: Request, res: Response) => {
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
 // (READ/GET) GETS ALL PLANTS
-export const getPlants = async (req: Request, res: Response) => {
+export const getPlants = async (req: Request, res: Response): Promise<void> => {
   const { search, sort, light, water, temperature, humidity, toxicity, review } = req.query
   let filters = {}
 
@@ -170,45 +170,45 @@ export const getPlants = async (req: Request, res: Response) => {
         nextCursor: totalResults > 24 * page ? page + 1 : null,
       })
     } else {
-      res.status(404).json({ message: 'No plants found.' })
+      res.status(404).json({ message: 'No plants found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getPlantsToReview = async (req: Request, res: Response) => {
+export const getPlantsToReview = async (req: Request, res: Response): Promise<void> => {
   try {
     const plants: IPlant[] = await Plant.find({ review: 'pending' }).lean()
     if (plants) {
       res.status(200).json({ status: 200, plants: plants })
     } else {
-      res.status(404).json({ status: 404, message: 'No plants found.' })
+      res.status(404).json({ status: 404, message: 'No plants found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const countPendingPlants = async (req: Request, res: Response) => {
+export const countPendingPlants = async (req: Request, res: Response): Promise<void> => {
   try {
     const count: number = await Plant.countDocuments({ review: 'pending' })
     res.status(200).json({ count })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getPlant = async (req: Request, res: Response) => {
+export const getPlant = async (req: Request, res: Response): Promise<void> => {
   const { slug } = req.params
   try {
     const plant: IPlant | null = await Plant.findOne({
@@ -217,17 +217,17 @@ export const getPlant = async (req: Request, res: Response) => {
     if (plant) {
       res.status(200).json({ plant })
     } else {
-      res.status(404).json({ message: 'Plant not found.' })
+      res.status(404).json({ message: 'Plant not found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getSimilarPlants = async (req: Request, res: Response) => {
+export const getSimilarPlants = async (req: Request, res: Response): Promise<void> => {
   const { slug } = req.params
 
   try {
@@ -256,17 +256,17 @@ export const getSimilarPlants = async (req: Request, res: Response) => {
 
       res.status(200).json({ similarPlants: similarPlants })
     } else {
-      res.status(404).json({ message: 'Plant not found.' })
+      res.status(404).json({ message: 'Plant not found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getRandomPlants = async (req: Request, res: Response) => {
+export const getRandomPlants = async (req: Request, res: Response): Promise<void> => {
   try {
     const plants: IPlant[] = await Plant.aggregate([
       { $match: { $and: [{ review: { $ne: 'pending' } }, { review: { $ne: 'rejected' } }] } },
@@ -275,17 +275,17 @@ export const getRandomPlants = async (req: Request, res: Response) => {
     if (plants) {
       res.status(200).json({ plants })
     } else {
-      res.status(404).json({ message: 'No plants found.' })
+      res.status(404).json({ message: 'No plants found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getUserContributions = async (req: Request, res: Response) => {
+export const getUserContributions = async (req: Request, res: Response): Promise<void> => {
   try {
     const contributions: IPlant[] = await Plant.find({
       contributorId: req.params.userId,
@@ -293,17 +293,17 @@ export const getUserContributions = async (req: Request, res: Response) => {
     if (contributions) {
       res.status(200).json({ contributions })
     } else {
-      res.status(404).json({ message: 'No contributions found.' })
+      res.status(404).json({ message: 'No contributions found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const updatePlant = async (req: Request, res: Response) => {
+export const updatePlant = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params
 
   try {
@@ -319,7 +319,7 @@ export const updatePlant = async (req: Request, res: Response) => {
         _id: { $ne: ObjectId(id) },
       })
       if (nameTaken) {
-        return res.status(400).json({ message: 'A plant already exists with this name.' })
+        res.status(400).json({ message: 'A plant already exists with this name' })
       }
     }
 
@@ -329,30 +329,26 @@ export const updatePlant = async (req: Request, res: Response) => {
     }
 
     await Plant.updateOne(filter, update)
-    res.status(200).json({ message: 'Plant updated.' })
+    res.status(200).json({ message: 'Plant updated' })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const deletePlant = async (req: Request, res: Response) => {
+export const deletePlant = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
   try {
     const result = await Plant.deleteOne({ _id: ObjectId(id) })
     // find and remove plant id from users' collections and wishlists
-    // TODO: use mongoose User model
-    await db.collection('users').updateMany(
+    await User.updateMany(
       {},
       {
         $pull: {
-          wishlist: id,
-          collection: id,
+          plantCollection: ObjectId(id),
+          plantWishlist: ObjectId(id),
         },
       }
     )
@@ -360,8 +356,7 @@ export const deletePlant = async (req: Request, res: Response) => {
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error.' })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
-  client.close()
 }

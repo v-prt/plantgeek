@@ -117,12 +117,15 @@ const plantSchema: Schema = new Schema({
 
 const reportSchema: Schema = new Schema(
   {
+    // FIXME: refs don't work like this
     userId: {
       type: ObjectId,
+      ref: 'User',
       required: true,
     },
     plantId: {
       type: ObjectId,
+      ref: 'Plant',
       required: true,
     },
     message: {

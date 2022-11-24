@@ -40,5 +40,3 @@ export interface IReport extends Document {
   sourceUrl?: string
   status: string
 }
-
-// TODO: plant interface, user interface
