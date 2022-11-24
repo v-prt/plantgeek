@@ -122,7 +122,7 @@ export const PasswordRecovery = () => {
                 </Formik>
               )}
               {status && <Alert type='error' message={status} showIcon />}
-              <p className='subtext'>
+              <p className='subtext' style={{ marginTop: '20px' }}>
                 Here by mistake? <Link to='/login'>Log in</Link> or{' '}
                 <Link to='/signup'>Sign up</Link>
               </p>
@@ -130,8 +130,8 @@ export const PasswordRecovery = () => {
           ) : (
             <div className='password-changed'>
               <Alert type='success' message='Password changed successfully' showIcon />
-              <p className='subtext'>
-                <Link to='/login'>Log in</Link> with your new password
+              <p className='subtext' style={{ marginTop: '20px' }}>
+                <Link to='/login'>Log in</Link> with your new password.
               </p>
             </div>
           )}

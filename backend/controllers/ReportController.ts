@@ -1,6 +1,6 @@
 import { Response, Request } from 'express'
-import { IReport } from '../Interfaces'
-import { Report } from '../Models'
+import { IReport, IPlant, IUser } from '../Interfaces'
+import { Report, Plant, User } from '../Models'
 const mongodb = require('mongodb')
 const { MongoClient, ObjectId } = mongodb
 import * as dotenv from 'dotenv'
@@ -28,26 +28,21 @@ export const createReport = async (req: Request, res: Response): Promise<void> =
     res.status(201).json({ message: 'Report added', data: newReport })
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
-      res.status(500).json(err)
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
 export const getReports = async (req: Request, res: Response): Promise<void> => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
-
   try {
     const reports: IReport[] = await Report.find().lean() // use lean() to get a plain JS object instead of a Mongoose document
 
     // include plant and user info with report by ids
-    // TODO: update to use mongoose models
     const result = await Promise.all(
       reports.map(async report => {
-        const plant = await db.collection('plants').findOne({ _id: ObjectId(report.plantId) })
-        const user = await db.collection('users').findOne({ _id: ObjectId(report.userId) })
+        const plant: IPlant | null = await Plant.findOne({ _id: ObjectId(report.plantId) })
+        const user: IUser | null = await User.findOne({ _id: ObjectId(report.userId) })
         return { ...report, plant, user }
       })
     )
@@ -55,29 +50,24 @@ export const getReports = async (req: Request, res: Response): Promise<void> => 
     res.status(200).json({ reports: result })
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
-      res.status(500).json(err)
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
-  client.close()
 }
 
 export const getPlantReports = async (req: Request, res: Response): Promise<void> => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
   const { plantId } = req.params
 
   try {
-    // get reports by plantId
-    const reports: IReport[] = await Report.find({ plantId }).lean() // use lean() to get a plain JS object instead of a Mongoose document
+    // get reports by plantId, include user and plant info
+    const reports: IReport[] = await Report.find({ plantId }).lean()
 
     // include plant and user info with report by ids
-    // TODO: update to use mongoose models
     const result = await Promise.all(
       reports.map(async report => {
-        const plant = await db.collection('plants').findOne({ _id: ObjectId(report.plantId) })
-        const user = await db.collection('users').findOne({ _id: ObjectId(report.userId) })
+        const plant: IPlant | null = await Plant.findOne({ _id: ObjectId(report.plantId) })
+        const user: IUser | null = await User.findOne({ _id: ObjectId(report.userId) })
         return { ...report, plant, user }
       })
     )
@@ -85,11 +75,10 @@ export const getPlantReports = async (req: Request, res: Response): Promise<void
     res.status(200).json({ reports: result })
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
-      res.status(500).json(err)
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
-  client.close()
 }
 
 export const countPendingReports = async (req: Request, res: Response): Promise<void> => {
@@ -98,8 +87,8 @@ export const countPendingReports = async (req: Request, res: Response): Promise<
     res.status(200).json({ count })
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
-      res.status(500).json(err)
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
@@ -113,8 +102,8 @@ export const updateReportStatus = async (req: Request, res: Response): Promise<v
     res.status(200).json({ message: 'Report updated', data: updatedReport })
   } catch (err) {
     if (err instanceof Error) {
-      console.error(err)
-      res.status(500).json(err)
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
