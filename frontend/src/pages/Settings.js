@@ -22,6 +22,7 @@ import {
   LoadingOutlined,
   CheckCircleOutlined,
   RedoOutlined,
+  CloseOutlined,
 } from '@ant-design/icons'
 import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
@@ -251,27 +252,25 @@ export const Settings = () => {
                         type='primary'
                         htmlType='submit'
                         loading={isSubmitting}
-                        icon={<SaveOutlined />}>
-                        SAVE
-                      </Button>
+                        icon={<SaveOutlined />}
+                      />
                       <Button
                         type='secondary'
+                        icon={<CloseOutlined />}
                         onClick={() => {
                           // reset form values
                           setStatus('')
                           setValues(accountInitialValues)
                           setEditMode(false)
-                        }}>
-                        CANCEL
-                      </Button>
+                        }}
+                      />
                     </div>
                   ) : (
                     <Button
                       type='primary'
                       icon={<EditOutlined />}
-                      onClick={() => setEditMode(true)}>
-                      EDIT
-                    </Button>
+                      onClick={() => setEditMode(true)}
+                    />
                   )}
                 </Heading>
                 {status && <Alert type='error' message={status} showIcon />}
@@ -541,8 +540,8 @@ const Wrapper = styled.main`
 
 const Heading = styled.h2`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
   margin-bottom: 20px;
   .buttons {

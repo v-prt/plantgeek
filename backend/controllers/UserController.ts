@@ -223,26 +223,23 @@ export const verifyEmail = async (req: Request, res: Response) => {
   }
 }
 
-// TODO: update following endpoints to use new User model
 export const sendPasswordResetCode = async (req: Request, res: Response) => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
   const { email } = req.body
+
   try {
-    const user = await db.collection('users').findOne({ email })
+    const user: IUser | null = await User.findOne({ email })
+
     if (user) {
       const code = Math.floor(100000 + Math.random() * 900000)
       const hashedCode = await bcrypt.hash(code.toString(), saltRounds)
-
-      await db.collection('users').updateOne({ email }, { $set: { passwordResetCode: hashedCode } })
+      await User.updateOne({ email }, { $set: { passwordResetCode: hashedCode } })
 
       const msg = {
         to: email,
         from: ADMIN_EMAIL,
-        subject: 'Recover password on plantgeek',
-        text: `Your password reset code is: ${code}`,
-        html: `Your password reset code is: <strong>${code}</strong>`,
+        subject: 'Password reset',
+        text: `Use this code to reset your password on plantgeek: ${code}`,
+        html: `Use this code to reset your password on plantgeek: <strong>${code}</strong>`,
       }
 
       sgMail
@@ -259,32 +256,23 @@ export const sendPasswordResetCode = async (req: Request, res: Response) => {
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      return res.status(500).send('Internal server error')
+      res.status(500).send('Internal server error')
     }
   }
-  client.close()
 }
 
-// RESET PASSWORD WITH CODE
 export const resetPassword = async (req: Request, res: Response) => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
-
   const { email, code, newPassword } = req.body
-
   try {
-    const user = await db.collection('users').findOne({ email })
+    const user: IUser | null = await User.findOne({ email })
     if (user) {
       const isValid = await bcrypt.compare(code.toString(), user.passwordResetCode)
       if (isValid) {
         const hashedPwd = await bcrypt.hash(newPassword, saltRounds)
-        await db
-          .collection('users')
-          .updateOne({ email }, { $set: { password: hashedPwd, passwordResetCode: null } })
+        await User.updateOne({ email }, { $set: { password: hashedPwd, passwordResetCode: null } })
         res.status(200).json({ message: 'Password changed' })
       } else {
-        res.status(403).json({ message: 'Incorrect code' })
+        res.status(403).json({ message: 'Code is incorrect' })
       }
     } else {
       res.status(404).json({ message: 'Email not found' })
@@ -292,126 +280,107 @@ export const resetPassword = async (req: Request, res: Response) => {
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      return res.status(500).send('Internal server error')
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
-
-  client.close()
 }
 
-// (READ/GET) GETS ALL USERS
 export const getUsers = async (req: Request, res: Response) => {
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
   try {
-    const users = await db.collection('users').find().toArray()
+    const users: IUser[] = await User.find().lean()
     if (users) {
-      res.status(200).json({ status: 200, data: users })
+      res.status(200).json({ data: users })
     } else {
-      res.status(404).json({ status: 404, message: 'No users found' })
+      res.status(404).json({ message: 'No users found' })
     }
   } catch (err) {
-    console.error(err)
+    if (err instanceof Error) {
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
+    }
   }
-  client.close()
 }
 
-// (READ/GET) GETS USER BY ID
 export const getUser = async (req: Request, res: Response) => {
   if (req.params.id === 'undefined') {
     return null
   } else {
-    const client = await MongoClient(MONGO_URI, options)
-    await client.connect()
-    const db = client.db('plantgeekdb')
     try {
-      const user = await db.collection('users').findOne({ _id: ObjectId(req.params.id) })
+      const user: IUser | null = await User.findOne({ _id: ObjectId(req.params.id) })
       if (user) {
-        res.status(200).json({ status: 200, user: user })
+        res.status(200).json({ user: user })
       } else {
-        res.status(404).json({ status: 404, message: 'User not found' })
+        res.status(404).json({ message: 'User not found' })
       }
     } catch (err) {
-      console.error('Error getting user', err)
+      if (err instanceof Error) {
+        console.error(err.stack)
+        res.status(500).json({ message: 'Internal server error' })
+      }
     }
-    client.close()
   }
 }
 
 export const getWishlist = async (req: Request, res: Response) => {
   const { userId } = req.params
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
   try {
-    const user = await db.collection('users').findOne({ _id: ObjectId(userId) })
-    const ids = user.plantWishlist?.map(id => ObjectId(id))
+    // get user's plantWishlist and include plant data
+    const user: IUser = await User.findOne({ _id: ObjectId(userId) })
+      .populate('plantWishlist')
+      .lean()
 
-    const wishlist = await db
-      .collection('plants')
-      .find({ _id: { $in: ids } })
-      .toArray()
-
-    res.status(200).json({ status: 200, wishlist })
+    res.status(200).json({ wishlist: user.plantWishlist })
   } catch (err) {
-    console.error('Error getting wishlist', err)
-    res.status(500).json({ status: 500, message: 'Internal server error' })
+    if (err instanceof Error) {
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
+    }
   }
-  client.close()
 }
 
 export const getCollection = async (req: Request, res: Response) => {
   const { userId } = req.params
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
   try {
-    const user = await db.collection('users').findOne({ _id: ObjectId(userId) })
-    const ids = user.plantCollection?.map(id => ObjectId(id))
+    // get user's plantCollection and include plant data
+    const user: IUser = await User.findOne({ _id: ObjectId(userId) })
+      .populate('plantCollection')
+      .lean()
 
-    const collection = await db
-      .collection('plants')
-      .find({ _id: { $in: ids } })
-      .toArray()
-
-    res.status(200).json({ status: 200, collection })
+    res.status(200).json({ collection: user.plantCollection })
   } catch (err) {
-    console.error('Error getting collection', err)
-    res.status(500).json({ status: 500, message: 'Internal server error' })
+    if (err instanceof Error) {
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
+    }
   }
-  client.close()
 }
 
 export const updateUser = async (req: Request, res: Response) => {
   const userId = ObjectId(req.params.id)
   const { email, username, currentPassword, newPassword } = req.body
-  const client = await MongoClient(MONGO_URI, options)
 
   try {
-    await client.connect()
-    const db = client.db('plantgeekdb')
     const filter = { _id: userId }
-    const user = await db.collection('users').findOne({ _id: userId })
+    const user: IUser | null = await User.findOne(filter)
 
     let updates = {}
 
     if (newPassword) {
-      const hashedPwd = await bcrypt.hash(newPassword, user.password)
-      const passwordValid = await bcrypt.compare(currentPassword, user.password)
+      const passwordValid = await bcrypt.compare(currentPassword, user?.password)
       if (!passwordValid) {
         return res.status(400).json({ message: 'Incorrect password' })
       } else {
+        const hashedPwd = await bcrypt.hash(newPassword, saltRounds)
         updates = { password: hashedPwd }
       }
     } else {
       updates = req.body
     }
 
-    const existingEmail = await db.collection('users').findOne({
+    const existingEmail: IUser | null = await User.findOne({
       email: { $regex: new RegExp(`^${email}$`, 'i') },
     })
-    const existingUsername = await db.collection('users').findOne({
+    const existingUsername: IUser | null = await User.findOne({
       username: { $regex: new RegExp(`^${username}$`, 'i') },
     })
 
@@ -421,7 +390,7 @@ export const updateUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'That username is taken' })
     } else {
       // check if email is being updated, if so set emailVerified to false and send new verification email
-      if (email !== user.email) {
+      if (email && email !== user?.email) {
         const code = crypto.randomBytes(20).toString('hex')
         updates = { ...updates, emailVerified: false, emailVerificationCode: code }
 
@@ -448,17 +417,18 @@ export const updateUser = async (req: Request, res: Response) => {
       const update = {
         $set: updates,
       }
-      const result = await db.collection('users').updateOne(filter, update)
-      res.status(200).json({ status: 200, data: result })
+      const result = await User.updateOne(filter, update)
+      res.status(200).json({ data: result })
     }
   } catch (err) {
-    console.error(err)
-    return res.status(400).json(err)
+    if (err instanceof Error) {
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
+    }
   }
-
-  client.close()
 }
 
+// TODO: update following endpoints to use new User model
 export const updateLists = async (req: Request, res: Response) => {
   const { userId } = req.params
   const { plantId, hearts, owned, wanted, collection, wishlist } = req.body
@@ -498,8 +468,6 @@ export const updateLists = async (req: Request, res: Response) => {
   }
 }
 
-// (DELETE) REMOVE A USER
-// TODO: remove from other users' friends
 export const deleteUser = async (req: Request, res: Response) => {
   const client = await MongoClient(MONGO_URI, options)
   const { id } = req.params
