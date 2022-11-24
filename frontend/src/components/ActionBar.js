@@ -36,8 +36,8 @@ export const ActionBar = ({ plant }) => {
     hearts: plant.hearts || [],
     owned: plant.owned || [],
     wanted: plant.wanted || [],
-    collection: currentUser?.collection || [],
-    wishlist: currentUser?.wishlist || [],
+    plantCollection: currentUser?.plantCollection || [],
+    plantWishlist: currentUser?.plantWishlist || [],
   }
 
   return currentUser ? (
@@ -65,8 +65,8 @@ export const ActionBar = ({ plant }) => {
 
             <div className='user-lists'>
               <Checkbox
-                name='collection'
-                checked={values.collection?.includes(plantId)}
+                name='plantCollection'
+                checked={values.plantCollection?.includes(plantId)}
                 onChange={e => {
                   setFieldValue(
                     'owned',
@@ -75,10 +75,10 @@ export const ActionBar = ({ plant }) => {
                       : values.owned.filter(id => id !== currentUser._id)
                   )
                   setFieldValue(
-                    'collection',
+                    'plantCollection',
                     e.target.checked
-                      ? [...values.collection, plantId]
-                      : values.collection.filter(id => id !== plantId)
+                      ? [...values.plantCollection, plantId]
+                      : values.plantCollection.filter(id => id !== plantId)
                   )
                   submitForm()
                 }}>
@@ -87,8 +87,8 @@ export const ActionBar = ({ plant }) => {
                 </span>
               </Checkbox>
               <Checkbox
-                name='wishlist'
-                checked={values.wishlist?.includes(plantId)}
+                name='plantWishlist'
+                checked={values.plantWishlist?.includes(plantId)}
                 onChange={e => {
                   setFieldValue(
                     'wanted',
@@ -97,10 +97,10 @@ export const ActionBar = ({ plant }) => {
                       : values.wanted.filter(id => id !== currentUser._id)
                   )
                   setFieldValue(
-                    'wishlist',
+                    'plantWishlist',
                     e.target.checked
-                      ? [...values.wishlist, plantId]
-                      : values.wishlist.filter(id => id !== plantId)
+                      ? [...values.plantWishlist, plantId]
+                      : values.plantWishlist.filter(id => id !== plantId)
                   )
                   submitForm()
                 }}>

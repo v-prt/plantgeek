@@ -93,15 +93,18 @@ const plantSchema: Schema = new Schema({
     required: true,
   },
   hearts: {
-    type: Array,
+    type: [ObjectId],
+    ref: 'User',
     default: [],
   },
   owned: {
-    type: Array,
+    type: [ObjectId],
+    ref: 'User',
     default: [],
   },
   wanted: {
-    type: Array,
+    type: [ObjectId],
+    ref: 'User',
     default: [],
   },
   contributorId: {

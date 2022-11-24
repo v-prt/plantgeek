@@ -38,8 +38,8 @@ export const ActionBox = ({ plant }) => {
     hearts: plant.hearts || [],
     owned: plant.owned || [],
     wanted: plant.wanted || [],
-    collection: currentUser?.collection || [],
-    wishlist: currentUser?.wishlist || [],
+    plantCollection: currentUser?.plantCollection || [],
+    plantWishlist: currentUser?.plantWishlist || [],
   }
 
   return currentUser ? (
@@ -49,12 +49,19 @@ export const ActionBox = ({ plant }) => {
           <Form>
             <div className='user-lists'>
               <p className='popularity-info'>
-                This plant is in <b>{plant.owned?.length || 0} collections</b> and{' '}
-                <b>{plant.wanted?.length || 0} wishlists</b>.
+                This plant is in{' '}
+                <b>
+                  {plant.owned?.length || 0} collection{plant.owned?.length !== 1 && 's'}
+                </b>{' '}
+                and{' '}
+                <b>
+                  {plant.wanted?.length || 0} wishlist{plant.wanted?.length !== 1 && 's'}
+                </b>
+                .
               </p>
               <Checkbox
-                name='collection'
-                checked={values.collection?.includes(plantId)}
+                name='plantCollection'
+                checked={values.plantCollection?.includes(plantId)}
                 onChange={e => {
                   setFieldValue(
                     'owned',
@@ -63,10 +70,10 @@ export const ActionBox = ({ plant }) => {
                       : values.owned.filter(id => id !== currentUser._id)
                   )
                   setFieldValue(
-                    'collection',
+                    'plantCollection',
                     e.target.checked
-                      ? [...values.collection, plantId]
-                      : values.collection.filter(id => id !== plantId)
+                      ? [...values.plantCollection, plantId]
+                      : values.plantCollection.filter(id => id !== plantId)
                   )
                   submitForm()
                 }}>
@@ -74,12 +81,12 @@ export const ActionBox = ({ plant }) => {
                   <span className='icon'>
                     <RiPlantLine />
                   </span>
-                  {values.collection?.includes(plantId) ? 'Remove from' : 'Add to'} collection
+                  {values.plantCollection?.includes(plantId) ? 'Remove from' : 'Add to'} collection
                 </div>
               </Checkbox>
               <Checkbox
-                name='wishlist'
-                checked={values.wishlist?.includes(plantId)}
+                name='plantWishlist'
+                checked={values.plantWishlist?.includes(plantId)}
                 onChange={e => {
                   setFieldValue(
                     'wanted',
@@ -88,10 +95,10 @@ export const ActionBox = ({ plant }) => {
                       : values.wanted.filter(id => id !== currentUser._id)
                   )
                   setFieldValue(
-                    'wishlist',
+                    'plantWishlist',
                     e.target.checked
-                      ? [...values.wishlist, plantId]
-                      : values.wishlist.filter(id => id !== plantId)
+                      ? [...values.plantWishlist, plantId]
+                      : values.plantWishlist.filter(id => id !== plantId)
                   )
                   submitForm()
                 }}>
@@ -99,7 +106,7 @@ export const ActionBox = ({ plant }) => {
                   <span className='icon'>
                     <AiOutlineStar />
                   </span>
-                  {values.wishlist?.includes(plantId) ? 'Remove from' : 'Add to'} wishlist
+                  {values.plantWishlist?.includes(plantId) ? 'Remove from' : 'Add to'} wishlist
                 </div>
               </Checkbox>
             </div>
@@ -131,17 +138,17 @@ export const ActionBox = ({ plant }) => {
   ) : (
     <Wrapper className='logged-out'>
       <div className='user-lists'>
-        <div className={`label collection ${plant.totalOwned && 'opaque'}`}>
+        <div className={`label collection ${plant.owned?.length && 'opaque'}`}>
           <span className='icon'>
             <RiPlantLine />
           </span>
-          In {plant.totalOwned || 0} collection{plant.totalOwned !== 1 && 's'}
+          In {plant.owned?.length || 0} collection{plant.owned?.length !== 1 && 's'}
         </div>
-        <div className={`label wishlist ${plant.totalWanted && 'opaque'}`}>
+        <div className={`label wishlist ${plant.wanted?.length && 'opaque'}`}>
           <span className='icon'>
             <AiOutlineStar />
           </span>
-          In {plant.totalWanted || 0} wishlist{plant.totalWanted !== 1 && 's'}
+          In {plant.wanted?.length || 0} wishlist{plant.wanted?.length !== 1 && 's'}
         </div>
       </div>
       <div className='hearts'>

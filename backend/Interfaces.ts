@@ -26,9 +26,9 @@ export interface IPlant extends Document {
   humidity: string
   toxic: boolean
   slug: string
-  hearts: string[]
-  owned: string[]
-  wanted: string[]
+  hearts: IUser[]
+  owned: IUser[]
+  wanted: IUser[]
   contributorId?: string
   review?: string
 }

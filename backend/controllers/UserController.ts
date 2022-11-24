@@ -1,6 +1,6 @@
 import { Response, Request } from 'express'
 import { IUser } from '../Interfaces'
-import { User } from '../Models'
+import { User, Plant } from '../Models'
 const mongodb = require('mongodb')
 const { MongoClient, ObjectId } = mongodb
 import * as dotenv from 'dotenv'
@@ -428,29 +428,24 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 }
 
-// TODO: update following endpoints to use new User model
 export const updateLists = async (req: Request, res: Response) => {
   const { userId } = req.params
-  const { plantId, hearts, owned, wanted, collection, wishlist } = req.body
-
-  const client = await MongoClient(MONGO_URI, options)
-  await client.connect()
-  const db = client.db('plantgeekdb')
+  const { plantId, hearts, owned, wanted, plantCollection, plantWishlist } = req.body
 
   try {
     // update user's collection and wishlist (lists of plantIds)
-    const userUpdate = await db.collection('users').updateOne(
+    const userUpdate = await User.updateOne(
       { _id: ObjectId(userId) },
       {
         $set: {
-          collection,
-          wishlist,
+          plantCollection,
+          plantWishlist,
         },
       }
     )
 
     // update lists of userIds in hearts, owned, and wanted on plant to be able to sort by most liked/owned/wanted and show totals on profile
-    const plantUpdate = await db.collection('plants').updateOne(
+    const plantUpdate = await Plant.updateOne(
       { _id: ObjectId(plantId) },
       {
         $set: {
@@ -461,38 +456,35 @@ export const updateLists = async (req: Request, res: Response) => {
       }
     )
 
-    res.status(200).json({ status: 200, data: { userUpdate, plantUpdate } })
+    res.status(200).json({ data: { userUpdate, plantUpdate } })
   } catch (err) {
-    console.error(err)
-    return res.status(400).json(err)
+    if (err instanceof Error) {
+      console.error(err.stack)
+      res.status(500).json({ message: 'Internal server error' })
+    }
   }
 }
 
 export const deleteUser = async (req: Request, res: Response) => {
-  const client = await MongoClient(MONGO_URI, options)
   const { id } = req.params
-  await client.connect()
-  const db = client.db('plantgeekdb')
   try {
     const filter = { _id: ObjectId(id) }
-    const result = await db.collection('users').deleteOne(filter)
-    // find and remove user's id from plants' hearts
-    await db.collection('plants').updateMany(
+    const result = await User.deleteOne(filter)
+    await Plant.updateMany(
       {},
       {
         $pull: {
-          hearts: id,
-          owned: id,
-          wanted: id,
+          hearts: ObjectId(id),
+          owned: ObjectId(id),
+          wanted: ObjectId(id),
         },
       }
     )
-    res.status(200).json({ status: 200, data: result })
+    res.status(200).json({ data: result })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ status: 500, data: req.body, message: err.message })
+      res.status(500).json({ message: 'Internal server error' })
     }
   }
-  client.close()
 }
