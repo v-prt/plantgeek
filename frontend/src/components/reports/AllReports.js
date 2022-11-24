@@ -98,7 +98,6 @@ const Wrapper = styled.section`
   background: #fff;
   display: flex;
   flex-direction: column;
-  margin: 20px 0;
   .report {
     font-size: 0.8rem;
     padding-top: 20px;

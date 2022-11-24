@@ -121,8 +121,7 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
           window.scrollTo(0, 0)
         })
         .catch(err => {
-          console.log(err)
-          message.error('Oops, something went wrong')
+          setStatus(err.response.data.message)
         })
     } catch (err) {
       setStatus(err.response.data.message)

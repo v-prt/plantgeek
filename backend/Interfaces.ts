@@ -1,11 +1,27 @@
 import { Document } from 'mongoose'
 
-// Here, we have a Todo interface that extends the Document type provided by mongoose. We will be using it later to interact with MongoDB
+export interface IPlant extends Document {
+  primaryName: string
+  secondaryName?: string
+  imageUrl: string
+  light: string
+  water: string
+  temperature: string
+  humidity: string
+  toxic: boolean
+  slug: string
+  hearts: string[]
+  owned: string[]
+  wanted: string[]
+  contributorId?: string
+  review?: string
+}
+
 export interface IReport extends Document {
   userId: string
   plantId: string
   message: string
-  sourceUrl: string
+  sourceUrl?: string
   status: string
 }
 

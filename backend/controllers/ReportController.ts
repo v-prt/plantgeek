@@ -43,6 +43,7 @@ export const getReports = async (req: Request, res: Response): Promise<void> => 
     const reports: IReport[] = await Report.find().lean() // use lean() to get a plain JS object instead of a Mongoose document
 
     // include plant and user info with report by ids
+    // TODO: update to use mongoose models
     const result = await Promise.all(
       reports.map(async report => {
         const plant = await db.collection('plants').findOne({ _id: ObjectId(report.plantId) })
@@ -72,6 +73,7 @@ export const getPlantReports = async (req: Request, res: Response): Promise<void
     const reports: IReport[] = await Report.find({ plantId }).lean() // use lean() to get a plain JS object instead of a Mongoose document
 
     // include plant and user info with report by ids
+    // TODO: update to use mongoose models
     const result = await Promise.all(
       reports.map(async report => {
         const plant = await db.collection('plants').findOne({ _id: ObjectId(report.plantId) })
