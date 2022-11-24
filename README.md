@@ -9,7 +9,7 @@ _New screenshots coming soon!_
 
 ### about
 
-Full-stack live website built 100% by me - including concept, design, and implementation. Frontend built with React, backend built with Express, Node, and MongoDB. This app started as a full-stack solo coding project for school in 2021 and has since been a side project I've continued to work on in my spare time.
+Full-stack live website built 100% by me - including concept, design, and implementation. Frontend built with React and styled-components, backend built with Express, Node, and MongoDB with Mongoose. This app started as a full-stack solo coding project for school in 2021 and has since been a side project I've continued to work on in my spare time.
 
 ## Features
 
@@ -66,9 +66,9 @@ Full-stack live website built 100% by me - including concept, design, and implem
 - [x] users can upload new plant data to help grow database
 - [x] cloudinary media library image storage (urls stored in database)
 - [x] admins can review and approve or reject contributions
-- [x] users can earn badges for approved submissions
+- [x] users can earn badges or "stickers" for approved submissions
 
-### account settings (wip)
+### account settings
 
 - [x] update your name, username, email, and password
-- [ ] upload a profile image (stored in cloudinary)
+- [x] upload a profile image (stored in cloudinary)
