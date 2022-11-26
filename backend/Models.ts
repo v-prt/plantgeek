@@ -58,10 +58,12 @@ const userSchema: Schema = new Schema({
 
 const plantSchema: Schema = new Schema({
   primaryName: {
+    // botanical name and variety
     type: String,
     required: true,
   },
   secondaryName: {
+    // common name
     type: String,
   },
   imageUrl: {
@@ -69,23 +71,32 @@ const plantSchema: Schema = new Schema({
     required: true,
   },
   light: {
+    // low to bright indirect, medium to bright indirect, bright indirect
     type: String,
     required: true,
   },
   water: {
+    // low, low to medium, medium, medium to high, high
     type: String,
     required: true,
   },
   temperature: {
+    // average, above average
     type: String,
     required: true,
   },
   humidity: {
+    // low, medium, high
     type: String,
     required: true,
   },
   toxic: {
     type: Boolean,
+    required: true,
+  },
+  rarity: {
+    // common, uncommon, rare, unicorn
+    type: String,
     required: true,
   },
   sourceUrl: {
@@ -115,6 +126,7 @@ const plantSchema: Schema = new Schema({
     type: ObjectId,
   },
   review: {
+    // pending, approved, rejected
     type: String,
   },
 })

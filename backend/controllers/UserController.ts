@@ -2,10 +2,9 @@ import { Response, Request } from 'express'
 import { IUser } from '../Interfaces'
 import { User, Plant } from '../Models'
 const mongodb = require('mongodb')
-const { MongoClient, ObjectId } = mongodb
+const { ObjectId } = mongodb
 import * as dotenv from 'dotenv'
 dotenv.config()
-const MONGO_URI = process.env.MONGO_URI
 import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 const saltRounds = 10
@@ -20,13 +19,8 @@ const EMAIL_VERIFICATION_TEMPLATE_ID = process.env.SENDGRID_EMAIL_VERIFICATION_T
 // template for when email has changed
 const NEW_EMAIL_VERIFICATION_TEMPLATE_ID = process.env.SENDGRID_NEW_EMAIL_VERIFICATION_TEMPLATE_ID
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}
-
 // (CREATE/POST) ADDS A NEW USER
-export const createUser = async (req: Request, res: Response): Promise<void> => {
+export const createUser = async (req: Request, res: Response) => {
   try {
     const hashedPwd = await bcrypt.hash(req.body.password, saltRounds)
     const existingEmail = await User.findOne({
@@ -37,9 +31,9 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     })
 
     if (existingEmail) {
-      res.status(409).json({ message: 'That email is already in use' })
+      return res.status(409).json({ message: 'That email is already in use' })
     } else if (existingUsername) {
-      res.status(409).json({ message: 'That username is taken' })
+      return res.status(409).json({ message: 'That username is taken' })
     } else {
       const code = crypto.randomBytes(20).toString('hex')
 
@@ -72,7 +66,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 
       await sgMail.send(message).catch(err => console.error(err.response?.body?.errors))
 
-      res.status(201).json({
+      return res.status(201).json({
         data: user,
         token: jwt.sign({ userId: newUser._id }, process.env.TOKEN_SECRET, {
           expiresIn: '7d',
@@ -82,12 +76,12 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const resendVerificationEmail = async (req: Request, res: Response): Promise<void> => {
+export const resendVerificationEmail = async (req: Request, res: Response) => {
   const { userId } = req.params
 
   try {
@@ -114,17 +108,17 @@ export const resendVerificationEmail = async (req: Request, res: Response): Prom
 
     await sgMail.send(message).catch(err => console.error(err))
 
-    res.status(200).json({ message: 'Email sent' })
+    return res.status(200).json({ message: 'Email sent' })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
 // (READ/POST) AUTHENTICATES USER WHEN LOGGING IN
-export const authenticateUser = async (req: Request, res: Response): Promise<void> => {
+export const authenticateUser = async (req: Request, res: Response) => {
   try {
     const user: IUser | null = await User.findOne(
       // find by username or email
@@ -138,26 +132,26 @@ export const authenticateUser = async (req: Request, res: Response): Promise<voi
     if (user) {
       const isValid = await bcrypt.compare(req.body.password, user.password)
       if (isValid) {
-        res.status(200).json({
+        return res.status(200).json({
           token: jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET, { expiresIn: '7d' }),
           data: user,
         })
       } else {
-        res.status(403).json({ message: 'Incorrect password' })
+        return res.status(403).json({ message: 'Incorrect password' })
       }
     } else {
-      res.status(404).json({ message: 'User not found' })
+      return res.status(404).json({ message: 'User not found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
 // (READ/POST) VERIFIES JWT TOKEN
-export const verifyToken = async (req: Request, res: Response): Promise<void> => {
+export const verifyToken = async (req: Request, res: Response) => {
   try {
     const verifiedToken = jwt.verify(req.body.token, process.env.TOKEN_SECRET, (err, decoded) => {
       if (err) {
@@ -172,28 +166,28 @@ export const verifyToken = async (req: Request, res: Response): Promise<void> =>
           _id: ObjectId(verifiedToken),
         })
         if (user) {
-          res.status(200).json({ user: user })
+          return res.status(200).json({ user: user })
         } else {
-          res.status(404).json({ message: 'User not found' })
+          return res.status(404).json({ message: 'User not found' })
         }
       } catch (err) {
         if (err instanceof Error) {
           console.error(err.stack)
-          res.status(500).json({ message: 'Internal server error' })
+          return res.status(500).json({ message: 'Internal server error' })
         }
       }
     } else {
-      res.status(400).json({ message: `Token couldn't be verified` })
+      return res.status(400).json({ message: `Token couldn't be verified` })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const verifyEmail = async (req: Request, res: Response): Promise<void> => {
+export const verifyEmail = async (req: Request, res: Response) => {
   const { code } = req.params
   const { userId } = req.body
 
@@ -208,22 +202,22 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
           { _id: ObjectId(userId) },
           { $set: { emailVerified: true, verificationCode: null } }
         )
-        res.status(200).json({ message: 'Email verified' })
+        return res.status(200).json({ message: 'Email verified' })
       } else {
-        res.status(400).json({ message: 'Invalid verification link' })
+        return res.status(400).json({ message: 'Invalid verification link' })
       }
     } else {
-      res.status(404).json({ message: 'User not found' })
+      return res.status(404).json({ message: 'User not found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const sendPasswordResetCode = async (req: Request, res: Response): Promise<void> => {
+export const sendPasswordResetCode = async (req: Request, res: Response) => {
   const { email } = req.body
 
   try {
@@ -245,23 +239,23 @@ export const sendPasswordResetCode = async (req: Request, res: Response): Promis
       sgMail
         .send(msg)
         .then(() => {
-          res.status(200).json({ message: 'Code sent' })
+          return res.status(200).json({ message: 'Code sent' })
         })
         .catch(error => {
           console.error(error)
         })
     } else {
-      res.status(404).json({ message: 'Email not found' })
+      return res.status(404).json({ message: 'Email not found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).send('Internal server error')
+      return res.status(500).send('Internal server error')
     }
   }
 }
 
-export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+export const resetPassword = async (req: Request, res: Response) => {
   const { email, code, newPassword } = req.body
   try {
     const user: IUser | null = await User.findOne({ email })
@@ -270,54 +264,54 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
       if (isValid) {
         const hashedPwd = await bcrypt.hash(newPassword, saltRounds)
         await User.updateOne({ email }, { $set: { password: hashedPwd, passwordResetCode: null } })
-        res.status(200).json({ message: 'Password changed' })
+        return res.status(200).json({ message: 'Password changed' })
       } else {
-        res.status(403).json({ message: 'Code is incorrect' })
+        return res.status(403).json({ message: 'Code is incorrect' })
       }
     } else {
-      res.status(404).json({ message: 'Email not found' })
+      return res.status(404).json({ message: 'Email not found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getUsers = async (req: Request, res: Response): Promise<void> => {
+export const getUsers = async (req: Request, res: Response) => {
   try {
     const users: IUser[] = await User.find().lean()
     if (users) {
-      res.status(200).json({ data: users })
+      return res.status(200).json({ data: users })
     } else {
-      res.status(404).json({ message: 'No users found' })
+      return res.status(404).json({ message: 'No users found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getUser = async (req: Request, res: Response): Promise<void> => {
+export const getUser = async (req: Request, res: Response) => {
   try {
     const user: IUser | null = await User.findOne({ _id: ObjectId(req.params.id) })
     if (user) {
-      res.status(200).json({ user: user })
+      return res.status(200).json({ user: user })
     } else {
-      res.status(404).json({ message: 'User not found' })
+      return res.status(404).json({ message: 'User not found' })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getWishlist = async (req: Request, res: Response): Promise<void> => {
+export const getWishlist = async (req: Request, res: Response) => {
   const { userId } = req.params
   try {
     // get user's plantWishlist and include plant data
@@ -325,16 +319,16 @@ export const getWishlist = async (req: Request, res: Response): Promise<void> =>
       .populate('plantWishlist')
       .lean()
 
-    res.status(200).json({ wishlist: user.plantWishlist })
+    return res.status(200).json({ wishlist: user.plantWishlist })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getCollection = async (req: Request, res: Response): Promise<void> => {
+export const getCollection = async (req: Request, res: Response) => {
   const { userId } = req.params
   try {
     // get user's plantCollection and include plant data
@@ -342,16 +336,16 @@ export const getCollection = async (req: Request, res: Response): Promise<void> 
       .populate('plantCollection')
       .lean()
 
-    res.status(200).json({ collection: user.plantCollection })
+    return res.status(200).json({ collection: user.plantCollection })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const updateUser = async (req: Request, res: Response): Promise<void> => {
+export const updateUser = async (req: Request, res: Response) => {
   const userId = ObjectId(req.params.id)
   const { email, username, currentPassword, newPassword } = req.body
 
@@ -364,7 +358,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     if (newPassword) {
       const passwordValid = await bcrypt.compare(currentPassword, user?.password)
       if (!passwordValid) {
-        res.status(400).json({ message: 'Incorrect password' })
+        return res.status(400).json({ message: 'Incorrect password' })
       } else {
         const hashedPwd = await bcrypt.hash(newPassword, saltRounds)
         updates = { password: hashedPwd }
@@ -381,9 +375,9 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     })
 
     if (existingEmail && !existingEmail._id.equals(userId)) {
-      res.status(400).json({ message: 'That email is already in use' })
+      return res.status(400).json({ message: 'That email is already in use' })
     } else if (existingUsername && !existingUsername._id.equals(userId)) {
-      res.status(400).json({ message: 'That username is taken' })
+      return res.status(400).json({ message: 'That username is taken' })
     } else {
       // check if email is being updated, if so set emailVerified to false and send new verification email
       if (email && email !== user?.email) {
@@ -414,17 +408,17 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
         $set: updates,
       }
       const result = await User.updateOne(filter, update)
-      res.status(200).json({ data: result })
+      return res.status(200).json({ data: result })
     }
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const updateLists = async (req: Request, res: Response): Promise<void> => {
+export const updateLists = async (req: Request, res: Response) => {
   const { userId } = req.params
   const { plantId, hearts, owned, wanted, plantCollection, plantWishlist } = req.body
 
@@ -452,16 +446,16 @@ export const updateLists = async (req: Request, res: Response): Promise<void> =>
       }
     )
 
-    res.status(200).json({ data: { userUpdate, plantUpdate } })
+    return res.status(200).json({ data: { userUpdate, plantUpdate } })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
     const result = await User.deleteOne({ _id: ObjectId(id) })
@@ -475,11 +469,11 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
         },
       }
     )
-    res.status(200).json({ data: result })
+    return res.status(200).json({ data: result })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }

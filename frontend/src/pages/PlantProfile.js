@@ -66,7 +66,7 @@ export const PlantProfile = () => {
       } else if (plant.light === 'medium to bright indirect') {
         lightLevel = 1
       } else if (plant.light === 'bright indirect') {
-        lightLevel = 3
+        lightLevel = 2
       }
       if (plant.water === 'low') {
         waterLevel = 0
@@ -82,7 +82,7 @@ export const PlantProfile = () => {
       if (plant.temperature === 'average') {
         temperatureLevel = 0
       } else if (plant.temperature === 'above average') {
-        temperatureLevel = 2
+        temperatureLevel = 1
       }
       if (plant.humidity === 'low') {
         humidityLevel = 1
@@ -237,19 +237,26 @@ export const PlantProfile = () => {
                         ? 'Non-toxic'
                         : 'Toxicity unknown'}
                     </div>
+                    <div className={`rarity ${!plant.rarity && 'unknown'}`}>
+                      {plant.rarity || 'Rarity unknown'}
+                    </div>
                   </div>
                   <div className='links'>
                     <Link to='/guidelines' className='link'>
                       Care Tips
                     </Link>
-                    •
-                    <a
-                      className='source-link'
-                      href={plant.sourceUrl}
-                      target='_blank'
-                      rel='noopenner noreferrer'>
-                      Source
-                    </a>
+                    {plant.sourceUrl && (
+                      <>
+                        •
+                        <a
+                          className='source-link'
+                          href={plant.sourceUrl}
+                          target='_blank'
+                          rel='noopenner noreferrer'>
+                          Source
+                        </a>
+                      </>
+                    )}
                   </div>
                 </Info>
               </section>
@@ -552,7 +559,8 @@ const Info = styled.div`
     gap: 10px;
     font-size: 0.9rem;
     .difficulty,
-    .toxicity {
+    .toxicity,
+    .rarity {
       font-weight: bold;
       font-size: 0.8rem;
       padding: 2px 10px;
@@ -572,6 +580,15 @@ const Info = styled.div`
       &.toxic {
         background: #ffe6e6;
         color: ${COLORS.danger};
+      }
+    }
+    .rarity {
+      background: #966fd133;
+      color: ${COLORS.accent};
+      text-transform: capitalize;
+      &.unknown {
+        background: #eee;
+        color: #999;
       }
     }
   }

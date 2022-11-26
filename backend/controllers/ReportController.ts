@@ -12,7 +12,7 @@ const options = {
   useUnifiedTopology: true,
 }
 
-export const createReport = async (req: Request, res: Response): Promise<void> => {
+export const createReport = async (req: Request, res: Response) => {
   try {
     const body = req.body as Pick<IReport, 'userId' | 'plantId' | 'message' | 'sourceUrl'>
 
@@ -25,16 +25,16 @@ export const createReport = async (req: Request, res: Response): Promise<void> =
     })
 
     const newReport: IReport = await report.save()
-    res.status(201).json({ message: 'Report added', data: newReport })
+    return res.status(201).json({ message: 'Report added', data: newReport })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getReports = async (req: Request, res: Response): Promise<void> => {
+export const getReports = async (req: Request, res: Response) => {
   try {
     const reports: IReport[] = await Report.find().lean() // use lean() to get a plain JS object instead of a Mongoose document
 
@@ -47,16 +47,16 @@ export const getReports = async (req: Request, res: Response): Promise<void> => 
       })
     )
 
-    res.status(200).json({ reports: result })
+    return res.status(200).json({ reports: result })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const getPlantReports = async (req: Request, res: Response): Promise<void> => {
+export const getPlantReports = async (req: Request, res: Response) => {
   const { plantId } = req.params
 
   try {
@@ -72,38 +72,38 @@ export const getPlantReports = async (req: Request, res: Response): Promise<void
       })
     )
 
-    res.status(200).json({ reports: result })
+    return res.status(200).json({ reports: result })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const countPendingReports = async (req: Request, res: Response): Promise<void> => {
+export const countPendingReports = async (req: Request, res: Response) => {
   try {
     const count = await Report.countDocuments({ status: 'pending' })
-    res.status(200).json({ count })
+    return res.status(200).json({ count })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }
 
-export const updateReportStatus = async (req: Request, res: Response): Promise<void> => {
+export const updateReportStatus = async (req: Request, res: Response) => {
   try {
     const { reportId } = req.params
     const body = req.body as Pick<IReport, 'status'>
 
     const updatedReport: IReport | null = await Report.findByIdAndUpdate({ _id: reportId }, body)
-    res.status(200).json({ message: 'Report updated', data: updatedReport })
+    return res.status(200).json({ message: 'Report updated', data: updatedReport })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
-      res.status(500).json({ message: 'Internal server error' })
+      return res.status(500).json({ message: 'Internal server error' })
     }
   }
 }

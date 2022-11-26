@@ -40,6 +40,7 @@ export const Contribute = () => {
     temperature: '',
     humidity: '',
     toxic: '',
+    rarity: '',
     sourceUrl: '',
   }
 
@@ -57,6 +58,7 @@ export const Contribute = () => {
     temperature: Yup.string().required('Required'),
     humidity: Yup.string().required('Required'),
     toxic: Yup.string().required('Required'),
+    rarity: Yup.string().required('Required'),
     sourceUrl: Yup.string().url('Invalid URL').required('Required'),
   })
 
@@ -272,6 +274,15 @@ export const Contribute = () => {
                   <Select name='toxic' placeholder='Select'>
                     <Option value={true}>toxic</Option>
                     <Option value={false}>nontoxic</Option>
+                  </Select>
+                </FormItem>
+
+                <FormItem label='Rarity' name='rarity'>
+                  <Select name='rarity' placeholder='Select'>
+                    <Option value='common'>common</Option>
+                    <Option value='uncommon'>uncommon</Option>
+                    <Option value='rare'>rare</Option>
+                    <Option value='unicorn'>unicorn</Option>
                   </Select>
                 </FormItem>
 

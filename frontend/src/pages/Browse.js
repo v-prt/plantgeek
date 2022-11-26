@@ -146,54 +146,59 @@ export const Browse = () => {
                   </button>
                 </div>
                 <div className='tags'>
-                  {values?.light && (
+                  {formData?.light && (
                     <Tag
                       closable
                       onClose={() => {
+                        setFormData({ ...formData, light: null })
                         setFieldValue('light', null)
                         submitForm()
                       }}>
-                      <b>Light:</b> {values.light}
+                      <b>Light:</b> {formData.light}
                     </Tag>
                   )}
-                  {values?.water && (
+                  {formData?.water && (
                     <Tag
                       closable
                       onClose={() => {
+                        setFormData({ ...formData, water: null })
                         setFieldValue('water', null)
                         submitForm()
                       }}>
-                      <b>Water:</b> {values.water}
+                      <b>Water:</b> {formData.water}
                     </Tag>
                   )}
-                  {values?.temperature && (
+                  {formData?.temperature && (
                     <Tag
                       closable
                       onClose={() => {
+                        setFormData({ ...formData, temperature: null })
                         setFieldValue('temperature', null)
                         submitForm()
                       }}>
-                      <b>Temp:</b> {values.temperature}
+                      <b>Temp:</b> {formData.temperature}
                     </Tag>
                   )}
-                  {values?.humidity && (
+                  {formData?.humidity && (
                     <Tag
                       closable
                       onClose={() => {
+                        setFormData({ ...formData, humidity: null })
                         setFieldValue('humidity', null)
                         submitForm()
                       }}>
-                      <b>Humidity:</b> {values.humidity}
+                      <b>Humidity:</b> {formData.humidity}
                     </Tag>
                   )}
-                  {values?.toxicity && (
+                  {formData?.toxicity && (
                     <Tag
                       closable
                       onClose={() => {
+                        setFormData({ ...formData, toxicity: null })
                         setFieldValue('toxicity', null)
                         submitForm()
                       }}>
-                      <b>Toxicity:</b> {values.toxicity}
+                      <b>Toxicity:</b> {formData.toxicity}
                     </Tag>
                   )}
                 </div>
@@ -234,6 +239,7 @@ export const Browse = () => {
                     submitForm={submitForm}
                     currentUser={currentUser}
                     formData={formData}
+                    setFormData={setFormData}
                   />
                 </Drawer>
               </Form>
@@ -271,10 +277,12 @@ export const Browse = () => {
               {({ values, setValues, submitForm, resetForm }) => (
                 <Form className='filters-sidebar'>
                   <PlantFilters
+                    values={values}
                     setValues={setValues}
                     submitForm={submitForm}
                     currentUser={currentUser}
                     formData={formData}
+                    setFormData={setFormData}
                   />
                   <div className='results-info'>
                     {status === 'success' ? (

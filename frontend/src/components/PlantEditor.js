@@ -61,6 +61,7 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
     temperature: plant.temperature,
     humidity: plant.humidity,
     toxic: plant.toxic,
+    rarity: plant.rarity,
     review: plant.review,
     sourceUrl: plant.sourceUrl,
   }
@@ -80,6 +81,7 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
     temperature: Yup.string().required('Required'),
     humidity: Yup.string().required('Required'),
     toxic: Yup.string().required('Required'),
+    rarity: Yup.string().required('Required'),
   })
 
   const handleSubmit = async (values, { setStatus, setSubmitting }) => {
@@ -215,6 +217,15 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
               <Select name='toxic' placeholder='Select'>
                 <Option value={true}>toxic</Option>
                 <Option value={false}>nontoxic</Option>
+              </Select>
+            </FormItem>
+
+            <FormItem label='Rarity' name='rarity'>
+              <Select name='rarity' placeholder='Select'>
+                <Option value='common'>common</Option>
+                <Option value='uncommon'>uncommon</Option>
+                <Option value='rare'>rare</Option>
+                <Option value='unicorn'>unicorn</Option>
               </Select>
             </FormItem>
 

@@ -4,7 +4,14 @@ import { FormItem } from './forms/FormItem'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 const { Option } = Select
 
-export const PlantFilters = ({ values, setValues, submitForm, currentUser, formData }) => {
+export const PlantFilters = ({
+  values,
+  setValues,
+  submitForm,
+  currentUser,
+  formData,
+  setFormData,
+}) => {
   return (
     <Wrapper>
       <div className='sort'>
@@ -14,6 +21,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
             name='sort'
             value={formData.sort}
             onChange={e => {
+              setFormData({ ...formData, sort: e })
               setValues({ ...values, sort: e })
               submitForm()
             }}
@@ -33,6 +41,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           name='light'
           value={formData.light}
           onChange={e => {
+            setFormData({ ...formData, light: e })
             setValues({ ...values, light: e })
             submitForm()
           }}
@@ -42,6 +51,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           <Option value='low to bright indirect'>low to bright indirect</Option>
           <Option value='medium to bright indirect'>medium to bright indirect</Option>
           <Option value='bright indirect'>bright indirect</Option>
+          {currentUser?.role === 'admin' && <Option value='unknown'>unknown</Option>}
         </Select>
       </FormItem>
       <FormItem label='Water'>
@@ -50,6 +60,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           name='water'
           value={formData.water}
           onChange={e => {
+            setFormData({ ...formData, water: e })
             setValues({ ...values, water: e })
             submitForm()
           }}
@@ -61,6 +72,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           <Option value='medium'>medium</Option>
           <Option value='medium to high'>medium to high</Option>
           <Option value='high'>high</Option>
+          {currentUser?.role === 'admin' && <Option value='unknown'>unknown</Option>}
         </Select>
       </FormItem>
       <FormItem label='Temperature'>
@@ -69,6 +81,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           name='temperature'
           value={formData.temperature}
           onChange={e => {
+            setFormData({ ...formData, temperature: e })
             setValues({ ...values, temperature: e })
             submitForm()
           }}
@@ -77,6 +90,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           allowClear>
           <Option value='average'>average</Option>
           <Option value='above average'>above average</Option>
+          {currentUser?.role === 'admin' && <Option value='unknown'>unknown</Option>}
         </Select>
       </FormItem>
       <FormItem label='Humidity'>
@@ -85,6 +99,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           name='humidity'
           value={formData.humidity}
           onChange={e => {
+            setFormData({ ...formData, humidity: e })
             setValues({ ...values, humidity: e })
             submitForm()
           }}
@@ -94,6 +109,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           <Option value='low'>low</Option>
           <Option value='medium'>medium</Option>
           <Option value='high'>high</Option>
+          {currentUser?.role === 'admin' && <Option value='unknown'>unknown</Option>}
         </Select>
       </FormItem>
       <FormItem label='Toxicity'>
@@ -102,6 +118,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           name='toxicity'
           value={formData.toxicity}
           onChange={e => {
+            setFormData({ ...formData, toxicity: e })
             setValues({ ...values, toxicity: e })
             submitForm()
           }}
@@ -110,6 +127,27 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
           allowClear>
           <Option value='toxic'>toxic</Option>
           <Option value='nontoxic'>nontoxic</Option>
+          {currentUser?.role === 'admin' && <Option value='unknown'>unknown</Option>}
+        </Select>
+      </FormItem>
+      <FormItem label='Rarity'>
+        <Select
+          getPopupContainer={trigger => trigger.parentNode}
+          name='rarity'
+          value={formData.rarity}
+          onChange={e => {
+            setFormData({ ...formData, rarity: e })
+            setValues({ ...values, rarity: e })
+            submitForm()
+          }}
+          placeholder='Select'
+          style={{ width: '100%' }}
+          allowClear>
+          <Option value='common'>common</Option>
+          <Option value='uncommon'>uncommon</Option>
+          <Option value='rare'>rare</Option>
+          <Option value='unicorn'>unicorn</Option>
+          {currentUser?.role === 'admin' && <Option value='unknown'>unknown</Option>}
         </Select>
       </FormItem>
       {currentUser?.role === 'admin' && (
@@ -119,6 +157,7 @@ export const PlantFilters = ({ values, setValues, submitForm, currentUser, formD
             name='review'
             value={formData.review}
             onChange={e => {
+              setFormData({ ...formData, review: e })
               setValues({ ...values, review: e })
               submitForm()
             }}
