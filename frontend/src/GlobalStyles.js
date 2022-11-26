@@ -8,6 +8,7 @@ export const COLORS = {
   mediumLight: '#5d9e2e',
   mutedMedium: '#cee1bc',
   light: '#92d265',
+  lighter: '#d6ffda',
   lightest: '#e5efdc',
   accent: '#966fd1',
   danger: '#cc0000',

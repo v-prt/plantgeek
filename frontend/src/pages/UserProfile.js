@@ -9,13 +9,9 @@ import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
-import { Wishlist } from '../components/lists/Wishlist'
-import { Collection } from '../components/lists/Collection'
-import placeholder from '../assets/avatar-placeholder.png'
 import { Ellipsis } from '../components/loaders/Ellipsis'
-import { RiPlantLine } from 'react-icons/ri'
-import { AiOutlineStar } from 'react-icons/ai'
-import { BiPlusCircle } from 'react-icons/bi'
+import { PlantList } from '../components/PlantList'
+import placeholder from '../assets/avatar-placeholder.png'
 import bee from '../assets/stickers/bee.svg'
 import boot from '../assets/stickers/boot.svg'
 import cactus from '../assets/stickers/cactus.svg'
@@ -109,26 +105,6 @@ export const UserProfile = () => {
               <p className='date'>Joined {moment(currentUser.joined).format('ll')}</p>
             </div>
           </div>
-          <div className='stats'>
-            <div className='stat'>
-              <p className='label'>
-                <RiPlantLine /> Collection
-              </p>
-              <p className='number'>{currentUser.plantCollection.length}</p>
-            </div>
-            <div className='stat'>
-              <p className='label'>
-                <AiOutlineStar /> Wishlist
-              </p>
-              <p className='number'>{currentUser.plantWishlist.length}</p>
-            </div>
-            <div className='stat'>
-              <p className='label'>
-                <BiPlusCircle /> Contributions
-              </p>
-              <p className='number'>{approvedContributions.length}</p>
-            </div>
-          </div>
         </section>
       </FadeIn>
       <FadeIn delay={200}>
@@ -137,20 +113,20 @@ export const UserProfile = () => {
             <button
               className={`toggle-btn ${list === 'collection' && 'active'}`}
               onClick={() => setList('collection')}>
-              My Collection
+              Collection ({collection?.length})
             </button>
             <button
               className={`toggle-btn ${list === 'wishlist' && 'active'}`}
               onClick={() => setList('wishlist')}>
-              My Wishlist
+              Wishlist ({wishlist?.length})
             </button>
           </div>
           {/* TODO: add more elegant handling for removing items from lists (use state to set list of plants from query, then remove from state and fade card out) */}
           {list === 'collection' && (
-            <Collection user={currentUser} data={collection} status={collectionStatus} />
+            <PlantList user={currentUser} data={collection} status={collectionStatus} />
           )}
           {list === 'wishlist' && (
-            <Wishlist user={currentUser} data={wishlist} status={wishlistStatus} />
+            <PlantList user={currentUser} data={wishlist} status={wishlistStatus} />
           )}
         </div>
       </FadeIn>
@@ -263,7 +239,7 @@ const Wrapper = styled.main`
       }
       .text {
         h1 {
-          font-size: 1.2rem;
+          font-size: 1.4rem;
         }
         .username {
           font-weight: bold;
@@ -333,6 +309,11 @@ const Wrapper = styled.main`
           height: 100px;
           width: 100px;
         }
+        .text {
+          h1 {
+            font-size: 1.5rem;
+          }
+        }
       }
       .stats {
         .stat {
@@ -344,6 +325,17 @@ const Wrapper = styled.main`
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     .user-info {
       align-items: center;
+      .profile {
+        .profile-img {
+          height: 150px;
+          width: 150px;
+        }
+        .text {
+          h1 {
+            font-size: 1.6rem;
+          }
+        }
+      }
       .stats {
         flex-direction: row;
         gap: 20px;

@@ -5,7 +5,6 @@ import { ImageLoader } from './loaders/ImageLoader'
 import { ActionBar } from './ActionBar'
 import { ExclamationCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import { FaPaw } from 'react-icons/fa'
-import placeholder from '../assets/plant-placeholder.svg'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
@@ -31,7 +30,7 @@ export const PlantCard = ({ plant }) => {
           </Stamp>
         )}
         <div className='thumbnail'>
-          <ImageLoader src={plant.imageUrl} alt='' placeholder={placeholder} borderRadius='50%' />
+          <ImageLoader src={plant.imageUrl} alt='' borderRadius='50%' />
         </div>
         <div className='name'>
           <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>

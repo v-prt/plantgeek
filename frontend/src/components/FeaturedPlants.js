@@ -32,7 +32,7 @@ export const FeaturedPlants = () => {
       </Plants>
       <div className='cta'>
         <Link to='/browse'>
-          <Button type='primary'>BROWSE PLANTS</Button>
+          <Button type='primary'>BROWSE ALL PLANTS</Button>
         </Link>
       </div>
     </Wrapper>

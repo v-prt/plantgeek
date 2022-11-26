@@ -9,9 +9,8 @@ import { Button } from 'antd'
 import { PlusCircleOutlined, DoubleRightOutlined } from '@ant-design/icons'
 import { FeaturedPlants } from '../components/FeaturedPlants'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
-import plantgeekLogo from '../assets/logo.webp'
-import userPlaceholder from '../assets/avatar-placeholder.png'
 import plantPlaceholder from '../assets/plant-placeholder.svg'
+import heroImage from '../assets/hero-image.png'
 
 export const Homepage = () => {
   useDocumentTitle('plantgeek')
@@ -20,29 +19,38 @@ export const Homepage = () => {
   return (
     <Wrapper>
       <FadeIn>
-        {currentUser ? (
-          <section className='heading'>
-            <Link className='profile-img' to='/profile'>
-              <ImageLoader
-                src={currentUser.imageUrl || userPlaceholder}
-                alt=''
-                borderRadius='50%'
-              />
-            </Link>
-            <div className='text'>
-              <h1>hey, {currentUser.firstName}!</h1>
-              <p>How are your plants today?</p>
+        <section className='heading'>
+          <div className='text'>
+            <h1>
+              welcome to <span className='gradient-text'>plantgeek</span>
+            </h1>
+            <p className='subheader'>The houseplant encyclopedia for the modern plant parent.</p>
+            <div className='buttons'>
+              {currentUser ? (
+                <>
+                  <Link to='/browse'>
+                    <Button type='primary'>BROWSE PLANTS</Button>
+                  </Link>
+                  <Link to='/profile'>
+                    <Button type='secondary'>VIEW PROFILE</Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to='/login'>
+                    <Button type='primary'>LOG IN</Button>
+                  </Link>
+                  <Link to='/signup'>
+                    <Button type='secondary'>SIGN UP</Button>
+                  </Link>
+                </>
+              )}
             </div>
-          </section>
-        ) : (
-          <section className='heading'>
-            <img className='logo' src={plantgeekLogo} alt='' />
-            <div className='text'>
-              <h1>hey there!</h1>
-              <p>How are your plants today?</p>
-            </div>
-          </section>
-        )}
+          </div>
+          <div className='hero-image'>
+            <ImageLoader src={heroImage} alt='' borderRadius='100px 0 20px 0' />
+          </div>
+        </section>
       </FadeIn>
       <FadeIn delay={200}>
         <InfoCard>
@@ -160,27 +168,42 @@ const Wrapper = styled.main`
   .heading {
     background: linear-gradient(45deg, #a4e17d, #95d190);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    h1 {
-      font-size: 1.5rem;
+    gap: 30px;
+    padding: 0;
+    overflow: hidden;
+    .text {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      h1 {
+        color: ${COLORS.lighter};
+        font-family: 'Lobster Two', cursive;
+        font-size: 4rem;
+        line-height: 1;
+        .gradient-text {
+          color: ${COLORS.darkest};
+        }
+      }
+      .subheader {
+        font-size: 1.4rem;
+        margin: 20px 0;
+      }
+      .buttons {
+        display: flex;
+        gap: 12px;
+      }
+      a {
+        width: fit-content;
+      }
     }
-    .logo {
-      height: 50px;
-      width: 50px;
-    }
-    .profile-img {
-      border: 2px solid #fff;
-      height: 75px;
-      width: 75px;
-      border-radius: 50%;
-      padding: 2px;
+    .hero-image {
+      margin-top: auto;
+      border-radius: 100px 0 0 0;
       overflow: hidden;
       img {
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-        border-radius: 50%;
+        max-width: 100%;
       }
     }
   }
@@ -213,17 +236,34 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
+      flex-direction: row;
       gap: 20px;
-      .logo {
-        height: 75px;
-        width: 75px;
+      .text,
+      .hero-image {
+        flex: 1;
       }
-      .profile-img {
-        height: 100px;
-        width: 100px;
+      .text {
+        padding: 30px;
+        h1 {
+          font-size: 4.5rem;
+        }
+        .subheader {
+          font-size: 1.5rem;
+          margin: 30px 0;
+        }
       }
-      h1 {
-        font-size: 2rem;
+    }
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    .heading {
+      .text {
+        padding: 40px;
+        h1 {
+          font-size: 5rem;
+        }
+        .subheader {
+          margin: 40px 0;
+        }
       }
     }
   }

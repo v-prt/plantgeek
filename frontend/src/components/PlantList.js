@@ -1,10 +1,10 @@
 import styled from 'styled-components/macro'
-import { FadeIn } from '../loaders/FadeIn'
-import { PlantCard } from '../PlantCard'
-import { GhostPlantCard } from '../GhostPlantCard'
+import { FadeIn } from './loaders/FadeIn'
+import { PlantCard } from './PlantCard'
+import { GhostPlantCard } from './GhostPlantCard'
 import { Empty } from 'antd'
 
-export const Collection = ({ data, status }) => {
+export const PlantList = ({ data, status }) => {
   return (
     <ListWrapper>
       <FadeIn>
