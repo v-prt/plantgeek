@@ -1,20 +1,29 @@
 import React, { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
+import { PlantContext } from '../contexts/PlantContext'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { ImageLoader } from '../components/loaders/ImageLoader'
-import { Button } from 'antd'
+import { Button, Input } from 'antd'
 import { PlusCircleOutlined, DoubleRightOutlined } from '@ant-design/icons'
 import { FeaturedPlants } from '../components/FeaturedPlants'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import plantPlaceholder from '../assets/plant-placeholder.svg'
 import heroImage from '../assets/hero-image.png'
+const { Search } = Input
 
 export const Homepage = () => {
   useDocumentTitle('plantgeek')
   const { currentUser } = useContext(UserContext)
+  const { formData, setFormData } = useContext(PlantContext)
+  const history = useHistory()
+
+  const onSearch = value => {
+    setFormData({ ...formData, search: [value] })
+    history.push(`/browse`)
+  }
 
   return (
     <Wrapper>
@@ -54,6 +63,12 @@ export const Homepage = () => {
       </FadeIn>
       <FadeIn delay={200}>
         <InfoCard>
+          <Search
+            placeholder='Search houseplants'
+            onSearch={onSearch}
+            enterButton
+            style={{ marginBottom: '30px' }}
+          />
           <Link to='/browse' className='info-cta'>
             browse houseplants
             <span className='icon'>
@@ -206,6 +221,9 @@ const Wrapper = styled.main`
         max-width: 100%;
       }
     }
+  }
+  .search {
+    background: #fff;
   }
   .icon {
     font-size: 1.1rem;
