@@ -237,10 +237,14 @@ export const PlantProfile = () => {
                         ? 'Non-toxic'
                         : 'Toxicity unknown'}
                     </div>
+                    <div className={`climate ${!plant.climate && 'unknown'}`}>
+                      {plant.climate || 'Unknown climate'}
+                    </div>
                     <div className={`rarity ${!plant.rarity && 'unknown'}`}>
-                      {plant.rarity || 'Rarity unknown'}
+                      {plant.rarity || 'Unknown rarity'}
                     </div>
                   </div>
+                  <p>Region of origin: {plant.origin || 'Unknown'}</p>
                   <div className='links'>
                     <Link to='/guidelines' className='link'>
                       Care Tips
@@ -533,11 +537,13 @@ const Info = styled.div`
   .needs {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
+    border-bottom: 1px dotted #ccc;
+    padding-bottom: 20px;
   }
   .row {
-    background: #f6f6f6;
-    padding: 10px;
+    /* background: #f6f6f6;
+    padding: 10px; */
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -560,6 +566,7 @@ const Info = styled.div`
     font-size: 0.9rem;
     .difficulty,
     .toxicity,
+    .climate,
     .rarity {
       font-weight: bold;
       font-size: 0.8rem;
@@ -582,8 +589,17 @@ const Info = styled.div`
         color: ${COLORS.danger};
       }
     }
+    .climate {
+      background: #deefff;
+      color: #027df0;
+      text-transform: capitalize;
+      &.unknown {
+        background: #eee;
+        color: #999;
+      }
+    }
     .rarity {
-      background: #966fd133;
+      background: #efe4ff;
       color: ${COLORS.accent};
       text-transform: capitalize;
       &.unknown {

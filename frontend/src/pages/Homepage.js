@@ -12,6 +12,7 @@ import { FeaturedPlants } from '../components/FeaturedPlants'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import plantPlaceholder from '../assets/plant-placeholder.svg'
 import heroImage from '../assets/hero-image.png'
+import curves from '../assets/curves.svg'
 const { Search } = Input
 
 export const Homepage = () => {
@@ -33,7 +34,7 @@ export const Homepage = () => {
             <h1>
               welcome to <span className='gradient-text'>plantgeek</span>
             </h1>
-            <p className='subheader'>The houseplant encyclopedia for the modern plant parent.</p>
+            <p className='subheader'>The houseplant encyclopedia for modern plant parents.</p>
             <div className='buttons'>
               {currentUser ? (
                 <>
@@ -62,7 +63,7 @@ export const Homepage = () => {
         </section>
       </FadeIn>
       <FadeIn delay={200}>
-        <InfoCard>
+        <InfoCard style={{ backgroundImage: `url(${curves})` }}>
           <Search
             placeholder='Search houseplants'
             onSearch={onSearch}
@@ -288,7 +289,8 @@ const Wrapper = styled.main`
 `
 
 const InfoCard = styled.section`
-  background: #fff;
+  background-color: #fff;
+  background-position: center;
   h3 {
     margin-top: 20px;
   }

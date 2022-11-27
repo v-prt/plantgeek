@@ -94,10 +94,17 @@ const plantSchema: Schema = new Schema({
     type: Boolean,
     required: true,
   },
+  origin: {
+    // country/region of origin
+    type: String,
+  },
+  climate: {
+    // tropical, subtropical, temperate, desert
+    type: String,
+  },
   rarity: {
     // common, uncommon, rare, unicorn
     type: String,
-    required: true,
   },
   sourceUrl: {
     type: String,

@@ -35,7 +35,7 @@ Full-stack live website built 100% by me - including concept, design, and implem
 - [x] login sessions preserved in browser
 - [x] built with formik and yup validation for feedback and error handling
 
-### browse houseplants (wip)
+### houseplant search
 
 - [x] hundreds of plants stored in MongoDB database
 - [x] search & filter by name or type

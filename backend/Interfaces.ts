@@ -25,6 +25,8 @@ export interface IPlant extends Document {
   temperature: string
   humidity: string
   toxic: boolean
+  origin?: string
+  climate?: string
   rarity?: string
   sourceUrl: string
   slug: string

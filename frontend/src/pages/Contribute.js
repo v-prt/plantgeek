@@ -40,6 +40,8 @@ export const Contribute = () => {
     temperature: '',
     humidity: '',
     toxic: '',
+    origin: '',
+    climate: '',
     rarity: '',
     sourceUrl: '',
   }
@@ -58,7 +60,9 @@ export const Contribute = () => {
     temperature: Yup.string().required('Required'),
     humidity: Yup.string().required('Required'),
     toxic: Yup.string().required('Required'),
-    rarity: Yup.string().required('Required'),
+    origin: Yup.string(),
+    climate: Yup.string(),
+    rarity: Yup.string(),
     sourceUrl: Yup.string().url('Invalid URL').required('Required'),
   })
 
@@ -205,12 +209,15 @@ export const Contribute = () => {
             onSubmit={handleSubmit}>
             {({ isSubmitting, resetForm }) => (
               <Form>
-                <FormItem label='Botanical name' name='primaryName'>
-                  <Input name='primaryName' placeholder='Monstera deliciosa' />
+                <FormItem
+                  label='Botanical name'
+                  subtext='Please include the variety or cultivar.'
+                  name='primaryName'>
+                  <Input name='primaryName' placeholder='e.g. Monstera deliciosa' />
                 </FormItem>
 
                 <FormItem label='Common name' sublabel='(optional)' name='secondaryName'>
-                  <Input name='secondaryName' placeholder='Swiss Cheese Plant' />
+                  <Input name='secondaryName' placeholder='e.g. Swiss Cheese Plant' />
                 </FormItem>
 
                 <FormItem label='Upload image' sublabel='(max 1mb)' name=''>
@@ -277,6 +284,19 @@ export const Contribute = () => {
                   </Select>
                 </FormItem>
 
+                <FormItem label='Region of origin' sublabel='(optional)' name='origin'>
+                  <Input name='origin' placeholder='e.g. Central America' />
+                </FormItem>
+
+                <FormItem label='Native climate' sublabel='(optional)' name='climate'>
+                  <Select name='climate' placeholder='Select'>
+                    <Option value='tropical'>tropical</Option>
+                    <Option value='subtropical'>subtropical</Option>
+                    <Option value='temperate'>temperate</Option>
+                    <Option value='desert'>desert</Option>
+                  </Select>
+                </FormItem>
+
                 <FormItem label='Rarity' name='rarity'>
                   <Select name='rarity' placeholder='Select'>
                     <Option value='common'>common</Option>
@@ -286,10 +306,13 @@ export const Contribute = () => {
                   </Select>
                 </FormItem>
 
-                <FormItem label='Source URL' name='sourceUrl'>
+                <FormItem
+                  label='Source'
+                  subtext='Please provide a link to your source to help validate your information.'
+                  name='sourceUrl'>
                   <Input
                     name='sourceUrl'
-                    placeholder='https://www.plantpedia.com/monstera-deliciosa'
+                    placeholder='e.g. https://www.plantpedia.com/monstera-deliciosa'
                   />
                 </FormItem>
 

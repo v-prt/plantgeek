@@ -85,6 +85,10 @@ const Wrapper = styled.div`
     }
   }
   .subtext {
+    font-size: 0.8rem;
+    font-weight: bold;
+    opacity: 0.5;
+    margin-bottom: 5px;
   }
   .info-text {
     color: rgba(0, 0, 0, 0.7);
