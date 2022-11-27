@@ -6,7 +6,8 @@ import axios from 'axios'
 import styled from 'styled-components/macro'
 import { PlantCard } from './PlantCard'
 import { GhostPlantCard } from './GhostPlantCard'
-import { Button } from 'antd'
+import { Button, Carousel } from 'antd'
+import { BREAKPOINTS } from '../GlobalStyles'
 
 export const FeaturedPlants = () => {
   const { data, status } = useQuery(
@@ -21,14 +22,37 @@ export const FeaturedPlants = () => {
     }
   )
 
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
+  }
+
   return (
     <Wrapper>
       <h2>featured houseplants</h2>
-      {/* TODO: carousel */}
       <Plants>
-        {status === 'success'
-          ? data?.map(plant => <PlantCard key={plant._id} plant={plant} />)
-          : Array.from(Array(6).keys()).map(item => <GhostPlantCard key={item} />)}
+        <Carousel autoplay {...settings}>
+          {status === 'success'
+            ? data?.map(plant => <PlantCard key={plant._id} plant={plant} />)
+            : Array.from(Array(6).keys()).map(item => <GhostPlantCard key={item} />)}
+        </Carousel>
       </Plants>
       <div className='cta'>
         <Link to='/browse'>
@@ -42,20 +66,34 @@ export const FeaturedPlants = () => {
 const Wrapper = styled.section`
   background: #f2f2f2;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  display: grid;
-  place-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   h2 {
     text-align: center;
     margin-bottom: 30px;
   }
   .cta {
-    margin: 40px auto 0 auto;
+    margin: 60px auto 20px auto;
   }
 `
 
 const Plants = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
+  width: 100%;
+  max-width: 320px;
+  .slick-slide {
+    padding: 10px;
+  }
+  .slick-dots {
+    bottom: -20px;
+    li button {
+      background: #999 !important;
+    }
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    max-width: 640px;
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    max-width: 960px;
+  }
 `

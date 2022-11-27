@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react'
 import { useParams, useHistory, Link } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
 import { API_URL } from '../constants'
-import { Modal, Alert, Button, Drawer } from 'antd'
+import { Modal, Alert, Button, Drawer, Carousel } from 'antd'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
 import styled from 'styled-components/macro'
@@ -112,6 +112,28 @@ export const PlantProfile = () => {
     queryClient.invalidateQueries('plants-to-review')
     // FIXME: pending-plants count doesn't refetch for a while
     queryClient.invalidateQueries('pending-plants')
+  }
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   }
 
   return (
@@ -311,13 +333,16 @@ export const PlantProfile = () => {
             <FadeIn delay={600}>
               <section className='similar-plants'>
                 <h2>similar plants</h2>
-                {/* TODO: carousel (1 at a time on mobile, 2 on tablet, 3 on desktop) */}
                 <div className='similar-plants-container'>
                   {similarPlantsStatus === 'success' ? (
                     similarPlants?.length > 0 ? (
-                      similarPlants.map(plant => <PlantCard key={plant._id} plant={plant} />)
+                      <Carousel autoplay {...settings} style={{ marginBottom: '40px' }}>
+                        {similarPlants.map(plant => (
+                          <PlantCard key={plant._id} plant={plant} />
+                        ))}
+                      </Carousel>
                     ) : (
-                      <p>No similar plants found.</p>
+                      <p style={{ textAlign: 'center' }}>No similar plants found.</p>
                     )
                   ) : (
                     <div className='loading'>
@@ -485,16 +510,31 @@ const Wrapper = styled.main`
   }
   .similar-plants {
     background: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     h2 {
       text-align: center;
       margin-bottom: 30px;
     }
     .similar-plants-container {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
+      width: 100%;
+      max-width: 320px;
+      .slick-slide {
+        padding: 10px;
+      }
+      .slick-dots {
+        bottom: -20px;
+        li button {
+          background: #999 !important;
+        }
+      }
+      @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+        max-width: 640px;
+      }
+      @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+        max-width: 960px;
+      }
     }
   }
   .loading,

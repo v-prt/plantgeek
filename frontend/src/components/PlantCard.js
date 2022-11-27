@@ -156,6 +156,12 @@ const InfoLink = styled(Link)`
     display: grid;
     place-content: center;
   }
+  .primary-name,
+  .secondary-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .primary-name {
     font-weight: bold;
   }
