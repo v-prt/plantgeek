@@ -201,6 +201,28 @@ export const Browse = () => {
                       <b>Toxicity:</b> {formData.toxicity}
                     </Tag>
                   )}
+                  {formData?.climate && (
+                    <Tag
+                      closable
+                      onClose={() => {
+                        setFormData({ ...formData, climate: null })
+                        setFieldValue('climate', null)
+                        submitForm()
+                      }}>
+                      <b>Climate:</b> {formData.climate}
+                    </Tag>
+                  )}
+                  {formData?.rarity && (
+                    <Tag
+                      closable
+                      onClose={() => {
+                        setFormData({ ...formData, rarity: null })
+                        setFieldValue('rarity', null)
+                        submitForm()
+                      }}>
+                      <b>Rarity:</b> {formData.rarity}
+                    </Tag>
+                  )}
                 </div>
                 {/* MOBILE/TABLET FILTERS MENU */}
                 <Drawer

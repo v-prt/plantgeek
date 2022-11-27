@@ -130,6 +130,26 @@ export const PlantFilters = ({
           {currentUser?.role === 'admin' && <Option value='unknown'>unknown</Option>}
         </Select>
       </FormItem>
+      <FormItem label='Climate'>
+        <Select
+          getPopupContainer={trigger => trigger.parentNode}
+          name='climate'
+          value={formData.climate}
+          onChange={e => {
+            setFormData({ ...formData, climate: e })
+            setValues({ ...values, climate: e })
+            submitForm()
+          }}
+          placeholder='Select'
+          style={{ width: '100%' }}
+          allowClear>
+          <Option value='tropical'>tropical</Option>
+          <Option value='subtropical'>subtropical</Option>
+          <Option value='temperate'>temperate</Option>
+          <Option value='desert'>desert</Option>
+          {currentUser?.role === 'admin' && <Option value='unknown'>unknown</Option>}
+        </Select>
+      </FormItem>
       <FormItem label='Rarity'>
         <Select
           getPopupContainer={trigger => trigger.parentNode}

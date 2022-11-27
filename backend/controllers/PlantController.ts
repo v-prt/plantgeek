@@ -41,7 +41,8 @@ export const createPlant = async (req: Request, res: Response) => {
 
 // (READ/GET) GETS ALL PLANTS
 export const getPlants = async (req: Request, res: Response) => {
-  const { search, sort, light, water, temperature, humidity, toxicity, rarity, review } = req.query
+  const { search, sort, light, water, temperature, humidity, toxicity, climate, rarity, review } =
+    req.query
   let filters = {}
 
   if (search && Array.isArray(search)) {
@@ -107,6 +108,17 @@ export const getPlants = async (req: Request, res: Response) => {
     filters = {
       ...filters,
       $or: [{ toxic: null }, { toxic: { $exists: false } }],
+    }
+  }
+
+  if (climate) {
+    if (climate === 'unknown') {
+      filters = { ...filters, $or: [{ climate: null }, { climate: { $exists: false } }] }
+    } else {
+      filters = {
+        ...filters,
+        climate,
+      }
     }
   }
 
