@@ -31,8 +31,8 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
     new Promise(resolve => {
       Resizer.imageFileResizer(
         file, // file to be resized
-        600, // maxWidth of the resized image
-        600, // maxHeight of the resized image
+        1200, // maxWidth of the resized image
+        1200, // maxHeight of the resized image
         'WEBP', // compressFormat of the resized image
         100, // quality of the resized image
         0, // degree of clockwise rotation to apply to the image
@@ -146,37 +146,7 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
         onSubmit={handleSubmit}>
         {({ status, setValues, isSubmitting, resetForm, submitForm }) => (
           <Form>
-            <div className='primary-image'>
-              <Upload
-                multiple={false}
-                maxCount={1}
-                name='imageUrl'
-                customRequest={handleNewImage}
-                fileList={fileList}
-                listType='picture-card'
-                accept='.png, .jpg, .jpeg, .webp'
-                showUploadList={{
-                  showPreviewIcon: false,
-                  showRemoveIcon: false,
-                }}>
-                {!uploading && (newImage || plant.imageUrl) ? (
-                  <ImageLoader
-                    src={newImage || plant.imageUrl}
-                    alt=''
-                    placeholder={placeholder}
-                    borderRadius='50%'
-                  />
-                ) : (
-                  uploadButton
-                )}
-                {!uploading && (
-                  <div className='overlay'>
-                    <EditOutlined />
-                  </div>
-                )}
-              </Upload>
-            </div>
-
+            <h3>Basic Info</h3>
             <FormItem
               label='Botanical name'
               subtext='Please include the variety or cultivar.'
@@ -187,6 +157,43 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
             <FormItem label='Common name' sublabel='(optional)' name='secondaryName'>
               <Input name='secondaryName' placeholder='e.g. Swiss Cheese Plant' />
             </FormItem>
+
+            <FormItem
+              label='Image'
+              subtext='Please upload a high-quality image. The plant should be the only subject in view, preferrably with a white or plain background.'>
+              <div className='primary-image'>
+                <Upload
+                  multiple={false}
+                  maxCount={1}
+                  name='imageUrl'
+                  customRequest={handleNewImage}
+                  fileList={fileList}
+                  listType='picture-card'
+                  accept='.png, .jpg, .jpeg, .webp'
+                  showUploadList={{
+                    showPreviewIcon: false,
+                    showRemoveIcon: false,
+                  }}>
+                  {!uploading && (newImage || plant.imageUrl) ? (
+                    <ImageLoader
+                      src={newImage || plant.imageUrl}
+                      alt=''
+                      placeholder={placeholder}
+                      borderRadius='50%'
+                    />
+                  ) : (
+                    uploadButton
+                  )}
+                  {!uploading && (
+                    <div className='overlay'>
+                      <EditOutlined />
+                    </div>
+                  )}
+                </Upload>
+              </div>
+            </FormItem>
+
+            <h3>Care Info</h3>
 
             <FormItem label='Light' name='light'>
               <Select name='light' placeholder='Select'>
@@ -228,6 +235,8 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
               </Select>
             </FormItem>
 
+            <h3 style={{ marginTop: '20px' }}>Miscellaneous Info</h3>
+
             <FormItem label='Region of origin' sublabel='(optional)' name='origin'>
               <Input name='origin' placeholder='e.g. Central America' />
             </FormItem>
@@ -241,7 +250,7 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
               </Select>
             </FormItem>
 
-            <FormItem label='Rarity' name='rarity'>
+            <FormItem label='Rarity' sublabel='(optional)' name='rarity'>
               <Select name='rarity' placeholder='Select'>
                 <Option value='common'>common</Option>
                 <Option value='uncommon'>uncommon</Option>

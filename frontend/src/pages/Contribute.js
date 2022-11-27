@@ -1,8 +1,7 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
 import Resizer from 'react-image-file-resizer'
-import { useDropzone } from 'react-dropzone'
 import { API_URL } from '../constants'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
@@ -11,14 +10,15 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import { FormItem } from '../components/forms/FormItem'
 import { Input, Select } from 'formik-antd'
-import { Button, Alert } from 'antd'
+import { Button, Alert, Upload } from 'antd'
+import { UploadOutlined } from '@ant-design/icons'
 
 import styled from 'styled-components/macro'
-import { COLORS, DropZone, DropBox } from '../GlobalStyles'
+import { COLORS } from '../GlobalStyles'
+import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
+import { ImageLoader } from '../components/loaders/ImageLoader'
 import checkmark from '../assets/checkmark.svg'
-import { RiImageAddFill, RiImageAddLine } from 'react-icons/ri'
-import { ImCross } from 'react-icons/im'
 import placeholder from '../assets/plant-placeholder.svg'
 import { PlantCard } from '../components/PlantCard'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
@@ -66,38 +66,19 @@ export const Contribute = () => {
     sourceUrl: Yup.string().url('Invalid URL').required('Required'),
   })
 
-  // DROPZONE
+  // IMAGE UPLOAD
+  const [uploading, setUploading] = useState(false)
+  const fileList = []
+  const uploadButton = <div>{uploading ? <Ellipsis /> : <UploadOutlined />}</div>
   const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`
-  const [images, setImages] = useState()
-  const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
-    accept: 'image/*',
-    minSize: 0,
-    // maxSize: 1242880, // up to 1mb
-    multiple: false, // accepts only 1 image
-    onDrop: acceptedFiles => {
-      setImages(
-        acceptedFiles.map(image =>
-          Object.assign(image, {
-            preview: URL.createObjectURL(image),
-          })
-        )
-      )
-    },
-  })
-  useEffect(() => {
-    if (images) {
-      // revokes the data uris to avoid memory leaks
-      images.forEach(image => URL.revokeObjectURL(image.preview))
-    }
-  }, [images])
 
   // resize file before upload
   const resizeFile = file =>
     new Promise(resolve => {
       Resizer.imageFileResizer(
         file, // file to be resized
-        600, // maxWidth of the resized image
-        600, // maxHeight of the resized image
+        1200, // maxWidth of the resized image
+        1200, // maxHeight of the resized image
         'WEBP', // compressFormat of the resized image
         100, // quality of the resized image
         0, // degree of clockwise rotation to apply to the image
@@ -109,51 +90,61 @@ export const Contribute = () => {
       )
     })
 
-  const handleSubmit = (values, { setSubmitting, resetForm }) => {
-    if (currentUser.emailVerified) {
-      setStatus(undefined)
-      if (!images) {
-        setStatus('You must upload an image.')
-        setSubmitting(false)
-      } else {
-        images.forEach(async image => {
-          const resizedImage = await resizeFile(image)
+  const [newImage, setNewImage] = useState(false)
+  const handleNewImage = async fileData => {
+    setUploading(true)
+    const image = await resizeFile(fileData.file)
+    setNewImage(image)
+    setUploading(false)
+  }
 
-          const formData = new FormData()
-          formData.append('file', resizedImage)
-          formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setStatus(undefined)
+    if (!currentUser.emailVerified) {
+      return
+    }
+    if (!newImage) {
+      setStatus('You must upload an image.')
+      setSubmitting(false)
+      return
+    }
 
-          // upload image to cloudinary
-          await axios.post(cloudinaryUrl, formData).then(res => {
-            const imageUrl = res.data.secure_url
+    try {
+      const formData = new FormData()
+      formData.append('file', newImage)
+      formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
 
-            const data = {
-              slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
-              imageUrl,
-              contributorId: currentUser._id,
-              review: 'pending',
-              ...values,
-            }
+      // upload new image to cloudinary
+      const cloudinaryRes = await axios.post(cloudinaryUrl, formData)
+      values.imageUrl = cloudinaryRes.data.secure_url
 
-            //  upload plant to db
-            axios
-              .post(`${API_URL}/plants`, data)
-              .then(res => {
-                setSubmitting(false)
-                setNewPlant(res.data.plant)
-                resetForm()
-                setImages()
-                queryClient.invalidateQueries('plants-to-review')
-                queryClient.invalidateQueries('pending-plants')
-                window.scrollTo(0, 0)
-              })
-              .catch(err => {
-                setStatus(err.response.data.message)
-                setSubmitting(false)
-              })
-          })
-        })
+      const data = {
+        ...values,
+        slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
+        contributorId: currentUser._id,
+        review: 'pending',
       }
+
+      //  upload plant to db
+      axios
+        .post(`${API_URL}/plants`, data)
+        .then(res => {
+          setSubmitting(false)
+          setNewPlant(res.data.plant)
+          resetForm()
+          setNewImage(false)
+          queryClient.invalidateQueries('plants-to-review')
+          queryClient.invalidateQueries('pending-plants')
+          window.scrollTo(0, 0)
+        })
+        .catch(err => {
+          setStatus(err.response.data.message)
+          setSubmitting(false)
+        })
+    } catch (err) {
+      console.log(err)
+      setStatus('Sorry, something went wrong. Please try again.')
+      setSubmitting(false)
     }
   }
 
@@ -209,6 +200,7 @@ export const Contribute = () => {
             onSubmit={handleSubmit}>
             {({ isSubmitting, resetForm }) => (
               <Form>
+                <h3>Basic Info</h3>
                 <FormItem
                   label='Botanical name'
                   subtext='Please include the variety or cultivar.'
@@ -220,29 +212,42 @@ export const Contribute = () => {
                   <Input name='secondaryName' placeholder='e.g. Swiss Cheese Plant' />
                 </FormItem>
 
-                <FormItem label='Upload image' sublabel='(max 1mb)' name=''>
-                  <DropZone>
-                    <DropBox
-                      {...getRootProps()}
-                      isDragAccept={isDragAccept}
-                      isDragReject={isDragReject}>
-                      <input {...getInputProps()} name='images' />
-                      <div className='icon'>
-                        {isDragAccept && <RiImageAddFill />}
-                        {isDragReject && <ImCross />}
-                        {!isDragActive && <RiImageAddLine />}
-                      </div>
-                    </DropBox>
-                    <div className='preview-container'>
-                      {images &&
-                        images.map(image => (
-                          <div className='thumbnail' key={image.name}>
-                            <img src={image.preview} alt={image.name} />
+                <FormItem
+                  label='Image'
+                  subtext='Please upload a high-quality image. The plant should be the only subject in view, preferrably with a white or plain background.'>
+                  <div className='primary-image'>
+                    <Upload
+                      multiple={false}
+                      maxCount={1}
+                      name='imageUrl'
+                      customRequest={handleNewImage}
+                      fileList={fileList}
+                      listType='picture-card'
+                      accept='.png, .jpg, .jpeg, .webp'
+                      showUploadList={{
+                        showPreviewIcon: false,
+                        showRemoveIcon: false,
+                      }}>
+                      {!uploading && newImage ? (
+                        <>
+                          <ImageLoader
+                            src={newImage}
+                            alt=''
+                            placeholder={placeholder}
+                            borderRadius='50%'
+                          />
+                          <div className='overlay'>
+                            <UploadOutlined />
                           </div>
-                        ))}
-                    </div>
-                  </DropZone>
+                        </>
+                      ) : (
+                        uploadButton
+                      )}
+                    </Upload>
+                  </div>
                 </FormItem>
+
+                <h3>Care Info</h3>
 
                 <FormItem label='Light' name='light'>
                   <Select name='light' placeholder='Select'>
@@ -284,6 +289,8 @@ export const Contribute = () => {
                   </Select>
                 </FormItem>
 
+                <h3 style={{ marginTop: '20px' }}>Miscellaneous Info</h3>
+
                 <FormItem label='Region of origin' sublabel='(optional)' name='origin'>
                   <Input name='origin' placeholder='e.g. Central America' />
                 </FormItem>
@@ -297,7 +304,7 @@ export const Contribute = () => {
                   </Select>
                 </FormItem>
 
-                <FormItem label='Rarity' name='rarity'>
+                <FormItem label='Rarity' sublabel='(optional)' name='rarity'>
                   <Select name='rarity' placeholder='Select'>
                     <Option value='common'>common</Option>
                     <Option value='uncommon'>uncommon</Option>
@@ -327,7 +334,7 @@ export const Contribute = () => {
                   <Button
                     type='secondary'
                     onClick={() => {
-                      setImages()
+                      setNewImage(false)
                       resetForm()
                     }}>
                     RESET
@@ -410,6 +417,67 @@ export const FormWrapper = styled.section`
   form {
     display: flex;
     flex-direction: column;
+    .primary-image {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      max-width: 300px;
+      margin: 10px auto;
+      aspect-ratio: 1 / 1;
+      margin-bottom: 20px;
+      position: relative;
+      .ant-upload-list {
+        height: 100%;
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        .ant-upload {
+          font-size: 1.5rem;
+          transition: 0.2s ease-in-out;
+          &:hover {
+            color: ${COLORS.accent};
+          }
+        }
+        .overlay {
+          height: 100%;
+          width: 100%;
+          background: rgba(0, 0, 0, 0.2);
+          color: #fff;
+          visibility: hidden;
+          opacity: 0;
+          transition: 0.2s ease-in-out;
+          position: absolute;
+          display: grid;
+          place-content: center;
+          border-radius: 50%;
+          font-size: 1.5rem;
+        }
+        &:hover {
+          .overlay {
+            visibility: visible;
+            opacity: 1;
+          }
+        }
+        .ant-upload-select-picture-card {
+          border-radius: 50%;
+          margin: auto;
+          height: 100%;
+          width: 100%;
+          overflow: hidden;
+        }
+      }
+      img {
+        object-fit: cover;
+        width: 100%;
+        border-radius: 50%;
+        aspect-ratio: 1 / 1;
+        &.placeholder {
+          border-radius: 0;
+          width: 80%;
+          object-fit: contain;
+        }
+      }
+    }
     .ant-select {
       width: 100%;
     }

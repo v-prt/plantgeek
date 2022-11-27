@@ -291,6 +291,7 @@ const Wrapper = styled.main`
 const InfoCard = styled.section`
   background-color: #fff;
   background-position: center;
+  background-repeat: no-repeat;
   h3 {
     margin-top: 20px;
   }

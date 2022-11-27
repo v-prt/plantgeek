@@ -95,11 +95,11 @@ export const PlantProfile = () => {
       // lowest = 0
       // highest = 12
       if (total <= 3) {
-        setDifficulty('Easy')
+        setDifficulty('easy')
       } else if (total <= 6) {
-        setDifficulty('Moderate')
+        setDifficulty('moderate')
       } else if (total <= 12) {
-        setDifficulty('Hard')
+        setDifficulty('hard')
       }
     }
   }, [plant])
@@ -110,6 +110,7 @@ export const PlantProfile = () => {
     axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
     queryClient.invalidateQueries('plants')
     queryClient.invalidateQueries('plants-to-review')
+    // FIXME: pending-plants count doesn't refetch for a while
     queryClient.invalidateQueries('pending-plants')
   }
 
@@ -220,8 +221,16 @@ export const PlantProfile = () => {
                   </div>
 
                   <div className='misc-info'>
-                    <div className={`difficulty ${difficulty?.toLowerCase()}`}>
-                      Difficulty: {difficulty || 'N/A'}
+                    <div className={`difficulty ${difficulty}`}>
+                      {difficulty
+                        ? difficulty === 'easy'
+                          ? 'Easy care'
+                          : difficulty === 'moderate'
+                          ? 'Moderate difficulty'
+                          : difficulty === 'hard'
+                          ? 'Difficult'
+                          : 'Unknown difficulty'
+                        : 'Unknown difficulty'}
                     </div>
                     <div
                       className={`toxicity ${
@@ -415,7 +424,7 @@ const Wrapper = styled.main`
       margin-bottom: 10px;
     }
     .secondary-name {
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-style: italic;
     }
     .buttons {
@@ -506,10 +515,10 @@ const Wrapper = styled.main`
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
       h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
       }
-      .secondary-name-wrapper {
-        font-size: 1rem;
+      .secondary-name {
+        font-size: 1.2rem;
       }
     }
     .plant-info {
@@ -522,6 +531,14 @@ const Wrapper = styled.main`
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    .heading {
+      h1 {
+        font-size: 2rem;
+      }
+      .secondary-name {
+        font-size: 1.3rem;
+      }
+    }
     .actions {
       gap: 30px;
     }
@@ -542,8 +559,6 @@ const Info = styled.div`
     padding-bottom: 20px;
   }
   .row {
-    /* background: #f6f6f6;
-    padding: 10px; */
     border-radius: 10px;
     display: flex;
     align-items: center;
