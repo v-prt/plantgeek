@@ -68,60 +68,62 @@ export const Homepage = () => {
             placeholder='Search houseplants'
             onSearch={onSearch}
             enterButton
-            style={{ marginBottom: '30px' }}
+            style={{ marginBottom: '20px' }}
           />
-          <Link to='/browse' className='info-cta'>
-            browse houseplants
-            <span className='icon'>
-              <DoubleRightOutlined />
-            </span>
-          </Link>
-          <ul>
-            <li>Search & filter hundreds of plants by name or genus</li>
-            <li>Learn how to care for your plants</li>
-            <li>Find out if your plant is toxic (if so, keep away from pets & children)</li>
-          </ul>
+          <div className='feature'>
+            <Link to='/browse' className='info-cta'>
+              browse
+              <span className='icon'>
+                <DoubleRightOutlined />
+              </span>
+            </Link>
+            <p>
+              Search and filter hundreds of plants by name, genus, care requirements, rarity, and
+              more. Plus, find out if your plant is toxic.
+            </p>
+          </div>
           {currentUser ? (
             <>
-              <Link to='/profile' className='info-cta'>
-                view your profile
-                <span className='icon'>
-                  <DoubleRightOutlined />
-                </span>
-              </Link>
-              <ul>
-                <li>Manage your personal collection</li>
-                <li>Add plants you would like to own to your wishlist</li>
-                <li>Upvote your favorite plants</li>
-                <li>Quickly refer to your plants specific needs</li>
-              </ul>
-              <Link to='/contribute' className='info-cta'>
-                contribute
-                <span className='icon'>
-                  <DoubleRightOutlined />
-                </span>
-              </Link>
-              <ul>
-                <li>Help us grow our database of houseplants</li>
-                <li>Upload images to our gallery</li>
-                <li>Correct or add missing information</li>
-              </ul>
+              <div className='feature'>
+                <Link to='/profile' className='info-cta'>
+                  view your profile
+                  <span className='icon'>
+                    <DoubleRightOutlined />
+                  </span>
+                </Link>
+                <p>
+                  Manage your personal collection and wishlist. Quickly refer to your plants'
+                  specific needs.
+                </p>
+              </div>
+              <div className='feature'>
+                <Link to='/contribute' className='info-cta'>
+                  contribute
+                  <span className='icon'>
+                    <DoubleRightOutlined />
+                  </span>
+                </Link>
+                <p>
+                  Help us grow our website. Upload new houseplant information and earn badges for
+                  approved submissions.
+                </p>
+              </div>
             </>
           ) : (
             <>
-              <Link to='/signup' className='info-cta'>
-                create an account
-                <span className='icon'>
-                  <DoubleRightOutlined />
-                </span>
-              </Link>
-              <ul>
-                <li>Keep a list of your own houseplant collection</li>
-                <li>Quickly view the care requirements for your plants via your profile</li>
-                <li>Create a wishlist</li>
-                <li>Upvote your favorite plants</li>
-                <li>Help contribute to our database of houseplants</li>
-              </ul>
+              <div className='feature'>
+                <Link to='/signup' className='info-cta'>
+                  create an account
+                  <span className='icon'>
+                    <DoubleRightOutlined />
+                  </span>
+                </Link>
+                <p>
+                  Keep a list of your plant collection and wishlist. Quickly refer to your plants'
+                  specific needs via your profile. Contribute to our houseplant database and earn
+                  badges.
+                </p>
+              </div>
             </>
           )}
         </InfoCard>
@@ -290,10 +292,17 @@ const Wrapper = styled.main`
 
 const InfoCard = styled.section`
   background-color: #fff;
-  background-position: center;
+  background-position: bottom;
   background-repeat: no-repeat;
   h3 {
     margin-top: 20px;
+  }
+  .feature {
+    padding: 20px 0;
+    max-width: 600px;
+    p {
+      font-size: 1.2rem;
+    }
   }
   .info-cta {
     display: flex;
@@ -301,13 +310,9 @@ const InfoCard = styled.section`
     font-size: 1.2rem;
     font-weight: bold;
     width: fit-content;
-  }
-  ul {
-    list-style: disc;
-    margin-bottom: 20px;
-    margin-left: 3px;
-    li {
-      margin-left: 20px;
+    color: ${COLORS.accent};
+    &:hover {
+      color: ${COLORS.darkest};
     }
   }
 `
