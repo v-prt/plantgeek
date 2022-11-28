@@ -6,8 +6,8 @@ export const PlantContext = createContext(null)
 export const PlantProvider = ({ children }) => {
   const [formData, setFormData] = useState({ sort: 'name-asc' })
 
-  const fetchPlants = async ({ pageParam = 1 }) => {
-    const res = await axios.get(`${API_URL}/plants/${pageParam}`, {
+  const fetchPlants = async ({ page = 1 }) => {
+    const res = await axios.get(`${API_URL}/plants/${page}`, {
       params: formData,
     })
     return res.data

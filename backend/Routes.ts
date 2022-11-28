@@ -26,7 +26,7 @@ import {
   getPlant,
   getSimilarPlants,
   getRandomPlants,
-  getUserContributions,
+  getContributions,
   updatePlant,
   deletePlant,
 } from './controllers/PlantController'
@@ -68,7 +68,7 @@ router
   .get(`${API_URL}/plant/:slug`, getPlant)
   .get(`${API_URL}/similar-plants/:slug`, getSimilarPlants)
   .get(`${API_URL}/random-plants`, getRandomPlants)
-  .get(`${API_URL}/contributions/:userId`, getUserContributions)
+  .get(`${API_URL}/contributions/:userId/:page`, getContributions)
   .put(`${API_URL}/plants/:id`, updatePlant)
   .delete(`${API_URL}/plants/:id`, deletePlant)
 

@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import React, { useContext, useState } from 'react'
+import { Redirect } from 'react-router-dom'
 import { API_URL } from '../constants'
 import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
@@ -9,8 +9,7 @@ import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
-import { Ellipsis } from '../components/loaders/Ellipsis'
-import { PlantList } from '../components/PlantList'
+import { PlantList } from '../components/lists/PlantList'
 import placeholder from '../assets/avatar-placeholder.png'
 import bee from '../assets/stickers/bee.svg'
 import boot from '../assets/stickers/boot.svg'
@@ -21,6 +20,7 @@ import leaf from '../assets/stickers/leaf.svg'
 import potted1 from '../assets/stickers/potted1.svg'
 import potted2 from '../assets/stickers/potted2.svg'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import { Contributions } from '../components/lists/Contributions'
 
 export const UserProfile = () => {
   const { currentUser } = useContext(UserContext)
@@ -30,8 +30,6 @@ export const UserProfile = () => {
 
   const [list, setList] = useState('collection')
 
-  const [approvedContributions, setApprovedContributions] = useState([])
-  const [pendingContributions, setPendingContributions] = useState([])
   const badges = [
     { name: leaf, value: 1 },
     { name: flower, value: 3 },
@@ -43,7 +41,7 @@ export const UserProfile = () => {
     { name: cactus, value: 100 },
   ]
 
-  // TODO: pagination for collection, wishlist, and contributions
+  // TODO: pagination for collection, wishlist
   const { data: collection, status: collectionStatus } = useQuery(
     ['collection', currentUser.plantCollection],
     async () => {
@@ -67,23 +65,6 @@ export const UserProfile = () => {
       }
     }
   )
-
-  const { data: contributions, status: contributionsStatus } = useQuery(
-    ['contributions', currentUser._id],
-    async () => {
-      const { data } = await axios.get(`${API_URL}/contributions/${currentUser._id}`)
-      return data.contributions
-    }
-  )
-
-  useEffect(() => {
-    if (contributions) {
-      const approved = contributions.filter(contribution => contribution.review === 'approved')
-      const pending = contributions.filter(contribution => contribution.review === 'pending')
-      setApprovedContributions(approved)
-      setPendingContributions(pending)
-    }
-  }, [contributions])
 
   return !currentUser ? (
     <Redirect to='/signup' />
@@ -131,80 +112,24 @@ export const UserProfile = () => {
         </div>
       </FadeIn>
       <FadeIn delay={500}>
-        <Contributions>
+        <ContributionsSection>
           <h2>contributions</h2>
           <p>Earn badges by submitting new houseplant information to our database!</p>
-          {contributionsStatus === 'loading' ? (
-            <Ellipsis />
-          ) : contributions?.length > 0 ? (
-            <div className='inner'>
-              <div className='badges'>
-                {badges.map(badge => (
-                  <div
-                    className={`badge ${approvedContributions.length >= badge.value && 'earned'} `}
-                    key={badge.name}>
-                    <img src={badge.name} alt='' />
-                    <span className='value'>{badge.value}</span>
-                  </div>
-                ))}
-              </div>
-              {approvedContributions.length > 0 && (
-                <div className='approved-contributions'>
-                  <h3>approved ({approvedContributions.length})</h3>
-                  <div className='plants'>
-                    {approvedContributions.map(plant => (
-                      <Link
-                        className='contribution-card'
-                        to={`/plant/${plant.slug}`}
-                        key={plant._id}>
-                        <div className='thumbnail'>
-                          <ImageLoader
-                            src={plant.imageUrl}
-                            alt={''}
-                            placeholder={placeholder}
-                            borderRadius='50%'
-                          />
-                        </div>
-                        <div className='info'>
-                          <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>
-                          <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
+          <div className='inner'>
+            <div className='badges'>
+              {badges.map(badge => (
+                <div
+                  className={`badge ${currentUser.contributions >= badge.value && 'earned'} `}
+                  key={badge.name}>
+                  <img src={badge.name} alt='' />
+                  <span className='value'>{badge.value}</span>
                 </div>
-              )}
-              {pendingContributions.length > 0 && (
-                <div className='pending-contributions'>
-                  <h3>pending ({pendingContributions.length})</h3>
-                  <div className='plants'>
-                    {pendingContributions.map(plant => (
-                      <Link
-                        className='contribution-card pending'
-                        to={`/plant/${plant.slug}`}
-                        key={plant._id}>
-                        <div className='thumbnail'>
-                          <ImageLoader
-                            src={plant.imageUrl}
-                            alt={''}
-                            placeholder={placeholder}
-                            borderRadius='50%'
-                          />
-                        </div>
-                        <div className='info'>
-                          <p className='primary-name'>{plant.primaryName.toLowerCase()}</p>
-                          <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+              ))}
             </div>
-          ) : (
-            <p className='no-contributions'>No contributions yet.</p>
-          )}
-        </Contributions>
+            <Contributions currentUser={currentUser} reviewStatus='approved' />
+            <Contributions currentUser={currentUser} reviewStatus='pending' />
+          </div>
+        </ContributionsSection>
       </FadeIn>
     </Wrapper>
   )
@@ -354,7 +279,7 @@ const Wrapper = styled.main`
   }
 `
 
-const Contributions = styled.section`
+const ContributionsSection = styled.section`
   background: #fff;
   .inner {
     display: flex;
@@ -411,58 +336,5 @@ const Contributions = styled.section`
         }
       }
     }
-  }
-  .approved-contributions,
-  .pending-contributions {
-    margin-top: 40px;
-    .plants {
-      margin: 10px 0;
-      display: flex;
-      flex-direction: column;
-      .contribution-card {
-        width: 100%;
-        border-top: 1px solid #e6e6e6;
-        padding: 10px 0;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        &:last-child {
-          border-bottom: 1px solid #e6e6e6;
-        }
-        img {
-          height: 75px;
-          width: 75px;
-          border-radius: 50%;
-        }
-        .info {
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-          .primary-name {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #222;
-            line-height: 1.2;
-          }
-          .secondary-name {
-            color: #666;
-            font-size: 0.8rem;
-            font-style: italic;
-          }
-        }
-        &:hover {
-          background: #f6f6f6;
-          .info .primary-name {
-            color: #222;
-          }
-        }
-      }
-    }
-    @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    }
-  }
-  .no-contributions {
-    margin-top: 20px;
-    opacity: 0.5;
   }
 `

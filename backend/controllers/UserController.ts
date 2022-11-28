@@ -297,9 +297,18 @@ export const getUsers = async (req: Request, res: Response) => {
 
 export const getUser = async (req: Request, res: Response) => {
   try {
-    const user: IUser | null = await User.findOne({ _id: ObjectId(req.params.id) })
+    const user: IUser | null = await User.findOne({ _id: ObjectId(req.params.id) }).lean()
     if (user) {
-      return res.status(200).json({ user: user })
+      // include number of approved contributions
+      const contributions: number = await Plant.countDocuments({
+        contributorId: ObjectId(req.params.id),
+        review: 'approved',
+      })
+      const data = {
+        ...user,
+        contributions,
+      }
+      return res.status(200).json({ user: data })
     } else {
       return res.status(404).json({ message: 'User not found' })
     }

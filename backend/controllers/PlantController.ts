@@ -182,10 +182,10 @@ export const getPlants = async (req: Request, res: Response) => {
 
     if (plants) {
       return res.status(200).json({
-        plants: plants,
-        page: page,
+        plants,
+        page,
         totalResults,
-        nextCursor: totalResults > 24 * page ? page + 1 : null,
+        nextCursor: totalResults > resultsPerPage * page ? page + 1 : null,
       })
     } else {
       return res.status(404).json({ message: 'No plants found' })
@@ -303,13 +303,31 @@ export const getRandomPlants = async (req: Request, res: Response) => {
   }
 }
 
-export const getUserContributions = async (req: Request, res: Response) => {
+export const getContributions = async (req: Request, res: Response) => {
   try {
+    const page = req.params.page ? parseInt(req.params.page) : 1
+    const resultsPerPage = 6
+
     const contributions: IPlant[] = await Plant.find({
       contributorId: req.params.userId,
-    }).lean()
+      review: req.query.review,
+    })
+      .skip(resultsPerPage * (page - 1))
+      .limit(resultsPerPage)
+      .lean()
+
+    const totalResults: number = await Plant.countDocuments({
+      contributorId: req.params.userId,
+      review: req.query.review,
+    })
+
     if (contributions) {
-      return res.status(200).json({ contributions })
+      return res.status(200).json({
+        contributions,
+        page,
+        totalResults,
+        nextCursor: totalResults > resultsPerPage * page ? page + 1 : null,
+      })
     } else {
       return res.status(404).json({ message: 'No contributions found' })
     }
