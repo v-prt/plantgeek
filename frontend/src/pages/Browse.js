@@ -57,6 +57,7 @@ export const Browse = () => {
     'Philodendron',
     'Pilea',
     'Pothos',
+    'Rhaphidophora',
     'Sansevieria',
     'Scindapsus',
     'Stromanthe',
@@ -276,12 +277,8 @@ export const Browse = () => {
                       {data.pages.map((group, i) =>
                         group.plants.map(plant => <PlantCard key={plant._id} plant={plant} />)
                       )}
+                      {isFetchingNextPage && <GhostPlantCard />}
                     </div>
-                    {isFetchingNextPage && (
-                      <div className='fetching-more'>
-                        <Ellipsis />
-                      </div>
-                    )}
                   </>
                 ) : (
                   <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description='No results.' />
@@ -397,10 +394,8 @@ const Wrapper = styled.div`
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     .browse-content {
       height: 100vh;
-      /* height: calc(100vh - 110px); */
-      /* top: 110px; */
-      right: 0;
       max-width: calc(100vw - 241px);
+      right: 0;
       .filter-bar {
         padding: 35px 20px 20px 20px;
         .sort {
@@ -464,10 +459,8 @@ const Results = styled.div`
     justify-content: center;
     gap: 20px;
   }
-  .fetching-more {
-    display: grid;
-    place-content: center;
-    padding: 20px;
+  .plants {
+    padding-bottom: 60px;
   }
   .ant-empty {
     display: grid;

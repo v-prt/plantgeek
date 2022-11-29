@@ -13,10 +13,13 @@ export const Contributions = ({ currentUser, reviewStatus }) => {
   const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } =
     useInfiniteQuery(
       [`${reviewStatus}-contributions`, currentUser._id],
-      async ({ page = 1 }) => {
-        const res = await axios.get(`${API_URL}/contributions/${currentUser._id}/${page}`, {
-          params: { review: reviewStatus },
-        })
+      async ({ pageParam }) => {
+        const res = await axios.get(
+          `${API_URL}/contributions/${currentUser._id}/${pageParam || 1}`,
+          {
+            params: { review: reviewStatus },
+          }
+        )
         return res.data
       },
       {
