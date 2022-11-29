@@ -140,6 +140,21 @@ export const UserProvider = ({ children }) => {
     }
   }
 
+  // ADMIN
+  const { data: pendingPlants } = useQuery(['pending-plants'], async () => {
+    if (currentUser?.role === 'admin') {
+      const { data } = await axios.get(`${API_URL}/pending-plants`)
+      return data.count
+    } else return null
+  })
+
+  const { data: pendingReports } = useQuery(['pending-reports'], async () => {
+    if (currentUser?.role === 'admin') {
+      const { data } = await axios.get(`${API_URL}/pending-reports`)
+      return data.count
+    } else return null
+  })
+
   return (
     <UserContext.Provider
       value={{
@@ -156,6 +171,8 @@ export const UserProvider = ({ children }) => {
         updateCurrentUser,
         verifyEmail,
         resendVerificationEmail,
+        pendingPlants,
+        pendingReports,
       }}>
       {children}
     </UserContext.Provider>

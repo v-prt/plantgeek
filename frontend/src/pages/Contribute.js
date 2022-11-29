@@ -149,7 +149,7 @@ export const Contribute = () => {
   }
 
   return !currentUser ? (
-    <Redirect to='/signup' />
+    <Redirect to='/login' />
   ) : (
     <Wrapper>
       {newPlant && (

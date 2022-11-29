@@ -63,7 +63,7 @@ export const Homepage = () => {
         </section>
       </FadeIn>
       <FadeIn delay={200}>
-        <InfoCard style={{ backgroundImage: `url(${curves})` }}>
+        <InfoCard>
           <Search
             placeholder='Search houseplants'
             onSearch={onSearch}
@@ -165,14 +165,12 @@ export const Homepage = () => {
           <div>
             <h2>contribute to plantgeek</h2>
             <p>
-              Can't find a specific plant? Contribute it to our database - you'll earn badges for
+              Can't find a specific plant? Submit it to our website - you'll earn badges for
               approved submissions! You can also help us by reporting any duplicate or incorrect
               information.
             </p>
             <Link to='contribute'>
-              <Button type='secondary' icon={<PlusCircleOutlined />}>
-                CONTRIBUTE
-              </Button>
+              <Button type='secondary'>CONTRIBUTE</Button>
             </Link>
           </div>
           <img src={plantPlaceholder} alt='' />
@@ -291,18 +289,13 @@ const Wrapper = styled.main`
 `
 
 const InfoCard = styled.section`
-  background-color: #fff;
-  background-position: bottom;
-  background-repeat: no-repeat;
+  background: #fff;
   h3 {
     margin-top: 20px;
   }
   .feature {
     padding: 20px 0;
     max-width: 600px;
-    p {
-      font-size: 1.2rem;
-    }
   }
   .info-cta {
     display: flex;
@@ -310,9 +303,5 @@ const InfoCard = styled.section`
     font-size: 1.2rem;
     font-weight: bold;
     width: fit-content;
-    color: ${COLORS.accent};
-    &:hover {
-      color: ${COLORS.darkest};
-    }
   }
 `

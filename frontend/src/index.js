@@ -11,15 +11,15 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 // set default behavior of query client to only fetch once on render and when stale after 3 hours
 // const threeHours = 1000 * 60 * 60 * 3
 const queryClient = new QueryClient({
-  // defaultOptions: {
-  //   queries: {
-  //     refetchOnWindowFocus: false,
-  //     refetchOnmount: false,
-  //     refetchOnReconnect: false,
-  //     retry: false,
-  //     staleTime: threeHours,
-  //   },
-  // },
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // helps stop flickering of user avatar in navbar
+      // refetchOnmount: false,
+      // refetchOnReconnect: false,
+      // retry: false,
+      // staleTime: threeHours,
+    },
+  },
 })
 
 const store = configureStore()

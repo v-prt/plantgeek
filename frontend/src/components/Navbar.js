@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import { API_URL } from '../constants'
@@ -21,51 +21,47 @@ import { CgProfile } from 'react-icons/cg'
 import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
 
 export const Navbar = () => {
-  const { handleLogout, currentUser } = useContext(UserContext)
+  const { handleLogout, currentUser, pendingPlants, pendingReports } = useContext(UserContext)
   const [expanded, setExpanded] = useState(false)
-
-  const { data: pendingPlants } = useQuery(['pending-plants'], async () => {
-    if (currentUser?.role === 'admin') {
-      const { data } = await axios.get(`${API_URL}/pending-plants`)
-      return data.count
-    } else return null
-  })
-
-  const { data: pendingReports } = useQuery(['pending-reports'], async () => {
-    if (currentUser?.role === 'admin') {
-      const { data } = await axios.get(`${API_URL}/pending-reports`)
-      return data.count
-    } else return null
-  })
 
   const MenuLinks = () => {
     return (
       <div className='links'>
-        <NavLink exact to='/'>
-          <div className='icon'>
-            <BiHome />
-          </div>
-          <span className='label'>home</span>
-        </NavLink>
         <NavLink to='/browse'>
           <div className='icon'>
             <BiSearch />
           </div>
           <span className='label'>browse</span>
         </NavLink>
+        <NavLink to='/contribute'>
+          <div className='icon'>
+            <BiPlusCircle />
+          </div>
+          <span className='label'>contribute</span>
+        </NavLink>
+        <NavLink to='/guidelines'>
+          <div className='icon'>
+            <TiHeartOutline />
+          </div>
+          <span className='label'>care tips</span>
+        </NavLink>
         {currentUser ? (
           <>
+            <p className='user'>
+              <div className='avatar'>
+                {currentUser.imageUrl ? (
+                  <img src={currentUser.imageUrl} alt='' />
+                ) : (
+                  <span className='initials'>{currentUser.firstName.charAt(0).toUpperCase()}</span>
+                )}
+              </div>
+              {currentUser.firstName} {currentUser.lastName}
+            </p>
             <NavLink to='/profile'>
               <div className='icon'>
                 <CgProfile />
               </div>
               <span className='label'>profile</span>
-            </NavLink>
-            <NavLink to='/contribute'>
-              <div className='icon'>
-                <BiPlusCircle />
-              </div>
-              <span className='label'>contribute</span>
             </NavLink>
             {currentUser.role === 'admin' && (
               <NavLink to='/admin'>
@@ -97,12 +93,6 @@ export const Navbar = () => {
           </>
         ) : (
           <>
-            <NavLink to='/guidelines'>
-              <div className='icon'>
-                <TiHeartOutline />
-              </div>
-              <span className='label'>care tips</span>
-            </NavLink>
             <NavLink to='/signup' className='login-link'>
               <div className='icon'>
                 <CgProfile />
@@ -230,7 +220,7 @@ const Wrapper = styled.nav`
       display: grid;
       place-content: center;
       width: 25px;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       img {
         height: 25px;
         width: 25px;
@@ -252,6 +242,40 @@ const Wrapper = styled.nav`
       margin-top: 2px;
       padding: 0 5px;
       font-weight: bold;
+    }
+    .user {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: bold;
+      font-size: 1rem;
+      color: #fff;
+      padding: 20px 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      .avatar {
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+        display: flex;
+        img {
+          border-radius: 50%;
+          max-height: 100%;
+          max-width: 100%;
+          object-fit: cover;
+          flex: 1;
+        }
+        .initials {
+          background: ${COLORS.light};
+          border-radius: 50%;
+          font-size: 0.8rem;
+          font-weight: bold;
+          color: ${COLORS.darkest};
+          height: 100%;
+          width: 100%;
+          display: grid;
+          place-content: center;
+        }
+      }
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
