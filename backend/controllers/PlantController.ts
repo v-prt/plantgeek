@@ -306,7 +306,7 @@ export const getRandomPlants = async (req: Request, res: Response) => {
 export const getContributions = async (req: Request, res: Response) => {
   try {
     const page = req.params.page ? parseInt(req.params.page) : 1
-    const resultsPerPage = 6
+    const resultsPerPage = 10
 
     const contributions: IPlant[] = await Plant.find({
       contributorId: req.params.userId,
