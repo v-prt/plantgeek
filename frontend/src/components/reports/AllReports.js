@@ -58,7 +58,7 @@ export const AllReports = () => {
   return (
     <Wrapper>
       <div className='header'>
-        <h2>reports</h2>
+        <h4>Reports</h4>
         <Formik initialValues={formData} onSubmit={handleSubmit}>
           {({ values, setValues, submitForm }) => (
             <Form className='filters'>
@@ -162,7 +162,7 @@ export const AllReports = () => {
           </>
         ) : (
           <div className='empty'>
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={`No results.`} />
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={`No reports.`} />
           </div>
         )
       ) : (
@@ -205,7 +205,7 @@ const Wrapper = styled.section`
     justify-content: space-between;
     gap: 10px;
     margin-bottom: 10px;
-    h2 {
+    h4 {
       margin: 0;
     }
     .filters {

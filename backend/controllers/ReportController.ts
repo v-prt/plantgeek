@@ -36,13 +36,16 @@ export const createReport = async (req: Request, res: Response) => {
 
 export const getReports = async (req: Request, res: Response) => {
   try {
-    const { sort, status } = req.query
+    const { sort, status, plantId } = req.query
     const page = req.params.page ? parseInt(req.params.page) : 1
     const resultsPerPage = 10
 
     let filters = {}
     if (status) {
       filters = { status }
+    }
+    if (plantId) {
+      filters = { ...filters, plantId }
     }
 
     let order
@@ -81,31 +84,6 @@ export const getReports = async (req: Request, res: Response) => {
     } else {
       return res.status(404).json({ message: 'No reports found' })
     }
-  } catch (err) {
-    if (err instanceof Error) {
-      console.error(err.stack)
-      return res.status(500).json({ message: 'Internal server error' })
-    }
-  }
-}
-
-export const getPlantReports = async (req: Request, res: Response) => {
-  const { plantId } = req.params
-
-  try {
-    // get reports by plantId, include user and plant info
-    const reports: IReport[] = await Report.find({ plantId }).lean()
-
-    // include plant and user info with report by ids
-    const result = await Promise.all(
-      reports.map(async report => {
-        const plant: IPlant | null = await Plant.findOne({ _id: ObjectId(report.plantId) })
-        const user: IUser | null = await User.findOne({ _id: ObjectId(report.userId) })
-        return { ...report, plant, user }
-      })
-    )
-
-    return res.status(200).json({ reports: result })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)

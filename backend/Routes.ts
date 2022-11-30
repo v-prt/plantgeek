@@ -34,7 +34,6 @@ import {
 import {
   createReport,
   getReports,
-  getPlantReports,
   countPendingReports,
   updateReportStatus,
 } from './controllers/ReportController'
@@ -75,7 +74,6 @@ router
   // reports
   .post(`${API_URL}/reports/:plantId`, createReport)
   .get(`${API_URL}/reports/:page`, getReports)
-  .get(`${API_URL}/reports/:plantId`, getPlantReports)
   .get(`${API_URL}/pending-reports`, countPendingReports)
   .put(`${API_URL}/reports/:reportId`, updateReportStatus)
 

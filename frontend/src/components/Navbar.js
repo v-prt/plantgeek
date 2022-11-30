@@ -37,7 +37,7 @@ export const Navbar = () => {
         </NavLink>
         {currentUser ? (
           <>
-            <p className='user'>
+            <div className='user'>
               <div className='avatar'>
                 {currentUser.imageUrl ? (
                   <img src={currentUser.imageUrl} alt='' />
@@ -46,7 +46,7 @@ export const Navbar = () => {
                 )}
               </div>
               {currentUser.firstName} {currentUser.lastName}
-            </p>
+            </div>
             <NavLink to='/profile'>
               <div className='icon'>
                 <CgProfile />

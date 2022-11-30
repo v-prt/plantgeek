@@ -114,6 +114,7 @@ export const PlantProfile = () => {
     queryClient.invalidateQueries('pending-plants')
   }
 
+  // FIXME: when there are 2 results, this doesn't work on desktop (look at http://localhost:3000/plant/aechmea-blue-tango)
   const settings = {
     dots: true,
     infinite: true,
@@ -429,15 +430,6 @@ export const PlantProfile = () => {
 }
 
 const Wrapper = styled.main`
-  form {
-    width: 100%;
-    .basic-info-form {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      max-width: 400px;
-    }
-  }
   .heading {
     background: linear-gradient(45deg, #a4e17d, #95d190);
     .review-pending {
@@ -712,6 +704,11 @@ const Indicator = styled.div`
 
 const AdminSection = styled.section`
   background: #fff;
+  h3 {
+    padding-bottom: 5px;
+    border-bottom: 1px solid;
+    margin-bottom: 20px;
+  }
   .admin-buttons {
     display: flex;
     gap: 12px;
