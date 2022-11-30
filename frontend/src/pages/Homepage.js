@@ -7,12 +7,11 @@ import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { ImageLoader } from '../components/loaders/ImageLoader'
 import { Button, Input } from 'antd'
-import { PlusCircleOutlined, DoubleRightOutlined } from '@ant-design/icons'
+import { DoubleRightOutlined } from '@ant-design/icons'
 import { FeaturedPlants } from '../components/FeaturedPlants'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import plantPlaceholder from '../assets/plant-placeholder.svg'
 import heroImage from '../assets/hero-image.png'
-import curves from '../assets/curves.svg'
 const { Search } = Input
 
 export const Homepage = () => {

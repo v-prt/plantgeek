@@ -17,6 +17,7 @@ export const Admin = () => {
 
   const { currentUser } = useContext(UserContext)
 
+  // TODO: pagination for plants to review
   const { data, status } = useQuery(['plants-to-review'], async () => {
     const { data } = await axios.get(`${API_URL}/plants-to-review`)
     return data.plants
@@ -28,7 +29,7 @@ export const Admin = () => {
     <Wrapper>
       <FadeIn>
         <section className='contributions-section'>
-          <h2>review contributions</h2>
+          <h2>contributions</h2>
           {status === 'success' ? (
             data.length > 0 ? (
               <>

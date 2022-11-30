@@ -5,7 +5,6 @@ import { PlantContext } from '../contexts/PlantContext'
 
 import styled from 'styled-components/macro'
 import { BREAKPOINTS, COLORS } from '../GlobalStyles'
-import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
 import { GhostPlantCard } from '../components/GhostPlantCard'

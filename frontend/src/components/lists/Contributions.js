@@ -45,7 +45,7 @@ export const Contributions = ({ currentUser, reviewStatus }) => {
       {status === 'success' ? (
         data?.pages[0]?.totalResults > 0 ? (
           <>
-            <div className='plants' onScroll={handleScroll} ref={scrollRef}>
+            <div className='contributions' onScroll={handleScroll} ref={scrollRef}>
               {data.pages.map((group, i) =>
                 group.contributions.map(plant => (
                   <Link className='contribution-card' to={`/plant/${plant.slug}`} key={plant._id}>
@@ -87,7 +87,7 @@ const Wrapper = styled.div`
   margin-top: 40px;
   .empty,
   .loading,
-  .plants {
+  .contributions {
     border: 1px solid #e6e6e6;
     border-radius: 10px;
     margin: 10px 0;
@@ -101,7 +101,7 @@ const Wrapper = styled.div`
   .fetching-more {
     border-top: 1px solid #e6e6e6;
   }
-  .plants {
+  .contributions {
     max-height: 400px;
     overflow: auto;
     display: flex;

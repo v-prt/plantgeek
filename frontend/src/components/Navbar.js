@@ -1,20 +1,10 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { useQuery } from 'react-query'
-import { API_URL } from '../constants'
-import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
 
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import {
-  BiHome,
-  BiSearch,
-  BiCog,
-  BiPlusCircle,
-  BiLogInCircle,
-  BiLogOutCircle,
-} from 'react-icons/bi'
+import { BiSearch, BiCog, BiPlusCircle, BiLogInCircle, BiLogOutCircle } from 'react-icons/bi'
 import { MdOutlineAdminPanelSettings } from 'react-icons/md'
 import { TiHeartOutline } from 'react-icons/ti'
 import { CgProfile } from 'react-icons/cg'
