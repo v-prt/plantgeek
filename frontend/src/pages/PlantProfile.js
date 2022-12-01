@@ -114,22 +114,23 @@ export const PlantProfile = () => {
     queryClient.invalidateQueries('pending-plants')
   }
 
-  // FIXME: when there are 2 results, this doesn't work on desktop (look at http://localhost:3000/plant/aechmea-blue-tango)
   const settings = {
-    dots: true,
+    dots: similarPlants?.length > 1 ? true : false,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: similarPlants?.length >= 3 ? 3 : similarPlants?.length,
     slidesToScroll: 1,
+    pauseOnHover: true,
+    autoplay: true,
     responsive: [
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: similarPlants?.length >= 2 ? 2 : 1,
         },
       },
       {
-        breakpoint: 480,
+        breakpoint: 550,
         settings: {
           slidesToShow: 1,
         },
@@ -337,7 +338,7 @@ export const PlantProfile = () => {
                 <div className='similar-plants-container'>
                   {similarPlantsStatus === 'success' ? (
                     similarPlants?.length > 0 ? (
-                      <Carousel autoplay {...settings} style={{ marginBottom: '40px' }}>
+                      <Carousel {...settings} style={{ marginBottom: '40px' }}>
                         {similarPlants.map(plant => (
                           <PlantCard key={plant._id} plant={plant} />
                         ))}
@@ -511,9 +512,15 @@ const Wrapper = styled.main`
     }
     .similar-plants-container {
       width: 100%;
-      max-width: 320px;
+      max-width: 960px;
+      .slick-track {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
       .slick-slide {
         padding: 10px;
+        width: fit-content !important;
       }
       .slick-dots {
         bottom: -20px;
@@ -521,11 +528,11 @@ const Wrapper = styled.main`
           background: #999 !important;
         }
       }
-      @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+      @media only screen and (max-width: 768px) {
         max-width: 640px;
       }
-      @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-        max-width: 960px;
+      @media only screen and (max-width: 550px) {
+        max-width: 320px;
       }
     }
   }

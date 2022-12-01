@@ -7,7 +7,6 @@ import styled from 'styled-components/macro'
 import { PlantCard } from './PlantCard'
 import { GhostPlantCard } from './GhostPlantCard'
 import { Button, Carousel } from 'antd'
-import { BREAKPOINTS } from '../GlobalStyles'
 
 export const FeaturedPlants = () => {
   const { data, status } = useQuery(
@@ -28,6 +27,8 @@ export const FeaturedPlants = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
+    pauseOnHover: true,
+    autoplay: true,
     responsive: [
       {
         breakpoint: 768,
@@ -36,7 +37,7 @@ export const FeaturedPlants = () => {
         },
       },
       {
-        breakpoint: 480,
+        breakpoint: 550,
         settings: {
           slidesToShow: 1,
         },
@@ -48,7 +49,7 @@ export const FeaturedPlants = () => {
     <Wrapper>
       <h2>featured houseplants</h2>
       <Plants>
-        <Carousel autoplay {...settings}>
+        <Carousel {...settings}>
           {status === 'success'
             ? data?.map(plant => <PlantCard key={plant._id} plant={plant} />)
             : Array.from(Array(6).keys()).map(item => <GhostPlantCard key={item} />)}
@@ -80,9 +81,15 @@ const Wrapper = styled.section`
 
 const Plants = styled.div`
   width: 100%;
-  max-width: 320px;
+  max-width: 960px;
+  .slick-track {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .slick-slide {
     padding: 10px;
+    width: fit-content !important;
   }
   .slick-dots {
     bottom: -20px;
@@ -90,10 +97,10 @@ const Plants = styled.div`
       background: #999 !important;
     }
   }
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+  @media only screen and (max-width: 768px) {
     max-width: 640px;
   }
-  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-    max-width: 960px;
+  @media only screen and (max-width: 550px) {
+    max-width: 320px;
   }
 `

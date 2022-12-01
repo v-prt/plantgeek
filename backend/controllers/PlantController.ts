@@ -259,6 +259,11 @@ export const getSimilarPlants = async (req: Request, res: Response) => {
         .split(' ')
         // remove special characters
         .map(word => word.replace(/[^a-zA-Z ]/g, ''))
+        // remove common words
+        .filter(
+          word =>
+            !['variegata', 'variegated', 'variegatum', 'albo', 'aurea'].includes(word.toLowerCase())
+        )
         // create case insensitive regex with word boundaries
         .map(word => new RegExp(`\\b${word}\\b`, 'i'))
 

@@ -108,8 +108,19 @@ export const Navbar = () => {
         <NavLink exact to='/' className='logo' onClick={() => setExpanded(false)}>
           plantgeek
         </NavLink>
-        <div className='hamburger' onClick={() => setExpanded(!expanded)}>
-          {expanded ? <CloseOutlined /> : <MenuOutlined />}
+        <div className='mobile'>
+          {currentUser && (
+            <NavLink className='profile-link avatar' to='/profile'>
+              {currentUser.imageUrl ? (
+                <img src={currentUser.imageUrl} alt='' />
+              ) : (
+                <span className='initials'>{currentUser.firstName.charAt(0).toUpperCase()}</span>
+              )}
+            </NavLink>
+          )}
+          <div className='hamburger' onClick={() => setExpanded(!expanded)}>
+            {expanded ? <CloseOutlined /> : <MenuOutlined />}
+          </div>
         </div>
 
         {/* SIDEBAR FOR DESKTOP */}
@@ -233,6 +244,11 @@ const Wrapper = styled.nav`
       padding: 0 5px;
       font-weight: bold;
     }
+    .mobile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
     .user {
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       font-weight: bold;
@@ -242,37 +258,39 @@ const Wrapper = styled.nav`
       display: flex;
       align-items: center;
       gap: 8px;
-      .avatar {
-        height: 30px;
-        width: 30px;
+    }
+    .avatar {
+      height: 30px;
+      width: 30px;
+      border-radius: 50%;
+      display: flex;
+      img {
         border-radius: 50%;
-        display: flex;
-        img {
-          border-radius: 50%;
-          max-height: 100%;
-          max-width: 100%;
-          object-fit: cover;
-          flex: 1;
-        }
-        .initials {
-          background: ${COLORS.light};
-          border-radius: 50%;
-          font-size: 0.8rem;
-          font-weight: bold;
-          color: ${COLORS.darkest};
-          height: 100%;
-          width: 100%;
-          display: grid;
-          place-content: center;
-        }
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: cover;
+        flex: 1;
+      }
+      .initials {
+        background: ${COLORS.light};
+        border-radius: 50%;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: ${COLORS.darkest};
+        height: 100%;
+        width: 100%;
+        display: grid;
+        place-content: center;
       }
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    .flyout-menu {
-      transition: 0.6s ease-in-out;
-      .links {
-        max-width: 300px;
+    .inner {
+      .flyout-menu {
+        transition: 0.6s ease-in-out;
+        .links {
+          max-width: 300px;
+        }
       }
     }
   }
@@ -298,7 +316,7 @@ const Wrapper = styled.nav`
         margin-bottom: 40px;
         padding: 30px 50px;
       }
-      .hamburger {
+      .mobile {
         display: none;
       }
       .label {
