@@ -8,7 +8,7 @@ import { BiSearch, BiCog, BiPlusCircle, BiLogInCircle, BiLogOutCircle } from 're
 import { MdOutlineAdminPanelSettings } from 'react-icons/md'
 import { TiHeartOutline } from 'react-icons/ti'
 import { CgProfile } from 'react-icons/cg'
-import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
+import { Hamburger } from './general/Hamburger'
 
 export const Navbar = () => {
   const { handleLogout, currentUser, pendingPlants, pendingReports } = useContext(UserContext)
@@ -119,7 +119,7 @@ export const Navbar = () => {
             </NavLink>
           )}
           <div className='hamburger' onClick={() => setExpanded(!expanded)}>
-            {expanded ? <CloseOutlined /> : <MenuOutlined />}
+            <Hamburger expanded={expanded} />
           </div>
         </div>
 
@@ -161,13 +161,6 @@ const Wrapper = styled.nav`
       font-size: 1.8rem;
       line-height: 1;
       padding-bottom: 5px;
-    }
-    .hamburger {
-      color: #fff;
-      display: grid;
-      place-content: center;
-      width: 25px;
-      font-size: 1.2rem;
     }
     a,
     .logout-btn {
