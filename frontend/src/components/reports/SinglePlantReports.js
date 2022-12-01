@@ -12,7 +12,6 @@ import { Empty, message } from 'antd'
 import { FormItem } from '../forms/FormItem'
 import { Ellipsis } from '../loaders/Ellipsis'
 import { ClockCircleOutlined, LikeOutlined, DislikeOutlined } from '@ant-design/icons'
-import { RiPlantLine } from 'react-icons/ri'
 const { Option } = Select
 
 export const SinglePlantReports = ({ plantId }) => {
@@ -72,7 +71,7 @@ export const SinglePlantReports = ({ plantId }) => {
                 }}
                 style={{ width: '150px' }}>
                 <Option value='pending'>Pending</Option>
-                <Option value='approved'>Approved</Option>
+                <Option value='resolved'>Resolved</Option>
                 <Option value='rejected'>Rejected</Option>
               </Select>
               <Select
@@ -98,13 +97,24 @@ export const SinglePlantReports = ({ plantId }) => {
               {data.pages.map((group, i) =>
                 group.reports.map((report, i) => (
                   <div className='report' key={i}>
+                    <div className='user'>
+                      <div className='avatar'>
+                        {report.user.imageUrl ? (
+                          <img src={report.user.imageUrl} alt='' />
+                        ) : (
+                          <span className='initials'>
+                            {report.user.firstName.charAt(0).toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <p className='username'>{report.user.username}</p>
+                        <p className='date'>{moment(report.createdAt).format('lll')}</p>{' '}
+                      </div>
+                    </div>
                     <Link className='plant-link' to={`/plant/${report.plant.slug}`}>
-                      <RiPlantLine /> {report.plant.primaryName.toLowerCase()}
+                      #{report.plant.slug}
                     </Link>
-                    <p className='user'>
-                      @{report.user?.username} <span className='id'>- User ID {report.userId}</span>
-                    </p>
-                    <p className='date'>{moment(report.createdAt).format('lll')}</p>
                     <p className='text'>{report.message}</p>
                     {report.sourceUrl ? (
                       <a
@@ -115,7 +125,7 @@ export const SinglePlantReports = ({ plantId }) => {
                         Source
                       </a>
                     ) : (
-                      <p style={{ color: '#999' }}>No source.</p>
+                      <p style={{ color: '#999', fontSize: '0.8rem' }}>No source.</p>
                     )}
                     <Formik
                       initialValues={{ status: report.status }}
@@ -135,12 +145,16 @@ export const SinglePlantReports = ({ plantId }) => {
                       {({ submitForm }) => (
                         <Form>
                           <FormItem name='status'>
-                            <Select name='status' placeholder='Set status' onChange={submitForm}>
+                            <Select
+                              name='status'
+                              placeholder='Set status'
+                              onChange={submitForm}
+                              style={{ width: '100%', maxWidth: '300px' }}>
                               <Option value='pending'>
                                 <ClockCircleOutlined /> Pending
                               </Option>
-                              <Option value='approved'>
-                                <LikeOutlined /> Approved
+                              <Option value='resolved'>
+                                <LikeOutlined /> Resolved
                               </Option>
                               <Option value='rejected'>
                                 <DislikeOutlined /> Rejected
@@ -234,7 +248,6 @@ const Wrapper = styled.div`
     width: 100%;
     border-top: 1px solid #e6e6e6;
     padding: 10px;
-    font-size: 0.8rem;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -242,32 +255,50 @@ const Wrapper = styled.div`
       border: none;
     }
     .user {
-      color: ${COLORS.accent};
-      font-weight: bold;
-      .id {
-        color: #999;
-        font-weight: normal;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      .avatar {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        display: flex;
+        img {
+          border-radius: 50%;
+          max-height: 100%;
+          max-width: 100%;
+          object-fit: cover;
+          flex: 1;
+        }
+        .initials {
+          background: ${COLORS.light};
+          border-radius: 50%;
+          font-size: 0.8rem;
+          font-weight: bold;
+          color: ${COLORS.darkest};
+          height: 100%;
+          width: 100%;
+          display: grid;
+          place-content: center;
+        }
+      }
+      .username {
+        font-weight: bold;
+      }
+      .date {
+        font-size: 0.8rem;
       }
     }
     .plant-link {
-      padding: 2px 5px;
-      border-radius: 5px;
-      background: ${COLORS.lightest};
-      color: ${COLORS.mediumLight};
-      width: fit-content;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-bottom: 10px;
-    }
-    .text {
-      font-size: 1rem;
-      margin: 10px 0;
+      font-weight: bold;
       font-style: italic;
     }
+    .text {
+      margin: 5px 0;
+    }
     .source {
-      color: ${COLORS.accent};
       text-decoration: underline;
+      font-size: 0.8rem;
     }
     .ant-select {
       width: 100%;
