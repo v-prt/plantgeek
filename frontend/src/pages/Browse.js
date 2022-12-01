@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useRef, useContext, useEffect } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import { PlantContext } from '../contexts/PlantContext'
@@ -85,6 +85,22 @@ export const Browse = () => {
       }
     }, 400)
   }
+
+  // preserve scroll position on page change
+  const preserveScroll = () => {
+    // get scroll position of results component
+    const scrollPosition = scrollRef?.current?.scrollTop
+    localStorage.setItem('scrollPosition', scrollPosition)
+  }
+
+  useEffect(() => {
+    // return to previous scroll position
+    const scrollPosition = localStorage.getItem('scrollPosition')
+    if (scrollPosition && scrollRef?.current) {
+      scrollRef?.current?.scrollTo(0, scrollPosition)
+      localStorage.removeItem('scrollPosition')
+    }
+  })
 
   return (
     <Wrapper>
@@ -274,7 +290,11 @@ export const Browse = () => {
                   <>
                     <div className='plants'>
                       {data.pages.map((group, i) =>
-                        group.plants.map(plant => <PlantCard key={plant._id} plant={plant} />)
+                        group.plants.map(plant => (
+                          <div onClick={preserveScroll} key={plant._id}>
+                            <PlantCard plant={plant} />
+                          </div>
+                        ))
                       )}
                       {isFetchingNextPage && <GhostPlantCard />}
                     </div>

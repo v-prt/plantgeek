@@ -513,14 +513,10 @@ const Wrapper = styled.main`
     .similar-plants-container {
       width: 100%;
       max-width: 960px;
-      .slick-track {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
       .slick-slide {
+        display: grid;
+        place-content: center;
         padding: 10px;
-        width: fit-content !important;
       }
       .slick-dots {
         bottom: -20px;

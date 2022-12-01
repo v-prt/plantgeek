@@ -21,6 +21,8 @@ export const Homepage = () => {
   const history = useHistory()
 
   const onSearch = value => {
+    // clear scrollPosition from previous search since results may be different
+    localStorage.removeItem('scrollPosition')
     setFormData({ ...formData, search: [value] })
     history.push(`/browse`)
   }

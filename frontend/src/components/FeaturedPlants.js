@@ -82,14 +82,8 @@ const Wrapper = styled.section`
 const Plants = styled.div`
   width: 100%;
   max-width: 960px;
-  .slick-track {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
   .slick-slide {
     padding: 10px;
-    width: fit-content !important;
   }
   .slick-dots {
     bottom: -20px;

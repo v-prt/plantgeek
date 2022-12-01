@@ -169,6 +169,7 @@ const InfoLink = styled(Link)`
     color: #666;
     font-style: italic;
     font-size: 0.8rem;
+    min-height: 20px;
   }
 `
 
