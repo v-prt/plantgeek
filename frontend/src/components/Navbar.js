@@ -278,12 +278,16 @@ const Wrapper = styled.nav`
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    padding: 10px 30px;
     .inner {
       .flyout-menu {
         transition: 0.6s ease-in-out;
         .links {
           max-width: 300px;
         }
+      }
+      .mobile {
+        gap: 20px;
       }
     }
   }
