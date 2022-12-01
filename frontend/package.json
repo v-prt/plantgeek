@@ -22,7 +22,7 @@
     "react-dropzone": "^11.4.2",
     "react-icons": "^4.3.1",
     "react-image-file-resizer": "^0.4.8",
-    "react-query": "^3.34.6",
+    "react-query": "^3.39.2",
     "react-redux": "^7.2.3",
     "react-responsive": "^8.2.0",
     "react-router-dom": "^5.2.0",

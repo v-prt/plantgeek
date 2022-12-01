@@ -9,97 +9,11 @@ import { MdOutlineAdminPanelSettings } from 'react-icons/md'
 import { TiHeartOutline } from 'react-icons/ti'
 import { CgProfile } from 'react-icons/cg'
 import { Hamburger } from './general/Hamburger'
+import { ImageLoader } from './loaders/ImageLoader'
 
 export const Navbar = () => {
-  const { handleLogout, currentUser, pendingPlants, pendingReports } = useContext(UserContext)
+  const { currentUser } = useContext(UserContext)
   const [expanded, setExpanded] = useState(false)
-
-  const MenuLinks = () => {
-    return (
-      <div className='links'>
-        <NavLink to='/browse'>
-          <div className='icon'>
-            <BiSearch />
-          </div>
-          <span className='label'>browse</span>
-        </NavLink>
-        <NavLink to='/contribute'>
-          <div className='icon'>
-            <BiPlusCircle />
-          </div>
-          <span className='label'>contribute</span>
-        </NavLink>
-        <NavLink to='/guidelines'>
-          <div className='icon'>
-            <TiHeartOutline />
-          </div>
-          <span className='label'>care tips</span>
-        </NavLink>
-        {currentUser ? (
-          <>
-            <div className='user'>
-              <div className='avatar'>
-                {currentUser.imageUrl ? (
-                  <img src={currentUser.imageUrl} alt='' />
-                ) : (
-                  <span className='initials'>{currentUser.firstName.charAt(0).toUpperCase()}</span>
-                )}
-              </div>
-              {currentUser.firstName} {currentUser.lastName}
-            </div>
-            <NavLink to='/profile'>
-              <div className='icon'>
-                <CgProfile />
-              </div>
-              <span className='label'>profile</span>
-            </NavLink>
-            {currentUser.role === 'admin' && (
-              <NavLink to='/admin'>
-                <div className='icon'>
-                  <MdOutlineAdminPanelSettings />
-                </div>
-                <span className='label'>
-                  admin
-                  {pendingPlants + pendingReports > 0 && (
-                    <span className='review-notification-badge'>
-                      {pendingPlants + pendingReports}
-                    </span>
-                  )}
-                </span>
-              </NavLink>
-            )}
-            <NavLink to='/settings'>
-              <div className='icon'>
-                <BiCog />
-              </div>
-              <span className='label'>settings</span>
-            </NavLink>
-            <button className='logout-btn' onClick={handleLogout}>
-              <div className='icon'>
-                <BiLogOutCircle />
-              </div>
-              <span className='label'>log out</span>
-            </button>
-          </>
-        ) : (
-          <>
-            <NavLink to='/signup' className='login-link'>
-              <div className='icon'>
-                <CgProfile />
-              </div>
-              <span className='label'>sign up</span>
-            </NavLink>
-            <NavLink to='/login' className='login-link'>
-              <div className='icon'>
-                <BiLogInCircle />
-              </div>
-              <span className='label'>log in</span>
-            </NavLink>
-          </>
-        )}
-      </div>
-    )
-  }
 
   return (
     <Wrapper>
@@ -112,7 +26,7 @@ export const Navbar = () => {
           {currentUser && (
             <NavLink className='profile-link avatar' to='/profile'>
               {currentUser.imageUrl ? (
-                <img src={currentUser.imageUrl} alt='' />
+                <ImageLoader src={currentUser.imageUrl} alt='' borderRadius='50%' />
               ) : (
                 <span className='initials'>{currentUser.firstName.charAt(0).toUpperCase()}</span>
               )}
@@ -133,6 +47,96 @@ export const Navbar = () => {
         </div>
       </div>
     </Wrapper>
+  )
+}
+
+// keep components like this outside of other components to avoid unnecessary re-rendering
+const MenuLinks = () => {
+  const { currentUser, handleLogout, pendingPlants, pendingReports } = useContext(UserContext)
+
+  return (
+    <div className='links'>
+      <NavLink to='/browse'>
+        <div className='icon'>
+          <BiSearch />
+        </div>
+        <span className='label'>browse</span>
+      </NavLink>
+      <NavLink to='/contribute'>
+        <div className='icon'>
+          <BiPlusCircle />
+        </div>
+        <span className='label'>contribute</span>
+      </NavLink>
+      <NavLink to='/guidelines'>
+        <div className='icon'>
+          <TiHeartOutline />
+        </div>
+        <span className='label'>care tips</span>
+      </NavLink>
+      {currentUser ? (
+        <>
+          <div className='user'>
+            <div className='avatar'>
+              {currentUser.imageUrl ? (
+                <ImageLoader src={currentUser.imageUrl} alt='' borderRadius='50%' />
+              ) : (
+                <span className='initials'>{currentUser.firstName.charAt(0).toUpperCase()}</span>
+              )}
+            </div>
+            {currentUser.firstName} {currentUser.lastName}
+          </div>
+          <NavLink to='/profile'>
+            <div className='icon'>
+              <CgProfile />
+            </div>
+            <span className='label'>profile</span>
+          </NavLink>
+          {currentUser.role === 'admin' && (
+            <NavLink to='/admin'>
+              <div className='icon'>
+                <MdOutlineAdminPanelSettings />
+              </div>
+              <span className='label'>
+                admin
+                {pendingPlants + pendingReports > 0 && (
+                  <span className='review-notification-badge'>
+                    {pendingPlants + pendingReports}
+                  </span>
+                )}
+              </span>
+            </NavLink>
+          )}
+          <NavLink to='/settings'>
+            <div className='icon'>
+              <BiCog />
+            </div>
+            <span className='label'>settings</span>
+          </NavLink>
+          <button className='logout-btn' onClick={handleLogout}>
+            <div className='icon'>
+              <BiLogOutCircle />
+            </div>
+            <span className='label'>log out</span>
+          </button>
+        </>
+      ) : (
+        <>
+          <NavLink to='/signup' className='login-link'>
+            <div className='icon'>
+              <CgProfile />
+            </div>
+            <span className='label'>sign up</span>
+          </NavLink>
+          <NavLink to='/login' className='login-link'>
+            <div className='icon'>
+              <BiLogInCircle />
+            </div>
+            <span className='label'>log in</span>
+          </NavLink>
+        </>
+      )}
+    </div>
   )
 }
 

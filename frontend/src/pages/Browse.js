@@ -68,29 +68,14 @@ export const Browse = () => {
 
   const handleScroll = () => {
     const scrollDistance = scrollRef.current.scrollTop
+    // preserve scroll position when switching routes
+    localStorage.setItem('scrollPosition', scrollDistance)
     const outerHeight = scrollRef.current.offsetHeight
     const innerHeight = scrollRef.current.scrollHeight
     const actualDistance = innerHeight - (scrollDistance + outerHeight)
     if (actualDistance < 400 && hasNextPage && !isFetching) {
       fetchNextPage()
     }
-  }
-
-  const handleSubmit = async values => {
-    submitRef.current++
-    const thisSubmit = submitRef.current
-    setTimeout(() => {
-      if (thisSubmit === submitRef.current) {
-        setFormData({ ...formData, ...values })
-      }
-    }, 400)
-  }
-
-  // preserve scroll position on page change
-  const preserveScroll = () => {
-    // get scroll position of results component
-    const scrollPosition = scrollRef?.current?.scrollTop
-    localStorage.setItem('scrollPosition', scrollPosition)
   }
 
   useEffect(() => {
@@ -101,6 +86,16 @@ export const Browse = () => {
       localStorage.removeItem('scrollPosition')
     }
   })
+
+  const handleSubmit = async values => {
+    submitRef.current++
+    const thisSubmit = submitRef.current
+    setTimeout(() => {
+      if (thisSubmit === submitRef.current) {
+        setFormData({ ...formData, ...values })
+      }
+    }, 400)
+  }
 
   return (
     <Wrapper>
@@ -290,11 +285,7 @@ export const Browse = () => {
                   <>
                     <div className='plants'>
                       {data.pages.map((group, i) =>
-                        group.plants.map(plant => (
-                          <div onClick={preserveScroll} key={plant._id}>
-                            <PlantCard plant={plant} />
-                          </div>
-                        ))
+                        group.plants.map(plant => <PlantCard key={plant._id} plant={plant} />)
                       )}
                       {isFetchingNextPage && <GhostPlantCard />}
                     </div>

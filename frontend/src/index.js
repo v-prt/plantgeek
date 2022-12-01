@@ -13,7 +13,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false, // helps stop flickering of user avatar in navbar
+      // refetchOnWindowFocus: false,
       // refetchOnmount: false,
       // refetchOnReconnect: false,
       // retry: false,
