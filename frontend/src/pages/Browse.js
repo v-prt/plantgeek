@@ -104,7 +104,7 @@ export const Browse = () => {
           <Formik initialValues={formData} onSubmit={handleSubmit}>
             {({ values, setValues, setFieldValue, submitForm, resetForm }) => (
               <Form className='filter-bar'>
-                {/* FIXME: allowClear doesn't work on mobile */}
+                {/* allowClear doesn't work on mobile, known antd issue */}
                 <div className='filter-bar-upper'>
                   <div className='search'>
                     <Select

@@ -24,7 +24,10 @@ export const Navbar = () => {
         </NavLink>
         <div className='mobile'>
           {currentUser && (
-            <NavLink className='profile-link avatar' to='/profile'>
+            <NavLink
+              className='profile-link avatar'
+              to='/profile'
+              onClick={() => setExpanded(false)}>
               {currentUser.imageUrl ? (
                 <ImageLoader src={currentUser.imageUrl} alt='' borderRadius='50%' />
               ) : (
