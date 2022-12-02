@@ -5,7 +5,7 @@ import { useInfiniteQuery, useQueryClient } from 'react-query'
 import axios from 'axios'
 import moment from 'moment'
 import styled from 'styled-components/macro'
-import { COLORS } from '../../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../../GlobalStyles'
 import { Formik, Form } from 'formik'
 import { Select } from 'formik-antd'
 import { Empty, message } from 'antd'
@@ -57,7 +57,6 @@ export const AllReports = () => {
   return (
     <Wrapper>
       <div className='header'>
-        <h4>Reports</h4>
         <Formik initialValues={formData} onSubmit={handleSubmit}>
           {({ values, setValues, submitForm }) => (
             <Form className='filters'>
@@ -69,7 +68,7 @@ export const AllReports = () => {
                   setValues({ ...values, status: e })
                   submitForm()
                 }}
-                style={{ width: '150px' }}>
+                style={{ width: '100%' }}>
                 <Option value='pending'>Pending</Option>
                 <Option value='resolved'>Resolved</Option>
                 <Option value='rejected'>Rejected</Option>
@@ -82,7 +81,7 @@ export const AllReports = () => {
                   setValues({ ...values, sort: e })
                   submitForm()
                 }}
-                style={{ width: '150px' }}>
+                style={{ width: '100%' }}>
                 <Option value='date-asc'>Date (oldest)</Option>
                 <Option value='date-desc'>Date (newest)</Option>
               </Select>
@@ -189,8 +188,14 @@ export const AllReports = () => {
   )
 }
 
-const Wrapper = styled.section`
-  background: #fff;
+const Wrapper = styled.div`
+  background: #f2f2f2;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
   .empty,
   .loading {
     display: grid;
@@ -199,10 +204,10 @@ const Wrapper = styled.section`
   .empty,
   .loading,
   .reports {
-    height: 500px;
+    background: #fff;
+    height: 100%;
     border: 1px solid #e6e6e6;
     border-radius: 10px;
-    margin: 10px 0;
   }
   .fetching-more,
   .loading {
@@ -220,10 +225,8 @@ const Wrapper = styled.section`
     justify-content: space-between;
     gap: 10px;
     margin-bottom: 10px;
-    h4 {
-      margin: 0;
-    }
     .filters {
+      width: 100%;
       display: flex;
       gap: 12px;
     }
@@ -304,6 +307,13 @@ const Wrapper = styled.section`
     .ant-select {
       width: 100%;
       max-width: 200px;
+    }
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    padding: 30px 20px;
+    .header .filters {
+      max-width: 400px;
+      margin-left: auto;
     }
   }
 `
