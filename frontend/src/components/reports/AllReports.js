@@ -135,6 +135,7 @@ export const AllReports = () => {
                             status: values.status,
                           })
                           message.success('Report status updated')
+                          queryClient.invalidateQueries('reports')
                           queryClient.invalidateQueries('pending-reports')
                           setSubmitting(false)
                         } catch (err) {

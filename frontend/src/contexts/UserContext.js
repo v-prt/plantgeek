@@ -141,19 +141,28 @@ export const UserProvider = ({ children }) => {
   }
 
   // ADMIN
-  const { data: pendingPlants } = useQuery(['pending-plants'], async () => {
-    if (currentUser?.role === 'admin') {
+  const [notificationsCount, setNotificationsCount] = useState(0)
+  const { data: pendingPlants, status: pendingPlantsStatus } = useQuery(
+    ['pending-plants'],
+    async () => {
       const { data } = await axios.get(`${API_URL}/pending-plants`)
       return data.count
-    } else return null
-  })
+    }
+  )
 
-  const { data: pendingReports } = useQuery(['pending-reports'], async () => {
-    if (currentUser?.role === 'admin') {
+  const { data: pendingReports, status: pendingReportsStatus } = useQuery(
+    ['pending-reports'],
+    async () => {
       const { data } = await axios.get(`${API_URL}/pending-reports`)
       return data.count
-    } else return null
-  })
+    }
+  )
+
+  useEffect(() => {
+    if (pendingPlantsStatus === 'success' && pendingReportsStatus === 'success') {
+      setNotificationsCount(pendingPlants + pendingReports)
+    }
+  }, [pendingPlants, pendingPlantsStatus, pendingReports, pendingReportsStatus])
 
   return (
     <UserContext.Provider
@@ -173,6 +182,7 @@ export const UserProvider = ({ children }) => {
         resendVerificationEmail,
         pendingPlants,
         pendingReports,
+        notificationsCount,
       }}>
       {children}
     </UserContext.Provider>

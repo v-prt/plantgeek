@@ -55,7 +55,7 @@ export const Navbar = () => {
 
 // keep components like this outside of other components to avoid unnecessary re-rendering
 const MenuLinks = () => {
-  const { currentUser, handleLogout, pendingPlants, pendingReports } = useContext(UserContext)
+  const { currentUser, handleLogout, notificationsCount } = useContext(UserContext)
 
   return (
     <div className='links'>
@@ -102,10 +102,8 @@ const MenuLinks = () => {
               </div>
               <span className='label'>
                 admin
-                {pendingPlants + pendingReports > 0 && (
-                  <span className='review-notification-badge'>
-                    {pendingPlants + pendingReports}
-                  </span>
+                {notificationsCount > 0 && (
+                  <span className='review-notification-badge'>{notificationsCount}</span>
                 )}
               </span>
             </NavLink>
