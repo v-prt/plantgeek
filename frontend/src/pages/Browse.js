@@ -119,6 +119,7 @@ export const Browse = () => {
                       mode='tags'
                       placeholder='Search plants'
                       onChange={e => {
+                        setFormData({ ...formData, search: e })
                         setValues({ ...values, search: e })
                         submitForm()
                       }}
@@ -137,6 +138,7 @@ export const Browse = () => {
                       name='sort'
                       value={formData.sort}
                       onChange={e => {
+                        setFormData({ ...formData, sort: e })
                         setValues({ ...values, sort: e })
                         submitForm()
                       }}
