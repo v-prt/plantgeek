@@ -114,16 +114,18 @@ const Wrapper = styled.div`
   }
   .tab-toggle {
     display: flex;
-    align-items: center;
     gap: 10px;
     .toggle-btn {
-      margin-left: auto;
       background: #ddd;
       flex: 1;
       border-radius: 10px 10px 0 0;
       padding: 10px;
       font-weight: bold;
       color: #999;
+      transition: 0.2s ease-in-out;
+      &:hover {
+        color: #666;
+      }
       &.active {
         background: #f4f4f4;
         color: ${COLORS.darkest};

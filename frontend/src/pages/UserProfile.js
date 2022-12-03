@@ -28,7 +28,7 @@ export const UserProfile = () => {
     `${currentUser.firstName} ${currentUser.lastName} (@${currentUser.username}) • plantgeek`
   )
 
-  const [list, setList] = useState('collection')
+  const [tab, setTab] = useState('collection')
 
   const badges = [
     { name: leaf, value: 1 },
@@ -90,23 +90,23 @@ export const UserProfile = () => {
       </FadeIn>
       <FadeIn delay={200}>
         <div className='lists'>
-          <div className='list-toggle'>
+          <div className='tab-toggle'>
             <button
-              className={`toggle-btn ${list === 'collection' && 'active'}`}
-              onClick={() => setList('collection')}>
+              className={`toggle-btn ${tab === 'collection' && 'active'}`}
+              onClick={() => setTab('collection')}>
               Collection ({collection?.length})
             </button>
             <button
-              className={`toggle-btn ${list === 'wishlist' && 'active'}`}
-              onClick={() => setList('wishlist')}>
+              className={`toggle-btn ${tab === 'wishlist' && 'active'}`}
+              onClick={() => setTab('wishlist')}>
               Wishlist ({wishlist?.length})
             </button>
           </div>
           {/* TODO: add more elegant handling for removing items from lists (use state to set list of plants from query, then remove from state and fade card out) */}
-          {list === 'collection' && (
+          {tab === 'collection' && (
             <PlantList user={currentUser} data={collection} status={collectionStatus} />
           )}
-          {list === 'wishlist' && (
+          {tab === 'wishlist' && (
             <PlantList user={currentUser} data={wishlist} status={wishlistStatus} />
           )}
         </div>
@@ -204,19 +204,19 @@ const Wrapper = styled.main`
     flex-direction: column;
     padding: 0;
     border-radius: 20px;
-    .list-toggle {
-      background: ${COLORS.lightest};
+    .tab-toggle {
       display: flex;
-      align-items: center;
       gap: 10px;
       .toggle-btn {
         background: #ddd;
-        flex: 1;
         border-radius: 10px 10px 0 0;
         padding: 10px;
-        border-bottom: 1px solid #ddd;
         font-weight: bold;
         color: #999;
+        transition: 0.2s ease-in-out;
+        &:hover {
+          color: #666;
+        }
         &.active {
           background: #f4f4f4;
           color: ${COLORS.darkest};
@@ -269,11 +269,6 @@ const Wrapper = styled.main`
           gap: 0;
           padding: 10px 20px;
         }
-      }
-    }
-    .lists {
-      .list-toggle {
-        top: 0;
       }
     }
   }

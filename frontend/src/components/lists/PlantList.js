@@ -30,7 +30,7 @@ export const PlantList = ({ data, status }) => {
 
 export const ListWrapper = styled.div`
   background: #f4f4f4;
-  border-radius: 0 0 20px 20px;
+  border-radius: 0 20px 20px 20px;
   .inner {
     .empty {
       display: grid;
