@@ -13,12 +13,18 @@ export const PlantProvider = ({ children }) => {
     return res.data
   }
 
+  const fetchPendingPlants = async ({ pageParam }) => {
+    const res = await axios.get(`${API_URL}/plants-to-review/${pageParam || 1}`)
+    return res.data
+  }
+
   return (
     <PlantContext.Provider
       value={{
         formData,
         setFormData,
         fetchPlants,
+        fetchPendingPlants,
       }}>
       {children}
     </PlantContext.Provider>

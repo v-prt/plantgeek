@@ -1,14 +1,13 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useRef } from 'react'
 import { Redirect } from 'react-router-dom'
-import { API_URL } from '../constants'
-import { useQuery } from 'react-query'
-import axios from 'axios'
+import { useInfiniteQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
+import { PlantContext } from '../contexts/PlantContext'
 import styled from 'styled-components/macro'
 import { Empty } from 'antd'
-import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { PlantCard } from '../components/PlantCard'
+import { GhostPlantCard } from '../components/GhostPlantCard'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { AllReports } from '../components/reports/AllReports'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
@@ -17,13 +16,24 @@ import { MdOutlineAdminPanelSettings } from 'react-icons/md'
 export const Admin = () => {
   useDocumentTitle('Admin • plantgeek')
   const [tab, setTab] = useState('contributions')
+  const scrollRef = useRef()
   const { currentUser } = useContext(UserContext)
+  const { fetchPendingPlants } = useContext(PlantContext)
 
-  // TODO: pagination for plants to review
-  const { data, status } = useQuery(['plants-to-review'], async () => {
-    const { data } = await axios.get(`${API_URL}/plants-to-review`)
-    return data.plants
-  })
+  const { data, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } =
+    useInfiniteQuery(['plants-to-review'], fetchPendingPlants, {
+      getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+    })
+
+  const handleScroll = () => {
+    const scrollDistance = scrollRef.current.scrollTop
+    const outerHeight = scrollRef.current.offsetHeight
+    const innerHeight = scrollRef.current.scrollHeight
+    const actualDistance = innerHeight - (scrollDistance + outerHeight)
+    if (actualDistance < 400 && hasNextPage && !isFetching) {
+      fetchNextPage()
+    }
+  }
 
   return !currentUser || currentUser.role !== 'admin' ? (
     <Redirect to='/' />
@@ -51,25 +61,26 @@ export const Admin = () => {
           {tab === 'contributions' && (
             <div className='contributions-tab'>
               {status === 'success' ? (
-                data.length > 0 ? (
+                data?.pages[0]?.totalResults > 0 ? (
                   <>
-                    <div className='plants'>
-                      {data.map(plant => (
-                        <PlantCard key={plant._id} plant={plant} />
-                      ))}
+                    <div className='plants' ref={scrollRef} onScroll={handleScroll}>
+                      {data.pages.map((group, i) =>
+                        group.plants.map(plant => <PlantCard key={plant._id} plant={plant} />)
+                      )}
+                      {isFetchingNextPage && <GhostPlantCard />}
                     </div>
                   </>
                 ) : (
-                  <div className='empty'>
-                    <Empty
-                      image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      description='No contributions pending'
-                    />
-                  </div>
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description='No pending contributions.'
+                  />
                 )
               ) : (
                 <div className='loading'>
-                  <Ellipsis />
+                  {Array.from(Array(6).keys()).map(item => (
+                    <GhostPlantCard key={item} />
+                  ))}
                 </div>
               )}
             </div>
@@ -83,7 +94,6 @@ export const Admin = () => {
 
 const Wrapper = styled.div`
   .admin-content {
-    /* background: #fff; */
     gap: 0;
     padding: 0;
     height: calc(100vh - 53px);
@@ -130,8 +140,7 @@ const Wrapper = styled.div`
     height: 100%;
     overflow: hidden;
     padding: 10px;
-    .empty,
-    .loading {
+    .empty {
       display: grid;
       place-content: center;
     }
@@ -140,7 +149,9 @@ const Wrapper = styled.div`
     .plants {
       height: 100%;
     }
+    .loading,
     .plants {
+      width: 100%;
       overflow: auto;
       display: flex;
       flex-wrap: wrap;

@@ -62,7 +62,7 @@ router
   // plants
   .post(`${API_URL}/plants`, createPlant)
   .get(`${API_URL}/plants/:page`, getPlants)
-  .get(`${API_URL}/plants-to-review`, getPlantsToReview)
+  .get(`${API_URL}/plants-to-review/:page`, getPlantsToReview)
   .get(`${API_URL}/pending-plants`, countPendingPlants)
   .get(`${API_URL}/plant/:slug`, getPlant)
   .get(`${API_URL}/similar-plants/:slug`, getSimilarPlants)

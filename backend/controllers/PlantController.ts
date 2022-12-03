@@ -200,11 +200,24 @@ export const getPlants = async (req: Request, res: Response) => {
 
 export const getPlantsToReview = async (req: Request, res: Response) => {
   try {
-    const plants: IPlant[] = await Plant.find({ review: 'pending' }).lean()
+    const page = req.params.page ? parseInt(req.params.page) : 1
+    const resultsPerPage = 24
+
+    const plants: IPlant[] = await Plant.find({ review: 'pending' })
+      .skip(resultsPerPage * (page - 1))
+      .limit(resultsPerPage)
+      .lean()
+
+    const totalResults: number = await Plant.countDocuments({ review: 'pending' })
     if (plants) {
-      return res.status(200).json({ status: 200, plants: plants })
+      return res.status(200).json({
+        plants,
+        page,
+        totalResults,
+        nextCursor: totalResults > resultsPerPage * page ? page + 1 : null,
+      })
     } else {
-      return res.status(404).json({ status: 404, message: 'No plants found' })
+      return res.status(404).json({ message: 'No plants found' })
     }
   } catch (err) {
     if (err instanceof Error) {
