@@ -1,7 +1,5 @@
 # plantgeek
 
-_New screenshots coming soon!_
-
 ### an app for houseplant lovers
 
 - [Live Site](https://www.plantgeek.co)
@@ -51,15 +49,13 @@ Full-stack live website built 100% by me - including concept, design, and implem
 - [x] admins can edit incorrect or missing information, including images
 - [x] admins can delete plants in case of corrupt or duplicate data
 - [x] users can report plants for admins to review
-- [ ] photo gallery (user submitted photos)
-- [ ] additional information, including: region of origin, description, etc.
+- [x] additional information, including region of origin and rarity
 
 ### user profiles (wip)
 
 - [x] users can manage their collection and wishlist
 - [x] toggle between simple or detailed view
 - [x] users can view their contributions and stickers earned for approved submissions
-- [ ] view other user's profiles
 
 ### contribute
 
