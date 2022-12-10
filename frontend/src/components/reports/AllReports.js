@@ -208,6 +208,7 @@ const Wrapper = styled.div`
     height: 100%;
     border: 1px solid #e6e6e6;
     border-radius: 10px;
+    padding-bottom: 60px;
   }
   .fetching-more,
   .loading {
@@ -250,14 +251,11 @@ const Wrapper = styled.div`
   }
   .report {
     width: 100%;
-    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
     padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 5px;
-    &:first-child {
-      border: none;
-    }
     .user {
       display: flex;
       align-items: center;
@@ -314,6 +312,11 @@ const Wrapper = styled.div`
     .header .filters {
       max-width: 400px;
       margin-left: auto;
+    }
+    .empty,
+    .loading,
+    .reports {
+      padding: 0;
     }
   }
 `

@@ -71,10 +71,12 @@ export const Admin = () => {
                     </div>
                   </>
                 ) : (
-                  <Empty
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    description='No pending contributions.'
-                  />
+                  <div className='empty'>
+                    <Empty
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      description='No pending contributions.'
+                    />
+                  </div>
                 )
               ) : (
                 <div className='loading'>
@@ -160,7 +162,7 @@ const Wrapper = styled.div`
       align-items: center;
       justify-content: center;
       gap: 20px;
-      padding: 10px;
+      padding: 10px 10px 90px 10px;
       ::-webkit-scrollbar {
         width: 10px;
       }
