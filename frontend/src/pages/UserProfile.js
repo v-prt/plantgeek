@@ -6,6 +6,7 @@ import { UserContext } from '../contexts/UserContext'
 import moment from 'moment'
 import axios from 'axios'
 import styled from 'styled-components/macro'
+import { LoadingOutlined } from '@ant-design/icons'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import { FadeIn } from '../components/loaders/FadeIn.js'
 import { ImageLoader } from '../components/loaders/ImageLoader'
@@ -94,15 +95,24 @@ export const UserProfile = () => {
             <button
               className={`toggle-btn ${tab === 'collection' && 'active'}`}
               onClick={() => setTab('collection')}>
-              Collection ({collection?.length})
+              Collection{' '}
+              {collectionStatus === 'success' ? (
+                `(${collection?.length})`
+              ) : (
+                <LoadingOutlined spin style={{ color: '#999' }} />
+              )}
             </button>
             <button
               className={`toggle-btn ${tab === 'wishlist' && 'active'}`}
               onClick={() => setTab('wishlist')}>
-              Wishlist ({wishlist?.length})
+              Wishlist{' '}
+              {wishlistStatus === 'success' ? (
+                `(${wishlist?.length})`
+              ) : (
+                <LoadingOutlined spin style={{ color: '#999' }} />
+              )}
             </button>
           </div>
-          {/* TODO: add more elegant handling for removing items from lists (use state to set list of plants from query, then remove from state and fade card out) */}
           {tab === 'collection' && (
             <PlantList user={currentUser} data={collection} status={collectionStatus} />
           )}
@@ -208,9 +218,11 @@ const Wrapper = styled.main`
       display: flex;
       gap: 10px;
       .toggle-btn {
+        width: 100%;
+        max-width: 150px;
         background: #ddd;
         border-radius: 10px 10px 0 0;
-        padding: 10px;
+        padding: 10px 20px;
         font-weight: bold;
         color: #999;
         transition: 0.2s ease-in-out;

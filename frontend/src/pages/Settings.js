@@ -370,7 +370,7 @@ export const Settings = () => {
               </Button>
               <Modal
                 title='Delete account'
-                visible={deleteModalOpen}
+                open={deleteModalOpen}
                 footer={false}
                 onCancel={() => setDeleteModalOpen(false)}>
                 <p>Are you sure you want to permanently delete your account?</p>

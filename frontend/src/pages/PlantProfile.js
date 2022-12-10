@@ -4,10 +4,11 @@ import { useQuery, useQueryClient } from 'react-query'
 import { API_URL } from '../constants'
 import { Modal, Alert, Button, Drawer, Carousel } from 'antd'
 import { UserContext } from '../contexts/UserContext'
+import { PlantContext } from '../contexts/PlantContext'
 import axios from 'axios'
 import styled from 'styled-components/macro'
 import { COLORS, BREAKPOINTS } from '../GlobalStyles'
-import { EditOutlined, DeleteOutlined, FlagOutlined } from '@ant-design/icons'
+import { EditOutlined, DeleteOutlined, FlagOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { MdOutlineAdminPanelSettings } from 'react-icons/md'
 import { BeatingHeart } from '../components/loaders/BeatingHeart'
 import { FadeIn } from '../components/loaders/FadeIn.js'
@@ -34,6 +35,7 @@ export const PlantProfile = () => {
   const [editDrawerOpen, setEditDrawerOpen] = useState(false)
   const [reportModalOpen, setReportModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const { setDuplicatePlant } = useContext(PlantContext)
 
   const { data: plant, status } = useQuery(['plant', slug], async () => {
     try {
@@ -317,7 +319,7 @@ export const PlantProfile = () => {
                     <FlagOutlined /> REPORT PLANT
                   </Button>
                   <Modal
-                    visible={reportModalOpen}
+                    open={reportModalOpen}
                     footer={null}
                     destroyOnClose
                     onCancel={() => setReportModalOpen(false)}>
@@ -374,7 +376,7 @@ export const PlantProfile = () => {
                     </Button>
                     <Drawer
                       title='Edit plant'
-                      visible={editDrawerOpen}
+                      open={editDrawerOpen}
                       onClose={() => setEditDrawerOpen(false)}>
                       <PlantEditor
                         plant={plant}
@@ -384,12 +386,24 @@ export const PlantProfile = () => {
                       />
                     </Drawer>
 
+                    <Button
+                      type='secondary'
+                      icon={<PlusCircleOutlined />}
+                      onClick={() => {
+                        setDuplicatePlant(plant)
+                        history.push('/contribute')
+                      }}>
+                      DUPLICATE
+                    </Button>
+                  </div>
+
+                  <div className='delete-btn'>
                     <Button type='danger' onClick={() => setDeleteModalOpen(true)}>
-                      DELETE PLANT...
+                      DELETE...
                     </Button>
                     <Modal
                       title='Delete plant'
-                      visible={deleteModalOpen}
+                      open={deleteModalOpen}
                       footer={false}
                       onCancel={() => setDeleteModalOpen(false)}>
                       <p>
@@ -715,7 +729,15 @@ const AdminSection = styled.section`
   .admin-buttons {
     display: flex;
     gap: 12px;
-    border-top: 1px dotted #ccc;
-    padding-top: 20px;
+    border-bottom: 1px dotted #ccc;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    button {
+      flex: 1;
+      max-width: 150px;
+    }
+  }
+  .delete-btn {
+    display: flex;
   }
 `

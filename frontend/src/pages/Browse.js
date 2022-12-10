@@ -239,7 +239,7 @@ export const Browse = () => {
                 </div>
                 {/* MOBILE/TABLET FILTERS MENU */}
                 <Drawer
-                  visible={sidebarOpen}
+                  open={sidebarOpen}
                   placement='right'
                   title='Filters'
                   onClose={() => setSidebarOpen(false)}

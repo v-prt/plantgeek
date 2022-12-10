@@ -217,6 +217,9 @@ export const Guidelines = () => {
 }
 
 const Wrapper = styled.main`
+  section {
+    max-width: 800px;
+  }
   .heading {
     background: linear-gradient(45deg, #a4e17d, #95d190);
     h1 {
@@ -248,7 +251,6 @@ const Wrapper = styled.main`
     ul {
       font-style: italic;
     }
-
     .icon {
       height: 25px;
       width: 25px;

@@ -5,6 +5,7 @@ import axios from 'axios'
 export const PlantContext = createContext(null)
 export const PlantProvider = ({ children }) => {
   const [formData, setFormData] = useState({ sort: 'name-asc' })
+  const [duplicatePlant, setDuplicatePlant] = useState(undefined)
 
   const fetchPlants = async ({ pageParam }) => {
     const res = await axios.get(`${API_URL}/plants/${pageParam || 1}`, {
@@ -25,6 +26,8 @@ export const PlantProvider = ({ children }) => {
         setFormData,
         fetchPlants,
         fetchPendingPlants,
+        duplicatePlant,
+        setDuplicatePlant,
       }}>
       {children}
     </PlantContext.Provider>

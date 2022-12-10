@@ -5,6 +5,7 @@ import Resizer from 'react-image-file-resizer'
 import { API_URL } from '../constants'
 import axios from 'axios'
 import { UserContext } from '../contexts/UserContext'
+import { PlantContext } from '../contexts/PlantContext'
 
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
@@ -18,7 +19,7 @@ import { COLORS } from '../GlobalStyles'
 import { Ellipsis } from '../components/loaders/Ellipsis'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { ImageLoader } from '../components/loaders/ImageLoader'
-import checkmark from '../assets/checkmark.svg'
+import success from '../assets/success.svg'
 import placeholder from '../assets/plant-placeholder.svg'
 import { PlantCard } from '../components/PlantCard'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
@@ -29,21 +30,22 @@ export const Contribute = () => {
 
   const queryClient = useQueryClient()
   const { currentUser } = useContext(UserContext)
+  const { duplicatePlant, setDuplicatePlant } = useContext(PlantContext)
   const [status, setStatus] = useState(undefined)
   const [newPlant, setNewPlant] = useState(null)
 
   const initialValues = {
-    primaryName: '',
-    secondaryName: '',
-    light: '',
-    water: '',
-    temperature: '',
-    humidity: '',
-    toxic: '',
-    origin: '',
-    climate: '',
-    rarity: '',
-    sourceUrl: '',
+    primaryName: duplicatePlant?.primaryName || '',
+    secondaryName: duplicatePlant?.secondaryName || '',
+    light: duplicatePlant?.light || '',
+    water: duplicatePlant?.water || '',
+    temperature: duplicatePlant?.temperature || '',
+    humidity: duplicatePlant?.humidity || '',
+    toxic: duplicatePlant?.toxic || '',
+    origin: duplicatePlant?.origin || '',
+    climate: duplicatePlant?.climate || '',
+    rarity: duplicatePlant?.rarity || '',
+    sourceUrl: duplicatePlant?.sourceUrl || '',
   }
 
   const schema = Yup.object().shape({
@@ -122,7 +124,7 @@ export const Contribute = () => {
         ...values,
         slug: values.primaryName.replace(/\s+/g, '-').toLowerCase(),
         contributorId: currentUser._id,
-        review: 'pending',
+        review: currentUser?.role === 'admin' ? 'approved' : 'pending',
       }
 
       //  upload plant to db
@@ -133,6 +135,7 @@ export const Contribute = () => {
           setNewPlant(res.data.plant)
           resetForm()
           setNewImage(false)
+          setDuplicatePlant(undefined)
           queryClient.invalidateQueries('plants-to-review')
           queryClient.invalidateQueries('pending-plants')
           window.scrollTo(0, 0)
@@ -157,19 +160,20 @@ export const Contribute = () => {
           <section className='confirmation'>
             <div className='msg'>
               <h2>
-                <img className='checkmark' src={checkmark} alt='' />
+                <img className='success' src={success} alt='' />
                 new plant submitted
               </h2>
-              {/* {newPlant.review === 'approved' ? (
+              {newPlant.review === 'approved' ? (
                 <p>
                   Thank you! Since you're an admin, your submission has been automatically approved.
                 </p>
-              ) : ( */}
-              <p>
-                Thank you! Your submission will be reviewed shortly and, if approved, you will see
-                the new plant on site soon. In the meantime, you may submit additional plants below.
-              </p>
-              {/* )} */}
+              ) : (
+                <p>
+                  Thank you! Your submission will be reviewed shortly and, if approved, you will see
+                  the new plant on site soon. In the meantime, you may submit additional plants
+                  below.
+                </p>
+              )}
             </div>
             <PlantCard key={newPlant._id} plant={newPlant} />
           </section>
@@ -365,6 +369,8 @@ const Wrapper = styled.main`
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      max-width: 600px;
+      margin: auto;
       h2 {
         margin-bottom: 10px;
       }
@@ -386,11 +392,13 @@ const Wrapper = styled.main`
       align-items: center;
       justify-content: space-evenly;
       gap: 20px;
+      max-width: 600px;
+      margin: auto;
       .msg {
         h2 {
           display: flex;
           align-items: center;
-          .checkmark {
+          .success {
             background: ${COLORS.lightest};
             padding: 2px;
             border-radius: 50%;

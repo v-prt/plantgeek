@@ -162,6 +162,7 @@ export default createGlobalStyle`
       text-shadow: none !important;
       box-shadow: none !important;
       transition: 0.2s ease-in-out;
+      border-radius: 40px;
     }
     .ant-btn-primary {
       background: ${COLORS.darkest};
