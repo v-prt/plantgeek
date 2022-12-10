@@ -166,6 +166,7 @@ export const PlantFilters = ({
           <Option value='common'>common</Option>
           <Option value='uncommon'>uncommon</Option>
           <Option value='rare'>rare</Option>
+          <Option value='very rare'>very rare</Option>
           <Option value='unicorn'>unicorn</Option>
           {currentUser?.role === 'admin' && <Option value='unknown'>unknown</Option>}
         </Select>

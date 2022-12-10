@@ -103,7 +103,7 @@ const plantSchema: Schema = new Schema({
     type: String,
   },
   rarity: {
-    // common, uncommon, rare, unicorn
+    // common, uncommon, rare, very rare, unicorn
     type: String,
   },
   sourceUrl: {

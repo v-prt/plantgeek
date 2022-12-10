@@ -309,6 +309,7 @@ export const Contribute = () => {
                     <Option value='common'>common</Option>
                     <Option value='uncommon'>uncommon</Option>
                     <Option value='rare'>rare</Option>
+                    <Option value='very rare'>very rare</Option>
                     <Option value='unicorn'>unicorn</Option>
                   </Select>
                 </FormItem>
