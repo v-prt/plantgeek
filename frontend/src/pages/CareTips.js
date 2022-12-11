@@ -1,10 +1,11 @@
 import styled from 'styled-components/macro'
+import { BREAKPOINTS } from '../GlobalStyles'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
 import humidity from '../assets/humidity.svg'
 
-export const Guidelines = () => {
+export const CareTips = () => {
   return (
     <Wrapper>
       <section className='heading'>
@@ -13,7 +14,7 @@ export const Guidelines = () => {
       <section className='info-section'>
         <h2>
           <img className='icon' src={sun} alt='' />
-          Light
+          light
         </h2>
         <p>
           In the wild, plants are exposed to varying levels of light - from deep shade on the forest
@@ -61,7 +62,7 @@ export const Guidelines = () => {
       <section className='info-section'>
         <h2>
           <img className='icon' src={water} alt='' />
-          Water
+          water
         </h2>
         <p>
           How much water your plant needs is highly dependent on your own watering habits, the soil,
@@ -109,7 +110,7 @@ export const Guidelines = () => {
       <section className='info-section'>
         <h2>
           <img className='icon' src={temp} alt='' />
-          Temperature
+          temperature
         </h2>
         <p>
           Probably the least complicated aspect of plant care - if you're comfortable, your plants
@@ -129,7 +130,7 @@ export const Guidelines = () => {
       <section className='info-section'>
         <h2>
           <img className='icon' src={humidity} alt='' />
-          Humidity
+          humidity
         </h2>
         <p>
           Humidity is the measure of moisture in the air. Tropical plants tend to suffer crispy leaf
@@ -222,6 +223,7 @@ const Wrapper = styled.main`
   }
   .heading {
     background: linear-gradient(45deg, #a4e17d, #95d190);
+    padding: 20px;
     h1 {
       line-height: 1.2;
       margin-bottom: 10px;
@@ -254,6 +256,16 @@ const Wrapper = styled.main`
     .icon {
       height: 25px;
       width: 25px;
+    }
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    .heading {
+      padding: 30px;
+    }
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    .heading {
+      padding: 40px;
     }
   }
 `

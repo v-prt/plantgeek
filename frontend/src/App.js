@@ -3,7 +3,6 @@ import React, { useContext } from 'react'
 import { UserContext } from './contexts/UserContext'
 
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
-// import background from './assets/monstera1.jpg'
 import { ScrollToTop } from './components/general/ScrollToTop'
 import { Navbar } from './components/Navbar'
 import { Homepage } from './pages/Homepage'
@@ -13,7 +12,7 @@ import { Login } from './pages/Login'
 import { PasswordRecovery } from './pages/PasswordRecovery'
 import { Welcome } from './pages/Welcome'
 import { EmailVerification } from './pages/EmailVerification'
-import { Guidelines } from './pages/Guidelines'
+import { CareTips } from './pages/CareTips'
 import { Terms } from './pages/Terms'
 import { Privacy } from './pages/Privacy'
 import { About } from './pages/About'
@@ -64,8 +63,8 @@ export const App = () => {
               <Route path='/verify-email/:code'>
                 <EmailVerification />
               </Route>
-              <Route path='/guidelines'>
-                <Guidelines />
+              <Route path='/care'>
+                <CareTips />
               </Route>
               <Route path='/terms'>
                 <Terms />
@@ -131,7 +130,7 @@ const Body = styled.div`
     flex: 1;
     section {
       width: 100%;
-      padding: 20px;
+      padding: 40px 20px;
       border-radius: 20px;
     }
   }
@@ -155,7 +154,7 @@ const Body = styled.div`
       gap: 20px;
       padding: 20px;
       section {
-        padding: 30px;
+        padding: 60px 30px;
       }
     }
   }
@@ -167,18 +166,8 @@ const Body = styled.div`
       margin: 0 auto;
       padding: 30px;
       section {
-        padding: 40px;
+        padding: 60px 40px;
       }
     }
   }
 `
-
-// const Banner = styled.div`
-//   background: url(${background}) center center / cover;
-//   height: 110px;
-//   width: 100%;
-//   display: none;
-//   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
-//     display: block;
-//   }
-// `

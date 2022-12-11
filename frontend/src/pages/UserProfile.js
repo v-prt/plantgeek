@@ -73,19 +73,17 @@ export const UserProfile = () => {
     <Wrapper>
       <FadeIn>
         <section className='user-info'>
-          <div className='profile'>
-            <div className='profile-img'>
-              <ImageLoader src={currentUser.imageUrl || placeholder} alt='' borderRadius='50%' />
-            </div>
-            <div className='text'>
-              <h1>
-                {currentUser.firstName} {currentUser.lastName}
-              </h1>
-              <p className='username'>
-                @{currentUser.username} {currentUser.role === 'admin' && '(Admin)'}
-              </p>
-              <p className='date'>Joined {moment(currentUser.joined).format('ll')}</p>
-            </div>
+          <div className='profile-img'>
+            <ImageLoader src={currentUser.imageUrl || placeholder} alt='' borderRadius='50%' />
+          </div>
+          <div className='text'>
+            <h1>
+              {currentUser.firstName} {currentUser.lastName}
+            </h1>
+            <p className='username'>
+              @{currentUser.username} {currentUser.role === 'admin' && '(Admin)'}
+            </p>
+            <p className='date'>Joined {moment(currentUser.joined).format('ll')}</p>
           </div>
         </section>
       </FadeIn>
@@ -152,60 +150,32 @@ const Wrapper = styled.main`
   .user-info {
     background: linear-gradient(45deg, #a4e17d, #95d190);
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    .profile {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      .profile-img {
-        border: 2px solid #fff;
-        height: 75px;
-        width: 75px;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    .profile-img {
+      border: 2px solid #fff;
+      height: 75px;
+      width: 75px;
+      border-radius: 50%;
+      padding: 2px;
+      overflow: hidden;
+      img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
         border-radius: 50%;
-        padding: 2px;
-        overflow: hidden;
-        img {
-          height: 100%;
-          width: 100%;
-          object-fit: cover;
-          border-radius: 50%;
-        }
-      }
-      .text {
-        h1 {
-          font-size: 1.4rem;
-        }
-        .username {
-          font-weight: bold;
-        }
-        .date {
-          font-size: 0.8rem;
-        }
       }
     }
-    .stats {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      .stat {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 10px;
-        padding: 5px 20px;
-        .number {
-          font-size: 1.8rem;
-          font-weight: bold;
-        }
-        .label {
-          font-size: 0.9rem;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
+    .text {
+      h1 {
+        font-size: 1.4rem;
+      }
+      .username {
+        font-weight: bold;
+      }
+      .date {
+        font-size: 0.8rem;
       }
     }
   }
@@ -238,48 +208,29 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {
-      flex-direction: row;
-      justify-content: space-between;
-      .profile {
-        gap: 20px;
-        .profile-img {
-          height: 100px;
-          width: 100px;
-        }
-        .text {
-          h1 {
-            font-size: 1.5rem;
-          }
-        }
+      padding: 30px;
+      gap: 20px;
+      .profile-img {
+        height: 100px;
+        width: 100px;
       }
-      .stats {
-        .stat {
-          gap: 20px;
+      .text {
+        h1 {
+          font-size: 1.5rem;
         }
       }
     }
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     .user-info {
-      align-items: center;
-      .profile {
-        .profile-img {
-          height: 150px;
-          width: 150px;
-        }
-        .text {
-          h1 {
-            font-size: 1.6rem;
-          }
-        }
+      padding: 40px;
+      .profile-img {
+        height: 150px;
+        width: 150px;
       }
-      .stats {
-        flex-direction: row;
-        gap: 20px;
-        .stat {
-          flex-direction: column-reverse;
-          gap: 0;
-          padding: 10px 20px;
+      .text {
+        h1 {
+          font-size: 1.6rem;
         }
       }
     }

@@ -155,7 +155,7 @@ export const Homepage = () => {
             from water-logged soil.
           </p>
           <div className='cta' style={{ marginTop: '20px' }}>
-            <Link to='/guidelines'>
+            <Link to='/care'>
               <Button type='primary'>READ MORE</Button>
             </Link>
           </div>
@@ -193,7 +193,7 @@ const Wrapper = styled.main`
     .text {
       display: flex;
       flex-direction: column;
-      padding: 20px;
+      padding: 40px 20px;
       h1 {
         color: ${COLORS.lighter};
         font-family: 'Lobster Two', cursive;
@@ -263,7 +263,7 @@ const Wrapper = styled.main`
         flex: 1;
       }
       .text {
-        padding: 30px;
+        padding: 60px 30px;
         h1 {
           font-size: 4.5rem;
         }
@@ -277,7 +277,7 @@ const Wrapper = styled.main`
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     .heading {
       .text {
-        padding: 40px;
+        padding: 60px 40px;
         h1 {
           font-size: 5rem;
         }

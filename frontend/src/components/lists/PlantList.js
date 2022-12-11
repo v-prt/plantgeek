@@ -3,6 +3,7 @@ import { FadeIn } from '../loaders/FadeIn'
 import { PlantCard } from '../PlantCard'
 import { GhostPlantCard } from '../GhostPlantCard'
 import { Empty } from 'antd'
+import { BREAKPOINTS } from '../../GlobalStyles'
 
 export const PlantList = ({ data, status }) => {
   return (
@@ -53,4 +54,10 @@ export const Plants = styled.div`
   justify-content: center;
   padding: 20px;
   gap: 20px;
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    padding: 30px 20px;
+  }
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    padding: 40px 20px;
+  }
 `

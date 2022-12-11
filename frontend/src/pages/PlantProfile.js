@@ -145,28 +145,30 @@ export const PlantProfile = () => {
       {status === 'success' ? (
         plant ? (
           <>
+            {plant.review === 'pending' && (
+              <div className='review-pending'>
+                <Alert
+                  type='warning'
+                  message='This plant is pending review by an admin.'
+                  showIcon
+                />
+              </div>
+            )}
+            {plant.review === 'rejected' && (
+              <div className='review-pending'>
+                <Alert
+                  type='error'
+                  message='This plant has been rejected by an admin. The information may be incorrect or is a duplicate.'
+                  showIcon
+                />
+              </div>
+            )}
             <FadeIn>
               <section className='heading'>
-                {plant.review === 'pending' && (
-                  <div className='review-pending'>
-                    <Alert
-                      type='warning'
-                      message='This plant is pending review by an admin.'
-                      showIcon
-                    />
-                  </div>
-                )}
-                {plant.review === 'rejected' && (
-                  <div className='review-pending'>
-                    <Alert
-                      type='error'
-                      message='This plant has been rejected by an admin. The information may be incorrect or is a duplicate.'
-                      showIcon
-                    />
-                  </div>
-                )}
                 <h1>{plant.primaryName?.toLowerCase()}</h1>
-                <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
+                {plant.secondaryName && (
+                  <p className='secondary-name'>{plant.secondaryName.toLowerCase()}</p>
+                )}
               </section>
             </FadeIn>
 
@@ -281,7 +283,7 @@ export const PlantProfile = () => {
                   </div>
                   <p>Region of origin: {plant.origin || 'Unknown'}</p>
                   <div className='links'>
-                    <Link to='/guidelines' className='link'>
+                    <Link to='/care' className='link'>
                       Care Tips
                     </Link>
                     {plant.sourceUrl && (
@@ -367,60 +369,60 @@ export const PlantProfile = () => {
 
                   <SinglePlantReports plantId={plant._id} />
 
-                  <div className='admin-buttons'>
-                    <Button
-                      type='primary'
-                      icon={<EditOutlined />}
-                      onClick={() => setEditDrawerOpen(true)}>
-                      EDIT PLANT
-                    </Button>
-                    <Drawer
-                      title='Edit plant'
-                      open={editDrawerOpen}
-                      onClose={() => setEditDrawerOpen(false)}>
-                      <PlantEditor
-                        plant={plant}
-                        slug={slug}
-                        currentUser={currentUser}
-                        setEditDrawerOpen={setEditDrawerOpen}
-                      />
-                    </Drawer>
-
-                    <Button
-                      type='secondary'
-                      icon={<PlusCircleOutlined />}
-                      onClick={() => {
-                        setDuplicatePlant(plant)
-                        history.push('/contribute')
-                      }}>
-                      DUPLICATE
-                    </Button>
-                  </div>
-
-                  <div className='delete-btn'>
-                    <Button type='danger' onClick={() => setDeleteModalOpen(true)}>
-                      DELETE...
-                    </Button>
-                    <Modal
-                      title='Delete plant'
-                      open={deleteModalOpen}
-                      footer={false}
-                      onCancel={() => setDeleteModalOpen(false)}>
-                      <p>
-                        Are you sure you want to permanently delete <b>{plant.primaryName}</b>?
-                      </p>
-                      <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-                        <Button
-                          type='danger'
-                          onClick={() => handleDelete(plant._id)}
-                          icon={<DeleteOutlined />}>
-                          DELETE
-                        </Button>
-                        <Button type='secondary' onClick={() => setDeleteModalOpen(false)}>
-                          CANCEL
-                        </Button>
-                      </div>
-                    </Modal>
+                  <div className='admin-actions-container'>
+                    <div className='edit-btns'>
+                      <Button
+                        type='primary'
+                        icon={<EditOutlined />}
+                        onClick={() => setEditDrawerOpen(true)}>
+                        EDIT PLANT
+                      </Button>
+                      <Drawer
+                        title='Edit plant'
+                        open={editDrawerOpen}
+                        onClose={() => setEditDrawerOpen(false)}>
+                        <PlantEditor
+                          plant={plant}
+                          slug={slug}
+                          currentUser={currentUser}
+                          setEditDrawerOpen={setEditDrawerOpen}
+                        />
+                      </Drawer>
+                      <Button
+                        type='secondary'
+                        icon={<PlusCircleOutlined />}
+                        onClick={() => {
+                          setDuplicatePlant(plant)
+                          history.push('/contribute')
+                        }}>
+                        DUPLICATE
+                      </Button>
+                    </div>
+                    <div className='delete-btn'>
+                      <Button type='danger' onClick={() => setDeleteModalOpen(true)}>
+                        DELETE...
+                      </Button>
+                      <Modal
+                        title='Delete plant'
+                        open={deleteModalOpen}
+                        footer={false}
+                        onCancel={() => setDeleteModalOpen(false)}>
+                        <p>
+                          Are you sure you want to permanently delete <b>{plant.primaryName}</b>?
+                        </p>
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
+                          <Button
+                            type='danger'
+                            onClick={() => handleDelete(plant._id)}
+                            icon={<DeleteOutlined />}>
+                            DELETE
+                          </Button>
+                          <Button type='secondary' onClick={() => setDeleteModalOpen(false)}>
+                            CANCEL
+                          </Button>
+                        </div>
+                      </Modal>
+                    </div>
                   </div>
                 </AdminSection>
               </FadeIn>
@@ -447,13 +449,16 @@ export const PlantProfile = () => {
 const Wrapper = styled.main`
   .heading {
     background: linear-gradient(45deg, #a4e17d, #95d190);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     .review-pending {
       margin-bottom: 20px;
     }
     h1 {
       line-height: 1;
       font-size: 1.5rem;
-      margin-bottom: 10px;
     }
     .secondary-name {
       font-size: 1.1rem;
@@ -563,6 +568,7 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .heading {
+      padding: 30px;
       h1 {
         font-size: 1.8rem;
       }
@@ -581,6 +587,7 @@ const Wrapper = styled.main`
   }
   @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
     .heading {
+      padding: 40px;
       h1 {
         font-size: 2rem;
       }
@@ -723,21 +730,40 @@ const AdminSection = styled.section`
   background: #fff;
   h3 {
     padding-bottom: 5px;
-    border-bottom: 1px solid;
-    margin-bottom: 20px;
+    border-bottom: 1px solid #e6e6e6;
+    margin-bottom: 40px;
   }
-  .admin-buttons {
+  .admin-actions-container {
     display: flex;
-    gap: 12px;
-    border-bottom: 1px dotted #ccc;
-    padding: 20px 0;
-    margin-bottom: 20px;
-    button {
-      flex: 1;
-      max-width: 150px;
+    flex-direction: column;
+    gap: 20px;
+    .edit-btns {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px dotted #ccc;
+      padding: 20px 0;
+      button {
+        flex: 1;
+        max-width: 150px;
+      }
+    }
+    .delete-btn {
+      display: flex;
     }
   }
-  .delete-btn {
-    display: flex;
+  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
+    .admin-actions-container {
+      flex-direction: row;
+      padding-top: 40px;
+      .edit-btns {
+        flex: 1;
+        border-bottom: none;
+        border-right: 1px dotted #ccc;
+        padding: 0;
+      }
+      .delete-btn {
+        margin-left: auto;
+      }
+    }
   }
 `

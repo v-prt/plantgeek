@@ -71,7 +71,7 @@ const MenuLinks = () => {
         </div>
         <span className='label'>contribute</span>
       </NavLink>
-      <NavLink to='/guidelines'>
+      <NavLink to='/care'>
         <div className='icon'>
           <TiHeartOutline />
         </div>

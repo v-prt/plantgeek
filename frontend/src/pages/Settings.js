@@ -4,7 +4,6 @@ import { Redirect } from 'react-router-dom'
 import Resizer from 'react-image-file-resizer'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
-import moment from 'moment'
 import { API_URL } from '../constants'
 
 import { Formik, Form } from 'formik'
@@ -28,20 +27,6 @@ import placeholder from '../assets/avatar-placeholder.png'
 import { FadeIn } from '../components/loaders/FadeIn'
 import { ImageLoader } from '../components/loaders/ImageLoader'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
-
-// const AutoSave = () => {
-//   const { dirty, values, errors, submitForm } = useFormikContext()
-
-//   useEffect(() => {
-//     // auto saves only if form has been interacted with and there are no errors
-//     // dirty is false by default, becomes true once form has been interacted with
-//     if (dirty && !Object.keys(errors).length) {
-//       submitForm()
-//     }
-//   }, [dirty, values, errors, submitForm])
-
-//   return null
-// }
 
 export const Settings = () => {
   useDocumentTitle('Settings • plantgeek')
@@ -199,61 +184,53 @@ export const Settings = () => {
   ) : (
     <Wrapper>
       <FadeIn>
-        <section className='user-info'>
-          <Upload
-            multiple={false}
-            maxCount={1}
-            name='userImage'
-            // beforeUpload={checkSize}
-            customRequest={handleImageUpload}
-            fileList={fileList}
-            listType='picture-card'
-            accept='.png, .jpg, .jpeg'
-            showUploadList={{
-              showPreviewIcon: false,
-              showRemoveIcon: false,
-            }}>
-            {!uploading && image ? (
-              <ImageLoader src={image} alt={''} placeholder={placeholder} borderRadius='50%' />
-            ) : (
-              uploadButton
-            )}
-            {!uploading && (
-              <div className='overlay'>
-                <EditOutlined />
-              </div>
-            )}
-          </Upload>
-
-          <div className='text'>
-            <h1>
-              {currentUser.firstName} {currentUser.lastName}
-            </h1>
-            <p className='username'>
-              @{currentUser.username} {currentUser.role === 'admin' && '(Admin)'}
-            </p>
-            <p className='date'>Joined {moment(currentUser.joined).format('ll')}</p>
-          </div>
-        </section>
-      </FadeIn>
-      <FadeIn delay={200}>
         <section className='settings'>
           <Formik
             initialValues={accountInitialValues}
             validationSchema={accountSchema}
             onSubmit={updateAccount}>
-            {({ status, setStatus, values, setValues, isSubmitting }) => (
+            {({ status, setStatus, setValues, isSubmitting }) => (
               <Form>
-                <Heading>
-                  account settings
+                <h1>account settings</h1>
+                {status && <Alert type='error' message={status} showIcon />}
+                <Upload
+                  multiple={false}
+                  maxCount={1}
+                  name='userImage'
+                  customRequest={handleImageUpload}
+                  fileList={fileList}
+                  listType='picture-card'
+                  accept='.png, .jpg, .jpeg'
+                  showUploadList={{
+                    showPreviewIcon: false,
+                    showRemoveIcon: false,
+                  }}>
+                  {!uploading && image ? (
+                    <ImageLoader
+                      src={image}
+                      alt={''}
+                      placeholder={placeholder}
+                      borderRadius='50%'
+                    />
+                  ) : (
+                    uploadButton
+                  )}
+                  {!uploading && (
+                    <div className='overlay'>
+                      <EditOutlined />
+                    </div>
+                  )}
+                </Upload>
+                <div className='buttons'>
                   {editMode ? (
-                    <div className='buttons'>
+                    <>
                       <Button
                         type='primary'
                         htmlType='submit'
                         loading={isSubmitting}
-                        icon={<SaveOutlined />}
-                      />
+                        icon={<SaveOutlined />}>
+                        SAVE
+                      </Button>
                       <Button
                         type='secondary'
                         icon={<CloseOutlined />}
@@ -262,18 +239,20 @@ export const Settings = () => {
                           setStatus('')
                           setValues(accountInitialValues)
                           setEditMode(false)
-                        }}
-                      />
-                    </div>
+                        }}>
+                        CANCEL
+                      </Button>
+                    </>
                   ) : (
                     <Button
                       type='primary'
                       icon={<EditOutlined />}
-                      onClick={() => setEditMode(true)}
-                    />
+                      onClick={() => setEditMode(true)}>
+                      EDIT PROFILE
+                    </Button>
                   )}
-                </Heading>
-                {status && <Alert type='error' message={status} showIcon />}
+                </div>
+
                 <FormItem name='firstName' label='First name'>
                   <Input name='firstName' disabled={!editMode} />
                 </FormItem>
@@ -392,19 +371,58 @@ export const Settings = () => {
 }
 
 const Wrapper = styled.main`
-  .user-info {
-    background: linear-gradient(45deg, #a4e17d, #95d190);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  .settings {
+    background: #f2f2f2;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
     max-width: 600px;
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    h1 {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e6e6e6;
+      font-size: 1.5rem;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      &.hidden {
+        display: none;
+      }
+      &.expanded {
+        display: flex;
+      }
+      .verify-email {
+        button {
+          padding: 0;
+          margin: 0;
+          border: 0;
+        }
+      }
+      .password-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+    }
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      button {
+        width: fit-content;
+      }
+    }
     .ant-upload-picture-card-wrapper {
       width: fit-content;
+      margin: 20px 0;
     }
     .ant-upload-list {
-      height: 100px;
-      width: 100px;
+      height: 150px;
+      width: 150px;
       position: relative;
       overflow: hidden;
       .placeholder {
@@ -445,50 +463,6 @@ const Wrapper = styled.main`
         }
       }
     }
-    .text {
-      h1 {
-        font-size: 1.2rem;
-      }
-      .username {
-        font-weight: bold;
-      }
-      .date {
-        font-size: 0.8rem;
-      }
-    }
-  }
-  .settings {
-    background: #f2f2f2;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
-    max-width: 600px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    form {
-      display: flex;
-      flex-direction: column;
-      &.hidden {
-        display: none;
-      }
-      &.expanded {
-        display: flex;
-      }
-      .verify-email {
-        button {
-          padding: 0;
-          margin: 0;
-          border: 0;
-        }
-      }
-      .password-buttons {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 20px;
-      }
-    }
     .zone {
       background: #fff;
       padding: 20px;
@@ -498,7 +472,6 @@ const Wrapper = styled.main`
       .danger {
         display: flex;
         flex-direction: column;
-        align-items: center;
         justify-content: space-between;
         p {
           font-weight: bold;
@@ -506,6 +479,7 @@ const Wrapper = styled.main`
         }
         button {
           margin: 5px 0;
+          width: fit-content;
           &.hidden {
             display: none;
           }
@@ -525,6 +499,7 @@ const Wrapper = styled.main`
 
   @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
     .user-info {
+      padding: 30px;
       gap: 20px;
     }
     .settings {
@@ -536,21 +511,9 @@ const Wrapper = styled.main`
       }
     }
   }
-`
-
-const Heading = styled.h2`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 20px;
-  .buttons {
-    display: flex;
-    gap: 10px;
-  }
-  @media only screen and (min-width: ${BREAKPOINTS.tablet}) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  @media only screen and (min-width: ${BREAKPOINTS.desktop}) {
+    .user-info {
+      padding: 40px;
+    }
   }
 `

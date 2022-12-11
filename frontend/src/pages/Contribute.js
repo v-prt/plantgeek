@@ -195,7 +195,6 @@ export const Contribute = () => {
       </FadeIn>
       <FadeIn delay={200}>
         <FormWrapper>
-          <h2>new houseplant</h2>
           <Formik
             initialValues={initialValues}
             validationSchema={schema}
