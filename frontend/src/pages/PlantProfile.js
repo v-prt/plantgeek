@@ -281,7 +281,9 @@ export const PlantProfile = () => {
                       {plant.rarity || 'Unknown rarity'}
                     </div>
                   </div>
-                  <p>Region of origin: {plant.origin || 'Unknown'}</p>
+                  <p>
+                    <b>Region of origin:</b> {plant.origin || 'Unknown'}
+                  </p>
                   <div className='links'>
                     <Link to='/care' className='link'>
                       Care Tips
@@ -718,9 +720,8 @@ const Indicator = styled.div`
   background: linear-gradient(to right, ${COLORS.light}, ${COLORS.mediumLight});
   height: 100%;
   border-radius: 10px;
-  width: ${props => props.level === '1' && '25%'};
-  width: ${props => props.level === '1-2' && '50%'};
-  width: ${props => props.level === '1-3' && '100%'};
+  width: ${props => props.level === '1' && '10%'};
+  width: ${props => props.level === '1-2' && '25%'};
   width: ${props => props.level === '2' && '50%'};
   width: ${props => props.level === '2-3' && '75%'};
   width: ${props => props.level === '3' && '100%'};
