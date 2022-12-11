@@ -58,8 +58,8 @@ export const PlantCard = ({ plant }) => {
           <Row>
             <img src={temp} alt='temperature' />
             <Bar>
-              {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-              {plant.temperature === 'above average' && <Indicator level={'3'} />}
+              {plant.temperature === 'average' && <Indicator level={'2'} />}
+              {plant.temperature === 'above average' && <Indicator level={'2-3'} />}
             </Bar>
           </Row>
           <Row>
@@ -200,10 +200,9 @@ const Indicator = styled.div`
   background: linear-gradient(to right, ${COLORS.light}, ${COLORS.mediumLight});
   height: 100%;
   border-radius: 10px;
-  width: ${props => props.level === '1' && '20%'};
-  width: ${props => props.level === '1-2' && '50%'};
-  width: ${props => props.level === '1-3' && '100%'};
+  width: ${props => props.level === '1' && '10%'};
+  width: ${props => props.level === '1-2' && '25%'};
   width: ${props => props.level === '2' && '50%'};
-  width: ${props => props.level === '2-3' && '80%'};
+  width: ${props => props.level === '2-3' && '75%'};
   width: ${props => props.level === '3' && '100%'};
 `

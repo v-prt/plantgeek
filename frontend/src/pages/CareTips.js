@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro'
-import { BREAKPOINTS } from '../GlobalStyles'
+import { COLORS, BREAKPOINTS } from '../GlobalStyles'
 import sun from '../assets/sun.svg'
 import water from '../assets/water.svg'
 import temp from '../assets/temp.svg'
@@ -28,6 +28,9 @@ export const CareTips = () => {
         </p>
 
         <h3>low to bright indirect</h3>
+        <Bar>
+          <Indicator level={'1'} />
+        </Bar>
         <p>
           Low light doesn't mean no light! Every houseplant should be in a room with a window, at
           minimum. All houseplants grow best when they receive bright indirect light but some can be
@@ -38,6 +41,9 @@ export const CareTips = () => {
         </p>
 
         <h3>medium to bright indirect</h3>
+        <Bar>
+          <Indicator level={'2'} />
+        </Bar>
         <p>
           Certain plants, like ferns, are used to growing in the shade and can be placed a few feet
           away from windows that get full or partial sun. Take care not to expose them to direct sun
@@ -45,6 +51,9 @@ export const CareTips = () => {
         </p>
 
         <h3>bright indirect</h3>
+        <Bar>
+          <Indicator level={'3'} />
+        </Bar>
         <p>
           The recommended light level for most houseplants. Put them near a window that receives
           plenty of light but try not to expose them to direct sun or they may burn. Up to an hour
@@ -87,20 +96,48 @@ export const CareTips = () => {
         </p>
 
         <h3>low</h3>
+        <Bar>
+          <Indicator level={'1'} />
+        </Bar>
         <p>
           Allow soil to dry out and then water generously, ensuring any excess water is drained.
           Plants that require low water (like cacti, succulents and other tough plants) do best in
           terracotta pots.
         </p>
 
+        <h3>low to medium</h3>
+        <Bar>
+          <Indicator level={'1-2'} />
+        </Bar>
+        <p>
+          Requires slightly more water, allow soil to almost dry out and then water generously
+          (ensuring any excess water is drained as usual).
+        </p>
+
         <h3>medium</h3>
+        <Bar>
+          <Indicator level={'2'} />
+        </Bar>
         <p>
           Wait until top 10-20% of soil is dry (1-3 inches depending on size of pot), then water
           until it runs from drainage hole and allow to drain. Plants that require medium water such
           as monstera can do well in either plastic or terracotta pots.
         </p>
 
+        <h3>medium to high</h3>
+        <Bar>
+          <Indicator level={'2-3'} />
+        </Bar>
+        <p>
+          Requires a bit more water than medium but not quiet as much as high. Stick the tip of your
+          finger into the soil - if the top inch or so is dry, water lightly until it drips from the
+          drainage hole. Allow to drain.
+        </p>
+
         <h3>high</h3>
+        <Bar>
+          <Indicator level={'3'} />
+        </Bar>
         <p>
           Water when top of soil is dry to touch to keep it moist throughout. Do not overwater - add
           just enough for it to start dripping through and then let drain. Plants that don't like to
@@ -120,10 +157,16 @@ export const CareTips = () => {
         </p>
 
         <h3>average</h3>
+        <Bar>
+          <Indicator level={'2'} />
+        </Bar>
         <p>55-75°F (13-24°C)</p>
         <p>Likely tolerant of lower temperatures.</p>
 
         <h3>above average</h3>
+        <Bar>
+          <Indicator level={'2-3'} />
+        </Bar>
         <p>65-85°F (18-29°C)</p>
         <p>More likely to suffer from cold drafts.</p>
       </section>
@@ -144,6 +187,9 @@ export const CareTips = () => {
         </p>
 
         <h3>low</h3>
+        <Bar>
+          <Indicator level={'1'} />
+        </Bar>
         <p>30-40%</p>
         <p>
           Plants with thick leaves or roots which store a lot of water in their leaves (such as
@@ -151,6 +197,9 @@ export const CareTips = () => {
         </p>
 
         <h3>medium</h3>
+        <Bar>
+          <Indicator level={'2'} />
+        </Bar>
         <p>40-50%</p>
         <p>
           Plants with large leaves, leaves or roots of average thickness (such as pothos and
@@ -158,6 +207,9 @@ export const CareTips = () => {
         </p>
 
         <h3>high</h3>
+        <Bar>
+          <Indicator level={'3'} />
+        </Bar>
         <p>50-60%+</p>
         <p>
           Plants with small and/or delicate leaves or fine roots, or from high humidity climates
@@ -268,4 +320,24 @@ const Wrapper = styled.main`
       padding: 40px;
     }
   }
+`
+
+const Bar = styled.div`
+  background: #f2f2f2;
+  width: 100%;
+  max-width: 300px;
+  height: 20px;
+  border-radius: 10px;
+  margin-top: 5px;
+`
+
+const Indicator = styled.div`
+  background: linear-gradient(to right, ${COLORS.light}, ${COLORS.mediumLight});
+  height: 100%;
+  border-radius: 10px;
+  width: ${props => props.level === '1' && '10%'};
+  width: ${props => props.level === '1-2' && '25%'};
+  width: ${props => props.level === '2' && '50%'};
+  width: ${props => props.level === '2-3' && '75%'};
+  width: ${props => props.level === '3' && '100%'};
 `

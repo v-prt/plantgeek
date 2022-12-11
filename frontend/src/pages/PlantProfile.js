@@ -222,8 +222,8 @@ export const PlantProfile = () => {
                             : plant.temperature || 'unknown'}
                         </p>
                         <Bar>
-                          {plant.temperature === 'average' && <Indicator level={'1-2'} />}
-                          {plant.temperature === 'above average' && <Indicator level={'3'} />}
+                          {plant.temperature === 'average' && <Indicator level={'2'} />}
+                          {plant.temperature === 'above average' && <Indicator level={'2-3'} />}
                         </Bar>
                       </div>
                     </div>
