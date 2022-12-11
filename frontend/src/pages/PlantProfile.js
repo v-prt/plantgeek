@@ -480,7 +480,9 @@ const Wrapper = styled.main`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-evenly;
     gap: 20px;
+    padding: 20px;
     .upload-wrapper {
       flex: 1;
       width: 100%;
@@ -496,7 +498,6 @@ const Wrapper = styled.main`
       width: 100%;
       max-width: 400px;
       aspect-ratio: 1 / 1;
-      margin: auto;
       position: relative;
       img {
         object-fit: cover;
@@ -580,7 +581,8 @@ const Wrapper = styled.main`
     }
     .plant-info {
       flex-direction: row;
-      gap: 40px;
+      gap: 30px;
+      padding: 30px;
     }
     .actions {
       flex-direction: row;
@@ -597,6 +599,10 @@ const Wrapper = styled.main`
         font-size: 1.3rem;
       }
     }
+    .plant-info {
+      gap: 40px;
+      padding: 40px;
+    }
     .actions {
       gap: 30px;
     }
@@ -605,6 +611,7 @@ const Wrapper = styled.main`
 
 const Info = styled.div`
   width: 100%;
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   gap: 20px;
