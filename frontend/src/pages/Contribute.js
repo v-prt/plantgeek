@@ -41,7 +41,7 @@ export const Contribute = () => {
     water: duplicatePlant?.water || '',
     temperature: duplicatePlant?.temperature || '',
     humidity: duplicatePlant?.humidity || '',
-    toxic: duplicatePlant?.toxic || '',
+    toxic: duplicatePlant?.toxic,
     origin: duplicatePlant?.origin || '',
     climate: duplicatePlant?.climate || '',
     rarity: duplicatePlant?.rarity || '',
