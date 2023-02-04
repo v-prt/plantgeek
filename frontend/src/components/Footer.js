@@ -11,7 +11,7 @@ export const Footer = () => {
       <div className='inner'>
         <div className='links'>
           <Link to='/about'>About</Link>•<Link to='/privacy'>Privacy Policy</Link>•
-          <Link to='/terms'>Terms and Conditions</Link>
+          <Link to='/terms'>Terms of Service</Link>
         </div>
         <p>&copy; 2021 - {currentYear} plantgeek | All rights reserved.</p>
       </div>

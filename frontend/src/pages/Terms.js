@@ -3,15 +3,15 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle'
 import { FadeIn } from '../components/loaders/FadeIn'
 
 export const Terms = () => {
-  useDocumentTitle('Terms & Conditions • plantgeek')
+  useDocumentTitle('Terms of Service • plantgeek')
 
   return (
     <Wrapper>
       <FadeIn>
         <section className='document'>
-          <h1>terms and conditions</h1>
+          <h1>terms of service</h1>
           <p className='date'>Last updated: December 11, 2021</p>
-          <p>Please read these terms and conditions carefully before using Our Service.</p>
+          <p>Please read these terms of service carefully before using Our Service.</p>
           <h2>Interpretation and Definitions</h2>
           <h3>Interpretation</h3>
           <p>
@@ -20,7 +20,7 @@ export const Terms = () => {
             of whether they appear in singular or in plural.
           </p>
           <h3>Definitions</h3>
-          <p>For the purposes of these Terms and Conditions:</p>
+          <p>For the purposes of these Terms of Service:</p>
           <ul>
             <li>
               <strong>Affiliate</strong> means an entity that controls, is controlled by or is under
@@ -44,15 +44,15 @@ export const Terms = () => {
               <strong>Service</strong> refers to the Website.
             </li>
             <li>
-              <strong>Terms and Conditions</strong> (also referred as &quot;Terms&quot;) mean these
-              Terms and Conditions that form the entire agreement between You and the Company
-              regarding the use of the Service. This Terms and Conditions agreement has been created
-              with the help of the{' '}
+              <strong>Terms of Service</strong> (also referred as &quot;Terms&quot;) mean these
+              Terms of Service that form the entire agreement between You and the Company regarding
+              the use of the Service. This Terms of Service agreement has been created with the help
+              of the{' '}
               <a
                 href='https://www.termsfeed.com/terms-conditions-generator/'
                 target='_blank'
                 rel='noopener noreferrer'>
-                Terms and Conditions Generator
+                Terms of Service Generator
               </a>
               .
             </li>
@@ -78,18 +78,18 @@ export const Terms = () => {
           </ul>
           <h2>Acknowledgment</h2>
           <p>
-            These are the Terms and Conditions governing the use of this Service and the agreement
-            that operates between You and the Company. These Terms and Conditions set out the rights
-            and obligations of all users regarding the use of the Service.
+            These are the Terms of Service governing the use of this Service and the agreement that
+            operates between You and the Company. These Terms of Service set out the rights and
+            obligations of all users regarding the use of the Service.
           </p>
           <p>
             Your access to and use of the Service is conditioned on Your acceptance of and
-            compliance with these Terms and Conditions. These Terms and Conditions apply to all
-            visitors, users and others who access or use the Service.
+            compliance with these Terms of Service. These Terms of Service apply to all visitors,
+            users and others who access or use the Service.
           </p>
           <p>
-            By accessing or using the Service You agree to be bound by these Terms and Conditions.
-            If You disagree with any part of these Terms and Conditions then You may not access the
+            By accessing or using the Service You agree to be bound by these Terms of Service. If
+            You disagree with any part of these Terms of Service then You may not access the
             Service.
           </p>
           <p>
@@ -118,14 +118,14 @@ export const Terms = () => {
             web sites or services.
           </p>
           <p>
-            We strongly advise You to read the terms and conditions and privacy policies of any
+            We strongly advise You to read the Terms of Service and privacy policies of any
             third-party web sites or services that You visit.
           </p>
           <h2>Termination</h2>
           <p>
             We may terminate or suspend Your access immediately, without prior notice or liability,
-            for any reason whatsoever, including without limitation if You breach these Terms and
-            Conditions.
+            for any reason whatsoever, including without limitation if You breach these Terms of
+            Service.
           </p>
           <p>Upon termination, Your right to use the Service will cease immediately.</p>
           <h2>Limitation of Liability</h2>
@@ -225,11 +225,11 @@ export const Terms = () => {
           </p>
           <h2>Translation Interpretation</h2>
           <p>
-            These Terms and Conditions may have been translated if We have made them available to
-            You on our Service. You agree that the original English text shall prevail in the case
-            of a dispute.
+            These Terms of Service may have been translated if We have made them available to You on
+            our Service. You agree that the original English text shall prevail in the case of a
+            dispute.
           </p>
-          <h2>Changes to These Terms and Conditions</h2>
+          <h2>Changes to These Terms of Service</h2>
           <p>
             We reserve the right, at Our sole discretion, to modify or replace these Terms at any
             time. If a revision is material We will make reasonable efforts to provide at least 30
@@ -243,8 +243,8 @@ export const Terms = () => {
           </p>
           <h2>Contact Us</h2>
           <p>
-            If you have any questions about these Terms and Conditions, You can contact us by
-            visiting this page on our website:{' '}
+            If you have any questions about these Terms of Service, You can contact us by visiting
+            this page on our website:{' '}
             <a
               href='https://www.plantgeek.co/about'
               rel='external nofollow noopener noreferrer'
