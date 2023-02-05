@@ -44,3 +44,12 @@ export interface IReport extends Document {
   sourceUrl?: string
   status: string
 }
+
+export interface IReminder extends Document {
+  userId: string
+  plantId: string
+  frequency: string
+  dateDue: Date
+  dateCompleted?: Date
+  type: string
+}

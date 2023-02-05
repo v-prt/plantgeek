@@ -1,4 +1,4 @@
-import { IUser, IPlant, IReport } from './Interfaces'
+import { IUser, IPlant, IReport, IReminder } from './Interfaces'
 import { model, Schema } from 'mongoose'
 const ObjectId = Schema.Types.ObjectId
 
@@ -167,6 +167,37 @@ const reportSchema: Schema = new Schema(
   { timestamps: true }
 )
 
+const reminderSchema: Schema = new Schema({
+  userId: {
+    type: ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  plantId: {
+    type: ObjectId,
+    ref: 'Plant',
+    required: true,
+  },
+  frequency: {
+    // TODO: number or string? eg set by number of days or by string 'weekly'/'monthly' etc
+    type: String,
+    required: true,
+  },
+  dateDue: {
+    type: Date,
+    required: true,
+  },
+  dateCompleted: {
+    type: Date,
+  },
+  type: {
+    // water, fertilize, repot
+    type: String,
+    required: true,
+  },
+})
+
 export const User = model<IUser>('User', userSchema)
 export const Plant = model<IPlant>('Plant', plantSchema)
 export const Report = model<IReport>('Report', reportSchema)
+export const Reminder = model<IReminder>('Reminder', reminderSchema)

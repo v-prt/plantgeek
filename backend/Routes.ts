@@ -38,6 +38,12 @@ import {
   updateReportStatus,
 } from './controllers/ReportController'
 
+import {
+  createReminder,
+  getPlantReminders,
+  getAllReminders,
+} from './controllers/ReminderController'
+
 const router: Router = Router()
 const API_URL = process.env.API_URL
 
@@ -76,5 +82,10 @@ router
   .get(`${API_URL}/reports/:page`, getReports)
   .get(`${API_URL}/pending-reports`, countPendingReports)
   .put(`${API_URL}/reports/:reportId`, updateReportStatus)
+
+  // reminders
+  .post(`${API_URL}/reminders`, createReminder)
+  .get(`${API_URL}/plant-reminders/:plantId/:userId`, getPlantReminders)
+  .get(`${API_URL}/reminders/:userId`, getAllReminders)
 
 export default router
