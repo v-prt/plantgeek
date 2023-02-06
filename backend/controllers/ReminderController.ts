@@ -1,9 +1,11 @@
 import { Response, Request } from 'express'
 import { IReminder } from '../Interfaces'
 import { Reminder } from '../Models'
+const mongodb = require('mongodb')
+const { ObjectId } = mongodb
 
 export const createReminder = async (req: Request, res: Response) => {
-  const { userId, plantId, dateDue, type } = req.body
+  const { userId, plantId, dateDue, type, frequencyNumber, frequencyUnit } = req.body
 
   try {
     const reminder: IReminder = await Reminder.create({
@@ -11,9 +13,31 @@ export const createReminder = async (req: Request, res: Response) => {
       plantId,
       dateDue,
       type,
+      frequencyNumber,
+      frequencyUnit,
     })
 
     res.status(201).json({ reminder })
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err)
+      return res.status(500).json({ message: 'Internal server error' })
+    }
+  }
+}
+
+export const updateReminder = async (req: Request, res: Response) => {
+  const { reminderId } = req.params
+
+  try {
+    const updatedReminder = await Reminder.updateOne(
+      { _id: ObjectId(reminderId) },
+      {
+        $set: req.body,
+      }
+    )
+
+    res.status(201).json({ updatedReminder })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err)

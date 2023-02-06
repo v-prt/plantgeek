@@ -178,8 +178,12 @@ const reminderSchema: Schema = new Schema({
     ref: 'Plant',
     required: true,
   },
-  frequency: {
-    // TODO: number or string? eg set by number of days or by string 'weekly'/'monthly' etc
+  frequencyNumber: {
+    type: Number,
+    required: true,
+  },
+  frequencyUnit: {
+    // Days, Weeks, Months, Years
     type: String,
     required: true,
   },

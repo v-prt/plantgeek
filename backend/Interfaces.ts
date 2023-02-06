@@ -48,7 +48,8 @@ export interface IReport extends Document {
 export interface IReminder extends Document {
   userId: string
   plantId: string
-  frequency: string
+  frequencyNumber: number
+  frequencyUnit: string
   dateDue: Date
   dateCompleted?: Date
   type: string

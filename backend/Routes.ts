@@ -40,6 +40,7 @@ import {
 
 import {
   createReminder,
+  updateReminder,
   getPlantReminders,
   getAllReminders,
 } from './controllers/ReminderController'
@@ -85,6 +86,7 @@ router
 
   // reminders
   .post(`${API_URL}/reminders`, createReminder)
+  .put(`${API_URL}/reminders/:reminderId`, updateReminder)
   .get(`${API_URL}/plant-reminders/:plantId/:userId`, getPlantReminders)
   .get(`${API_URL}/reminders/:userId`, getAllReminders)
 
