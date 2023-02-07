@@ -88,6 +88,6 @@ router
   .post(`${API_URL}/reminders`, createReminder)
   .put(`${API_URL}/reminders/:reminderId`, updateReminder)
   .get(`${API_URL}/plant-reminders/:plantId/:userId`, getPlantReminders)
-  .get(`${API_URL}/reminders/:userId`, getAllReminders)
+  .get(`${API_URL}/reminders/:userId/:page`, getAllReminders)
 
 export default router

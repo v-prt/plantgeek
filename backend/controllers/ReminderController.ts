@@ -82,6 +82,8 @@ export const getAllReminders = async (req: Request, res: Response) => {
       .sort({ dateDue: 1 })
       .skip((page - 1) * resultsPerPage)
       .limit(resultsPerPage)
+      // include plant data by referencing plantId
+      .populate('plantId', 'primaryName secondaryName imageUrl')
       .lean()
 
     const totalResults: number = await Reminder.countDocuments(filters)
