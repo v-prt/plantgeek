@@ -46,6 +46,57 @@ export const updateReminder = async (req: Request, res: Response) => {
   }
 }
 
+export const completeReminder = async (req: Request, res: Response) => {
+  const { reminderId } = req.params
+
+  try {
+    const originalReminder = await Reminder.findOne({ _id: ObjectId(reminderId) })
+
+    if (originalReminder) {
+      const currentDate = new Date()
+      const timeToAdd = originalReminder.frequencyNumber
+      const unit = originalReminder.frequencyUnit
+
+      // set next date based on frequencyNumber and frequencyUnit - which could be Days, Weeks, Months, or Years
+      const nextDate = new Date(currentDate)
+      if (unit === 'Days') {
+        nextDate.setDate(nextDate.getDate() + timeToAdd)
+      } else if (unit === 'Weeks') {
+        nextDate.setDate(nextDate.getDate() + timeToAdd * 7)
+      } else if (unit === 'Months') {
+        nextDate.setMonth(nextDate.getMonth() + timeToAdd)
+      } else if (unit === 'Years') {
+        nextDate.setFullYear(nextDate.getFullYear() + timeToAdd)
+      }
+
+      await Reminder.updateOne(
+        { _id: ObjectId(originalReminder._id) },
+        {
+          $set: {
+            dateCompleted: currentDate,
+          },
+        }
+      )
+
+      const newReminder = await Reminder.create({
+        userId: originalReminder.userId,
+        plantId: originalReminder.plantId,
+        frequencyNumber: originalReminder.frequencyNumber,
+        frequencyUnit: originalReminder.frequencyUnit,
+        dateDue: nextDate,
+        type: originalReminder.type,
+      })
+
+      res.status(201).json({ originalReminder, newReminder })
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err)
+      return res.status(500).json({ message: 'Internal server error' })
+    }
+  }
+}
+
 export const getPlantReminders = async (req: Request, res: Response) => {
   const { plantId, userId } = req.params
 
@@ -53,6 +104,7 @@ export const getPlantReminders = async (req: Request, res: Response) => {
     const reminders: IReminder[] = await Reminder.find({
       userId,
       plantId,
+      dateCompleted: null,
     }).lean()
 
     if (reminders) {
@@ -82,8 +134,8 @@ export const getAllReminders = async (req: Request, res: Response) => {
       .sort({ dateDue: 1 })
       .skip((page - 1) * resultsPerPage)
       .limit(resultsPerPage)
-      // include plant data by referencing plantId
-      .populate('plantId', 'primaryName secondaryName imageUrl')
+      // include required plant data by referencing plantId
+      .populate('plantId', 'primaryName secondaryName imageUrl water')
       .lean()
 
     const totalResults: number = await Reminder.countDocuments(filters)
