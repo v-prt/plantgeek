@@ -1,4 +1,4 @@
-import { IUser, IPlant, IReport } from './Interfaces'
+import { IUser, IPlant, IReport, IReminder } from './Interfaces'
 import { model, Schema } from 'mongoose'
 const ObjectId = Schema.Types.ObjectId
 
@@ -140,7 +140,6 @@ const plantSchema: Schema = new Schema({
 
 const reportSchema: Schema = new Schema(
   {
-    // FIXME: refs don't work like this
     userId: {
       type: ObjectId,
       ref: 'User',
@@ -167,6 +166,41 @@ const reportSchema: Schema = new Schema(
   { timestamps: true }
 )
 
+const reminderSchema: Schema = new Schema({
+  userId: {
+    type: ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  plantId: {
+    type: ObjectId,
+    ref: 'Plant',
+    required: true,
+  },
+  frequencyNumber: {
+    type: Number,
+    required: true,
+  },
+  frequencyUnit: {
+    // Days, Weeks, Months, Years
+    type: String,
+    required: true,
+  },
+  dateDue: {
+    type: Date,
+    required: true,
+  },
+  dateCompleted: {
+    type: Date,
+  },
+  type: {
+    // water, fertilize, repot
+    type: String,
+    required: true,
+  },
+})
+
 export const User = model<IUser>('User', userSchema)
 export const Plant = model<IPlant>('Plant', plantSchema)
 export const Report = model<IReport>('Report', reportSchema)
+export const Reminder = model<IReminder>('Reminder', reminderSchema)
