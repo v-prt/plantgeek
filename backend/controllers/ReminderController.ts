@@ -153,3 +153,18 @@ export const getAllReminders = async (req: Request, res: Response) => {
     }
   }
 }
+
+export const deleteReminder = async (req: Request, res: Response) => {
+  const { reminderId } = req.params
+
+  try {
+    const deletedReminder = await Reminder.deleteOne({ _id: ObjectId(reminderId) })
+
+    res.status(201).json({ deletedReminder })
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err)
+      return res.status(500).json({ message: 'Internal server error' })
+    }
+  }
+}

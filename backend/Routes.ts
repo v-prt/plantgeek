@@ -44,6 +44,7 @@ import {
   completeReminder,
   getPlantReminders,
   getAllReminders,
+  deleteReminder,
 } from './controllers/ReminderController'
 
 const router: Router = Router()
@@ -91,5 +92,6 @@ router
   .put(`${API_URL}/reminders/:reminderId/complete`, completeReminder)
   .get(`${API_URL}/plant-reminders/:plantId/:userId`, getPlantReminders)
   .get(`${API_URL}/reminders/:userId/:page`, getAllReminders)
+  .delete(`${API_URL}/reminders/:reminderId`, deleteReminder)
 
 export default router
