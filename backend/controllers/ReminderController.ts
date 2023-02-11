@@ -168,3 +168,23 @@ export const deleteReminder = async (req: Request, res: Response) => {
     }
   }
 }
+
+export const countDueReminders = async (req: Request, res: Response) => {
+  const { userId } = req.params
+
+  try {
+    // count all reminders past due and due today
+    const numDue = await Reminder.countDocuments({
+      userId,
+      dateDue: { $lte: new Date() },
+      dateCompleted: null,
+    })
+
+    return res.status(200).json({ numDue })
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err)
+      return res.status(500).json({ message: 'Internal server error' })
+    }
+  }
+}
