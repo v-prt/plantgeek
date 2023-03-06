@@ -2,12 +2,11 @@
 
 ### an app for houseplant lovers
 
-- [Live Site](https://www.plantgeek.co)
-- [Video Tour](https://youtu.be/_LXWqhxIMrQ) (outdated)
+- [Video Tour](https://youtu.be/JTIm2Gd30EI)
 
 ### about
 
-Full-stack live website built 100% by me - including concept, design, and implementation. Frontend built with React and styled-components, backend built with Express, Node, and MongoDB with Mongoose. This app started as a full-stack solo coding project for school in 2021 and has since been a side project I've continued to work on in my spare time.
+Full-stack live website built 100% by me - including concept, design, and implementation. Frontend built with React and styled-components, backend built with Express, Node, and MongoDB with Mongoose. This app started as a full-stack solo coding project for school in 2021 and I continued to work on it for fun in my spare time through 2022.
 
 ## Features
 
