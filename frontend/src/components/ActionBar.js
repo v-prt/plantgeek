@@ -12,6 +12,7 @@ import { AiOutlineStar } from 'react-icons/ai'
 // import { BiComment } from 'react-icons/bi'
 import { Formik, Form } from 'formik'
 import { Checkbox } from 'formik-antd'
+import { Tooltip } from 'antd'
 
 export const ActionBar = ({ plant }) => {
   const plantId = plant._id
@@ -64,50 +65,60 @@ export const ActionBar = ({ plant }) => {
             </Checkbox>
 
             <div className='user-lists'>
-              <Checkbox
-                name='plantCollection'
-                checked={values.plantCollection?.includes(plantId)}
-                onChange={e => {
-                  setFieldValue(
-                    'owned',
-                    e.target.checked
-                      ? [...values.owned, currentUser._id]
-                      : values.owned.filter(id => id !== currentUser._id)
-                  )
-                  setFieldValue(
-                    'plantCollection',
-                    e.target.checked
-                      ? [...values.plantCollection, plantId]
-                      : values.plantCollection.filter(id => id !== plantId)
-                  )
-                  submitForm()
-                }}>
-                <span className='icon collection'>
-                  <RiPlantLine />
-                </span>
-              </Checkbox>
-              <Checkbox
-                name='plantWishlist'
-                checked={values.plantWishlist?.includes(plantId)}
-                onChange={e => {
-                  setFieldValue(
-                    'wanted',
-                    e.target.checked
-                      ? [...values.wanted, currentUser._id]
-                      : values.wanted.filter(id => id !== currentUser._id)
-                  )
-                  setFieldValue(
-                    'plantWishlist',
-                    e.target.checked
-                      ? [...values.plantWishlist, plantId]
-                      : values.plantWishlist.filter(id => id !== plantId)
-                  )
-                  submitForm()
-                }}>
-                <span className='icon wishlist'>
-                  <AiOutlineStar />
-                </span>
-              </Checkbox>
+              <Tooltip
+                title={`${
+                  values.plantCollection?.includes(plantId) ? 'Remove from' : 'Add to'
+                } collection`}>
+                <Checkbox
+                  name='plantCollection'
+                  checked={values.plantCollection?.includes(plantId)}
+                  onChange={e => {
+                    setFieldValue(
+                      'owned',
+                      e.target.checked
+                        ? [...values.owned, currentUser._id]
+                        : values.owned.filter(id => id !== currentUser._id)
+                    )
+                    setFieldValue(
+                      'plantCollection',
+                      e.target.checked
+                        ? [...values.plantCollection, plantId]
+                        : values.plantCollection.filter(id => id !== plantId)
+                    )
+                    submitForm()
+                  }}>
+                  <span className='icon collection'>
+                    <RiPlantLine />
+                  </span>
+                </Checkbox>
+              </Tooltip>
+              <Tooltip
+                title={`${
+                  values.plantWishlist?.includes(plantId) ? 'Remove from' : 'Add to'
+                } wishlist`}>
+                <Checkbox
+                  name='plantWishlist'
+                  checked={values.plantWishlist?.includes(plantId)}
+                  onChange={e => {
+                    setFieldValue(
+                      'wanted',
+                      e.target.checked
+                        ? [...values.wanted, currentUser._id]
+                        : values.wanted.filter(id => id !== currentUser._id)
+                    )
+                    setFieldValue(
+                      'plantWishlist',
+                      e.target.checked
+                        ? [...values.plantWishlist, plantId]
+                        : values.plantWishlist.filter(id => id !== plantId)
+                    )
+                    submitForm()
+                  }}>
+                  <span className='icon wishlist'>
+                    <AiOutlineStar />
+                  </span>
+                </Checkbox>
+              </Tooltip>
             </div>
           </Form>
         )}

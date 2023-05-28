@@ -247,7 +247,10 @@ export const Settings = () => {
                     <Button
                       type='primary'
                       icon={<EditOutlined />}
-                      onClick={() => setEditMode(true)}>
+                      onClick={e => {
+                        e.preventDefault() // prevent form submission
+                        setEditMode(true)
+                      }}>
                       EDIT PROFILE
                     </Button>
                   )}
