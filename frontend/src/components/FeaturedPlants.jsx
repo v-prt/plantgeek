@@ -20,6 +20,7 @@ export const FeaturedPlants = () => {
       refetchOnMount: false,
     }
   )
+  console.log(`${API_URL}/random-plants`)
 
   const settings = {
     dots: true,

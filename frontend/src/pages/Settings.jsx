@@ -89,7 +89,7 @@ export const Settings = () => {
     </div>
   )
   const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${
-    import.meta.env.REACT_APP_CLOUDINARY_CLOUD_NAME
+    import.meta.env.VITE_REACT_APP_CLOUDINARY_CLOUD_NAME
   }/upload`
 
   // resize file before upload
@@ -116,7 +116,7 @@ export const Settings = () => {
 
     const formData = new FormData()
     formData.append('file', image)
-    formData.append('upload_preset', import.meta.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET_USERS)
+    formData.append('upload_preset', import.meta.env.VITE_REACT_APP_CLOUDINARY_UPLOAD_PRESET_USERS)
 
     await axios
       .post(cloudinaryUrl, formData)

@@ -25,7 +25,7 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
   const fileList = []
   const uploadButton = <div>{uploading ? <Ellipsis /> : <PlusOutlined />}</div>
   const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${
-    import.meta.env.REACT_APP_CLOUDINARY_CLOUD_NAME
+    import.meta.env.VITE_REACT_APP_CLOUDINARY_CLOUD_NAME
   }/upload`
 
   // resize file before upload
@@ -98,7 +98,7 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
     try {
       const formData = new FormData()
       formData.append('file', newImage)
-      formData.append('upload_preset', import.meta.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
+      formData.append('upload_preset', import.meta.env.VITE_REACT_APP_CLOUDINARY_UPLOAD_PRESET)
 
       if (newImage) {
         // upload new image to cloudinary
