@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { API_URL } from '../constants.js'
 import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext.jsx'
@@ -67,7 +67,7 @@ export const UserProfile = () => {
     }
   )
 
-  if (!currentUser) redirect('/signup')
+  if (!currentUser) return <Navigate to='/signup' />
 
   return (
     <Wrapper>

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { redirect, Link } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext.jsx'
 
 import { Formik, Form } from 'formik'
@@ -55,7 +55,7 @@ export const SignUp = () => {
     }
   }
 
-  if (currentUser) redirect('/welcome')
+  if (currentUser) return <Navigate to='/welcome' />
 
   return (
     <Wrapper>

@@ -19,7 +19,7 @@ export const Navbar = () => {
     <Wrapper>
       <div className='inner'>
         {/* NAV HEADER */}
-        <NavLink exact to='/' className='logo' onClick={() => setExpanded(false)}>
+        <NavLink to='/' className='logo' onClick={() => setExpanded(false)}>
           plantgeek
         </NavLink>
         <div className='mobile'>

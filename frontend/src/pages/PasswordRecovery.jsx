@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { redirect, Link } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import { Formik, Form } from 'formik'
 import { Input } from 'formik-antd'
@@ -44,7 +44,7 @@ export const PasswordRecovery = () => {
       setPasswordChanged(true)
     }
   }
-  if (currentUser) redirect('/')
+  if (currentUser) return <Navigate to='/' />
   return (
     <Wrapper>
       <FadeIn>

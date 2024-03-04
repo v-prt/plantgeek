@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
 import Resizer from 'react-image-file-resizer'
 import { API_URL } from '../constants'
@@ -153,7 +153,7 @@ export const Contribute = () => {
     }
   }
 
-  if (!currentUser) redirect('/login')
+  if (!currentUser) return <Navigate to='/login' />
 
   return (
     <Wrapper>

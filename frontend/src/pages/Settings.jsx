@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { useQueryClient } from 'react-query'
-import { redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import Resizer from 'react-image-file-resizer'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
@@ -181,7 +181,7 @@ export const Settings = () => {
   }
   // #endregion Functions
 
-  if (!currentUser) redirect('/signup')
+  if (!currentUser) return <Navigate to='/signup' />
 
   return (
     <Wrapper>

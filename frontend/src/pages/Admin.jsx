@@ -1,5 +1,5 @@
 import { useContext, useState, useRef } from 'react'
-import { redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useInfiniteQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import { PlantContext } from '../contexts/PlantContext'
@@ -35,7 +35,7 @@ export const Admin = () => {
     }
   }
 
-  if (!currentUser || currentUser.role !== 'admin') redirect('/')
+  if (!currentUser || currentUser.role !== 'admin') return <Navigate to='/' />
 
   return (
     <Wrapper>

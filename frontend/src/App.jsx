@@ -2,7 +2,7 @@ import './App.less'
 import React, { useContext } from 'react'
 import { UserContext } from './contexts/UserContext'
 
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Route, Link, Routes } from 'react-router-dom'
 import { ScrollToTop } from './components/general/ScrollToTop'
 import { Navbar } from './components/Navbar'
 import { Homepage } from './pages/Homepage'
@@ -41,67 +41,25 @@ export const App = () => {
           <Navbar />
           <Body>
             {/* <Banner /> */}
-            <Switch>
-              <Route exact path='/'>
-                <Homepage />
-              </Route>
-              <Route path='/browse'>
-                <Browse />
-              </Route>
-              <Route path='/signup'>
-                <SignUp />
-              </Route>
-              <Route path='/login'>
-                <Login />
-              </Route>
-              <Route path='/password-recovery'>
-                <PasswordRecovery />
-              </Route>
-              <Route path='/welcome'>
-                <Welcome />
-              </Route>
-              <Route path='/verify-email/:code'>
-                <EmailVerification />
-              </Route>
-              <Route path='/care'>
-                <CareTips />
-              </Route>
-              <Route path='/terms'>
-                <Terms />
-              </Route>
-              <Route path='/privacy'>
-                <Privacy />
-              </Route>
-              <Route path='/About'>
-                <About />
-              </Route>
-              <Route path='/settings'>
-                <Settings />
-              </Route>
-              <Route path='/contribute'>
-                <Contribute />
-              </Route>
-              <Route path='/admin'>
-                <Admin />
-              </Route>
-              <Route path='/profile'>
-                <UserProfile />
-              </Route>
-              <Route path='/plant/:slug'>
-                <PlantProfile />
-              </Route>
-              <Route path='*'>
-                <main className='not-found'>
-                  <section className='inner'>
-                    <img src={placeholder} alt='' />
-                    <p>Oops, are you lost?</p>
-                    <Link to='/'>
-                      <Button type='primary'>GO HOME</Button>
-                    </Link>
-                  </section>
-                </main>
-              </Route>
-            </Switch>
+            <Routes>
+              <Route path='/' element={<Homepage />} />
+              <Route path='/browse' element={<Browse />} />
+              <Route path='/signup' element={<SignUp />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/password-recovery' element={<PasswordRecovery />} />
+              <Route path='/welcome' element={<Welcome />} />
+              <Route path='/verify-email/:code' element={<EmailVerification />} />
+              <Route path='/care' element={<CareTips />} />
+              <Route path='/terms' element={<Terms />} />
+              <Route path='/privacy' element={<Privacy />} />
+              <Route path='/About' element={<About />} />
+              <Route path='/settings' element={<Settings />} />
+              <Route path='/contribute' element={<Contribute />} />
+              <Route path='/admin' element={<Admin />} />
+              <Route path='/profile' element={<UserProfile />} />
+              <Route path='/plant/:slug' element={<PlantProfile />} />
+              <Route path='*' element={<NotFound />} />
+            </Routes>
             <Footer />
           </Body>
         </>
@@ -111,6 +69,20 @@ export const App = () => {
         </div>
       )}
     </BrowserRouter>
+  )
+}
+
+const NotFound = () => {
+  return (
+    <main className='not-found'>
+      <section className='inner'>
+        <img src={placeholder} alt='' />
+        <p>Oops, are you lost?</p>
+        <Link to='/'>
+          <Button type='primary'>GO HOME</Button>
+        </Link>
+      </section>
+    </main>
   )
 }
 
