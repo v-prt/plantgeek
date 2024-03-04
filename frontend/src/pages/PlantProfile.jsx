@@ -46,8 +46,6 @@ export const PlantProfile = () => {
     }
   })
 
-  console.log(`${API_URL}/plant/${slug}`)
-
   const { data: similarPlants, status: similarPlantsStatus } = useQuery(
     ['similar-plants', slug],
     async () => {
