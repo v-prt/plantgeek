@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { redirect } from 'react-router-dom'
 import { API_URL } from '../constants.js'
 import { useQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext.jsx'
@@ -67,9 +67,9 @@ export const UserProfile = () => {
     }
   )
 
-  return !currentUser ? (
-    <Redirect to='/signup' />
-  ) : (
+  if (!currentUser) redirect('/signup')
+
+  return (
     <Wrapper>
       <FadeIn>
         <section className='user-info'>

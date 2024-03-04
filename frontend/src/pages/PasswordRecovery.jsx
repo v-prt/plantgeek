@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Redirect, Link } from 'react-router-dom'
+import { redirect, Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import { Formik, Form } from 'formik'
 import { Input } from 'formik-antd'
@@ -44,10 +44,8 @@ export const PasswordRecovery = () => {
       setPasswordChanged(true)
     }
   }
-
-  return currentUser ? (
-    <Redirect to='/' />
-  ) : (
+  if (currentUser) redirect('/')
+  return (
     <Wrapper>
       <FadeIn>
         <Card>
@@ -66,7 +64,8 @@ export const PasswordRecovery = () => {
                 })}
                 validateOnChange={false}
                 validateOnBlur={false}
-                onSubmit={handleResetCode}>
+                onSubmit={handleResetCode}
+              >
                 {({ isSubmitting }) => (
                   <Form>
                     <FormItem name='email' label='Email'>
@@ -76,7 +75,8 @@ export const PasswordRecovery = () => {
                       htmlType='submit'
                       type={codeSent ? 'secondary' : 'primary'}
                       size='large'
-                      loading={isSubmitting}>
+                      loading={isSubmitting}
+                    >
                       {codeSent ? 'RESEND CODE' : 'SEND RESET CODE'}
                     </Button>
                   </Form>
@@ -98,7 +98,8 @@ export const PasswordRecovery = () => {
                   })}
                   validateOnChange={false}
                   validateOnBlur={false}
-                  onSubmit={handlePasswordReset}>
+                  onSubmit={handlePasswordReset}
+                >
                   {({ isSubmitting }) => (
                     <Form>
                       <p className='info-text'>

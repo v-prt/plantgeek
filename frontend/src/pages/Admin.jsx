@@ -1,5 +1,5 @@
 import { useContext, useState, useRef } from 'react'
-import { Redirect } from 'react-router-dom'
+import { redirect } from 'react-router-dom'
 import { useInfiniteQuery } from 'react-query'
 import { UserContext } from '../contexts/UserContext'
 import { PlantContext } from '../contexts/PlantContext'
@@ -35,9 +35,9 @@ export const Admin = () => {
     }
   }
 
-  return !currentUser || currentUser.role !== 'admin' ? (
-    <Redirect to='/' />
-  ) : (
+  if (!currentUser || currentUser.role !== 'admin') redirect('/')
+
+  return (
     <Wrapper>
       <FadeIn>
         <main className='admin-content'>

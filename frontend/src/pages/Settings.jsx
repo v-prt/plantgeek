@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { useQueryClient } from 'react-query'
-import { Redirect } from 'react-router-dom'
+import { redirect } from 'react-router-dom'
 import Resizer from 'react-image-file-resizer'
 import { UserContext } from '../contexts/UserContext'
 import axios from 'axios'
@@ -181,9 +181,9 @@ export const Settings = () => {
   }
   // #endregion Functions
 
-  return !currentUser ? (
-    <Redirect to='/signup' />
-  ) : (
+  if (!currentUser) redirect('/signup')
+
+  return (
     <Wrapper>
       <FadeIn>
         <section className='settings'>

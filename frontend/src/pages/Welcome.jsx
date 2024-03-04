@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Redirect, useNavigate } from 'react-router-dom'
+import { redirect, useNavigate } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext.jsx'
 import { Wrapper, Card } from './SignUp.jsx'
 import { FadeIn } from '../components/loaders/FadeIn.jsx'
@@ -18,9 +18,9 @@ export const Welcome = () => {
     }
   })
 
-  return !token ? (
-    <Redirect to='/' />
-  ) : (
+  if (!token) redirect('/')
+
+  return (
     <Wrapper>
       <FadeIn>
         <Card>

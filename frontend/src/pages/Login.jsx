@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Redirect, Link } from 'react-router-dom'
+import { redirect, Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import { Formik, Form } from 'formik'
 import { Input } from 'formik-antd'
@@ -34,9 +34,9 @@ export const Login = () => {
     }
   }
 
-  return currentUser ? (
-    <Redirect to='/' />
-  ) : (
+  if (currentUser) redirect('/')
+
+  return (
     <Wrapper>
       <FadeIn>
         <Card>
@@ -52,7 +52,8 @@ export const Login = () => {
             validationSchema={schema}
             validateOnChange={false}
             validateOnBlur={false}
-            onSubmit={handleSubmit}>
+            onSubmit={handleSubmit}
+          >
             {({ status, isSubmitting }) => (
               <Form>
                 <FormItem name='username' label='Email or username'>
@@ -67,7 +68,8 @@ export const Login = () => {
                   type='primary'
                   size='large'
                   disabled={loading || isSubmitting}
-                  loading={loading || isSubmitting}>
+                  loading={loading || isSubmitting}
+                >
                   LOG IN
                 </Button>
                 {status && <Alert type='error' message={status} showIcon />}
