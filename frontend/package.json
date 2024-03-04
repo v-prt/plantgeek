@@ -4,15 +4,14 @@
   "private": true,
   "proxy": "http://localhost:4000",
   "dependencies": {
-    "@craco/craco": "^7.0.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@vitejs/plugin-react": "^4.2.1",
     "antd": "^4.19.2",
     "axios": "^0.24.0",
+    "babel-plugin-macros": "^3.1.0",
     "cloudinary-react": "^1.7.0",
-    "craco-antd": "^2.0.0",
-    "create-react-app": "^5.0.1",
     "dotenv": "^10.0.0",
     "formik": "^2.2.9",
     "formik-antd": "^2.0.4",
@@ -27,18 +26,16 @@
     "react-redux": "^7.2.3",
     "react-responsive": "^8.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^5.0.1",
     "redux": "^4.0.5",
     "styled-components": "^5.2.3",
+    "vite": "^5.1.4",
     "web-vitals": "^1.0.1",
     "yup": "^0.32.11",
     "yup-password": "^0.2.2"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject"
+    "start": "vite --port 3000",
+    "build": "tsc && vite build"
   },
   "eslintConfig": {
     "extends": [
@@ -57,5 +54,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "less": "^4.2.0"
   }
 }
