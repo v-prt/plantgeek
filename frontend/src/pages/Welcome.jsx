@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Redirect, useHistory } from 'react-router-dom'
+import { Redirect, useNavigate } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext.jsx'
 import { Wrapper, Card } from './SignUp.jsx'
 import { FadeIn } from '../components/loaders/FadeIn.jsx'
@@ -7,13 +7,13 @@ import { Ellipsis } from '../components/loaders/Ellipsis.jsx'
 import success from '../assets/success.svg'
 
 export const Welcome = () => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const { token, currentUser } = useContext(UserContext)
 
   useEffect(() => {
     if (currentUser) {
       setTimeout(() => {
-        history.push('/profile')
+        navigate('/profile')
       }, 3000)
     }
   })

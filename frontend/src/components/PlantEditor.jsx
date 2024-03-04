@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 import Resizer from 'react-image-file-resizer'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from 'react-query'
 import { API_URL } from '../constants'
 import { message, Upload, Alert, Button } from 'antd'
@@ -17,7 +17,7 @@ import { Ellipsis } from './loaders/Ellipsis'
 const { Option } = Select
 
 export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => {
-  const history = useHistory()
+  const navigate = useNavigate()
   const queryClient = new useQueryClient()
 
   // IMAGE UPLOAD
@@ -119,7 +119,7 @@ export const PlantEditor = ({ plant, slug, currentUser, setEditDrawerOpen }) => 
           setEditDrawerOpen(false)
           // push to new route if primaryName/slug changed
           if (data.slug !== slug) {
-            history.push(`/plant/${data.slug}`)
+            navigate(`/plant/${data.slug}`)
           } else {
             queryClient.invalidateQueries('plant')
             queryClient.invalidateQueries('similar-plants')

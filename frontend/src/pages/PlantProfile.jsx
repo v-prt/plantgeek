@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
-import { useParams, useHistory, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useQuery, useQueryClient } from 'react-query'
 import { API_URL } from '../constants.js'
 import { Modal, Alert, Button, Drawer, Carousel } from 'antd'
@@ -28,7 +28,7 @@ import { SinglePlantReports } from '../components/reports/SinglePlantReports.jsx
 
 export const PlantProfile = () => {
   const { slug } = useParams()
-  const history = useHistory()
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { currentUser } = useContext(UserContext)
   const [difficulty, setDifficulty] = useState()
@@ -108,7 +108,7 @@ export const PlantProfile = () => {
 
   // DELETE PLANT (ADMIN)
   const handleDelete = plantId => {
-    history.push('/browse')
+    navigate('/browse')
     axios.delete(`${API_URL}/plants/${plantId}`).catch(err => console.log(err))
     queryClient.invalidateQueries('plants')
     queryClient.invalidateQueries('plants-to-review')
@@ -400,7 +400,7 @@ export const PlantProfile = () => {
                         icon={<PlusCircleOutlined />}
                         onClick={() => {
                           setDuplicatePlant(plant)
-                          history.push('/contribute')
+                          navigate('/contribute')
                         }}
                       >
                         DUPLICATE

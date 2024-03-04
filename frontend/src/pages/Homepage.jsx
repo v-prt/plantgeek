@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import { PlantContext } from '../contexts/PlantContext'
 import styled from 'styled-components'
@@ -18,13 +18,13 @@ export const Homepage = () => {
   useDocumentTitle('plantgeek')
   const { currentUser } = useContext(UserContext)
   const { formData, setFormData } = useContext(PlantContext)
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const onSearch = value => {
     // clear scrollPosition from previous search since results may be different
     localStorage.removeItem('scrollPosition')
     setFormData({ ...formData, search: [value] })
-    history.push(`/browse`)
+    navigate(`/browse`)
   }
 
   return (
