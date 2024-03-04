@@ -12,6 +12,7 @@
     "axios": "^0.24.0",
     "cloudinary-react": "^1.7.0",
     "craco-antd": "^2.0.0",
+    "create-react-app": "^5.0.1",
     "dotenv": "^10.0.0",
     "formik": "^2.2.9",
     "formik-antd": "^2.0.4",
