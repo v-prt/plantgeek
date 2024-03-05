@@ -40,8 +40,9 @@ mongoose
   .then(() => app.listen(PORT, () => console.info(`Listening on port ${PORT}`)))
   .catch(error => console.error(error))
 
+// Mongoose.connection.close now returns a promise, instead of accepting a callback arg
 process.on('SIGINT', () => {
-  mongoose.connection.close(() => {
+  mongoose.connection.close(true).then(() => {
     console.info('Mongoose default connection disconnected through app termination')
     process.exit(0)
   })

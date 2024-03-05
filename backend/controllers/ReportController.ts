@@ -69,8 +69,8 @@ export const getReports = async (req: Request, res: Response) => {
       // include plant and user info with report by ids
       const result = await Promise.all(
         reports.map(async report => {
-          const plant: IPlant | null = await Plant.findOne({ _id: ObjectId(report.plantId) })
-          const user: IUser | null = await User.findOne({ _id: ObjectId(report.userId) })
+          const plant: IPlant | null = await Plant.findOne({ _id: new ObjectId(report.plantId) })
+          const user: IUser | null = await User.findOne({ _id: new ObjectId(report.userId) })
           return { ...report, plant, user }
         })
       )

@@ -282,7 +282,7 @@ export const getSimilarPlants = async (req: Request, res: Response) => {
 
       let filters = {
         // not this plant
-        _id: { $ne: ObjectId(plant._id) },
+        _id: { $ne: new ObjectId(plant._id) },
         primaryName: { $in: regex },
         // not pending or rejected
         $and: [{ review: { $ne: 'pending' } }, { review: { $ne: 'rejected' } }],
@@ -370,14 +370,14 @@ export const updatePlant = async (req: Request, res: Response) => {
           // exact match, case insensitive
           $regex: new RegExp(`^${primaryName}$`, 'i'),
         },
-        _id: { $ne: ObjectId(id) },
+        _id: { $ne: new ObjectId(id) },
       })
       if (nameTaken) {
         return res.status(400).json({ message: 'A plant already exists with this name' })
       }
     }
 
-    const filter = { _id: ObjectId(id) }
+    const filter = { _id: new ObjectId(id) }
     const update = {
       $set: req.body,
     }
@@ -395,14 +395,14 @@ export const updatePlant = async (req: Request, res: Response) => {
 export const deletePlant = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
-    const result = await Plant.deleteOne({ _id: ObjectId(id) })
+    const result = await Plant.deleteOne({ _id: new ObjectId(id) })
     // find and remove plant id from users' collections and wishlists
     await User.updateMany(
       {},
       {
         $pull: {
-          plantCollection: ObjectId(id),
-          plantWishlist: ObjectId(id),
+          plantCollection: new ObjectId(id),
+          plantWishlist: new ObjectId(id),
         },
       }
     )
