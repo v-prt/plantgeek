@@ -64,9 +64,7 @@ export const App = () => {
           </Body>
         </>
       ) : (
-        <div className='loading' style={{ height: '100%', display: 'grid' }}>
-          <BeatingHeart />
-        </div>
+        <Fallback />
       )}
     </BrowserRouter>
   )
@@ -83,6 +81,14 @@ const NotFound = () => {
         </Link>
       </section>
     </main>
+  )
+}
+
+const Fallback = () => {
+  return (
+    <div className='loading' style={{ height: '100%', display: 'grid' }}>
+      <BeatingHeart />
+    </div>
   )
 }
 
