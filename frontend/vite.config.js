@@ -52,7 +52,11 @@ export default ({ mode }) => {
     css: {
       preprocessorOptions: {
         less: {
+          relativeUrls: true,
           javascriptEnabled: true,
+          modifyVars: {
+            hack: `true; @import 'antd.customize.less'`,
+          },
         },
       },
     },
