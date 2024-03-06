@@ -37,8 +37,8 @@ app.get('*', (req, res) => {
 
 // app.listen(PORT, () => console.info(`Listening on port ${PORT}`))
 
-const key = fs.readFileSync(path.join(__dirname, 'cf_key.pem'))
-const cert = fs.readFileSync(path.join(__dirname, 'cf_cert.pem'))
+const key = fs.readFileSync(path.join(__dirname, '../cf_key.pem'))
+const cert = fs.readFileSync(path.join(__dirname, '../cf_cert.pem'))
 
 const server = https.createServer({ key, cert }, app)
 
