@@ -11,7 +11,11 @@ import routes from './Routes'
 import sourceMapSupport from 'source-map-support'
 sourceMapSupport.install()
 
-// run on whatever port heroku has available or 4000 (local)
+// Digital certificate and private key paths
+const KEY_PATH: string = process.env.KEY_PATH!
+const CERT_PATH: string = process.env.CERT_PATH!
+
+// run on designated port or 4000 (local)
 const PORT: string | number = process.env.PORT || 4000
 const app: Express = express()
 
@@ -37,8 +41,8 @@ app.get('*', (req, res) => {
 
 // app.listen(PORT, () => console.info(`Listening on port ${PORT}`))
 
-const key = fs.readFileSync(path.join(__dirname, '../cf_key.pem'))
-const cert = fs.readFileSync(path.join(__dirname, '../cf_cert.pem'))
+const key = fs.readFileSync(path.join(__dirname, KEY_PATH))
+const cert = fs.readFileSync(path.join(__dirname, CERT_PATH))
 
 const server = https.createServer({ key, cert }, app)
 
