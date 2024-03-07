@@ -20,8 +20,7 @@ export const About = () => {
             <a
               href='https://www.linkedin.com/in/victoria-peart'
               target='_blank'
-              rel='noopener noreferrer'
-            >
+              rel='noopener noreferrer'>
               LinkedIn
             </a>{' '}
             or learn more about me and my projects by viewing{' '}
@@ -30,6 +29,7 @@ export const About = () => {
             </a>
             .
           </p>
+          <p>Testing</p>
         </section>
       </FadeIn>
     </Wrapper>
