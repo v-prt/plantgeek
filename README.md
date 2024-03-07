@@ -1,69 +1,25 @@
-# plantgeek
+# plantgeek (Web App)
 
-### an app for houseplant lovers
+### 🪴 An App for Houseplant Lovers
 
-- [Video Tour](https://youtu.be/JTIm2Gd30EI)
+Explore, manage, and expand your houseplant collection with this full-stack application dedicated to houseplant enthusiasts.
 
-### about
+[plantgeek.co](https://plantgeek.co) | [Video Demo](https://youtu.be/JTIm2Gd30EI) | [Mobile App](https://github.com/v-prt/plantgeek-app)
 
-Full-stack live website built 100% by me - including concept, design, and implementation. Frontend built with React and styled-components, backend built with Express, Node, and MongoDB with Mongoose. This app started as a full-stack solo coding project for school in 2021 and I continued to work on it for fun in my spare time through 2022.
+### 💡 About
 
-## Features
+PlantGeek is a fully realized live website, brought to life from concept to implementation by me ([@v-prt](https://github.com/v-prt)), with a significant contribution from my husband ([@j-prt](https://github.com/j-prt)), who adeptly set it up for self-hosting on our Raspberry Pi. The application showcases a frontend built with React and styled-components, and a backend orchestrated using Express, Node.js, and MongoDB through Mongoose.
 
-### UX/UI
+The website delivers a seamless experience across devices, ensuring responsiveness whether you're on mobile, tablet, or desktop, with a beautiful user interface. Interaction with forms is enhanced through Formik and Yup for validation, providing immediate and helpful feedback. Data synchronization is gracefully managed with React Query.
 
-- [x] responsive across mobile, tablet, and desktop devices
-- [x] cohesive style and color scheme with a fresh and modern aesthetic
-- [x] sleek antd form components
-- [x] all forms built with formik and yup validation which provide useful feedback for users
-- [x] using react-query for elegant data synchronization
+### ✨ Key Features
 
-### homepage
+- **Home Page**: Site information and featured plants, randomized to highlight different species.
+- **Sign Up & Login**: Secure account creation and login processes, leveraging MongoDB for user data storage, backend password encryption, and JWT for authentication. Session persistence across browser sessions.
+- **Houseplant Search & Management**: Explore hundreds of plants, filter by name or type, and identify pet-friendly options. Add or remove plants from your collection or wishlist, with pagination and a smooth browsing experience.
+- **Plant Profiles**: View detailed care information. Admin capabilities for data management and user options to report inaccuracies.
+- **User Profiles**: Manage collections and wishlists, with options for personalizing your experience.
+- **Community Contribution**: Contribute new plant data, with image storage facilitated through Cloudinary. Admins review contributions.
+- **Account Settings**: Personalize your profile by uploading an image and manage your personal information.
 
-- [x] site information
-- [x] featured plants (randomized)
-
-### sign up & login
-
-- [x] account creation and login
-- [x] user data stored in MongoDB
-- [x] backend password encryption
-- [x] JWT Web token authentication
-- [x] login sessions preserved in browser
-- [x] built with formik and yup validation for feedback and error handling
-
-### houseplant search
-
-- [x] hundreds of plants stored in MongoDB database
-- [x] search & filter by name or type
-- [x] find pet friendly (non-toxic) plants
-- [x] add/remove plants to your collection and wishlist
-- [x] toggle detailed view
-- [x] pagination
-- [x] loading skeleton
-
-### plant profiles (wip)
-
-- [x] view detailed care information
-- [x] admins can edit incorrect or missing information, including images
-- [x] admins can delete plants in case of corrupt or duplicate data
-- [x] users can report plants for admins to review
-- [x] additional information, including region of origin and rarity
-
-### user profiles (wip)
-
-- [x] users can manage their collection and wishlist
-- [x] toggle between simple or detailed view
-- [x] users can view their contributions and stickers earned for approved submissions
-
-### contribute
-
-- [x] users can upload new plant data to help grow database
-- [x] cloudinary media library image storage (urls stored in database)
-- [x] admins can review and approve or reject contributions
-- [x] users can earn badges or "stickers" for approved submissions
-
-### account settings
-
-- [x] update your name, username, email, and password
-- [x] upload a profile image (stored in cloudinary)
+To see more of my projects, visit [my portfolio](https://victoriapeart.com).
