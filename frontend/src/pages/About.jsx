@@ -29,7 +29,6 @@ export const About = () => {
             </a>
             .
           </p>
-          <p>Testing</p>
         </section>
       </FadeIn>
     </Wrapper>
