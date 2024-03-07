@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components'
-import styled from 'styled-components/macro'
+import styled from 'styled-components'
 
 export const COLORS = {
   darkest: '#1a1a1a',

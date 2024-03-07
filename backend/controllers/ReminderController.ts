@@ -31,7 +31,7 @@ export const updateReminder = async (req: Request, res: Response) => {
 
   try {
     const updatedReminder = await Reminder.updateOne(
-      { _id: ObjectId(reminderId) },
+      { _id: new ObjectId(reminderId) },
       {
         $set: req.body,
       }
@@ -50,7 +50,7 @@ export const completeReminder = async (req: Request, res: Response) => {
   const { reminderId } = req.params
 
   try {
-    const originalReminder = await Reminder.findOne({ _id: ObjectId(reminderId) })
+    const originalReminder = await Reminder.findOne({ _id: new ObjectId(reminderId) })
 
     if (originalReminder) {
       const currentDate = new Date()
@@ -70,7 +70,7 @@ export const completeReminder = async (req: Request, res: Response) => {
       }
 
       await Reminder.updateOne(
-        { _id: ObjectId(originalReminder._id) },
+        { _id: new ObjectId(originalReminder._id) },
         {
           $set: {
             dateCompleted: currentDate,
@@ -158,7 +158,7 @@ export const deleteReminder = async (req: Request, res: Response) => {
   const { reminderId } = req.params
 
   try {
-    const deletedReminder = await Reminder.deleteOne({ _id: ObjectId(reminderId) })
+    const deletedReminder = await Reminder.deleteOne({ _id: new ObjectId(reminderId) })
 
     res.status(201).json({ deletedReminder })
   } catch (err) {

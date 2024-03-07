@@ -87,7 +87,7 @@ export const resendVerificationEmail = async (req: Request, res: Response) => {
   try {
     const code = crypto.randomBytes(20).toString('hex')
 
-    await User.updateOne({ _id: ObjectId(userId) }, { $set: { verificationCode: code } })
+    await User.updateOne({ _id: new ObjectId(userId) }, { $set: { verificationCode: code } })
 
     const message = {
       personalizations: [
@@ -163,7 +163,7 @@ export const verifyToken = async (req: Request, res: Response) => {
     if (verifiedToken) {
       try {
         const user: IUser | null = await User.findOne({
-          _id: ObjectId(verifiedToken),
+          _id: new ObjectId(verifiedToken),
         })
         if (user) {
           return res.status(200).json({ user: user })
@@ -193,13 +193,13 @@ export const verifyEmail = async (req: Request, res: Response) => {
 
   try {
     const user: IUser | null = await User.findOne({
-      _id: ObjectId(userId),
+      _id: new ObjectId(userId),
     })
 
     if (user) {
       if (user.verificationCode === code) {
         await User.updateOne(
-          { _id: ObjectId(userId) },
+          { _id: new ObjectId(userId) },
           { $set: { emailVerified: true, verificationCode: null } }
         )
         return res.status(200).json({ message: 'Email verified' })
@@ -297,11 +297,11 @@ export const getUsers = async (req: Request, res: Response) => {
 
 export const getUser = async (req: Request, res: Response) => {
   try {
-    const user: IUser | null = await User.findOne({ _id: ObjectId(req.params.id) }).lean()
+    const user: IUser | null = await User.findOne({ _id: new ObjectId(req.params.id) }).lean()
     if (user) {
       // include number of approved contributions
       const contributions: number = await Plant.countDocuments({
-        contributorId: ObjectId(req.params.id),
+        contributorId: new ObjectId(req.params.id),
         review: 'approved',
       })
       const data = {
@@ -324,11 +324,11 @@ export const getWishlist = async (req: Request, res: Response) => {
   const { userId } = req.params
   try {
     // get user's plantWishlist and include plant data
-    const user: IUser = await User.findOne({ _id: ObjectId(userId) })
+    const user: IUser | null = await User.findOne({ _id: new ObjectId(userId) })
       .populate('plantWishlist')
       .lean()
 
-    return res.status(200).json({ wishlist: user.plantWishlist })
+    return res.status(200).json({ wishlist: user?.plantWishlist })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
@@ -341,11 +341,11 @@ export const getCollection = async (req: Request, res: Response) => {
   const { userId } = req.params
   try {
     // get user's plantCollection and include plant data
-    const user: IUser = await User.findOne({ _id: ObjectId(userId) })
+    const user: IUser | null = await User.findOne({ _id: new ObjectId(userId) })
       .populate('plantCollection')
       .lean()
 
-    return res.status(200).json({ collection: user.plantCollection })
+    return res.status(200).json({ collection: user?.plantCollection })
   } catch (err) {
     if (err instanceof Error) {
       console.error(err.stack)
@@ -355,7 +355,7 @@ export const getCollection = async (req: Request, res: Response) => {
 }
 
 export const updateUser = async (req: Request, res: Response) => {
-  const userId = ObjectId(req.params.id)
+  const userId = new ObjectId(req.params.id)
   const { email, username, currentPassword, newPassword } = req.body
 
   try {
@@ -434,7 +434,7 @@ export const updateLists = async (req: Request, res: Response) => {
   try {
     // update user's collection and wishlist (lists of plantIds)
     const userUpdate = await User.updateOne(
-      { _id: ObjectId(userId) },
+      { _id: new ObjectId(userId) },
       {
         $set: {
           plantCollection,
@@ -445,7 +445,7 @@ export const updateLists = async (req: Request, res: Response) => {
 
     // update lists of userIds in hearts, owned, and wanted on plant to be able to sort by most liked/owned/wanted and show totals on profile
     const plantUpdate = await Plant.updateOne(
-      { _id: ObjectId(plantId) },
+      { _id: new ObjectId(plantId) },
       {
         $set: {
           hearts,
@@ -467,14 +467,14 @@ export const updateLists = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params
   try {
-    const result = await User.deleteOne({ _id: ObjectId(id) })
+    const result = await User.deleteOne({ _id: new ObjectId(id) })
     await Plant.updateMany(
       {},
       {
         $pull: {
-          hearts: ObjectId(id),
-          owned: ObjectId(id),
-          wanted: ObjectId(id),
+          hearts: new ObjectId(id),
+          owned: new ObjectId(id),
+          wanted: new ObjectId(id),
         },
       }
     )
